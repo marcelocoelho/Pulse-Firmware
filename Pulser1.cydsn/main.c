@@ -138,7 +138,7 @@ void main()
     LCD_Position(ROW_0, COLUMN_0); 
 
     /* Print Label for the pot voltage raw count */
-    LCD_PrintString("Pulser1 "); 
+    LCD_PrintString("P1 "); 
     
     //DMA_Chan = DMA_DmaInitialize(DMA_BYTES_PER_BURST, DMA_REQUEST_PER_BURST, 
     //HI16(DMA_SRC_BASE), HI16(DMA_DST_BASE));
@@ -168,7 +168,7 @@ void main()
 			IDAC8_PulseIR_SetValue( (g_Pulser.brightnessIR256 >> 8) );
 
 			uint16 filtered_down;
-	        LCD_Position(ROW_1, 1); 
+	        LCD_Position(ROW_1, 0); 
 			if (g_Pulser.curFilteredPulseVal < 0)
 			{
 				filtered_down=(-g_Pulser.curFilteredPulseVal) >> 2;
@@ -180,47 +180,34 @@ void main()
 		        LCD_PrintString("        ");
 			}				
 			g_Pulser.updated=0;
-	        LCD_Position(ROW_1, 2); 
+	        LCD_Position(ROW_1, 1); 
 	        LCD_PrintNumber(filtered_down);
 
-	        LCD_Position(ROW_1, 12); 
-	        LCD_PrintString("    ");
-	        LCD_Position(ROW_1, 12); 
+	        LCD_Position(ROW_1, 13); 
+	        LCD_PrintString("   ");
+	        LCD_Position(ROW_1, 13); 
 	        LCD_PrintNumber(g_Pulser.scaledPulseVal);
 			
 			PrISM_PulseIndicator_WritePulse0(g_Pulser.scaledPulseVal);
 
 			voltageRawCount=g_Pulser.curRawPulseVal;
-	        /* Move the cursor to Row 0, Column 9 */
-	        LCD_Position(ROW_0, COLUMN_9); 
+			
+	        LCD_Position(ROW_0, 3); 
+	        LCD_PrintString("-    ");
+	        LCD_Position(ROW_0, 4); 
+	        LCD_PrintNumber((uint16)(-g_Pulser.scaledPulseMin));
+
+	        LCD_Position(ROW_1, 7); 
+	        LCD_PrintString("    ");
+	        LCD_Position(ROW_1, 7); 
+	        LCD_PrintNumber(g_Pulser.scaledPulseMax);
+			
+	            /* Clear last characters */
+	        LCD_Position(ROW_0, COLUMN_11); 
+	        LCD_PrintString("     "); 
+            LCD_Position(ROW_0,COLUMN_11); 
 	        LCD_PrintNumber(voltageRawCount);
 
-	        if (voltageRawCount < 10)
-	        {
-	            /* Move the cursor to Row 0, Column 10 */
-	            LCD_Position(ROW_0,COLUMN_10); 
-	            /* Clear last characters */
-	            LCD_PrintString(CLEAR_TENS_HUNDREDS); 
-	        }
-	        else if (voltageRawCount < 100)
-	        {
-	            /* Move the cursor to Row 0, Column 11 */
-	            LCD_Position(ROW_0,COLUMN_11); 
-	            LCD_PrintString(CLEAR_HUNDREDS); 
-	        }
-	        else if (voltageRawCount < 1000)
-	        {
-	            LCD_Position(ROW_0,COLUMN_12); 
-	            LCD_PrintString(CLEAR_HUNDREDS); 
-			}
-	        else if (voltageRawCount < 10000)
-	        {
-	            LCD_Position(ROW_0,COLUMN_13); 
-	            LCD_PrintString(CLEAR_HUNDREDS); 
-			}
-	        else
-	        {
-	        }
 		}
     }
 }

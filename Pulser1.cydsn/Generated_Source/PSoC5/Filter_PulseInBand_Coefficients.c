@@ -145,9 +145,9 @@ uint8 ChannelAFirCoefficients[] =
 uint8 ChannelABiquadCoefficients[] = 
 {
  /* Coefficients of Section 0 */
- 0x8B, 0xBF, 0x5C, 0x00, /* Section(0)_A0, 2.89838171005249 */
+ 0xD7, 0xF9, 0x78, 0x00, /* Section(0)_A0, 7.56099605560303 */
 
- 0x75, 0x40, 0xA3, 0x00, /* Section(0)_A1, -2.89838171005249 */
+ 0x29, 0x06, 0x87, 0x00, /* Section(0)_A1, -7.56099605560303 */
 
  0x00, 0x00, 0x00, 0x00, /* Section(0)_A2, 0 */
 

@@ -48,7 +48,7 @@ acu(incr, incr) dmux(sra, sra) alu(hold) mac(macc)
 acu(subf, incr) dmux(srm, srm) alu(add) mac(hold) jmpl(acubeq, ChA_Bq_finish)
 
 ChA_Bq_finish:
-acu(hold, hold) dmux(sa, sa) alu(hold) mac(hold) shift(L, 1)
+acu(hold, hold) dmux(sa, sa) alu(hold) mac(hold) shift(L, 2)
 acu(incr, hold) addr(1) dmux(sra, sa) alu(seta) mac(hold)write(bus)
 acu(hold, hold) dmux(sra, sra) alu(seta) mac(hold)write(da)
 acu(incr, hold) dmux(sa, sa) alu(hold) mac(hold) write(da) jmp(eob, ChA_Bq_EXIT)
@@ -130,8 +130,8 @@ dw 16776763
 ChA_Fir_LAST: dw 16776849
 
 
-ChA_Bq_FIRST: dw  6078347
-dw 10698869
+ChA_Bq_FIRST: dw  7928279
+dw  8848937
 dw        0
 dw  4115979
 ChA_Bq_LAST: dw        0
