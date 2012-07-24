@@ -53,8 +53,11 @@
 *******************************************************************************/
 #include <device.h>
    
+#include "pulse_sense.h"   
+   
 /* LCD specific */
 #define ROW_0                   0  
+#define ROW_1                   1  
 #define COLUMN_0                0  
 #define COLUMN_9                9  
 #define COLUMN_10               10  
@@ -96,23 +99,17 @@ const uint8 voltageWave[] =
 };
 
 
-typedef struct
-{
-	int32 curPulseVal;
-
-} Pulser;
 
 Pulser g_Pulser;
 
-void pulserInit(Pulser *pPulse)
+
+void pulse_read_IR_handler()
 {
-	pPulse->curPulseVal=0;
+	
+
+	pulserProcessPulseSample(&g_Pulser);
 }
 
-void pulserProcessSample(Pulser *pPulse, int32 datum)
-{
-
-}
 
 
 void main()
@@ -131,8 +128,9 @@ void main()
     LCD_Start();            
 	Filter_PulseInBand_Start();
 	PWM_PulseLEDs_Start();
+	PrISM_PulseIndicator_Start();
 	
-	isr_PulseReadIR_Start();
+	PrISM_PulseIndicator_WritePulse0(250);
     //VDAC_Start();               
     //Opamp_Start(); 
     
@@ -155,59 +153,75 @@ void main()
     
     ADC_PulseIn_StartConvert(); 
 	
-	
+	CYGlobalIntEnable; 
+
+	isr_PulseReadIR_Start();
+
     while(1)
     {
         /* Wait for end of conversion */
-        ADC_PulseIn_IsEndConversion(ADC_PulseIn_WAIT_FOR_RESULT); 
-        voltageRawCount = ADC_PulseIn_GetResult16(); 
+        //ADC_PulseIn_IsEndConversion(ADC_PulseIn_WAIT_FOR_RESULT); 
+        //voltageRawCount = ADC_PulseIn_GetResult16(); 
  
-        
-        /* 
-         * The LED blinking frequency is dependent on the Voltage raw count.
-         *  With a 3MHz clock, the lowest divider (for raw count of 0) should be
-         *  1000 to blink at a significantly fast pace. The highest value is 
-         *  about 52,200 (for a raw count of 256) to blink at a significantly 
-         *  slow pace. The following equation is necessary to make the adjusted 
-         *  clock frequency (with the updated divider) linear with the ADC 
-         *  output. The Clock frequency is proportional to the raw count so we
-         *  calculate the slop value (value between 1000 - 52200 with respect to 
-         *  voltage count from 0 -256 using y =mx+c) 
-         */
-        //Clock_Stop(); 
-       // Clock_SetDivider((999* (MAX_COUNT+1) + voltageRawCount)/ ( (MAX_COUNT+1)-voltageRawCount));
-       // Clock_Start();
-        
-        /* Move the cursor to Row 0, Column 9 */
-        LCD_Position(ROW_0, COLUMN_9); 
-        LCD_PrintNumber(voltageRawCount);
+        if (g_Pulser.updated)
+		{
+			IDAC8_PulseIR_SetValue( (g_Pulser.brightnessIR256 >> 8) );
 
-        if (voltageRawCount < 10)
-        {
-            /* Move the cursor to Row 0, Column 10 */
-            LCD_Position(ROW_0,COLUMN_10); 
-            /* Clear last characters */
-            LCD_PrintString(CLEAR_TENS_HUNDREDS); 
-        }
-        else if (voltageRawCount < 100)
-        {
-            /* Move the cursor to Row 0, Column 11 */
-            LCD_Position(ROW_0,COLUMN_11); 
-            LCD_PrintString(CLEAR_HUNDREDS); 
-        }
-        else if (voltageRawCount < 1000)
-        {
-            LCD_Position(ROW_0,COLUMN_12); 
-            LCD_PrintString(CLEAR_HUNDREDS); 
+			uint16 filtered_down;
+	        LCD_Position(ROW_1, 1); 
+			if (g_Pulser.curFilteredPulseVal < 0)
+			{
+				filtered_down=(-g_Pulser.curFilteredPulseVal) >> 2;
+		        LCD_PrintString("-       ");
+			}
+			else
+			{
+				filtered_down=g_Pulser.curFilteredPulseVal >> 2;
+		        LCD_PrintString("        ");
+			}				
+			g_Pulser.updated=0;
+	        LCD_Position(ROW_1, 2); 
+	        LCD_PrintNumber(filtered_down);
+
+	        LCD_Position(ROW_1, 12); 
+	        LCD_PrintString("    ");
+	        LCD_Position(ROW_1, 12); 
+	        LCD_PrintNumber(g_Pulser.scaledPulseVal);
+			
+			PrISM_PulseIndicator_WritePulse0(g_Pulser.scaledPulseVal);
+
+			voltageRawCount=g_Pulser.curRawPulseVal;
+	        /* Move the cursor to Row 0, Column 9 */
+	        LCD_Position(ROW_0, COLUMN_9); 
+	        LCD_PrintNumber(voltageRawCount);
+
+	        if (voltageRawCount < 10)
+	        {
+	            /* Move the cursor to Row 0, Column 10 */
+	            LCD_Position(ROW_0,COLUMN_10); 
+	            /* Clear last characters */
+	            LCD_PrintString(CLEAR_TENS_HUNDREDS); 
+	        }
+	        else if (voltageRawCount < 100)
+	        {
+	            /* Move the cursor to Row 0, Column 11 */
+	            LCD_Position(ROW_0,COLUMN_11); 
+	            LCD_PrintString(CLEAR_HUNDREDS); 
+	        }
+	        else if (voltageRawCount < 1000)
+	        {
+	            LCD_Position(ROW_0,COLUMN_12); 
+	            LCD_PrintString(CLEAR_HUNDREDS); 
+			}
+	        else if (voltageRawCount < 10000)
+	        {
+	            LCD_Position(ROW_0,COLUMN_13); 
+	            LCD_PrintString(CLEAR_HUNDREDS); 
+			}
+	        else
+	        {
+	        }
 		}
-        else if (voltageRawCount < 10000)
-        {
-            LCD_Position(ROW_0,COLUMN_13); 
-            LCD_PrintString(CLEAR_HUNDREDS); 
-		}
-        else
-        {
-        }
     }
 }
 

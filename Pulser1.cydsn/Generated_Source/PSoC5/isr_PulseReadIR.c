@@ -141,7 +141,8 @@ CY_ISR(isr_PulseReadIR_Interrupt)
 {
     /*  Place your Interrupt code here. */
     /* `#START isr_PulseReadIR_Interrupt` */
-
+	extern void pulse_read_IR_handler();
+	pulse_read_IR_handler();
     /* `#END` */
 }
 

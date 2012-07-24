@@ -139,9 +139,9 @@ void ADC_PulseIn_IRQ_Start(void) ;
 
 /* Default config values from user parameters */
 
-#define ADC_PulseIn_CFG1_RESOLUTION         (16u )
+#define ADC_PulseIn_CFG1_RESOLUTION         (18u )
 #define ADC_PulseIn_CFG1_RANGE              (2u)    
-#define ADC_PulseIn_CFG1_SRATE              (2000u)         
+#define ADC_PulseIn_CFG1_SRATE              (3000u)         
 #define ADC_PulseIn_CFG1_REFERENCE          (5u)       
 #define ADC_PulseIn_CFG1_BUF_GAIN           (1u)   
 #define ADC_PulseIn_CFG1_CONV_MODE          (2u)     
@@ -1384,19 +1384,19 @@ void ADC_PulseIn_IRQ_Start(void) ;
 
 /* Default register settings for the Config 1 */
 /* Default Config */
-/* ADC_PulseIn_CFG1 Sample Rate: 2000 Samples per Second */
+/* ADC_PulseIn_CFG1 Sample Rate: 3000 Samples per Second */
 /* ADC_PulseIn_CFG1 Conversion Mode: 2 */
 /* ADC_PulseIn_CFG1 Input Buffer Gain: 1   */
 /* ADC_PulseIn_CFG1 Reference: 5 */
 /* ADC_PulseIn_CFG1 Input Range: 2  */
-/* ADC_PulseIn_CFG1 Resolution: 16 bits */
-/* ADC_PulseIn_CFG1 Clock: 128000 Hz */
+/* ADC_PulseIn_CFG1 Resolution: 18 bits */
+/* ADC_PulseIn_CFG1 Clock: 3072000 Hz */
 
-#define ADC_PulseIn_CFG1_DEC_CR             (0x38u)
+#define ADC_PulseIn_CFG1_DEC_CR             (0x78u)
 #define ADC_PulseIn_CFG1_DEC_SR             (0x14u)
 #define ADC_PulseIn_CFG1_DEC_SHIFT1         (0x04u)
-#define ADC_PulseIn_CFG1_DEC_SHIFT2         (0x06u)
-#define ADC_PulseIn_CFG1_DEC_DR2            (0x00u)
+#define ADC_PulseIn_CFG1_DEC_SHIFT2         (0x08u)
+#define ADC_PulseIn_CFG1_DEC_DR2            (0x0Fu)
 #define ADC_PulseIn_CFG1_DEC_DR2H           (0x00u)
 #define ADC_PulseIn_CFG1_DEC_DR1            (0x3Fu)
 #define ADC_PulseIn_CFG1_DEC_OCOR           (0x00u)
@@ -1420,10 +1420,10 @@ void ADC_PulseIn_IRQ_Start(void) ;
 #define ADC_PulseIn_CFG1_DSM_CR11           (0x48u)
 #define ADC_PulseIn_CFG1_DSM_CR12           (0x01u)
 #define ADC_PulseIn_CFG1_DSM_CR13           (0x00u)
-#define ADC_PulseIn_CFG1_DSM_CR14           (0x00u)
-#define ADC_PulseIn_CFG1_DSM_CR15           (0x00u)
-#define ADC_PulseIn_CFG1_DSM_CR16           (0x0Au)
-#define ADC_PulseIn_CFG1_DSM_CR17           (0x43u)
+#define ADC_PulseIn_CFG1_DSM_CR14           (0x02u)
+#define ADC_PulseIn_CFG1_DSM_CR15           (0x12u)
+#define ADC_PulseIn_CFG1_DSM_CR16           (0x28u)
+#define ADC_PulseIn_CFG1_DSM_CR17           (0xEBu)
 #define ADC_PulseIn_CFG1_DSM_REF0           (0x52u)
 #define ADC_PulseIn_CFG1_DSM_REF1           (0x00u)
 #define ADC_PulseIn_CFG1_DSM_REF2           (0x58u)
@@ -1434,15 +1434,15 @@ void ADC_PulseIn_IRQ_Start(void) ;
 #define ADC_PulseIn_CFG1_DSM_CLK            (0x18u)
 #define ADC_PulseIn_CFG1_DSM_BUF0           (0x05u)
 #define ADC_PulseIn_CFG1_DSM_BUF1           (0x02u)
-#define ADC_PulseIn_CFG1_DSM_BUF2           (0x01u)
+#define ADC_PulseIn_CFG1_DSM_BUF2           (0x00u)
 #define ADC_PulseIn_CFG1_DSM_BUF3           (0x00u)
 #define ADC_PulseIn_CFG1_DSM_OUT0           (0x00u)
 #define ADC_PulseIn_CFG1_DSM_OUT1           (0x00u)
 #define ADC_PulseIn_CFG1_DSM_SW3            (0x40u)
-#define ADC_PulseIn_CFG1_CLOCKS_PER_SAMPLE  (0x0040u)
-#define ADC_PulseIn_CFG1_CLOCK_FREQ         (128000u)
+#define ADC_PulseIn_CFG1_CLOCKS_PER_SAMPLE  (0x0400u)
+#define ADC_PulseIn_CFG1_CLOCK_FREQ         (3072000u)
 #define ADC_PulseIn_CFG1_REFERENCE_VOLTAGE  (1.2500)
-#define ADC_PulseIn_CFG1_COUNTS_PER_VOLT    (13107u)
+#define ADC_PulseIn_CFG1_COUNTS_PER_VOLT    (52429u)
 #define ADC_PulseIn_CFG1_IDEAL_DEC_GAIN     (0x8E58u)
 
 #define ADC_PulseIn_CFG1_IDEAL_ODDDEC_GAIN  (0x8000u)

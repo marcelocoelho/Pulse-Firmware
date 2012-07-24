@@ -55,6 +55,10 @@
 #include <PWM_PulseLEDs.h>
 #include <isr_PulseReadAmbient.h>
 #include <isr_PulseReadIR.h>
+#include <PrISM_PulseIndicator.h>
+#include <Pin_PulseIndicator_aliases.h>
+#include <Pin_PulseIndicator.h>
+#include <Clock_1.h>
 #include <ADC_PulseIn_Ext_CP_Clk.h>
 #include <ADC_PulseIn_theACLK.h>
 #include <ADC_PulseIn_AMux.h>
