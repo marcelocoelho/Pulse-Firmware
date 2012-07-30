@@ -241,7 +241,7 @@ void PWM_PulseLEDs_RestoreConfig(void) ;
 *         Initialization Values
 **************************************/
 #define PWM_PulseLEDs_INIT_PERIOD_VALUE        255u
-#define PWM_PulseLEDs_INIT_COMPARE_VALUE1      185u
+#define PWM_PulseLEDs_INIT_COMPARE_VALUE1      162u
 #define PWM_PulseLEDs_INIT_COMPARE_VALUE2      67u
 #define PWM_PulseLEDs_INIT_INTERRUPTS_MODE     ((0u << PWM_PulseLEDs_STATUS_TC_INT_EN_MASK_SHIFT) | (0 << PWM_PulseLEDs_STATUS_CMP2_INT_EN_MASK_SHIFT) | (0 << PWM_PulseLEDs_STATUS_CMP1_INT_EN_MASK_SHIFT ) | (0 << PWM_PulseLEDs_STATUS_KILL_INT_EN_MASK_SHIFT ))
 #define PWM_PulseLEDs_DEFAULT_COMPARE2_MODE    (1u << PWM_PulseLEDs_CTRL_CMPMODE2_SHIFT)

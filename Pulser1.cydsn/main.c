@@ -105,9 +105,11 @@ Pulser g_Pulser;
 
 void pulse_read_IR_handler()
 {
-	
-
+	//Led_test1_Write(1);
+	CyPins_SetPin(Led_test1_0);
 	pulserProcessPulseSample(&g_Pulser);
+	CyPins_ClearPin(Led_test1_0);
+	//Led_test1_Write(0);
 }
 
 
@@ -118,6 +120,8 @@ void main()
     
 	pulserInit(&g_Pulser);
 	
+	AMux_ProxIR_Start();
+	ShiftReg_DelaySenseIR_Start();
     ADC_PulseIn_Start();     
 	IDAC8_PulseIR_Start();
 	IDAC8_PulseIR_SetValue(5);
@@ -129,6 +133,9 @@ void main()
 	Filter_PulseInBand_Start();
 	PWM_PulseLEDs_Start();
 	PrISM_PulseIndicator_Start();
+	
+	ADC_SAR_ProxIR_Start();
+	ADC_SAR_ProxIR_StartConvert();
 	
 	PrISM_PulseIndicator_WritePulse0(250);
     //VDAC_Start();               
@@ -157,6 +164,7 @@ void main()
 
 	isr_PulseReadIR_Start();
 
+	AMux_ProxIR_Select(0);
     while(1)
     {
         /* Wait for end of conversion */
@@ -192,10 +200,17 @@ void main()
 
 			voltageRawCount=g_Pulser.curRawPulseVal;
 			
+			uint16 prox1=ADC_SAR_ProxIR_GetResult16();
+
+			LCD_Position(ROW_0, 3); 
+	        LCD_PrintString("    ");
 	        LCD_Position(ROW_0, 3); 
-	        LCD_PrintString("-    ");
-	        LCD_Position(ROW_0, 4); 
-	        LCD_PrintNumber((uint16)(-g_Pulser.scaledPulseMin));
+	        LCD_PrintNumber(prox1);
+			
+	        //LCD_Position(ROW_0, 3); 
+	        //LCD_PrintString("-    ");
+	        //LCD_Position(ROW_0, 4); 
+	        //LCD_PrintNumber((uint16)(-g_Pulser.scaledPulseMin));
 
 	        LCD_Position(ROW_1, 7); 
 	        LCD_PrintString("    ");

@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<blockRegMap version="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cypress.com/xsd/cyblockregmap cyblockregmap.xsd" xmlns="http://cypress.com/xsd/cyblockregmap">
+  <block name="Filter_PulseInBand" BASE="0x0" SIZE="0x0" desc="" visible="true">
+    <block name="ZeroTerminal_4" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_5" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="DFB" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  </block>
+  <block name="Pin_PulseIn_plus" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Clock_PWM_PulseLEDs" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Pin_PulseRed_on" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Pin_PulseIR_on" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Pin_DevId0" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="IDAC8_PulseRed" BASE="0x0" SIZE="0x0" desc="" visible="true">
+    <block name="VirtualMux_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="VirtualMux_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="not_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="viDAC8" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="cy_analog_noconnect_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_3" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  </block>
+  <block name="Pin_PulseIR_Intensity" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Opamp_PulseRef" BASE="0x0" SIZE="0x0" desc="" visible="true">
+    <block name="ABuf" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="abuf_negInput_mux" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <register name="Opamp_PulseRef_PM_ACT_CFG4" address="0x400043A4" bitWidth="8" desc="PM_ACT_CFG4" />
+    <register name="Opamp_PulseRef_PM_STBY_CFG4" address="0x400043B4" bitWidth="8" desc="PM_STBY_CFG4" />
+    <register name="Opamp_PulseRef_OPAMP__TR0" address="0x40004620" bitWidth="8" desc="OPAMP__TR0" />
+    <register name="Opamp_PulseRef_OPAMP__TR1" address="0x40004621" bitWidth="8" desc="OPAMP__TR1" />
+    <register name="Opamp_PulseRef_OPAMP__CR" address="0x40005858" bitWidth="8" desc="OPAMP_CR" />
+    <register name="Opamp_PulseRef_OPAMP__MX" address="0x40005B40" bitWidth="8" desc="OPAMP_MX" />
+    <register name="Opamp_PulseRef_OPAMP__SW" address="0x40005B41" bitWidth="8" desc="OPAMP_SW" />
+  </block>
+  <block name="Pin_PulseRed_Intensity" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="PWM_PulseLEDs" BASE="0x0" SIZE="0x0" desc="" visible="true">
+    <block name="OneTerminal_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="FFKillMux" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="vmTC" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="PWMUDB" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="vmCompare" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="vmIRQ" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  </block>
+  <block name="ZeroTerminal_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="OneTerminal_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="not_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="ShiftReg_DelaySenseIR" BASE="0x0" SIZE="0x0" desc="" visible="true">
+    <block name="OneTerminal_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="bSR" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="VirtualMux_3" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_3" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  </block>
+  <block name="not_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="isr_PulseReadIR" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="isr_PulseReadAmbient" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="PrISM_PulseIndicator" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Clock_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Pin_PulseIndicator" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Pin_PulseRef" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Clock" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="DMA" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="CapSense_1" BASE="0x0" SIZE="0x0" desc="" visible="true">
+    <block name="NoConnect_1_024ToAMuxCH0" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="Connect_VdacToAmuxCH0" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="Select_VrefOutput" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="Connect_VdacToAmuxCH1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="Select_VrefCH1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="NoConnect_VchanCH0" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="IsrCH0" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="OneTerminal_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="OneTerminal_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ClockSelect_VirtualMux" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="IntClock" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="DisableCapSBuf_VchanCH0" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="NoConnect_VrefCH1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_6" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="Clock_tmp" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="or_bclk" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="DisableCapSBuf_VrefCH1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="DisableCapSBuf_VrefCH0" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="NoConnect_1_024ToAMuxCH1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="NoConnect_VrefCH0" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="NoConnect_VchanCH1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="DisableCapSBuf_VchanCH1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="NoConnect_IdacVoutCH0" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="CompCH0" BASE="0x0" SIZE="0x0" desc="" visible="true">
+      <block name="VirtualMux_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+      <block name="ctComp" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    </block>
+    <block name="CmodCH0" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="VrefRefCH0" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="PortCH0" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_10" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="BufCH0" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="IdacCH0" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_9" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_7" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_5" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="Select_VrefCH0" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="MeasureCH0" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="OneTerminal_3" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ClockGen" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="NoConnect_IdacVoutCH1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="AMuxCH0" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_3" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_8" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_4" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  </block>
+  <block name="Pin_Rx_LED" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="UART_LED" BASE="0x0" SIZE="0x0" desc="" visible="true">
+    <block name="BUART" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="VirtualMux_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="IntClock" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  </block>
+  <block name="ADC_PulseIn" BASE="0x0" SIZE="0x0" desc="" visible="true">
+    <block name="ZeroTerminal_3" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_5" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="Clock_VirtualMux_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="cy_analog_virtualmux_5" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="cy_analog_noconnect_5" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="DSM2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ADC_Vssa_1" BASE="0x0" SIZE="0x0" desc="" visible="true">
+      <block name="vRef_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    </block>
+    <block name="cy_analog_virtualmux_6" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ADC_Vssa_2" BASE="0x0" SIZE="0x0" desc="" visible="true">
+      <block name="vRef_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    </block>
+    <block name="Clock_VirtualMux_3" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="cy_analog_noconnect_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="AMux" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="cy_analog_virtualmux_3" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="cy_analog_virtualmux_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="cy_analog_virtualmux_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="cy_analog_noconnect_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="Ext_CP_Clk" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="cy_analog_noconnect_3" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="DEC" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="IRQ" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="Clock_VirtualMux" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="theACLK" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  </block>
+  <block name="VDAC_PulseRef" BASE="0x0" SIZE="0x0" desc="" visible="true">
+    <block name="ZeroTerminal_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="viDAC8" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="cy_analog_noconnect_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_3" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <register name="VDAC_PulseRef_VDAC8_PM_ACT_CFG" address="0x400043A8" bitWidth="8" desc="VDAC8_PM_ACT_CFG" />
+    <register name="VDAC_PulseRef_VDAC8_PM_STBY_CFG" address="0x400043B8" bitWidth="8" desc="VDAC8_PM_STBY_CFG" />
+    <register name="VDAC_PulseRef_VDAC8_TR" address="0x40004609" bitWidth="8" desc="VDAC8_TR" />
+    <register name="VDAC_PulseRef_VDAC8_CR0" address="0x40005824" bitWidth="8" desc="VDAC8_CR0" />
+    <register name="VDAC_PulseRef_VDAC8_CR1" address="0x40005825" bitWidth="8" desc="VDAC8_CR1" />
+    <register name="VDAC_PulseRef_VDAC8_D" address="0x40005B81" bitWidth="8" desc="VDAC8_D" />
+  </block>
+  <block name="LCD" BASE="0x0" SIZE="0x0" desc="" visible="true">
+    <block name="LCDPort" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  </block>
+  <block name="Led_test1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="IDAC8_PulseIR" BASE="0x0" SIZE="0x0" desc="" visible="true">
+    <block name="VirtualMux_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="VirtualMux_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="not_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="viDAC8" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="cy_analog_noconnect_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_3" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  </block>
+  <block name="Pin_Tx_LED" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="AMux_ProxIR" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Pin_ProxIR_3" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="ADC_SAR_ProxIR" BASE="0x0" SIZE="0x0" desc="SAR ADC" visible="true">
+    <block name="Clock_VirtualMux_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ADC_SAR" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="theACLK" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="cy_analog_noconnect_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_8" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="vRef_Vdda" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="cy_analog_virtualmux_4" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="noconnect" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="cy_analog_virtualmux_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="cy_analog_virtualmux_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="IRQ" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_7" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="cy_analog_virtualmux_3" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_5" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_6" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_3" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_4" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <register name="ADC_SAR_WRK0_REG" address="0x40005BA0" bitWidth="8" desc="SAR working register 0" />
+    <register name="ADC_SAR_WRK1_REG" address="0x40005BA1" bitWidth="8" desc="SAR working register 1" />
+  </block>
+  <block name="Pin_PulseIn_minus" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="TIA_PulseIn" BASE="0x0" SIZE="0x0" desc="" visible="true">
+    <block name="SC" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="SCBoostClk_VirtualMux" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_4" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_3" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <register name="TIA_PulseIn_PM_ACT_CFG1" address="0x400043A1" bitWidth="8" desc="PM_ACT_CFG1" />
+    <register name="TIA_PulseIn_SC__PM_ACT_CFG" address="0x400043A9" bitWidth="8" desc="SC__PM_ACT_CFG" />
+    <register name="TIA_PulseIn_PM_STBY_CFG1" address="0x400043B1" bitWidth="8" desc="PM_STBY_CFG1" />
+    <register name="TIA_PulseIn_SC__PM_STBY_CFG" address="0x400043B9" bitWidth="8" desc="SC__PM_STBY_CFG" />
+    <register name="TIA_PulseIn_SC_CR0" address="0x40005804" bitWidth="8" desc="SC_CR0" />
+    <register name="TIA_PulseIn_SC_CR1" address="0x40005805" bitWidth="8" desc="SC_CR1" />
+    <register name="TIA_PulseIn_SC_CR2" address="0x40005806" bitWidth="8" desc="SC_CR2" />
+    <register name="TIA_PulseIn_SC__BST" address="0x40005A1C" bitWidth="8" desc="SC__BST" />
+    <register name="TIA_PulseIn_SC_MISC" address="0x40005B56" bitWidth="8" desc="SC_MISC" />
+  </block>
+  <block name="Pin_Rx_Net" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="UART_Net" BASE="0x0" SIZE="0x0" desc="" visible="true">
+    <block name="BUART" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="VirtualMux_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="IntClock" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  </block>
+  <block name="Pin_Tx_Net" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Pin_ProxIR_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Pin_ProxIR_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+</blockRegMap>

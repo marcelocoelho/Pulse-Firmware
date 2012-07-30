@@ -21,7 +21,7 @@
 #include <ADC_PulseIn.h>
 #include <LCD.h>
 #include <IDAC8_PulseIR.h>
-#include <Led_aliases.h>
+#include <Led_test1_aliases.h>
 #include <DMA_dma.h>
 #include <Clock.h>
 #include <CapSense_1.h>
@@ -59,6 +59,7 @@
 #include <Pin_PulseIndicator_aliases.h>
 #include <Pin_PulseIndicator.h>
 #include <Clock_1.h>
+#include <ShiftReg_DelaySenseIR.h>
 #include <ADC_PulseIn_Ext_CP_Clk.h>
 #include <ADC_PulseIn_theACLK.h>
 #include <ADC_PulseIn_AMux.h>
