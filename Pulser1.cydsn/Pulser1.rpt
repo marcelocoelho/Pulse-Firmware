@@ -1,13 +1,13 @@
-Loading plugins phase: Elapsed time ==> 0s.217ms
-Initializing data phase: Elapsed time ==> 2s.886ms
+Loading plugins phase: Elapsed time ==> 0s.192ms
+Initializing data phase: Elapsed time ==> 2s.878ms
 <CYPRESSTAG name="CyDsfit arguments...">
 cydsfit arguments: -.fdsnotice -.fdswarpdepfile=warp_dependencies.txt -.fdselabdepfile=elab_dependencies.txt -.fdsbldfile=generated_files.txt -p C:\Users\Mike\Documents\PulseSensor\Pulser1.cydsn\Pulser1.cyprj -d CY8C5568AXI-060 -s C:\Users\Mike\Documents\PulseSensor\Pulser1.cydsn\Generated_Source\PSoC5 -w 0 -- -yv2 -w 0 -v3 -ygs -q10 -o2 -.fftcfgtype=LE</CYPRESSTAG>
 <CYPRESSTAG name="Design elaboration results...">
 </CYPRESSTAG>
-Elaboration phase: Elapsed time ==> 14s.679ms
+Elaboration phase: Elapsed time ==> 14s.662ms
 <CYPRESSTAG name="HDL generation results...">
 </CYPRESSTAG>
-HDL generation phase: Elapsed time ==> 0s.353ms
+HDL generation phase: Elapsed time ==> 0s.336ms
 <CYPRESSTAG name="Synthesis results...">
 
      | | | | | | |
@@ -41,7 +41,7 @@ Options  :    -yv2 -w 0 -v3 -ygs -q10 -o2 -.fftcfgtype=LE -ya -.fftprj=C:\Users\
 ======================================================================
 
 vlogfe V6.3 IR 41:  Verilog parser
-Mon Jul 30 14:12:39 2012
+Mon Jul 30 14:17:33 2012
 
 
 ======================================================================
@@ -51,7 +51,7 @@ Options  :    -yv2 -q10 Pulser1.v
 ======================================================================
 
 vpp V6.3 IR 41:  Verilog Pre-Processor
-Mon Jul 30 14:12:39 2012
+Mon Jul 30 14:17:33 2012
 
 Flattening file 'C:\Program Files\Cypress\PSoC Creator\2.0\PSoC Creator\warp\..\psoc\content\cyprimitives\CyPrimitives.cylib\ZeroTerminal\ZeroTerminal.v'
 Flattening file 'C:\Program Files\Cypress\PSoC Creator\2.0\PSoC Creator\warp\..\psoc\content\cyprimitives\CyPrimitives.cylib\cy_analog_virtualmux_v1_0\cy_analog_virtualmux_v1_0.v'
@@ -117,7 +117,7 @@ Options  :    -yv2 -w 0 -v3 -ygs -q10 -o2 -.fftcfgtype=LE -ya -.fftprj=C:\Users\
 ======================================================================
 
 tovif V6.3 IR 41:  High-level synthesis
-Mon Jul 30 14:12:41 2012
+Mon Jul 30 14:17:34 2012
 
 Linking 'C:\Program Files\Cypress\PSoC Creator\2.0\PSoC Creator\warp\lib\common\std.vhd'.
 Linking 'C:\Program Files\Cypress\PSoC Creator\2.0\PSoC Creator\warp\lib\common\cypress.vhd'.
@@ -163,7 +163,7 @@ Options  :    -yv2 -w 0 -v3 -ygs -q10 -o2 -.fftcfgtype=LE -ya -.fftprj=C:\Users\
 ======================================================================
 
 topld V6.3 IR 41:  Synthesis and optimization
-Mon Jul 30 14:12:45 2012
+Mon Jul 30 14:17:38 2012
 
 Linking 'C:\Program Files\Cypress\PSoC Creator\2.0\PSoC Creator\warp\lib\common\std.vhd'.
 Linking 'C:\Program Files\Cypress\PSoC Creator\2.0\PSoC Creator\warp\lib\common\cypress.vhd'.
@@ -622,7 +622,7 @@ Aliasing \PWM_PulseLEDs:PWMUDB:MODULE_9:g2:a0:a_4\ to \VDAC_PulseRef:Net_83\
 Aliasing \PWM_PulseLEDs:PWMUDB:MODULE_9:g2:a0:a_3\ to \VDAC_PulseRef:Net_83\
 Aliasing \PWM_PulseLEDs:PWMUDB:MODULE_9:g2:a0:a_2\ to \VDAC_PulseRef:Net_83\
 Aliasing \PWM_PulseLEDs:PWMUDB:MODULE_9:g2:a0:g1:z1:s0:g1:u0:b_0\ to \ADC_PulseIn:soc\
-Aliasing tmpOE__Pin_PulseIndicator_net_0 to \ADC_PulseIn:soc\
+Aliasing tmpOE__Pin_BrightLEDCool_net_0 to \ADC_PulseIn:soc\
 Aliasing \PrISM_PulseIndicator:ctrl_enable\ to \ADC_PulseIn:soc\
 Aliasing \PrISM_PulseIndicator:compare_type0\ to \VDAC_PulseRef:Net_83\
 Aliasing \PrISM_PulseIndicator:compare_type1\ to \VDAC_PulseRef:Net_83\
@@ -635,7 +635,7 @@ Aliasing \ShiftReg_DelaySenseIR:bSR:final_load\ to \VDAC_PulseRef:Net_83\
 Aliasing \ShiftReg_DelaySenseIR:bSR:status_1\ to \VDAC_PulseRef:Net_83\
 Aliasing \ShiftReg_DelaySenseIR:bSR:reset\ to \VDAC_PulseRef:Net_83\
 Aliasing \ShiftReg_DelaySenseIR:bSR:store\ to \VDAC_PulseRef:Net_83\
-Aliasing tmpOE__Pin_PulseIndicator_1_net_0 to \ADC_PulseIn:soc\
+Aliasing tmpOE__Pin_BrightLEDWarm_net_0 to \ADC_PulseIn:soc\
 Aliasing Net_643 to \ADC_PulseIn:soc\
 Aliasing Net_644 to \VDAC_PulseRef:Net_83\
 Aliasing \PrISM_PulseIndicator_1:ctrl_enable\ to \ADC_PulseIn:soc\
@@ -643,7 +643,7 @@ Aliasing \PrISM_PulseIndicator_1:compare_type0\ to \VDAC_PulseRef:Net_83\
 Aliasing \PrISM_PulseIndicator_1:compare_type1\ to \VDAC_PulseRef:Net_83\
 Aliasing \PrISM_PulseIndicator_1:cs_addr_2\ to \VDAC_PulseRef:Net_83\
 Aliasing \PrISM_PulseIndicator_1:cs_addr_0\ to \ADC_PulseIn:soc\
-Aliasing tmpOE__Pin_PulseIndicator_2_net_0 to \ADC_PulseIn:soc\
+Aliasing tmpOE__Pin_BrightLEDRed_net_0 to \ADC_PulseIn:soc\
 Aliasing \USBUART_1:tmpOE__Dm_net_0\ to \ADC_PulseIn:soc\
 Aliasing \USBUART_1:tmpOE__Dp_net_0\ to \ADC_PulseIn:soc\
 Aliasing Net_652 to \ADC_PulseIn:soc\
@@ -1007,7 +1007,7 @@ Removing Lhs of wire \PWM_PulseLEDs:PWMUDB:MODIN7_0\[1403] = \PWM_PulseLEDs:PWMU
 Removing Lhs of wire \PWM_PulseLEDs:PWMUDB:MODULE_9:g2:a0:g1:z1:s0:g1:u0:c_0\[1535] = tmpOE__Led_test1_net_0[101]
 Removing Lhs of wire \PWM_PulseLEDs:PWMUDB:MODULE_9:g2:a0:g1:z1:s0:g1:u0:b_0\[1536] = tmpOE__Led_test1_net_0[101]
 Removing Rhs of wire Net_619[1545] = \ShiftReg_DelaySenseIR:bSR:so_32_0\[1656]
-Removing Lhs of wire tmpOE__Pin_PulseIndicator_net_0[1547] = tmpOE__Led_test1_net_0[101]
+Removing Lhs of wire tmpOE__Pin_BrightLEDCool_net_0[1547] = tmpOE__Led_test1_net_0[101]
 Removing Lhs of wire \PrISM_PulseIndicator:ctrl_enable\[1553] = tmpOE__Led_test1_net_0[101]
 Removing Lhs of wire \PrISM_PulseIndicator:compare_type0\[1554] = zero[4]
 Removing Lhs of wire \PrISM_PulseIndicator:compare_type1\[1555] = zero[4]
@@ -1032,7 +1032,7 @@ Removing Rhs of wire \ShiftReg_DelaySenseIR:bSR:status_6\[1633] = \ShiftReg_Dela
 Removing Rhs of wire \ShiftReg_DelaySenseIR:bSR:status_6\[1633] = \ShiftReg_DelaySenseIR:bSR:f1_bus_stat_32_3\[1641]
 Removing Lhs of wire \ShiftReg_DelaySenseIR:bSR:reset\[1643] = zero[4]
 Removing Lhs of wire \ShiftReg_DelaySenseIR:bSR:store\[1644] = zero[4]
-Removing Lhs of wire tmpOE__Pin_PulseIndicator_1_net_0[1818] = tmpOE__Led_test1_net_0[101]
+Removing Lhs of wire tmpOE__Pin_BrightLEDWarm_net_0[1818] = tmpOE__Led_test1_net_0[101]
 Removing Lhs of wire Net_643[1824] = tmpOE__Led_test1_net_0[101]
 Removing Lhs of wire Net_644[1825] = zero[4]
 Removing Lhs of wire \PrISM_PulseIndicator_1:ctrl_enable\[1826] = tmpOE__Led_test1_net_0[101]
@@ -1041,7 +1041,7 @@ Removing Lhs of wire \PrISM_PulseIndicator_1:compare_type1\[1828] = zero[4]
 Removing Lhs of wire \PrISM_PulseIndicator_1:cs_addr_2\[1835] = zero[4]
 Removing Lhs of wire \PrISM_PulseIndicator_1:cs_addr_1\[1836] = \PrISM_PulseIndicator_1:reset_reg\[1834]
 Removing Lhs of wire \PrISM_PulseIndicator_1:cs_addr_0\[1837] = tmpOE__Led_test1_net_0[101]
-Removing Lhs of wire tmpOE__Pin_PulseIndicator_2_net_0[1877] = tmpOE__Led_test1_net_0[101]
+Removing Lhs of wire tmpOE__Pin_BrightLEDRed_net_0[1877] = tmpOE__Led_test1_net_0[101]
 Removing Lhs of wire \USBUART_1:tmpOE__Dm_net_0\[1916] = tmpOE__Led_test1_net_0[101]
 Removing Lhs of wire \USBUART_1:tmpOE__Dp_net_0\[1922] = tmpOE__Led_test1_net_0[101]
 Removing Lhs of wire Net_652[1928] = tmpOE__Led_test1_net_0[101]
@@ -1584,14 +1584,14 @@ CYPRESS_DIR    : C:\Program Files\Cypress\PSoC Creator\2.0\PSoC Creator\warp
 Warp Program   : C:\Program Files\Cypress\PSoC Creator\2.0\PSoC Creator\warp\bin/warp.exe
 Warp Arguments : -yv2 -w 0 -v3 -ygs -q10 -o2 -.fftcfgtype=LE -ya -.fftprj=C:\Users\Mike\Documents\PulseSensor\Pulser1.cydsn\Pulser1.cyprj -dcpsoc3 Pulser1.v -verilog
 </CYPRESSTAG>
-Warp synthesis phase: Elapsed time ==> 8s.963ms
+Warp synthesis phase: Elapsed time ==> 8s.981ms
 <CYPRESSTAG name="Fitter results...">
 <CYPRESSTAG name="Fitter startup details...">
-cyp3fit: V2.0.0.828, Family: PSoC3, Started at: Monday, 30 July 2012 14:12:48
+cyp3fit: V2.0.0.828, Family: PSoC3, Started at: Monday, 30 July 2012 14:17:42
 Options: -yv2 -w 0 -v3 -ygs -q10 -o2 -.fftcfgtype=LE -ya -.fftprj=C:\Users\Mike\Documents\PulseSensor\Pulser1.cydsn\Pulser1.cyprj -d CY8C5568AXI-060 Pulser1.v -verilog
 </CYPRESSTAG>
 <CYPRESSTAG name="Design parsing">
-Design parsing phase: Elapsed time ==> 0s.090ms
+Design parsing phase: Elapsed time ==> 0s.091ms
 </CYPRESSTAG>
 <CYPRESSTAG name="Tech mapping">
 <CYPRESSTAG name="Initial Mapping" icon="FILE_RPT_TECHM">
@@ -1718,8 +1718,6 @@ Assigning clock CapSense_1_Clock_tmp to clock BUS_CLK because it is a pass-throu
         EnableIn: Constant 1 was determined to be synchronous to ClockIn
         ClockOut: UART_Net_IntClock, EnableOut: Constant 1
 </CYPRESSTAG>
-ADD: pft.M0040: information: The following 2 pin(s) will be assigned a location by the fitter: \USBUART_1:Dm(0)\, \USBUART_1:Dp(0)\
-
 
 Removing unused cells resulting from optimization
     Removed unused cell/equation 'Net_585D:macrocell'
@@ -2056,6 +2054,120 @@ Design Equations
             IO Voltage: 0
         PORT MAP (
             pad => Led_test1(0)_PAD );
+        Properties:
+        {
+        }
+
+    Pin : Name = Pin_BrightLEDCool(0)
+        Attributes:
+            In Group/Port: True
+            In Sync Option: AUTO
+            Out Sync Option: NOSYNC
+            Interrupt generated: False
+            Interrupt mode: NONE
+            Drive mode: CMOS_OUT
+            VTrip: EITHER
+            Slew: FAST
+            Input Sync needed: False
+            Output Sync needed: False
+            SC shield enabled: False
+            POR State: ANY
+            LCD Mode: COMMON
+            Register Mode: RegComb
+            CaSense Mode: NEITHER
+            Treat as pin: True
+            Is OE Registered: False
+            Uses Analog: False
+            Can contain Digital: True
+            Is SIO: False
+            SIO Output Buf: NONREGULATED
+            SIO Input Buf: SINGLE_ENDED
+            SIO HiFreq: LOW
+            SIO Hyst: DISABLED
+            SIO Vtrip: MULTIPLIER_0_5
+            SIO RefSel: VCC_IO
+            Required Capabilitites: DIGITAL
+            Initial Value: 0
+            IO Voltage: 0
+        PORT MAP (
+            input => Net_585 ,
+            pad => Pin_BrightLEDCool(0)_PAD );
+        Properties:
+        {
+        }
+
+    Pin : Name = Pin_BrightLEDRed(0)
+        Attributes:
+            In Group/Port: True
+            In Sync Option: AUTO
+            Out Sync Option: NOSYNC
+            Interrupt generated: False
+            Interrupt mode: NONE
+            Drive mode: CMOS_OUT
+            VTrip: EITHER
+            Slew: FAST
+            Input Sync needed: False
+            Output Sync needed: False
+            SC shield enabled: False
+            POR State: ANY
+            LCD Mode: COMMON
+            Register Mode: RegComb
+            CaSense Mode: NEITHER
+            Treat as pin: True
+            Is OE Registered: False
+            Uses Analog: False
+            Can contain Digital: True
+            Is SIO: False
+            SIO Output Buf: NONREGULATED
+            SIO Input Buf: SINGLE_ENDED
+            SIO HiFreq: LOW
+            SIO Hyst: DISABLED
+            SIO Vtrip: MULTIPLIER_0_5
+            SIO RefSel: VCC_IO
+            Required Capabilitites: DIGITAL
+            Initial Value: 0
+            IO Voltage: 0
+        PORT MAP (
+            input => Net_649 ,
+            pad => Pin_BrightLEDRed(0)_PAD );
+        Properties:
+        {
+        }
+
+    Pin : Name = Pin_BrightLEDWarm(0)
+        Attributes:
+            In Group/Port: True
+            In Sync Option: AUTO
+            Out Sync Option: NOSYNC
+            Interrupt generated: False
+            Interrupt mode: NONE
+            Drive mode: CMOS_OUT
+            VTrip: EITHER
+            Slew: FAST
+            Input Sync needed: False
+            Output Sync needed: False
+            SC shield enabled: False
+            POR State: ANY
+            LCD Mode: COMMON
+            Register Mode: RegComb
+            CaSense Mode: NEITHER
+            Treat as pin: True
+            Is OE Registered: False
+            Uses Analog: False
+            Can contain Digital: True
+            Is SIO: False
+            SIO Output Buf: NONREGULATED
+            SIO Input Buf: SINGLE_ENDED
+            SIO HiFreq: LOW
+            SIO Hyst: DISABLED
+            SIO Vtrip: MULTIPLIER_0_5
+            SIO RefSel: VCC_IO
+            Required Capabilitites: DIGITAL
+            Initial Value: 0
+            IO Voltage: 0
+        PORT MAP (
+            input => Net_640 ,
+            pad => Pin_BrightLEDWarm(0)_PAD );
         Properties:
         {
         }
@@ -2626,120 +2738,6 @@ Design Equations
         PORT MAP (
             analog_term => Net_148 ,
             pad => Pin_PulseIn_plus(0)_PAD );
-        Properties:
-        {
-        }
-
-    Pin : Name = Pin_PulseIndicator(0)
-        Attributes:
-            In Group/Port: True
-            In Sync Option: AUTO
-            Out Sync Option: NOSYNC
-            Interrupt generated: False
-            Interrupt mode: NONE
-            Drive mode: CMOS_OUT
-            VTrip: EITHER
-            Slew: FAST
-            Input Sync needed: False
-            Output Sync needed: False
-            SC shield enabled: False
-            POR State: ANY
-            LCD Mode: COMMON
-            Register Mode: RegComb
-            CaSense Mode: NEITHER
-            Treat as pin: True
-            Is OE Registered: False
-            Uses Analog: False
-            Can contain Digital: True
-            Is SIO: False
-            SIO Output Buf: NONREGULATED
-            SIO Input Buf: SINGLE_ENDED
-            SIO HiFreq: LOW
-            SIO Hyst: DISABLED
-            SIO Vtrip: MULTIPLIER_0_5
-            SIO RefSel: VCC_IO
-            Required Capabilitites: DIGITAL
-            Initial Value: 0
-            IO Voltage: 0
-        PORT MAP (
-            input => Net_585 ,
-            pad => Pin_PulseIndicator(0)_PAD );
-        Properties:
-        {
-        }
-
-    Pin : Name = Pin_PulseIndicator_1(0)
-        Attributes:
-            In Group/Port: True
-            In Sync Option: AUTO
-            Out Sync Option: NOSYNC
-            Interrupt generated: False
-            Interrupt mode: NONE
-            Drive mode: CMOS_OUT
-            VTrip: EITHER
-            Slew: FAST
-            Input Sync needed: False
-            Output Sync needed: False
-            SC shield enabled: False
-            POR State: ANY
-            LCD Mode: COMMON
-            Register Mode: RegComb
-            CaSense Mode: NEITHER
-            Treat as pin: True
-            Is OE Registered: False
-            Uses Analog: False
-            Can contain Digital: True
-            Is SIO: False
-            SIO Output Buf: NONREGULATED
-            SIO Input Buf: SINGLE_ENDED
-            SIO HiFreq: LOW
-            SIO Hyst: DISABLED
-            SIO Vtrip: MULTIPLIER_0_5
-            SIO RefSel: VCC_IO
-            Required Capabilitites: DIGITAL
-            Initial Value: 0
-            IO Voltage: 0
-        PORT MAP (
-            input => Net_640 ,
-            pad => Pin_PulseIndicator_1(0)_PAD );
-        Properties:
-        {
-        }
-
-    Pin : Name = Pin_PulseIndicator_2(0)
-        Attributes:
-            In Group/Port: True
-            In Sync Option: AUTO
-            Out Sync Option: NOSYNC
-            Interrupt generated: False
-            Interrupt mode: NONE
-            Drive mode: CMOS_OUT
-            VTrip: EITHER
-            Slew: FAST
-            Input Sync needed: False
-            Output Sync needed: False
-            SC shield enabled: False
-            POR State: ANY
-            LCD Mode: COMMON
-            Register Mode: RegComb
-            CaSense Mode: NEITHER
-            Treat as pin: True
-            Is OE Registered: False
-            Uses Analog: False
-            Can contain Digital: True
-            Is SIO: False
-            SIO Output Buf: NONREGULATED
-            SIO Input Buf: SINGLE_ENDED
-            SIO HiFreq: LOW
-            SIO Hyst: DISABLED
-            SIO Vtrip: MULTIPLIER_0_5
-            SIO RefSel: VCC_IO
-            Required Capabilitites: DIGITAL
-            Initial Value: 0
-            IO Voltage: 0
-        PORT MAP (
-            input => Net_649 ,
-            pad => Pin_PulseIndicator_2(0)_PAD );
         Properties:
         {
         }
@@ -3381,6 +3379,9 @@ Design Equations
         PORT MAP (
             analog_term => \USBUART_1:Net_597\ ,
             pad => \USBUART_1:Dm(0)_PAD\ );
+        Properties:
+        {
+        }
 
     Pin : Name = \USBUART_1:Dp(0)\
         Attributes:
@@ -3416,6 +3417,9 @@ Design Equations
         PORT MAP (
             analog_term => \USBUART_1:Net_990\ ,
             pad => \USBUART_1:Dp(0)_PAD\ );
+        Properties:
+        {
+        }
     </CYPRESSTAG>
     <CYPRESSTAG name="Macrocell listing" icon="FILE_RPT_EQUATION">
 
@@ -5960,13 +5964,16 @@ Digital domain clock dividers :    7 :    1 :    8 :  87.50%
              LPF Fixed Blocks :    0 :    2 :    2 :   0.00%
              SAR Fixed Blocks :    1 :    1 :    2 :  50.00%
 </CYPRESSTAG>
-Technology Mapping: Elapsed time ==> 0s.196ms
+Technology Mapping: Elapsed time ==> 0s.183ms
 Info: mpr.M0037: Unused pieces of the design have been optimized out. See the Tech mapping section of the report file for details. (App=cydsfit)
-Tech mapping phase: Elapsed time ==> 0s.450ms
+Tech mapping phase: Elapsed time ==> 0s.420ms
 </CYPRESSTAG>
 <CYPRESSTAG name="Analog Placement">
 Initial Analog Placement Results:
 IO_3@[IOP=(6)][IoId=(3)]: Led_test1(0) (fixed)
+IO_2@[IOP=(6)][IoId=(2)]: Pin_BrightLEDCool(0) (fixed)
+IO_0@[IOP=(6)][IoId=(0)]: Pin_BrightLEDRed(0) (fixed)
+IO_1@[IOP=(6)][IoId=(1)]: Pin_BrightLEDWarm(0) (fixed)
 IO_0@[IOP=(5)][IoId=(0)]: Pin_DevId_0(0) (fixed)
 IO_1@[IOP=(5)][IoId=(1)]: Pin_DevId_1(0) (fixed)
 IO_2@[IOP=(5)][IoId=(2)]: Pin_DevId_2(0) (fixed)
@@ -5982,9 +5989,6 @@ IO_7@[IOP=(0)][IoId=(7)]: Pin_PulseIR_Intensity(0) (fixed)
 IO_2@[IOP=(1)][IoId=(2)]: Pin_PulseIR_on(0) (fixed)
 IO_4@[IOP=(3)][IoId=(4)]: Pin_PulseIn_minus(0) (fixed)
 IO_3@[IOP=(3)][IoId=(3)]: Pin_PulseIn_plus(0) (fixed)
-IO_2@[IOP=(6)][IoId=(2)]: Pin_PulseIndicator(0) (fixed)
-IO_1@[IOP=(6)][IoId=(1)]: Pin_PulseIndicator_1(0) (fixed)
-IO_0@[IOP=(6)][IoId=(0)]: Pin_PulseIndicator_2(0) (fixed)
 IO_6@[IOP=(0)][IoId=(6)]: Pin_PulseRed_Intensity(0) (fixed)
 IO_4@[IOP=(1)][IoId=(4)]: Pin_PulseRed_on(0) (fixed)
 IO_1@[IOP=(0)][IoId=(1)]: Pin_PulseRef(0) (fixed)
@@ -6001,6 +6005,8 @@ IO_3@[IOP=(2)][IoId=(3)]: \LCD:LCDPort(3)\ (fixed)
 IO_4@[IOP=(2)][IoId=(4)]: \LCD:LCDPort(4)\ (fixed)
 IO_5@[IOP=(2)][IoId=(5)]: \LCD:LCDPort(5)\ (fixed)
 IO_6@[IOP=(2)][IoId=(6)]: \LCD:LCDPort(6)\ (fixed)
+IO_7@[IOP=(15)][IoId=(7)]: \USBUART_1:Dm(0)\ (fixed)
+IO_6@[IOP=(15)][IoId=(6)]: \USBUART_1:Dp(0)\ (fixed)
 Vref[6]@[FFB(Vref,6)]: \ADC_PulseIn:ADC_Vssa_1:vRef_1\
 DSM[0]@[FFB(DSM,0)]: \ADC_PulseIn:DSM2\
 SAR[0]@[FFB(SAR,0)]: \ADC_SAR_ProxIR:ADC_SAR\
@@ -6013,14 +6019,15 @@ VIDAC[3]@[FFB(VIDAC,3)]: \IDAC8_PulseIR:viDAC8\
 VIDAC[2]@[FFB(VIDAC,2)]: \IDAC8_PulseRed:viDAC8\
 Abuf[0]@[FFB(Abuf,0)]: \Opamp_PulseRef:ABuf\
 SC[0]@[FFB(SC,0)]: \TIA_PulseIn:SC\
-IO_7@[IOP=(15)][IoId=(7)]: \USBUART_1:Dm(0)\
-IO_6@[IOP=(15)][IoId=(6)]: \USBUART_1:Dp(0)\
 USB[0]@[FFB(USB,0)]: \USBUART_1:USB\
 VIDAC[1]@[FFB(VIDAC,1)]: \VDAC_PulseRef:viDAC8\
-Log: apr.M0058: The analog placement iterative improvement is 32% done. (App=cydsfit)
-Log: apr.M0058: The analog placement iterative improvement is 71% done. (App=cydsfit)
+Log: apr.M0058: The analog placement iterative improvement is 37% done. (App=cydsfit)
+Log: apr.M0058: The analog placement iterative improvement is 89% done. (App=cydsfit)
 Analog Placement Results:
 IO_3@[IOP=(6)][IoId=(3)]: Led_test1(0) (fixed)
+IO_2@[IOP=(6)][IoId=(2)]: Pin_BrightLEDCool(0) (fixed)
+IO_0@[IOP=(6)][IoId=(0)]: Pin_BrightLEDRed(0) (fixed)
+IO_1@[IOP=(6)][IoId=(1)]: Pin_BrightLEDWarm(0) (fixed)
 IO_0@[IOP=(5)][IoId=(0)]: Pin_DevId_0(0) (fixed)
 IO_1@[IOP=(5)][IoId=(1)]: Pin_DevId_1(0) (fixed)
 IO_2@[IOP=(5)][IoId=(2)]: Pin_DevId_2(0) (fixed)
@@ -6036,9 +6043,6 @@ IO_7@[IOP=(0)][IoId=(7)]: Pin_PulseIR_Intensity(0) (fixed)
 IO_2@[IOP=(1)][IoId=(2)]: Pin_PulseIR_on(0) (fixed)
 IO_4@[IOP=(3)][IoId=(4)]: Pin_PulseIn_minus(0) (fixed)
 IO_3@[IOP=(3)][IoId=(3)]: Pin_PulseIn_plus(0) (fixed)
-IO_2@[IOP=(6)][IoId=(2)]: Pin_PulseIndicator(0) (fixed)
-IO_1@[IOP=(6)][IoId=(1)]: Pin_PulseIndicator_1(0) (fixed)
-IO_0@[IOP=(6)][IoId=(0)]: Pin_PulseIndicator_2(0) (fixed)
 IO_6@[IOP=(0)][IoId=(6)]: Pin_PulseRed_Intensity(0) (fixed)
 IO_4@[IOP=(1)][IoId=(4)]: Pin_PulseRed_on(0) (fixed)
 IO_1@[IOP=(0)][IoId=(1)]: Pin_PulseRef(0) (fixed)
@@ -6055,6 +6059,8 @@ IO_3@[IOP=(2)][IoId=(3)]: \LCD:LCDPort(3)\ (fixed)
 IO_4@[IOP=(2)][IoId=(4)]: \LCD:LCDPort(4)\ (fixed)
 IO_5@[IOP=(2)][IoId=(5)]: \LCD:LCDPort(5)\ (fixed)
 IO_6@[IOP=(2)][IoId=(6)]: \LCD:LCDPort(6)\ (fixed)
+IO_7@[IOP=(15)][IoId=(7)]: \USBUART_1:Dm(0)\ (fixed)
+IO_6@[IOP=(15)][IoId=(6)]: \USBUART_1:Dp(0)\ (fixed)
 Vref[6]@[FFB(Vref,6)]: \ADC_PulseIn:ADC_Vssa_1:vRef_1\
 DSM[0]@[FFB(DSM,0)]: \ADC_PulseIn:DSM2\
 SAR[0]@[FFB(SAR,0)]: \ADC_SAR_ProxIR:ADC_SAR\
@@ -6067,12 +6073,10 @@ VIDAC[2]@[FFB(VIDAC,2)]: \IDAC8_PulseIR:viDAC8\
 VIDAC[0]@[FFB(VIDAC,0)]: \IDAC8_PulseRed:viDAC8\
 Abuf[0]@[FFB(Abuf,0)]: \Opamp_PulseRef:ABuf\
 SC[1]@[FFB(SC,1)]: \TIA_PulseIn:SC\
-IO_7@[IOP=(15)][IoId=(7)]: \USBUART_1:Dm(0)\
-IO_6@[IOP=(15)][IoId=(6)]: \USBUART_1:Dp(0)\
 USB[0]@[FFB(USB,0)]: \USBUART_1:USB\
 VIDAC[1]@[FFB(VIDAC,1)]: \VDAC_PulseRef:viDAC8\
 
-Analog Placement phase: Elapsed time ==> 4s.356ms
+Analog Placement phase: Elapsed time ==> 3s.826ms
 </CYPRESSTAG>
 <CYPRESSTAG name="Analog Routing">
 Log: apr.M0017: ============ VeraRouter Improve 1 OverUse=3 ============ (App=cydsfit)
@@ -6100,31 +6104,31 @@ Net "AmuxEye::AMux_ProxIR" overuses wire "SAR vplus wire L"
 Log: apr.M0017: ============ VeraRouter Improve 5 OverUse=3 ============ (App=cydsfit)
 ============ VeraRouter Final Answer Routes ============
 Connect Signal: Net_542 => (SAR0 Vp (669)) 
-Route#3434: 
+Route#3019: 
   (SAR0 Vp (669)) 
 Connect Signal: Net_101 => (GPIO P4[0] (252)) 
-Route#3435: 
+Route#3020: 
   (GPIO P4[0] (252)) 
 Connect Signal: Net_535 => (GPIO P4[1] (257)) 
-Route#3436: 
+Route#3021: 
   (GPIO P4[1] (257)) 
 Connect Signal: Net_103 => (GPIO P4[2] (262)) 
-Route#3437: 
+Route#3022: 
   (GPIO P4[2] (262)) 
 Connect Signal: \ADC_PulseIn:Net_520\ => (dsm0- (549)) 
-Route#3440: 
+Route#3025: 
   (dsm0- (549)) 
 Connect Signal: \ADC_PulseIn:Net_690\ => (VRef Block Vssa (1187)) 
-Route#3441: 
+Route#3026: 
   (VRef Block Vssa (1187)) 
 Connect Signal: \CapSense_1:Net_2072\ => (CapSenseBuf0 Out (1255)) 
-Route#3444: 
+Route#3029: 
   (CapSenseBuf0 Out (1255)) 
 Connect Signal: \CapSense_1:Net_1410\ => (GPIO P4[6] (282)) 
-Route#3445: 
+Route#3030: 
   (GPIO P4[6] (282)) 
 Connect Signal: \CapSense_1:Net_2149\ => (CapSenseBuf0 Vchan (1258)) (GPIO P4[7] (287)) 
-Route#3489: 
+Route#3074: 
   (GPIO P4[7] (287)) [GPIO P4[7] Wire [648]] 
     (GPIO P4[7] Sw__1a (290)) [GPIO P4[7] Sw__1b [099]] (GPIO P4[7] Sw__1c (291)##) [AGL[7] [554]] 
     (sc2 Vref Sw__4c (1024)##) [sc2 Vref Sw__4b [413]] (sc2 Vref Sw__4a (1023)) [sc2 Vref Wire [750]] 
@@ -6133,37 +6137,37 @@ Route#3489:
     (CapSenseBuf0 VChan Buf Mux__0c (1264)!!) [CapSenseBuf0 VChan Buf Mux__0b [506]] (CapSenseBuf0 VChan Buf Mux__0a (1263)) [CapSenseBuf0 VChan Buf [796]] 
     (CapSenseBuf0 Vchan (1258)) 
 Connect Signal: \CapSense_1:Net_282\ => (Comparator 3+ (786)) 
-Route#3447: 
+Route#3032: 
   (Comparator 3+ (786)) 
 Connect Signal: \CapSense_1:Net_1425\ => (VIDAC Iout 3 (596)) 
-Route#3448: 
+Route#3033: 
   (VIDAC Iout 3 (596)) 
 Connect Signal: Net_139 => (GPIO P0[7] (121)) (VIDAC Iout 2 (594)) 
-Route#3451: 
+Route#3036: 
   (VIDAC Iout 2 (594)) [i2 Wire [710]] 
     (i2 hi Sw__0a (631)) [i2 hi Sw__0b [236]] (i2 hi Sw__0c (632)##) [GPIO P0[7] Wire Alt [586]] 
     (GPIO P0[7] Wire Alt Sw (122)) [GPIO P0[7] Wire [585]] 
     (GPIO P0[7] (121)) 
 Connect Signal: Net_184 => (GPIO P3[4] (189)) (SC/CT 1vin (945)) 
-Route#3452: 
+Route#3037: 
   (SC/CT 1vin (945)) [sc1 Vin Wire [747]] 
     (sc1 Vin Sw__0a (1053)) [sc1 Vin Sw__0b [428]] (sc1 Vin Sw__0c (1054)##) [AGR[4] [590]] 
     (GPIO P3[4] Sw__1c (194)##) [GPIO P3[4] Sw__1b [064]] (GPIO P3[4] Sw__1a (193)) [GPIO P3[4] Wire [618]] 
     (GPIO P3[4] (189)) 
 Connect Signal: Net_148 => (GPIO P3[3] (154)) (SC/CT 1vref (949)) 
-Route#3492: 
+Route#3077: 
   (SC/CT 1vref (949)) [sc1 Vref Wire [751]] 
     (sc1 Vref Sw__4a (1071)) [sc1 Vref Sw__4b [437]] (sc1 Vref Sw__4c (1072)##) [AGR[7] [601]] 
     (GPIO P3[3] Sw__1c (159)##) [GPIO P3[3] Sw__1b [052]] (GPIO P3[3] Sw__1a (158)) [GPIO P3[3] Wire [602]] 
     (GPIO P3[3] (154)) 
 Connect Signal: Net_140 => (GPIO P0[6] (115)) (VIDAC Iout 0 (593)) 
-Route#3454: 
+Route#3039: 
   (VIDAC Iout 0 (593)) [i0 Wire [709]] 
     (i0 hi Sw__0a (613)) [i0 hi Sw__0b [227]] (i0 hi Sw__0c (614)##) [GPIO P0[6] Wire Alt [584]] 
     (GPIO P0[6] Wire Alt Sw (116)) [GPIO P0[6] Wire [583]] 
     (GPIO P0[6] (115)) 
 Connect Signal: \Opamp_PulseRef:Net_29\ => (GPIO P0[1] (007)) (abuf0- (507)) (abuf0out (508)) 
-Route#3455: 
+Route#3040: 
   (abuf0out (508)) [GPIO P0[1] Wire Alt1 [536]] 
     (GPIO P0[1] Wire Alt1 Sw (008)) [GPIO P0[1] Wire [535]] 
     (GPIO P0[1] Wire Alt2 Sw (009)) [GPIO P0[1] Wire Alt2 [537]] 
@@ -6172,35 +6176,35 @@ Route#3455:
   (GPIO P0[1] Wire Alt1 Sw (008)) [GPIO P0[1] Wire [535]] 
     (GPIO P0[1] (007)) 
 Connect Signal: Net_177 => (dsm0+ (548)) (SC/CT 1out (953)) 
-Route#3493: 
+Route#3078: 
   (SC/CT 1out (953)) [sc1 out Wire [755]] 
     (sc1 out Sw__4a (1095)) [sc1 out Sw__4b [449]] (sc1 out Sw__4c (1096)##) [AGR[1] [672]] 
     (AGL2AGR[1] Sw__0c (483)##) [AGL2AGR[1] Sw__0b [177]] (AGL2AGR[1] Sw__0a (482)) [AGL[1] [652]] 
     (DSM+ Sw__7c (541)##) [DSM+ Sw__7b [200]] (DSM+ Sw__7a (540)) [dsm0+ Wire [695]] 
     (dsm0+ (548)) 
 Connect Signal: \ADC_PulseIn:Net_580\ => (dsm0expin1 (568)) 
-Route#3457: 
+Route#3042: 
   (dsm0expin1 (568)) 
 Connect Signal: \ADC_PulseIn:Net_573\ => (dsm0expin2 (569)) 
-Route#3458: 
+Route#3043: 
   (dsm0expin2 (569)) 
 Connect Signal: \ADC_SAR_ProxIR:Net_126\ => (SAR0 Vn (670)) (SAR0 vrefhi_out (671)) 
-Route#3459: 
+Route#3044: 
   (SAR0 vrefhi_out (671)) [SAR vrefhi_out wire L [715]] 
     (SAR vminus sw L__7c (711)##) [SAR vminus sw L__7b [273]] (SAR vminus sw L__7a (710)) [SAR vminus wire L [714]] 
     (SAR0 Vn (670)) 
 Connect Signal: \ADC_SAR_ProxIR:Net_215\ => (SAR0 extvref (672)) 
-Route#3460: 
+Route#3045: 
   (SAR0 extvref (672)) 
 Connect Signal: \ADC_SAR_ProxIR:Net_248\ => (SAR0 vref (673)) (VRef Block Vdda/2 (1183)) 
-Route#3461: 
+Route#3046: 
   (VRef Block Vdda/2 (1183)) [Vdda/2 [773]] 
     (Vdda v Vdda/2 Mux__1c (1234)!!) [Vdda v Vdda/2 Mux__1b [495]] (Vdda v Vdda/2 Mux__1a (1233)) [vref6 [724]] 
     (vref6 sar0 Sw (725)) [vref6 sar0 [722]] 
     (SAR vref sw L__3c (721)!!) [SAR vref sw L__3b [278]] (SAR vref sw L__3a (720)) [SAR vref wire L [716]] 
     (SAR0 vref (673)) 
 Connect Signal: \CapSense_1:Net_2129\ => (CapSenseBuf0 Vref (1257)) (Comparator 3- (790)) (VRef Block 1.024v (1184)) 
-Route#3462: 
+Route#3047: 
   (VRef Block 1.024v (1184)) [1.024v_vref Wire [553]] 
     (CapSenseBuf0 Vref Buf Mux 1.024v_vref Sw (1278)) [CapSenseBuf0 Vref Buf Mux 1.024v_vref Wire [803]] 
     (CapSenseBuf0 Vref Buf Mux__1c (1274)!!) [CapSenseBuf0 Vref Buf Mux__1b [510]] (CapSenseBuf0 Vref Buf Mux__1a (1273)) [CapSenseBuf0 Vref Buf [795]] 
@@ -6210,16 +6214,16 @@ Route#3462:
     (CMP3 Vref Mux__0c (1252)##) [CMP3 Vref Mux__0b [504]] (CMP3 Vref Mux__0a (1251)) [comp3- Wire [742]] 
     (Comparator 3- (790)) 
 Connect Signal: \CapSense_1:Net_408\ => (VIDAC Vout 3 (592)) 
-Route#3463: 
+Route#3048: 
   (VIDAC Vout 3 (592)) 
 Connect Signal: \IDAC8_PulseIR:Net_124\ => (VIDAC Vout 2 (590)) 
-Route#3464: 
+Route#3049: 
   (VIDAC Vout 2 (590)) 
 Connect Signal: \IDAC8_PulseRed:Net_124\ => (VIDAC Vout 0 (589)) 
-Route#3465: 
+Route#3050: 
   (VIDAC Vout 0 (589)) 
 Connect Signal: Net_158 => (abuf0+ (506)) (VIDAC Vout 1 (591)) 
-Route#3466: 
+Route#3051: 
   (VIDAC Vout 1 (591)) [v1 Wire [707]] 
     (v1 Sw__2a (637)) [v1 Sw__2b [239]] (v1 Sw__2c (638)##) [abusR3 [617]] 
     (abusL2abusR[3]__0c (505)##) [abusL2abusR[3]__0b [188]] (abusL2abusR[3]__0a (504)) [abusL3 [558]] 
@@ -6227,14 +6231,14 @@ Route#3466:
     (GPIO P0[2] Mux__8c (040)!!) [GPIO P0[2] Mux__8b [015]] (GPIO P0[2] Mux__8a (039)) [abuf0+ Wire [543]] 
     (abuf0+ (506)) 
 Connect Signal: \VDAC_PulseRef:Net_77\ => (VIDAC Iout 1 (595)) 
-Route#3467: 
+Route#3052: 
   (VIDAC Iout 1 (595)) 
 Connect Mux: Amux::AMux_ProxIR => { 
   (SAR0 Vp (669)) } -->> {{  { 
   (GPIO P4[0] (252)) } || { 
   (GPIO P4[1] (257)) } || { 
   (GPIO P4[2] (262)) } }}
-Route#3494: 
+Route#3079: 
   (SAR0 Vp (669)) [SAR vplus wire L [713]] 
     (SAR vplus sw L__1a (676)) [SAR vplus sw L__1b [256]] (SAR vplus sw L__1c (677)##) [AGL[5] [538]] 
     (GPIO P4[1] Sw__1c (261)##) 
@@ -6244,7 +6248,7 @@ Route#3494:
   (SAR0 Vp (669)) [SAR vplus wire L [713]] 
     (SAR vplus sw L__0a (674)) [SAR vplus sw L__0b [255]] (SAR vplus sw L__0c (675)##) [AGL[4] [534]] 
     (GPIO P4[0] Sw__1c (256)##) 
-Route#3495: 
+Route#3080: 
   (GPIO P4[1] Sw__1c (261)##) [GPIO P4[1] Sw__1b [087]] (GPIO P4[1] Sw__1a (260)) [GPIO P4[1] Wire [642]] 
     (GPIO P4[1] (257)) 
   (GPIO P4[2] Sw__1c (266)##) [GPIO P4[2] Sw__1b [089]] (GPIO P4[2] Sw__1a (265)) [GPIO P4[2] Wire [643]] 
@@ -6255,10 +6259,10 @@ Connect Mux: Amux::\ADC_PulseIn:AMux\ => {
   (dsm0- (549)) } -->> {{  { 
   (VRef Block Vssa (1187)) } || { 
   (VRef Block Vssa (1187)) } }}
-Route#3442: 
+Route#3027: 
   (dsm0- (549)) [dsm0- Wire [697]] 
     (DSM- Sw__7a (564)) [DSM- Sw__7b [211]] (DSM- Sw__7c (565)##) 
-Route#3443: 
+Route#3028: 
   (DSM- Sw__7c (565)##) [Vssa Wire Alt2 [698]] 
     (Vssa Wire Alt2 Sw (1189)) [Vssa Wire [775]] 
     (VRef Block Vssa (1187)) 
@@ -6274,7 +6278,7 @@ Connect Mux: Amux::\CapSense_1:AMuxCH0\ => {
     (CapSenseBuf0 Vchan (1258)) } || { 
   (Comparator 3+ (786)) } || { 
   (VIDAC Iout 3 (596)) } }}
-Route#3490: 
+Route#3075: 
   (CapSenseBuf0 Out (1255)) [CapSenseBuf0 Out Wire [794]] 
     (CapSenseBuf0 Out Wire Sw (1256)) [amuxbusL [533]] 
     (amuxbusL2amuxbusR__0a (496)) [amuxbusL2amuxbusR__0b [184]] (amuxbusL2amuxbusR__0c (497)##) [amuxbusR [589]] 
@@ -6285,7 +6289,7 @@ Route#3490:
     (i3 Sw__0c (662)##) 
   (CapSenseBuf0 Out Wire Sw (1256)) [amuxbusL [533]] 
     (GPIO P4[7] Sw__0c (289)##) 
-Route#3491: 
+Route#3076: 
   (comp3+ Sw__0c (906)##) [comp3+ Sw__0b [360]] (comp3+ Sw__0a (905)) [comp3+ Wire [738]] 
     (Comparator 3+ (786)) 
   (GPIO P4[6] Sw__0c (284)##) [GPIO P4[6] Sw__0b [096]] (GPIO P4[6] Sw__0a (283)) [GPIO P4[6] Wire [647]] 
@@ -6293,7 +6297,7 @@ Route#3491:
   (i3 Sw__0c (662)##) [i3 Sw__0b [251]] (i3 Sw__0a (661)) [i3 Wire [712]] 
     (VIDAC Iout 3 (596)) 
   (GPIO P4[7] Sw__0c (289)##) [GPIO P4[7] Sw__0b [098]] (GPIO P4[7] Sw__0a (288)) 
-Analog Routing phase: Elapsed time ==> 1s.207ms
+Analog Routing phase: Elapsed time ==> 1s.211ms
 </CYPRESSTAG>
 <CYPRESSTAG name="Digital Placement">
 <CYPRESSTAG name="PLD Packing">
@@ -6317,17 +6321,17 @@ PLD Packing Summary
 <CYPRESSTAG name="Packed PLD Contents">
 Packed PLD Contents not displayed at this verbose level.</CYPRESSTAG>
 </CYPRESSTAG>
-PLD Packing: Elapsed time ==> 0s.026ms
+PLD Packing: Elapsed time ==> 0s.027ms
 </CYPRESSTAG>
 <CYPRESSTAG name="Partitioning">
 <CYPRESSTAG name="Initial Partitioning Summary">
 Initial Partitioning Summary not displayed at this verbose level.</CYPRESSTAG>
 <CYPRESSTAG name="Final Partitioning Summary">
 Final Partitioning Summary not displayed at this verbose level.</CYPRESSTAG>
-Partitioning: Elapsed time ==> 2s.162ms
+Partitioning: Elapsed time ==> 2s.240ms
 </CYPRESSTAG>
 <CYPRESSTAG name="Simulated Annealing">
-Annealing: Elapsed time ==> 0s.586ms
+Annealing: Elapsed time ==> 0s.566ms
 <CYPRESSTAG name="Simulated Annealing Results">
 The seed used for moves was 114161200.
 Inital cost was 1647, final cost is 775 (52.94% improvement).</CYPRESSTAG>
@@ -9976,7 +9980,7 @@ Pin : Name = Pin_DevId_7(0)
 
 Port 6 contains the following IO cells:
 [IoId=0]: 
-Pin : Name = Pin_PulseIndicator_2(0)
+Pin : Name = Pin_BrightLEDRed(0)
     Attributes:
         In Group/Port: True
         In Sync Option: AUTO
@@ -10009,13 +10013,13 @@ Pin : Name = Pin_PulseIndicator_2(0)
         IO Voltage: 0
     PORT MAP (
         input => Net_649 ,
-        pad => Pin_PulseIndicator_2(0)_PAD );
+        pad => Pin_BrightLEDRed(0)_PAD );
     Properties:
     {
     }
 
 [IoId=1]: 
-Pin : Name = Pin_PulseIndicator_1(0)
+Pin : Name = Pin_BrightLEDWarm(0)
     Attributes:
         In Group/Port: True
         In Sync Option: AUTO
@@ -10048,13 +10052,13 @@ Pin : Name = Pin_PulseIndicator_1(0)
         IO Voltage: 0
     PORT MAP (
         input => Net_640 ,
-        pad => Pin_PulseIndicator_1(0)_PAD );
+        pad => Pin_BrightLEDWarm(0)_PAD );
     Properties:
     {
     }
 
 [IoId=2]: 
-Pin : Name = Pin_PulseIndicator(0)
+Pin : Name = Pin_BrightLEDCool(0)
     Attributes:
         In Group/Port: True
         In Sync Option: AUTO
@@ -10087,7 +10091,7 @@ Pin : Name = Pin_PulseIndicator(0)
         IO Voltage: 0
     PORT MAP (
         input => Net_585 ,
-        pad => Pin_PulseIndicator(0)_PAD );
+        pad => Pin_BrightLEDCool(0)_PAD );
     Properties:
     {
     }
@@ -10360,6 +10364,9 @@ Pin : Name = \USBUART_1:Dp(0)\
     PORT MAP (
         analog_term => \USBUART_1:Net_990\ ,
         pad => \USBUART_1:Dp(0)_PAD\ );
+    Properties:
+    {
+    }
 
 [IoId=7]: 
 Pin : Name = \USBUART_1:Dm(0)\
@@ -10396,6 +10403,9 @@ Pin : Name = \USBUART_1:Dm(0)\
     PORT MAP (
         analog_term => \USBUART_1:Net_597\ ,
         pad => \USBUART_1:Dm(0)_PAD\ );
+    Properties:
+    {
+    }
 
 Fixed Function block hod @ [FFB(CAN,0)]: empty
 Fixed Function block hod @ [FFB(Cache,0)]: empty
@@ -10787,17 +10797,17 @@ Port | Pin | Fixed |      Type |       Drive Mode |                      Name | 
      |   6 |     * |      NONE |      RES_PULL_UP |            Pin_DevId_6(0) | FB(Net_683)
      |   7 |     * |      NONE |      RES_PULL_UP |            Pin_DevId_7(0) | FB(Net_684)
 -----+-----+-------+-----------+------------------+---------------------------+--------------------------------
-   6 |   0 |     * |      NONE |         CMOS_OUT |   Pin_PulseIndicator_2(0) | In(Net_649)
-     |   1 |     * |      NONE |         CMOS_OUT |   Pin_PulseIndicator_1(0) | In(Net_640)
-     |   2 |     * |      NONE |         CMOS_OUT |     Pin_PulseIndicator(0) | In(Net_585)
+   6 |   0 |     * |      NONE |         CMOS_OUT |       Pin_BrightLEDRed(0) | In(Net_649)
+     |   1 |     * |      NONE |         CMOS_OUT |      Pin_BrightLEDWarm(0) | In(Net_640)
+     |   2 |     * |      NONE |         CMOS_OUT |      Pin_BrightLEDCool(0) | In(Net_585)
      |   3 |     * |      NONE |         CMOS_OUT |              Led_test1(0) | 
      |   4 |     * |      NONE |     HI_Z_DIGITAL |           Pin_Rx_Debug(0) | FB(Net_45)
      |   5 |     * |      NONE |         CMOS_OUT |           Pin_Tx_Debug(0) | In(Net_40)
      |   6 |     * |      NONE |     HI_Z_DIGITAL |             Pin_Rx_Net(0) | FB(Net_58)
      |   7 |     * |      NONE |         CMOS_OUT |             Pin_Tx_Net(0) | In(Net_53)
 -----+-----+-------+-----------+------------------+---------------------------+--------------------------------
-  15 |   6 |       |   FALLING |      HI_Z_ANALOG |         \USBUART_1:Dp(0)\ | Analog(\USBUART_1:Net_990\)
-     |   7 |       |      NONE |      HI_Z_ANALOG |         \USBUART_1:Dm(0)\ | Analog(\USBUART_1:Net_597\)
+  15 |   6 |     * |   FALLING |      HI_Z_ANALOG |         \USBUART_1:Dp(0)\ | Analog(\USBUART_1:Net_990\)
+     |   7 |     * |      NONE |      HI_Z_ANALOG |         \USBUART_1:Dm(0)\ | Analog(\USBUART_1:Net_597\)
 ---------------------------------------------------------------------------------------------------------------
 </CYPRESSTAG>
 Log: plm.M0040: The pin named Pin_PulseIn_plus(0) at location P3[3] prevents a direct input connection to an Opamp. (App=cydsfit)
@@ -10811,31 +10821,31 @@ Info: plm.M0037:
 </CYPRESSTAG>
 </CYPRESSTAG>
 Digital component placer commit/Report: Elapsed time ==> 0s.015ms
-Digital Placement phase: Elapsed time ==> 2s.887ms
+Digital Placement phase: Elapsed time ==> 2s.947ms
 </CYPRESSTAG>
 <CYPRESSTAG name="Digital Routing">
 Routing successful.
-Digital Routing phase: Elapsed time ==> 5s.784ms
+Digital Routing phase: Elapsed time ==> 5s.778ms
 </CYPRESSTAG>
 <CYPRESSTAG name="Bitstream and API generation">
 Bitstream and API generation phase: Elapsed time ==> 0s.359ms
 </CYPRESSTAG>
 <CYPRESSTAG name="Bitstream verification">
-Bitstream verification phase: Elapsed time ==> 0s.126ms
+Bitstream verification phase: Elapsed time ==> 0s.124ms
 </CYPRESSTAG>
 <CYPRESSTAG name="Static timing analysis">
 Timing report is in Pulser1_timing.html
-Static timing analysis phase: Elapsed time ==> 1s.987ms
+Static timing analysis phase: Elapsed time ==> 1s.955ms
 </CYPRESSTAG>
 <CYPRESSTAG name="Data reporting">
 Data reporting phase: Elapsed time ==> 0s.000ms
 </CYPRESSTAG>
 <CYPRESSTAG name="Database update...">
-Design database save phase: Elapsed time ==> 0s.674ms
+Design database save phase: Elapsed time ==> 0s.654ms
 </CYPRESSTAG>
-cydsfit: Elapsed time ==> 17s.948ms
+cydsfit: Elapsed time ==> 17s.392ms
 </CYPRESSTAG>
-Fitter phase: Elapsed time ==> 18s.030ms
-API generation phase: Elapsed time ==> 4s.207ms
-Dependency generation phase: Elapsed time ==> 0s.012ms
+Fitter phase: Elapsed time ==> 17s.474ms
+API generation phase: Elapsed time ==> 3s.626ms
+Dependency generation phase: Elapsed time ==> 0s.011ms
 Cleanup phase: Elapsed time ==> 0s.002ms

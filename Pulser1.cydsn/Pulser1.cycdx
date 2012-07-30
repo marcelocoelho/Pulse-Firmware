@@ -11,7 +11,7 @@
   </block>
   <block name="ZeroTerminal_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   <block name="OneTerminal_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-  <block name="Pin_PulseIndicator_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Pin_BrightLEDWarm" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   <block name="OneTerminal_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   <block name="isr_PulseReadAmbient" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   <block name="PWM_PulseLEDs" BASE="0x0" SIZE="0x0" desc="" visible="true">
@@ -27,7 +27,7 @@
   <block name="isr_PulseReadIR" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   <block name="ZeroTerminal_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   <block name="PrISM_PulseIndicator" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-  <block name="Pin_PulseIndicator" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Pin_BrightLEDCool" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   <block name="Pin_DevId_4" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   <block name="Pin_DevId_3" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   <block name="Pin_DevId_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
@@ -65,7 +65,7 @@
     <register name="USBUART_1_SIE_EP7_CR0_REG" address="0x4000606E" bitWidth="8" desc="The Endpoint7 Control Register" />
     <register name="USBUART_1_SIE_EP8_CR0_REG" address="0x4000607E" bitWidth="8" desc="The Endpoint8 Control Register" />
   </block>
-  <block name="Pin_PulseIndicator_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Pin_BrightLEDRed" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   <block name="PrISM_PulseIndicator_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   <block name="OneTerminal_3" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   <block name="Status_Reg_DevID" BASE="0x0" SIZE="0x0" desc="" visible="true" />
