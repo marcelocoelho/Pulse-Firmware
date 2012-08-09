@@ -36,6 +36,7 @@ void CapSense_1_SetAllSensorsDriveMode(uint8 mode)
 {
     /* Set pins drive mode */
     CyPins_SetPinDriveMode(CapSense_1_PortCH0__ProximitySensor0_0__PROX, mode);
+    CyPins_SetPinDriveMode(CapSense_1_PortCH0__ProximitySensor1_0__PROX, mode);
 
 }
 

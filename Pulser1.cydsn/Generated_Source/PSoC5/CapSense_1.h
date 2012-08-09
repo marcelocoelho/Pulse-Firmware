@@ -186,17 +186,18 @@ CY_ISR_PROTO(CapSense_1_IsrCH0_ISR);
 *           API Constants
 ***************************************/
 
-#define CapSense_1_TOTAL_SENSOR_COUNT            (1u)
-#define CapSense_1_TOTAL_SCANSLOT_COUNT            (1u)
+#define CapSense_1_TOTAL_SENSOR_COUNT            (2u)
+#define CapSense_1_TOTAL_SCANSLOT_COUNT            (2u)
 #define CapSense_1_TOTAL_RB_NUMBER            (1u)
 #define CapSense_1_TOTAL_RB_NUMBER__CH0            (1u)
 
 /* Define Sensors */
 #define CapSense_1_SENSOR_PROXIMITYSENSOR0_0__PROX    (0u)
+#define CapSense_1_SENSOR_PROXIMITYSENSOR1_0__PROX    (1u)
 /* AMux Cmod, Comparator and Idac Channels definitions */
-#define CapSense_1_AMuxCH0_CMOD_CHANNEL          (1u)
-#define CapSense_1_AMuxCH0_CMP_VP_CHANNEL        (2u)
-#define CapSense_1_AMuxCH0_IDAC_CHANNEL          (3u)
+#define CapSense_1_AMuxCH0_CMOD_CHANNEL          (2u)
+#define CapSense_1_AMuxCH0_CMP_VP_CHANNEL        (3u)
+#define CapSense_1_AMuxCH0_IDAC_CHANNEL          (4u)
 
 
 

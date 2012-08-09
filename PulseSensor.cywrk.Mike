@@ -79,9 +79,6 @@
 <v>PulseSensor\Pulser1\Generated_Source\PSoC5\CapSense_1_IntClock</v>
 <v>PulseSensor\Pulser1\Generated_Source\PSoC5\CapSense_1_IntClock\CapSense_1_IntClock.c</v>
 <v>PulseSensor\Pulser1\Generated_Source\PSoC5\CapSense_1_IntClock\CapSense_1_IntClock.h</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Clock</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Clock\Clock.c</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Clock\Clock.h</v>
 <v>PulseSensor\Pulser1\Generated_Source\PSoC5\Clock_1</v>
 <v>PulseSensor\Pulser1\Generated_Source\PSoC5\Clock_1\Clock_1.c</v>
 <v>PulseSensor\Pulser1\Generated_Source\PSoC5\Clock_1\Clock_1.h</v>
@@ -110,9 +107,6 @@
 <v>PulseSensor\Pulser1\Generated_Source\PSoC5\cy_boot\CySpc.h</v>
 <v>PulseSensor\Pulser1\Generated_Source\PSoC5\cy_boot\cytypes.h</v>
 <v>PulseSensor\Pulser1\Generated_Source\PSoC5\cy_boot\cyutils.c</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\DMA</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\DMA\DMA_dma.c</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\DMA\DMA_dma.h</v>
 <v>PulseSensor\Pulser1\Generated_Source\PSoC5\Filter_PulseInBand</v>
 <v>PulseSensor\Pulser1\Generated_Source\PSoC5\Filter_PulseInBand\Filter_PulseInBand.c</v>
 <v>PulseSensor\Pulser1\Generated_Source\PSoC5\Filter_PulseInBand\Filter_PulseInBand.h</v>
@@ -135,20 +129,22 @@
 <v>PulseSensor\Pulser1\Generated_Source\PSoC5\isr_PulseReadIR</v>
 <v>PulseSensor\Pulser1\Generated_Source\PSoC5\isr_PulseReadIR\isr_PulseReadIR.c</v>
 <v>PulseSensor\Pulser1\Generated_Source\PSoC5\isr_PulseReadIR\isr_PulseReadIR.h</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\LCD</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\LCD\LCD.c</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\LCD\LCD.h</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\LCD\LCD_PM.c</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\LCD_LCDPort</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\LCD_LCDPort\LCD_LCDPort.c</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\LCD_LCDPort\LCD_LCDPort.h</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\LCD_LCDPort\LCD_LCDPort_aliases.h</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Led_test1</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Led_test1\Led_test1_aliases.h</v>
 <v>PulseSensor\Pulser1\Generated_Source\PSoC5\Opamp_PulseRef</v>
 <v>PulseSensor\Pulser1\Generated_Source\PSoC5\Opamp_PulseRef\Opamp_PulseRef.c</v>
 <v>PulseSensor\Pulser1\Generated_Source\PSoC5\Opamp_PulseRef\Opamp_PulseRef.h</v>
 <v>PulseSensor\Pulser1\Generated_Source\PSoC5\Opamp_PulseRef\Opamp_PulseRef_PM.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_BrightLEDCool</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_BrightLEDCool\Pin_BrightLEDCool.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_BrightLEDCool\Pin_BrightLEDCool.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_BrightLEDCool\Pin_BrightLEDCool_aliases.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_BrightLEDRed</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_BrightLEDRed\Pin_BrightLEDRed.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_BrightLEDRed\Pin_BrightLEDRed.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_BrightLEDRed\Pin_BrightLEDRed_aliases.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_BrightLEDWarm</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_BrightLEDWarm\Pin_BrightLEDWarm.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_BrightLEDWarm\Pin_BrightLEDWarm.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_BrightLEDWarm\Pin_BrightLEDWarm_aliases.h</v>
 <v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_DevId_0</v>
 <v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_DevId_0\Pin_DevId_0.c</v>
 <v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_DevId_0\Pin_DevId_0.h</v>
@@ -284,57 +280,68 @@
 <v>PulseSensor\Pulser1\Generated_Source\PSoC5\cyfittergnu.inc</v>
 <v>PulseSensor\Pulser1\Generated_Source\PSoC5\cyfitterrv.inc</v>
 <v>PulseSensor\Pulser1\Generated_Source\PSoC5\project.h</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_BrightLEDCool</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_BrightLEDCool\Pin_BrightLEDCool_aliases.h</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_BrightLEDCool\Pin_BrightLEDCool.c</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_BrightLEDCool\Pin_BrightLEDCool.h</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_BrightLEDWarm</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_BrightLEDWarm\Pin_BrightLEDWarm_aliases.h</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_BrightLEDWarm\Pin_BrightLEDWarm.c</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_BrightLEDWarm\Pin_BrightLEDWarm.h</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_BrightLEDRed</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_BrightLEDRed\Pin_BrightLEDRed_aliases.h</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_BrightLEDRed\Pin_BrightLEDRed.c</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_BrightLEDRed\Pin_BrightLEDRed.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_DebugButton</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_DebugButton\Pin_DebugButton_aliases.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_DebugButton\Pin_DebugButton.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_DebugButton\Pin_DebugButton.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_DebugLED</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_DebugLED\Pin_DebugLED_aliases.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_PylonType1</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_PylonType1\Pin_PylonType1_aliases.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_PylonType1\Pin_PylonType1.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_PylonType1\Pin_PylonType1.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_PylonType0</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_PylonType0\Pin_PylonType0_aliases.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_PylonType0\Pin_PylonType0.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_PylonType0\Pin_PylonType0.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_Rx_Net_Enable</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_Rx_Net_Enable\Pin_Rx_Net_Enable_aliases.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_Rx_Net_Enable\Pin_Rx_Net_Enable.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_Rx_Net_Enable\Pin_Rx_Net_Enable.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_Tx_Net_Enable</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_Tx_Net_Enable\Pin_Tx_Net_Enable_aliases.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_Tx_Net_Enable\Pin_Tx_Net_Enable.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Pin_Tx_Net_Enable\Pin_Tx_Net_Enable.h</v>
 </ExpandedNodeIds>
 <VisibleNodeIds>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ShiftReg_DelaySenseIR</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ShiftReg_DelaySenseIR\ShiftReg_DelaySenseIR.c</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ShiftReg_DelaySenseIR\ShiftReg_DelaySenseIR.h</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ShiftReg_DelaySenseIR\ShiftReg_DelaySenseIR_PM.c</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Status_Reg_DevID</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Status_Reg_DevID\Status_Reg_DevID.c</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\Status_Reg_DevID\Status_Reg_DevID.h</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\TIA_PulseIn</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\TIA_PulseIn\TIA_PulseIn.c</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\TIA_PulseIn\TIA_PulseIn.h</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\TIA_PulseIn\TIA_PulseIn_PM.c</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\UART_Debug</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\UART_Debug\UART_Debug.c</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\UART_Debug\UART_Debug.h</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\UART_Debug\UART_Debug_INT.c</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\UART_Debug\UART_Debug_PM.c</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\UART_Net</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\UART_Net\UART_Net.c</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\UART_Net\UART_Net.h</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\UART_Net\UART_Net_INT.c</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\UART_Net\UART_Net_PM.c</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\USBUART_1</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\USBUART_1\USBUART_1.c</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\USBUART_1\USBUART_1.h</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\USBUART_1\USBUART_1_audio.c</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\USBUART_1\USBUART_1_audio.h</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\USBUART_1\USBUART_1_boot.c</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\USBUART_1\USBUART_1_cdc.c</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\USBUART_1\USBUART_1_cdc.h</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\USBUART_1\USBUART_1_cdc.inf</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\USBUART_1\USBUART_1_cls.c</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\USBUART_1\USBUART_1_descr.c</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\USBUART_1\USBUART_1_drv.c</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\USBUART_1\USBUART_1_episr.c</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\USBUART_1\USBUART_1_hid.c</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\USBUART_1\USBUART_1_hid.h</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\USBUART_1\USBUART_1_midi.c</v>
+<v>PulseSensor\Pulser1\Source Files\pulse_sense.c</v>
+<v>PulseSensor\Pulser1\Generated_Source</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_PulseIn</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_PulseIn\ADC_PulseIn.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_PulseIn\ADC_PulseIn.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_PulseIn\ADC_PulseIn_INT.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_PulseIn\ADC_PulseIn_PM.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_PulseIn_AMux</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_PulseIn_AMux\ADC_PulseIn_AMux.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_PulseIn_AMux\ADC_PulseIn_AMux.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_PulseIn_Ext_CP_Clk</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_PulseIn_Ext_CP_Clk\ADC_PulseIn_Ext_CP_Clk.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_PulseIn_Ext_CP_Clk\ADC_PulseIn_Ext_CP_Clk.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_PulseIn_theACLK</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_PulseIn_theACLK\ADC_PulseIn_theACLK.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_PulseIn_theACLK\ADC_PulseIn_theACLK.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_SAR_ProxIR</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_SAR_ProxIR\ADC_SAR_ProxIR.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_SAR_ProxIR\ADC_SAR_ProxIR.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_SAR_ProxIR\ADC_SAR_ProxIR_INT.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_SAR_ProxIR\ADC_SAR_ProxIR_PM.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_SAR_ProxIR_theACLK</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_SAR_ProxIR_theACLK\ADC_SAR_ProxIR_theACLK.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_SAR_ProxIR_theACLK\ADC_SAR_ProxIR_theACLK.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\AMux_ProxIR</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\AMux_ProxIR\AMux_ProxIR.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\AMux_ProxIR\AMux_ProxIR.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\CapSense_1</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\CapSense_1\CapSense_1.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\CapSense_1\CapSense_1.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\CapSense_1\CapSense_1_CSHL.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\CapSense_1\CapSense_1_CSHL.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\CapSense_1\CapSense_1_INT.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\CapSense_1\CapSense_1_Pins.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\CapSense_1\CapSense_1_Pins.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\CapSense_1\CapSense_1_PM.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\CapSense_1\CapSense_1_SMS_Wrapper.c</v>
 </VisibleNodeIds>
 </CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
 <CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="">
@@ -393,11 +400,11 @@
 <name v=".\Pulser1.cydsn\untitled01.c" />
 <name v=".\Pulser1.cydsn\Generated_Source\PSoC5\isr_PulseReadIR.c" />
 <name v=".\Pulser1.cydsn\Generated_Source\PSoC5\isr_PulseReadIR.h" />
-<name v=".\Pulser1.cydsn\Generated_Source\PSoC5\LCD.h" />
 <name v=".\Pulser1.cydsn\Generated_Source\PSoC5\Filter_PulseInBand.h" />
 <name v=".\Pulser1.cydsn\Generated_Source\PSoC5\Filter_PulseInBand.c" />
-<name v=".\Pulser1.cydsn\Generated_Source\PSoC5\Led_test1_aliases.h" />
 <name v=".\Pulser1.cydsn\Generated_Source\PSoC5\ADC_PulseIn_AMux.c" />
+<name v=".\Pulser1.cydsn\Generated_Source\PSoC5\Pin_PulseIR_on.h" />
+<name v=".\Pulser1.cydsn\Generated_Source\PSoC5\Pin_DebugLED_aliases.h" />
 </OpenDocs>
 <config v="" />
 </CyGuid_843a90a4-0c4b-4e44-991d-05e7fb117a21>

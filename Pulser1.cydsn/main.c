@@ -106,9 +106,9 @@ Pulser g_Pulser;
 void pulse_read_IR_handler()
 {
 	//Led_test1_Write(1);
-	CyPins_SetPin(Led_test1_0);
+	CyPins_SetPin(Pin_DebugLED_0);
 	pulserProcessPulseSample(&g_Pulser);
-	CyPins_ClearPin(Led_test1_0);
+	CyPins_ClearPin(Pin_DebugLED_0);
 	//Led_test1_Write(0);
 }
 
@@ -129,7 +129,7 @@ void main()
 	VDAC_PulseRef_Start();
 	VDAC_PulseRef_SetValue(20);
 	TIA_PulseIn_Start();
-    LCD_Start();            
+//    LCD_Start();            
 	Filter_PulseInBand_Start();
 	PWM_PulseLEDs_Start();
 	PrISM_PulseIndicator_Start();
@@ -142,10 +142,10 @@ void main()
     //Opamp_Start(); 
     
     /* Move the LCD cursor to Row 0, Column 0 */
-    LCD_Position(ROW_0, COLUMN_0); 
+//    LCD_Position(ROW_0, COLUMN_0); 
 
     /* Print Label for the pot voltage raw count */
-    LCD_PrintString("P1 "); 
+//    LCD_PrintString("P1 "); 
     
     //DMA_Chan = DMA_DmaInitialize(DMA_BYTES_PER_BURST, DMA_REQUEST_PER_BURST, 
     //HI16(DMA_SRC_BASE), HI16(DMA_DST_BASE));
@@ -156,7 +156,7 @@ void main()
     //CyDmaChEnable(DMA_Chan, 1);
    
     /* Clock will make burst requests to the DMAC */
-    Clock_Start();
+//    Clock_Start();
     
     ADC_PulseIn_StartConvert(); 
 	
@@ -176,25 +176,25 @@ void main()
 			IDAC8_PulseIR_SetValue( (g_Pulser.brightnessIR256 >> 8) );
 
 			uint16 filtered_down;
-	        LCD_Position(ROW_1, 0); 
+//	        LCD_Position(ROW_1, 0); 
 			if (g_Pulser.curFilteredPulseVal < 0)
 			{
 				filtered_down=(-g_Pulser.curFilteredPulseVal) >> 2;
-		        LCD_PrintString("-       ");
+//		        LCD_PrintString("-       ");
 			}
 			else
 			{
 				filtered_down=g_Pulser.curFilteredPulseVal >> 2;
-		        LCD_PrintString("        ");
+//		        LCD_PrintString("        ");
 			}				
 			g_Pulser.updated=0;
-	        LCD_Position(ROW_1, 1); 
-	        LCD_PrintNumber(filtered_down);
+//	        LCD_Position(ROW_1, 1); 
+//	        LCD_PrintNumber(filtered_down);
 
-	        LCD_Position(ROW_1, 13); 
-	        LCD_PrintString("   ");
-	        LCD_Position(ROW_1, 13); 
-	        LCD_PrintNumber(g_Pulser.scaledPulseVal);
+//	        LCD_Position(ROW_1, 13); 
+///	        LCD_PrintString("   ");
+//	        LCD_Position(ROW_1, 13); 
+//	        LCD_PrintNumber(g_Pulser.scaledPulseVal);
 			
 			PrISM_PulseIndicator_WritePulse0(g_Pulser.scaledPulseVal);
 
@@ -202,26 +202,26 @@ void main()
 			
 			uint16 prox1=ADC_SAR_ProxIR_GetResult16();
 
-			LCD_Position(ROW_0, 3); 
-	        LCD_PrintString("    ");
-	        LCD_Position(ROW_0, 3); 
-	        LCD_PrintNumber(prox1);
+//			LCD_Position(ROW_0, 3); 
+//	        LCD_PrintString("    ");
+//	        LCD_Position(ROW_0, 3); 
+//	        LCD_PrintNumber(prox1);
 			
 	        //LCD_Position(ROW_0, 3); 
 	        //LCD_PrintString("-    ");
 	        //LCD_Position(ROW_0, 4); 
 	        //LCD_PrintNumber((uint16)(-g_Pulser.scaledPulseMin));
 
-	        LCD_Position(ROW_1, 7); 
-	        LCD_PrintString("    ");
-	        LCD_Position(ROW_1, 7); 
-	        LCD_PrintNumber(g_Pulser.scaledPulseMax);
+//	        LCD_Position(ROW_1, 7); 
+//	        LCD_PrintString("    ");
+//	        LCD_Position(ROW_1, 7); 
+//	        LCD_PrintNumber(g_Pulser.scaledPulseMax);
 			
 	            /* Clear last characters */
-	        LCD_Position(ROW_0, COLUMN_11); 
-	        LCD_PrintString("     "); 
-            LCD_Position(ROW_0,COLUMN_11); 
-	        LCD_PrintNumber(voltageRawCount);
+//	        LCD_Position(ROW_0, COLUMN_11); 
+//	        LCD_PrintString("     "); 
+  //          LCD_Position(ROW_0,COLUMN_11); 
+	//        LCD_PrintNumber(voltageRawCount);
 
 		}
     }

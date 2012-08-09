@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <blockRegMap version="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cypress.com/xsd/cyblockregmap cyblockregmap.xsd" xmlns="http://cypress.com/xsd/cyblockregmap">
-  <block name="not_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-  <block name="not_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-  <block name="Clock_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   <block name="ShiftReg_DelaySenseIR" BASE="0x0" SIZE="0x0" desc="" visible="true">
     <block name="OneTerminal_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
     <block name="bSR" BASE="0x0" SIZE="0x0" desc="" visible="true" />
     <block name="VirtualMux_3" BASE="0x0" SIZE="0x0" desc="" visible="true" />
     <block name="ZeroTerminal_3" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   </block>
+  <block name="not_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="not_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Pin_BrightLEDWarm" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="PrISM_PulseIndicator_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   <block name="ZeroTerminal_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   <block name="OneTerminal_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-  <block name="Pin_BrightLEDWarm" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-  <block name="OneTerminal_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Clock_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="isr_PulseReadIR" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   <block name="isr_PulseReadAmbient" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   <block name="PWM_PulseLEDs" BASE="0x0" SIZE="0x0" desc="" visible="true">
     <block name="OneTerminal_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
@@ -23,19 +24,21 @@
     <block name="vmCompare" BASE="0x0" SIZE="0x0" desc="" visible="true" />
     <block name="vmIRQ" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   </block>
-  <block name="Pin_PulseRed_on" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-  <block name="isr_PulseReadIR" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Pin_BrightLEDCool" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="OneTerminal_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   <block name="ZeroTerminal_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   <block name="PrISM_PulseIndicator" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-  <block name="Pin_BrightLEDCool" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-  <block name="Pin_DevId_4" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-  <block name="Pin_DevId_3" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-  <block name="Pin_DevId_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-  <block name="Pin_DevId_5" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-  <block name="ZeroTerminal_4" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-  <block name="Pin_DevId_7" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Pin_BrightLEDRed" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   <block name="Pin_DevId_6" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-  <block name="Pin_DevId_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Pin_DevId_5" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Pin_DevId_4" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Pin_DevId_7" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Pin_Tx_Net_Enable" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Pin_Rx_Net_Enable" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="ZeroTerminal_4" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Pin_DevId_3" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="ZeroTerminal_3" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="OneTerminal_3" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   <block name="USBUART_1" BASE="0x0" SIZE="0x0" desc="USBFS" visible="true">
     <block name="bus_reset" BASE="0x0" SIZE="0x0" desc="" visible="true" />
     <block name="ep_0" BASE="0x0" SIZE="0x0" desc="" visible="true" />
@@ -65,13 +68,11 @@
     <register name="USBUART_1_SIE_EP7_CR0_REG" address="0x4000606E" bitWidth="8" desc="The Endpoint7 Control Register" />
     <register name="USBUART_1_SIE_EP8_CR0_REG" address="0x4000607E" bitWidth="8" desc="The Endpoint8 Control Register" />
   </block>
-  <block name="Pin_BrightLEDRed" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-  <block name="PrISM_PulseIndicator_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-  <block name="OneTerminal_3" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-  <block name="Status_Reg_DevID" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   <block name="PrISM_PulseIndicator_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-  <block name="ZeroTerminal_3" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-  <block name="Pin_PulseIR_on" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Pin_DevId_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Pin_DevId_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Status_Reg_DevID" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Pin_PulseRed_on" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   <block name="Pin_Tx_Debug" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   <block name="Pin_Rx_Debug" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   <block name="UART_Debug" BASE="0x0" SIZE="0x0" desc="" visible="true">
@@ -136,9 +137,7 @@
     <block name="ZeroTerminal_8" BASE="0x0" SIZE="0x0" desc="" visible="true" />
     <block name="ZeroTerminal_4" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   </block>
-  <block name="LCD" BASE="0x0" SIZE="0x0" desc="" visible="true">
-    <block name="LCDPort" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-  </block>
+  <block name="Pin_DebugButton" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   <block name="ADC_PulseIn" BASE="0x0" SIZE="0x0" desc="" visible="true">
     <block name="ZeroTerminal_3" BASE="0x0" SIZE="0x0" desc="" visible="true" />
     <block name="ZeroTerminal_5" BASE="0x0" SIZE="0x0" desc="" visible="true" />
@@ -192,12 +191,10 @@
     <block name="cy_analog_noconnect_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
     <block name="ZeroTerminal_3" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   </block>
-  <block name="Clock" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-  <block name="DMA" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-  <block name="Led_test1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-  <block name="Pin_PulseRed_Intensity" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-  <block name="Pin_PulseIR_Intensity" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-  <block name="Pin_DevId_0" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Pin_PylonType0" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Pin_PylonType1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Pin_DebugLED" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Pin_ProxIR_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   <block name="Opamp_PulseRef" BASE="0x0" SIZE="0x0" desc="" visible="true">
     <block name="ABuf" BASE="0x0" SIZE="0x0" desc="" visible="true" />
     <block name="abuf_negInput_mux" BASE="0x0" SIZE="0x0" desc="" visible="true" />
@@ -209,6 +206,10 @@
     <register name="Opamp_PulseRef_OPAMP__MX" address="0x40005B40" bitWidth="8" desc="OPAMP_MX" />
     <register name="Opamp_PulseRef_OPAMP__SW" address="0x40005B41" bitWidth="8" desc="OPAMP_SW" />
   </block>
+  <block name="Pin_PulseRed_Intensity" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Pin_PulseIR_Intensity" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Pin_PulseIn_plus" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Pin_PulseIR_on" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   <block name="Clock_PWM_PulseLEDs" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   <block name="Filter_PulseInBand" BASE="0x0" SIZE="0x0" desc="" visible="true">
     <block name="ZeroTerminal_4" BASE="0x0" SIZE="0x0" desc="" visible="true" />
@@ -216,20 +217,7 @@
     <block name="ZeroTerminal_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
     <block name="DFB" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   </block>
-  <block name="Pin_PulseIn_plus" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-  <block name="IDAC8_PulseRed" BASE="0x0" SIZE="0x0" desc="" visible="true">
-    <block name="VirtualMux_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-    <block name="VirtualMux_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-    <block name="ZeroTerminal_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-    <block name="ZeroTerminal_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-    <block name="not_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-    <block name="viDAC8" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-    <block name="cy_analog_noconnect_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-    <block name="ZeroTerminal_3" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-  </block>
-  <block name="AMux_ProxIR" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-  <block name="Pin_ProxIR_3" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-  <block name="Pin_ProxIR_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Pin_DevId_0" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   <block name="ADC_SAR_ProxIR" BASE="0x0" SIZE="0x0" desc="SAR ADC" visible="true">
     <block name="Clock_VirtualMux_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
     <block name="ADC_SAR" BASE="0x0" SIZE="0x0" desc="" visible="true" />
@@ -253,8 +241,8 @@
     <register name="ADC_SAR_WRK0_REG" address="0x40005BA0" bitWidth="8" desc="SAR working register 0" />
     <register name="ADC_SAR_WRK1_REG" address="0x40005BA1" bitWidth="8" desc="SAR working register 1" />
   </block>
-  <block name="Pin_PulseRef" BASE="0x0" SIZE="0x0" desc="" visible="true" />
-  <block name="Pin_PulseIn_minus" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="AMux_ProxIR" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Pin_ProxIR_3" BASE="0x0" SIZE="0x0" desc="" visible="true" />
   <block name="TIA_PulseIn" BASE="0x0" SIZE="0x0" desc="" visible="true">
     <block name="SC" BASE="0x0" SIZE="0x0" desc="" visible="true" />
     <block name="ZeroTerminal_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
@@ -272,4 +260,16 @@
     <register name="TIA_PulseIn_SC__BST" address="0x40005A1C" bitWidth="8" desc="SC__BST" />
     <register name="TIA_PulseIn_SC_MISC" address="0x40005B56" bitWidth="8" desc="SC_MISC" />
   </block>
+  <block name="IDAC8_PulseRed" BASE="0x0" SIZE="0x0" desc="" visible="true">
+    <block name="VirtualMux_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="VirtualMux_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="not_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="viDAC8" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="cy_analog_noconnect_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_3" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  </block>
+  <block name="Pin_PulseRef" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+  <block name="Pin_PulseIn_minus" BASE="0x0" SIZE="0x0" desc="" visible="true" />
 </blockRegMap>

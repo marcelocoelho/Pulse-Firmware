@@ -114,14 +114,17 @@ uint8 CapSense_1_SensorEnableMask[(((CapSense_1_TOTAL_SENSOR_COUNT - 1u) / 8u) +
 
 uint8 CYXDATA * const CYCODE CapSense_1_pcTable[] = {
     (uint8 CYXDATA *)CapSense_1_PortCH0__ProximitySensor0_0__PROX__PC, 
+    (uint8 CYXDATA *)CapSense_1_PortCH0__ProximitySensor1_0__PROX__PC, 
 };
 
 const uint8 CYCODE CapSense_1_portTable[] = {
     CapSense_1_PortCH0__ProximitySensor0_0__PROX__PORT, 
+    CapSense_1_PortCH0__ProximitySensor1_0__PROX__PORT, 
 };
 
 const uint8 CYCODE CapSense_1_maskTable[] = {
     CapSense_1_PortCH0__ProximitySensor0_0__PROX__MASK,
+    CapSense_1_PortCH0__ProximitySensor1_0__PROX__MASK,
 };
 
 uint8 CYXDATA * const CYCODE CapSense_1_csTable[] = {
@@ -131,17 +134,19 @@ uint8 CYXDATA * const CYCODE CapSense_1_csTable[] = {
 };
 
 const uint8 CYCODE CapSense_1_idacSettings[] = {
-    200u,
+    200u,200u,
 };
 
 const uint8 CYCODE CapSense_1_widgetResolution[] = {
     CapSense_1_PWM_RESOLUTION_16_BITS,
+    CapSense_1_PWM_RESOLUTION_10_BITS,
 };
 
 uint8 CapSense_1_AnalogSwitchDivider = 11u;
 
 const uint8 CYCODE CapSense_1_widgetNumber[] = {
     0u, /* ProximitySensor0__PROX */
+    1u, /* ProximitySensor1__PROX */
     
 };
 

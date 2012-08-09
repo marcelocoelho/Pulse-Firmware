@@ -100,32 +100,34 @@ uint8 CapSense_1_LowBaselineResetCnt[CapSense_1_TOTAL_SENSOR_COUNT];
 #endif  /* End (CapSense_1_TOTAL_CENTROIDS_COUNT) */
 
 const uint8 CYCODE CapSense_1_fingerThreshold[] = {
-    100u, 
+    100u, 100u, 
 };
 
 const uint8 CYCODE CapSense_1_noiseThreshold[] = {
-    20u, 
+    20u, 20u, 
 };
 
 const uint8 CYCODE CapSense_1_hysteresis[] = {
-    10u, 
+    10u, 10u, 
 };
 
 const uint8 CYCODE CapSense_1_debounce[] = {
-    5u, 
+    5u, 5u, 
 };
 
 uint8 CapSense_1_debounceCounter[] = {
-    0u, 0u, 
+    0u, 0u, 0u, 
 };
 
 const uint8 CYCODE CapSense_1_rawDataIndex[] = {
     0u, /* ProximitySensor0__PROX */
+    1u, /* ProximitySensor1__PROX */
 
 };
 
 const uint8 CYCODE CapSense_1_numberOfSensors[] = {
     1u, /* ProximitySensor0__PROX */
+    1u, /* ProximitySensor1__PROX */
 
 };
 
