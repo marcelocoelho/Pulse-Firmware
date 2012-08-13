@@ -93,6 +93,8 @@
 #include <Pin_Rx_Net_Enable.h>
 #include <Pin_Tx_Net_Enable_aliases.h>
 #include <Pin_Tx_Net_Enable.h>
+#include <Pin_LightsOn_aliases.h>
+#include <Pin_LightsOn.h>
 #include <ADC_PulseIn_Ext_CP_Clk.h>
 #include <ADC_PulseIn_theACLK.h>
 #include <ADC_PulseIn_AMux.h>
