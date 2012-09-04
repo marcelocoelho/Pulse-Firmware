@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: PrISM_PulseIndicator.c
-* Version 2.0
+* Version 2.10
 *
 * Description:
 *  This file provides the source code of the API for the PrISM Component.
@@ -10,7 +10,7 @@
 *  depends on length Polynomial value and user selected Seed Value. 
 *
 ********************************************************************************
-* Copyright 2008-2010, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions, 
 * disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.

@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: USBUART_1.c
-* Version 2.12
+* Version 2.30
 *
 * Description:
 *  API for USBFS Component.
@@ -202,25 +202,25 @@ void USBUART_1_Init(void)
     /* Enable USB block for Standby Power Mode */
     USBUART_1_PM_STBY_CFG_REG |= USBUART_1_PM_STBY_EN_FSUSB;
 
-    #if(CY_PSOC3_ES2 || CY_PSOC5_ES1)
+    #if(CY_PSOC5A)
         /* Disable USBIO for TO3 */
         USBUART_1_PM_AVAIL_CR_REG &= ~USBUART_1_PM_AVAIL_EN_FSUSBIO;
-    #endif /* End CY_PSOC3_ES2 || CY_PSOC5_ES1 */
+    #endif /* End CY_PSOC5A */
 
     /* Enable core clock */
     USBUART_1_USB_CLK_EN_REG = USBUART_1_USB_CLK_ENABLE;
 
     USBUART_1_CR1_REG = USBUART_1_CR1_ENABLE_LOCK;
 
-    #if(CY_PSOC3_ES2 || CY_PSOC5_ES1)
+    #if(CY_PSOC5A)
         /* Enable USBIO for TO3 */
         USBUART_1_PM_AVAIL_CR_REG |= USBUART_1_PM_AVAIL_EN_FSUSBIO;
         /* Bus Reset Length, It has correct default value in ES3 */
         USBUART_1_BUS_RST_CNT_REG = USBUART_1_BUS_RST_COUNT;
-    #endif /* End CY_PSOC3_ES2 || CY_PSOC5_ES1 */
+    #endif /* End CY_PSOC5A */
 
     /* ENABLING USBIO PADS IN USB MODE FROM I/O MODE */
-    #if(CY_PSOC3_ES3 || CY_PSOC5_ES2)
+    #if(!CY_PSOC5A)
         /* Ensure USB transmit enable is low (USB_USBIO_CR0.ten). - Manual Transmission - Disabled */
         USBUART_1_USBIO_CR0_REG &= ~USBUART_1_USBIO_CR0_TEN;
         CyDelayUs(0);  /*~50ns delay */
@@ -245,7 +245,7 @@ void USBUART_1_Init(void)
         /* Set the USBIO pull-up enable */
         USBUART_1_PM_USB_CR0_REG |= USBUART_1_PM_USB_CR0_PD_PULLUP_N;
 
-    #endif /* End CY_PSOC3_ES3 || CY_PSOC5_ES2 */
+    #endif /* End !CY_PSOC5A */
 
     /* Write WAx */
     CY_SET_REG8(&USBUART_1_ARB_RW1_WA_PTR[0u],     0u);
@@ -596,6 +596,10 @@ void USBUART_1_Stop(void)
     USBUART_1_CR0_REG &= ~USBUART_1_CR0_ENABLE;
     /* Disable the d+ pullup */
     USBUART_1_USBIO_CR1_REG &= ~USBUART_1_USBIO_CR1_USBPUEN;
+    #if(CY_PSOC5A)
+        /* Disable USBIO block*/
+        USBUART_1_PM_AVAIL_CR_REG &= ~USBUART_1_PM_AVAIL_EN_FSUSBIO;
+    #endif /* End CY_PSOC5A */    
     /* Disable USB in ACT PM */
     USBUART_1_PM_ACT_CFG_REG &= ~USBUART_1_PM_ACT_EN_FSUSB;
     /* Disable USB block for Standby Power Mode */
@@ -1334,7 +1338,7 @@ void USBUART_1_SetPowerStatus(uint8 powerStatus)
     ********************************************************************************
     *
     * Summary:
-    *  Determines VBUS presense for Self Powered Devices.
+    *  Determines VBUS presence for Self Powered Devices.
     *
     * Parameters:
     *  None.

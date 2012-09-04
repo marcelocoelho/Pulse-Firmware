@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: Pin_PulseIR_Intensity.h  
-* Version 1.60
+* Version 1.70
 *
 * Description:
 *  This file containts Control Register function prototypes and register defines

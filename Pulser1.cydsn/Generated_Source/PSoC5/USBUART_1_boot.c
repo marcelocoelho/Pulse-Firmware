@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: USBUART_1_boot.c
-* Version 2.12
+* Version 2.30
 *
 * Description:
 *  Boot loader API for USBFS Component.

@@ -1,19 +1,18 @@
 /*******************************************************************************
 * File Name: UART_Net.c
-* Version 2.10
+* Version 2.20
 *
 * Description:
 *  This file provides all API functionality of the UART component
 *
 * Note:
 *
-*******************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions,
-* disclaimers, and limitations in the end user license agreement accompanying
+********************************************************************************
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
+* You may use this file only in accordance with the license, terms, conditions, 
+* disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
-********************************************************************************/
-
+*******************************************************************************/
 
 #include "UART_Net.h"
 #include "CyLib.h"
@@ -452,7 +451,8 @@ void  UART_Net_WriteControlRegister(uint8 control)
                         /* When Hardware Flow Control selected - return RX mask */
                         #if( UART_Net_HD_ENABLED )
                             if((UART_Net_CONTROL_REG & UART_Net_CTRL_HD_SEND) == 0)
-                            {   /* In Half duplex mode return RX mask only in RX configuration set, otherwise 
+                            {   /* In Half duplex mode return RX mask only in RX 
+                                *  configuration set, otherwise 
                                 *  mask will be returned in LoadRxConfig() API. 
                                 */
                                 UART_Net_RXSTATUS_MASK_REG  |= UART_Net_RX_STS_FIFO_NOTEMPTY;
@@ -588,7 +588,8 @@ void  UART_Net_WriteControlRegister(uint8 control)
                         /* When Hardware Flow Control selected - return RX mask */
                         #if( UART_Net_HD_ENABLED )
                             if((UART_Net_CONTROL_REG & UART_Net_CTRL_HD_SEND) == 0)
-                            {   /* In Half duplex mode return RX mask only in RX configuration set, otherwise 
+                            {   /* In Half duplex mode return RX mask only if 
+                                *  RX configuration set, otherwise 
                                 *  mask will be returned in LoadRxConfig() API. 
                                 */
                                 UART_Net_RXSTATUS_MASK_REG  |= UART_Net_RX_STS_FIFO_NOTEMPTY;
@@ -1641,6 +1642,10 @@ void  UART_Net_WriteControlRegister(uint8 control)
 
         UART_Net_WriteControlRegister(UART_Net_ReadControlRegister() | UART_Net_CTRL_HD_SEND);
         UART_Net_RXBITCTR_PERIOD_REG = UART_Net_HD_TXBITCTR_INIT;
+        #if(CY_UDB_V0) /* Manually clear status register when mode has been changed */
+            /* Clear status register */
+            CY_GET_REG8(UART_Net_RXSTATUS_PTR);
+        #endif /* CY_UDB_V0 */
     }
 
 
@@ -1670,13 +1675,17 @@ void  UART_Net_WriteControlRegister(uint8 control)
     *******************************************************************************/
     void UART_Net_LoadRxConfig(void) 
     {
-        #if((UART_Net_RX_INTERRUPT_ENABLED) && (UART_Net_RXBUFFERSIZE > UART_Net_FIFO_LENGTH))
-            /* Enable RX interrupt mask before set RX configuration */
-            UART_Net_SetRxInterruptMode(UART_Net_INIT_RX_INTERRUPTS_MASK);    
-        #endif /* UART_Net_RX_INTERRUPT_ENABLED */
-        
         UART_Net_WriteControlRegister(UART_Net_ReadControlRegister() & ~UART_Net_CTRL_HD_SEND);
         UART_Net_RXBITCTR_PERIOD_REG = UART_Net_HD_RXBITCTR_INIT;
+        #if(CY_UDB_V0) /* Manually clear status register when mode has been changed */
+            /* Clear status register */
+            CY_GET_REG8(UART_Net_RXSTATUS_PTR);
+        #endif /* CY_UDB_V0 */
+
+        #if((UART_Net_RX_INTERRUPT_ENABLED) && (UART_Net_RXBUFFERSIZE > UART_Net_FIFO_LENGTH))
+            /* Enable RX interrupt after set RX configuration */
+            UART_Net_SetRxInterruptMode(UART_Net_INIT_RX_INTERRUPTS_MASK);    
+        #endif /* UART_Net_RX_INTERRUPT_ENABLED */
     }
 
 #endif  /* UART_Net_HD_ENABLED */

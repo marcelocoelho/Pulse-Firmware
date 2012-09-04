@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: PWM_PulseLEDs.h  
-* Version 2.10
+* Version 2.20
 *
 * Description:
 *  Contains the prototypes and constants for the functions available to the 
@@ -9,7 +9,7 @@
 * Note:
 *
 ********************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions, 
 * disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
@@ -39,12 +39,12 @@
     #define PWM_PulseLEDs_UseStatus 1u
 #else
     #define PWM_PulseLEDs_UseStatus 0u
-#endif
+#endif /* !defined(PWM_PulseLEDs_PWMUDB_sSTSReg_stsreg__REMOVED) */
 #if !defined(PWM_PulseLEDs_PWMUDB_sCTRLReg_ctrlreg__REMOVED)
     #define PWM_PulseLEDs_UseControl 1u
 #else
     #define PWM_PulseLEDs_UseControl 0u
-#endif
+#endif /* !defined(PWM_PulseLEDs_PWMUDB_sCTRLReg_ctrlreg__REMOVED) */
 #define PWM_PulseLEDs_UseOneCompareMode 0u
 #define PWM_PulseLEDs_MinimumKillTime 1u
 #define PWM_PulseLEDs_EnableMode 0u
@@ -52,21 +52,11 @@
 #define PWM_PulseLEDs_CompareMode1SW 0u
 #define PWM_PulseLEDs_CompareMode2SW 0u
 
-/* PSoC3 ES2 or early */
-#define PWM_PulseLEDs_PSOC3_ES2   ((CYDEV_CHIP_MEMBER_USED == CYDEV_CHIP_MEMBER_3A)   && \
-                                     (CYDEV_CHIP_REVISION_USED <= CYDEV_CHIP_REVISION_3A_ES2))
-
-/* PSoC5 ES1 or early */
-#define PWM_PulseLEDs_PSOC5_ES1   ((CYDEV_CHIP_MEMBER_USED == CYDEV_CHIP_MEMBER_5A)   && \
-                                     (CYDEV_CHIP_REVISION_USED <= CYDEV_CHIP_REVISION_5A_ES1))
-
-/* PSoC3 ES3 or later */
-#define PWM_PulseLEDs_PSOC3_ES3   ((CYDEV_CHIP_MEMBER_USED == CYDEV_CHIP_MEMBER_3A)    && \
-                                     (CYDEV_CHIP_REVISION_USED >= CYDEV_CHIP_REVISION_3A_ES3))
-
-/* PSoC5 ES2 or later */
-#define PWM_PulseLEDs_PSOC5_ES2   ((CYDEV_CHIP_MEMBER_USED == CYDEV_CHIP_MEMBER_5A)   && \
-                                     (CYDEV_CHIP_REVISION_USED > CYDEV_CHIP_REVISION_5A_ES1))
+/* Check to see if required defines such as CY_PSOC5LP are available */
+/* They are defined starting with cy_boot v3.0 */
+#if !defined (CY_PSOC5LP)
+    #error Component PWM_v2_20 requires cy_boot v3.0 or later
+#endif /* (CY_ PSOC5LP) */
 
 /* Use Kill Mode Enumerated Types */
 #define PWM_PulseLEDs__B_PWM__DISABLED 0
@@ -105,6 +95,7 @@
 * Data Struct Definition
 ***************************************/
 
+
 /**************************************************************************
  * Sleep Wakeup Backup structure for PWM Component
  *************************************************************************/
@@ -114,126 +105,137 @@ typedef struct PWM_PulseLEDs_backupStruct
     uint8 PWMEnableState;
        
     #if(!PWM_PulseLEDs_UsingFixedFunction)
-        #if (PWM_PulseLEDs_PSOC3_ES2 || PWM_PulseLEDs_PSOC5_ES1)
+        #if (CY_PSOC5A)
             uint8 PWMUdb;               /* PWM Current Counter value  */
             uint8 PWMPeriod;            /* PWM Current Period value   */
             #if (PWM_PulseLEDs_UseStatus)
                 uint8 InterruptMaskValue;   /* PWM Current Interrupt Mask */
-            #endif
+            #endif /* (PWM_PulseLEDs_UseStatus) */
             #if(PWM_PulseLEDs_UseOneCompareMode)
                 uint8 PWMCompareValue;     /* PWM Current Compare value */
             #else
                 uint8 PWMCompareValue1;     /* PWM Current Compare value1 */
                 uint8 PWMCompareValue2;     /* PWM Current Compare value2 */
-            #endif
+            #endif /* (PWM_PulseLEDs_UseOneCompareMode) */
             
             /* Backup for Deadband parameters */
-            #if(PWM_PulseLEDs_DeadBandMode == PWM_PulseLEDs__B_PWM__DBM_256_CLOCKS || PWM_PulseLEDs_DeadBandMode == PWM_PulseLEDs__B_PWM__DBM_2_4_CLOCKS)
+            #if(PWM_PulseLEDs_DeadBandMode == PWM_PulseLEDs__B_PWM__DBM_256_CLOCKS || \
+                PWM_PulseLEDs_DeadBandMode == PWM_PulseLEDs__B_PWM__DBM_2_4_CLOCKS)
                 uint8 PWMdeadBandValue; /* Dead Band Counter Current Value */
-            #endif
+            #endif /* deadband count is either 2-4 clocks or 256 clocks */
             
             /* Backup Kill Mode Counter*/
             #if(PWM_PulseLEDs_KillModeMinTime)
                 uint8 PWMKillCounterPeriod; /* Kill Mode period value */
-            #endif
+            #endif /* (PWM_PulseLEDs_KillModeMinTime) */
             
-        #endif
+        #endif /* (CY_PSOC5A) */
         
-        #if (PWM_PulseLEDs_PSOC3_ES3 || PWM_PulseLEDs_PSOC5_ES2)
+        #if (CY_PSOC3 || CY_PSOC5LP)
             uint8 PWMUdb;               /* PWM Current Counter value  */
             #if(!PWM_PulseLEDs_PWMModeIsCenterAligned)
                 uint8 PWMPeriod;
-            #endif
+            #endif /* (!PWM_PulseLEDs_PWMModeIsCenterAligned) */
             #if (PWM_PulseLEDs_UseStatus)
                 uint8 InterruptMaskValue;   /* PWM Current Interrupt Mask */
-            #endif
+            #endif /* (PWM_PulseLEDs_UseStatus) */
             
             /* Backup for Deadband parameters */
-            #if(PWM_PulseLEDs_DeadBandMode == PWM_PulseLEDs__B_PWM__DBM_256_CLOCKS || PWM_PulseLEDs_DeadBandMode == PWM_PulseLEDs__B_PWM__DBM_2_4_CLOCKS)
+            #if(PWM_PulseLEDs_DeadBandMode == PWM_PulseLEDs__B_PWM__DBM_256_CLOCKS || \
+                PWM_PulseLEDs_DeadBandMode == PWM_PulseLEDs__B_PWM__DBM_2_4_CLOCKS)
                 uint8 PWMdeadBandValue; /* Dead Band Counter Current Value */
-            #endif
+            #endif /* deadband count is either 2-4 clocks or 256 clocks */
             
             /* Backup Kill Mode Counter*/
             #if(PWM_PulseLEDs_KillModeMinTime)
                 uint8 PWMKillCounterPeriod; /* Kill Mode period value */
-            #endif
-        #endif
+            #endif /* (PWM_PulseLEDs_KillModeMinTime) */
+        #endif /* (CY_PSOC3 || CY_PSOC5LP) */
         
         
         /* Backup control register */
         #if(PWM_PulseLEDs_UseControl)
             uint8 PWMControlRegister; /* PWM Control Register value */
-        #endif
+        #endif /* (PWM_PulseLEDs_UseControl) */
         
-    #endif 
+    #endif /* (!PWM_PulseLEDs_UsingFixedFunction) */
    
 }PWM_PulseLEDs_backupStruct;
+
 
 /***************************************
 *        Function Prototypes
  **************************************/
  
-void    PWM_PulseLEDs_Start(void);
+void    PWM_PulseLEDs_Start(void) ;
 void    PWM_PulseLEDs_Stop(void) ;
 #if (PWM_PulseLEDs_UseStatus || PWM_PulseLEDs_UsingFixedFunction)
     #define PWM_PulseLEDs_SetInterruptMode(interruptMode) CY_SET_REG8(PWM_PulseLEDs_STATUS_MASK_PTR, interruptMode)
     #define PWM_PulseLEDs_ReadStatusRegister() CY_GET_REG8(PWM_PulseLEDs_STATUS_PTR)
-#endif
+#endif /* (PWM_PulseLEDs_UseStatus || PWM_PulseLEDs_UsingFixedFunction) */
 #define PWM_PulseLEDs_GetInterruptSource() PWM_PulseLEDs_ReadStatusRegister()
 #if (PWM_PulseLEDs_UseControl)
     #define PWM_PulseLEDs_ReadControlRegister() CY_GET_REG8(PWM_PulseLEDs_CONTROL_PTR) 
     #define PWM_PulseLEDs_WriteControlRegister(control) CY_SET_REG8(PWM_PulseLEDs_CONTROL_PTR, control)
-#endif
+#endif /* (PWM_PulseLEDs_UseControl) */
 #if (PWM_PulseLEDs_UseOneCompareMode)
    #if (PWM_PulseLEDs_CompareMode1SW)
        void    PWM_PulseLEDs_SetCompareMode(uint8 comparemode) ;
-   #endif
+   #endif /* (PWM_PulseLEDs_CompareMode1SW) */
 #else
     #if (PWM_PulseLEDs_CompareMode1SW)
-        void    PWM_PulseLEDs_SetCompareMode1(uint8 comparemode) ;
-    #endif
+        void    PWM_PulseLEDs_SetCompareMode1(uint8 comparemode) \
+                                                ;
+    #endif /* (PWM_PulseLEDs_CompareMode1SW) */
     #if (PWM_PulseLEDs_CompareMode2SW)
-        void    PWM_PulseLEDs_SetCompareMode2(uint8 comparemode) ;
-    #endif
-#endif
+        void    PWM_PulseLEDs_SetCompareMode2(uint8 comparemode) \
+                                                ;
+    #endif /* (PWM_PulseLEDs_CompareMode2SW) */
+#endif /* (PWM_PulseLEDs_UseOneCompareMode) */
 
 #if (!PWM_PulseLEDs_UsingFixedFunction)
     uint8   PWM_PulseLEDs_ReadCounter(void) ;
     #define PWM_PulseLEDs_ReadCapture() CY_GET_REG8(PWM_PulseLEDs_CAPTURE_LSB_PTR)
     #if (PWM_PulseLEDs_UseStatus)
         void PWM_PulseLEDs_ClearFIFO(void) ;
-    #endif
-#endif
+    #endif /* (PWM_PulseLEDs_UseStatus) */
 
-void    PWM_PulseLEDs_WriteCounter(uint8 counter) ;
-void    PWM_PulseLEDs_WritePeriod(uint8 period) ;
+    void    PWM_PulseLEDs_WriteCounter(uint8 counter) \
+                                       ;
+#endif /* (!PWM_PulseLEDs_UsingFixedFunction) */
+
+void    PWM_PulseLEDs_WritePeriod(uint8 period) \
+                                     ;
 #define PWM_PulseLEDs_ReadPeriod() CY_GET_REG8(PWM_PulseLEDs_PERIOD_LSB_PTR) 
 #if (PWM_PulseLEDs_UseOneCompareMode)
-    void    PWM_PulseLEDs_WriteCompare(uint8 compare) ;
+    void    PWM_PulseLEDs_WriteCompare(uint8 compare) \
+                                          ;
     #define PWM_PulseLEDs_ReadCompare() CY_GET_REG8(PWM_PulseLEDs_COMPARE1_LSB_PTR) 
 #else
-    void    PWM_PulseLEDs_WriteCompare1(uint8 compare) ;
+    void    PWM_PulseLEDs_WriteCompare1(uint8 compare) \
+                                           ;
     #define PWM_PulseLEDs_ReadCompare1() CY_GET_REG8(PWM_PulseLEDs_COMPARE1_LSB_PTR) 
-    void    PWM_PulseLEDs_WriteCompare2(uint8 compare) ;
+    void    PWM_PulseLEDs_WriteCompare2(uint8 compare) \
+                                           ;
     #define PWM_PulseLEDs_ReadCompare2() CY_GET_REG8(PWM_PulseLEDs_COMPARE2_LSB_PTR) 
-#endif
+#endif /* (PWM_PulseLEDs_UseOneCompareMode) */
 
 
 #if (PWM_PulseLEDs_DeadBandUsed)
     void    PWM_PulseLEDs_WriteDeadTime(uint8 deadtime) ;
     uint8   PWM_PulseLEDs_ReadDeadTime(void) ;
-#endif
+#endif /* (PWM_PulseLEDs_DeadBandUsed) */
 
 #if ( PWM_PulseLEDs_KillModeMinTime)
     #define PWM_PulseLEDs_WriteKillTime(killtime) CY_SET_REG8(PWM_PulseLEDs_KILLMODEMINTIME_PTR, killtime) 
     #define PWM_PulseLEDs_ReadKillTime() CY_GET_REG8(PWM_PulseLEDs_KILLMODEMINTIME_PTR) 
-#endif
+#endif /* ( PWM_PulseLEDs_KillModeMinTime) */
 
 void PWM_PulseLEDs_Init(void) ;
 void PWM_PulseLEDs_Enable(void) ;
-void PWM_PulseLEDs_Sleep(void);
+void PWM_PulseLEDs_Sleep(void) ;
 void PWM_PulseLEDs_Wakeup(void) ;
-void PWM_PulseLEDs_SaveConfig(void);
+void PWM_PulseLEDs_SaveConfig(void) ;
 void PWM_PulseLEDs_RestoreConfig(void) ;
 
 
@@ -243,7 +245,10 @@ void PWM_PulseLEDs_RestoreConfig(void) ;
 #define PWM_PulseLEDs_INIT_PERIOD_VALUE        255u
 #define PWM_PulseLEDs_INIT_COMPARE_VALUE1      162u
 #define PWM_PulseLEDs_INIT_COMPARE_VALUE2      67u
-#define PWM_PulseLEDs_INIT_INTERRUPTS_MODE     ((0u << PWM_PulseLEDs_STATUS_TC_INT_EN_MASK_SHIFT) | (0 << PWM_PulseLEDs_STATUS_CMP2_INT_EN_MASK_SHIFT) | (0 << PWM_PulseLEDs_STATUS_CMP1_INT_EN_MASK_SHIFT ) | (0 << PWM_PulseLEDs_STATUS_KILL_INT_EN_MASK_SHIFT ))
+#define PWM_PulseLEDs_INIT_INTERRUPTS_MODE     ((0u << PWM_PulseLEDs_STATUS_TC_INT_EN_MASK_SHIFT) | \
+                                                  (0 << PWM_PulseLEDs_STATUS_CMP2_INT_EN_MASK_SHIFT) | \
+                                                  (0 << PWM_PulseLEDs_STATUS_CMP1_INT_EN_MASK_SHIFT ) | \
+                                                  (0 << PWM_PulseLEDs_STATUS_KILL_INT_EN_MASK_SHIFT ))
 #define PWM_PulseLEDs_DEFAULT_COMPARE2_MODE    (1u << PWM_PulseLEDs_CTRL_CMPMODE2_SHIFT)
 #define PWM_PulseLEDs_DEFAULT_COMPARE1_MODE    (3u << PWM_PulseLEDs_CTRL_CMPMODE1_SHIFT)
 #define PWM_PulseLEDs_INIT_DEAD_TIME           24u
@@ -274,7 +279,7 @@ void PWM_PulseLEDs_RestoreConfig(void) ;
    #else
        #define PWM_PulseLEDs_PERIOD_LSB      (*(reg8 *) PWM_PulseLEDs_PWMUDB_sP8_pwmdp_u0__F0_REG)
        #define PWM_PulseLEDs_PERIOD_LSB_PTR   ((reg8 *) PWM_PulseLEDs_PWMUDB_sP8_pwmdp_u0__F0_REG)
-   #endif
+   #endif /* (PWM_PulseLEDs_PWMModeIsCenterAligned) */
    #define PWM_PulseLEDs_COMPARE1_LSB    (*(reg8 *) PWM_PulseLEDs_PWMUDB_sP8_pwmdp_u0__D0_REG)
    #define PWM_PulseLEDs_COMPARE1_LSB_PTR ((reg8 *) PWM_PulseLEDs_PWMUDB_sP8_pwmdp_u0__D0_REG)
    #define PWM_PulseLEDs_COMPARE2_LSB    (*(reg8 *) PWM_PulseLEDs_PWMUDB_sP8_pwmdp_u0__D1_REG)
@@ -290,35 +295,37 @@ void PWM_PulseLEDs_RestoreConfig(void) ;
    #if (PWM_PulseLEDs_Resolution == 16)
        #define PWM_PulseLEDs_AUX_CONTROLDP1    (*(reg8 *) PWM_PulseLEDs_PWMUDB_sP8_pwmdp_u1__DP_AUX_CTL_REG)
        #define PWM_PulseLEDs_AUX_CONTROLDP1_PTR  ((reg8 *) PWM_PulseLEDs_PWMUDB_sP8_pwmdp_u1__DP_AUX_CTL_REG)
-   #endif
-#endif
+   #endif /* (PWM_PulseLEDs_Resolution == 16) */
+#endif /* (PWM_PulseLEDs_UsingFixedFunction) */
    
 #if(PWM_PulseLEDs_KillModeMinTime )
     #define PWM_PulseLEDs_KILLMODEMINTIME      (*(reg8 *) PWM_PulseLEDs_PWMUDB_sKM_killmodecounterdp_u0__D0_REG)
     #define PWM_PulseLEDs_KILLMODEMINTIME_PTR   ((reg8 *) PWM_PulseLEDs_PWMUDB_sKM_killmodecounterdp_u0__D0_REG)
     /* Fixed Function Block has no Kill Mode parameters because it is Asynchronous only */
-#endif
+#endif /* (PWM_PulseLEDs_KillModeMinTime ) */
 
 #if(PWM_PulseLEDs_DeadBandMode == PWM_PulseLEDs__B_PWM__DBM_256_CLOCKS)
-    #define PWM_PulseLEDs_DEADBAND_COUNT        (*(reg8 *) PWM_PulseLEDs_PWMUDB_sDB255_deadbandcounterdp_u0__D0_REG)
-    #define PWM_PulseLEDs_DEADBAND_COUNT_PTR     ((reg8 *) PWM_PulseLEDs_PWMUDB_sDB255_deadbandcounterdp_u0__D0_REG)
-    #define PWM_PulseLEDs_DEADBAND_LSB_PTR       ((reg8 *) PWM_PulseLEDs_PWMUDB_sDB255_deadbandcounterdp_u0__A0_REG)
-    #define PWM_PulseLEDs_DEADBAND_LSB          (*(reg8 *) PWM_PulseLEDs_PWMUDB_sDB255_deadbandcounterdp_u0__A0_REG)
+    #define PWM_PulseLEDs_DEADBAND_COUNT      (*(reg8 *) PWM_PulseLEDs_PWMUDB_sDB255_deadbandcounterdp_u0__D0_REG)
+    #define PWM_PulseLEDs_DEADBAND_COUNT_PTR  ((reg8 *) PWM_PulseLEDs_PWMUDB_sDB255_deadbandcounterdp_u0__D0_REG)
+    #define PWM_PulseLEDs_DEADBAND_LSB_PTR    ((reg8 *) PWM_PulseLEDs_PWMUDB_sDB255_deadbandcounterdp_u0__A0_REG)
+    #define PWM_PulseLEDs_DEADBAND_LSB        (*(reg8 *) PWM_PulseLEDs_PWMUDB_sDB255_deadbandcounterdp_u0__A0_REG)
 #elif(PWM_PulseLEDs_DeadBandMode == PWM_PulseLEDs__B_PWM__DBM_2_4_CLOCKS)
     /* In Fixed Function Block these bits are in the control blocks control register */
     #if (PWM_PulseLEDs_UsingFixedFunction)
         #define PWM_PulseLEDs_DEADBAND_COUNT        (*(reg8 *) PWM_PulseLEDs_PWMHW__CFG0) 
         #define PWM_PulseLEDs_DEADBAND_COUNT_PTR     ((reg8 *) PWM_PulseLEDs_PWMHW__CFG0)
-        #define PWM_PulseLEDs_DEADBAND_COUNT_MASK    (0x03u << PWM_PulseLEDs_DEADBAND_COUNT_SHIFT) 
-        #define PWM_PulseLEDs_DEADBAND_COUNT_SHIFT   0x06u /* As defined by the Register Map as DEADBAND_PERIOD[1:0] in CFG0 */ 
+        #define PWM_PulseLEDs_DEADBAND_COUNT_MASK    (0x03u << PWM_PulseLEDs_DEADBAND_COUNT_SHIFT)
+        /* As defined by the Register Map as DEADBAND_PERIOD[1:0] in CFG0 */
+        #define PWM_PulseLEDs_DEADBAND_COUNT_SHIFT   0x06u  
     #else
         /* Lower two bits of the added control register define the count 1-3 */
         #define PWM_PulseLEDs_DEADBAND_COUNT        (*(reg8 *) PWM_PulseLEDs_PWMUDB_sDB3_AsyncCtl_dbctrlreg__CONTROL_REG)
         #define PWM_PulseLEDs_DEADBAND_COUNT_PTR     ((reg8 *) PWM_PulseLEDs_PWMUDB_sDB3_AsyncCtl_dbctrlreg__CONTROL_REG)
         #define PWM_PulseLEDs_DEADBAND_COUNT_MASK    (0x03u << PWM_PulseLEDs_DEADBAND_COUNT_SHIFT) 
-        #define PWM_PulseLEDs_DEADBAND_COUNT_SHIFT   0x00u /* As defined by the verilog implementation of the Control Register */
-    #endif
-#endif
+        /* As defined by the verilog implementation of the Control Register */
+        #define PWM_PulseLEDs_DEADBAND_COUNT_SHIFT   0x00u 
+    #endif /* (PWM_PulseLEDs_UsingFixedFunction) */
+#endif /* (PWM_PulseLEDs_DeadBandMode == PWM_PulseLEDs__B_PWM__DBM_256_CLOCKS) */
 
 
 
@@ -330,9 +337,9 @@ void PWM_PulseLEDs_RestoreConfig(void) ;
     #define PWM_PulseLEDs_CONTROL               (*(reg8 *) PWM_PulseLEDs_PWMHW__CFG0)
     #define PWM_PulseLEDs_CONTROL_PTR           ((reg8 *) PWM_PulseLEDs_PWMHW__CFG0)    
     #define PWM_PulseLEDs_CONTROL2              (*(reg8 *) PWM_PulseLEDs_PWMHW__CFG1)    
-    #if(PWM_PulseLEDs_PSOC3_ES3 || PWM_PulseLEDs_PSOC5_ES2)
+    #if(CY_PSOC3 || CY_PSOC5LP)
         #define PWM_PulseLEDs_CONTROL3              (*(reg8 *) PWM_PulseLEDs_PWMHW__CFG2)
-    #endif
+    #endif /* (CY_PSOC3 || CY_PSOC5LP) */
     #define PWM_PulseLEDs_GLOBAL_ENABLE         (*(reg8 *) PWM_PulseLEDs_PWMHW__PM_ACT_CFG)
     #define PWM_PulseLEDs_GLOBAL_ENABLE_PTR       ( (reg8 *) PWM_PulseLEDs_PWMHW__PM_ACT_CFG)
     #define PWM_PulseLEDs_GLOBAL_STBY_ENABLE      (*(reg8 *) PWM_PulseLEDs_PWMHW__PM_STBY_CFG)
@@ -342,38 +349,40 @@ void PWM_PulseLEDs_RestoreConfig(void) ;
     /***********************************
     *          Constants
     ***********************************/
+
     /* Fixed Function Block Chosen */
     #define PWM_PulseLEDs_BLOCK_EN_MASK          PWM_PulseLEDs_PWMHW__PM_ACT_MSK
     #define PWM_PulseLEDs_BLOCK_STBY_EN_MASK     PWM_PulseLEDs_PWMHW__PM_STBY_MSK 
     /* Control Register definitions */
     #define PWM_PulseLEDs_CTRL_ENABLE_SHIFT      0x00u
     
-    #if(PWM_PulseLEDs_PSOC3_ES2 || PWM_PulseLEDs_PSOC5_ES1)
+    #if(CY_PSOC5A)
         #define PWM_PulseLEDs_CTRL_CMPMODE1_SHIFT    0x01u   /* As defined by Register map as MODE_CFG bits in CFG1*/
-    #endif
-    #if(PWM_PulseLEDs_PSOC3_ES3 || PWM_PulseLEDs_PSOC5_ES2)
+    #endif /* (CY_PSOC5A) */
+    #if(CY_PSOC3 || CY_PSOC5LP)
         #define PWM_PulseLEDs_CTRL_CMPMODE1_SHIFT    0x04u  /* As defined by Register map as MODE_CFG bits in CFG2*/
-    #endif
+    #endif /* (CY_PSOC3 || CY_PSOC5LP) */
     
     #define PWM_PulseLEDs_CTRL_DEAD_TIME_SHIFT   0x06u   /* As defined by Register map */
     /* Fixed Function Block Only CFG register bit definitions */
     #define PWM_PulseLEDs_CFG0_MODE              0x02u   /*  Set to compare mode */
-    //#define PWM_PulseLEDs_CFG0_ENABLE            0x01u   /* Enable the block to run */
+    /* #define PWM_PulseLEDs_CFG0_ENABLE            0x01u */  /* Enable the block to run */
     #define PWM_PulseLEDs_CFG0_DB                0x20u   /* As defined by Register map as DB bit in CFG0 */
 
     /* Control Register Bit Masks */
     #define PWM_PulseLEDs_CTRL_ENABLE            (0x01u << PWM_PulseLEDs_CTRL_ENABLE_SHIFT)
     #define PWM_PulseLEDs_CTRL_RESET             (0x01u << PWM_PulseLEDs_CTRL_RESET_SHIFT)
     #define PWM_PulseLEDs_CTRL_CMPMODE2_MASK     (0x07u << PWM_PulseLEDs_CTRL_CMPMODE2_SHIFT)
-    #if(PWM_PulseLEDs_PSOC3_ES2 || PWM_PulseLEDs_PSOC5_ES1)
+    #if(CY_PSOC5A)
         #define PWM_PulseLEDs_CTRL_CMPMODE1_MASK     (0x07u << PWM_PulseLEDs_CTRL_CMPMODE1_SHIFT)
-    #endif
-    #if(PWM_PulseLEDs_PSOC3_ES3 || PWM_PulseLEDs_PSOC5_ES2)
+    #endif /* (CY_PSOC5A) */
+    #if(CY_PSOC3 || CY_PSOC5LP)
         #define PWM_PulseLEDs_CTRL_CMPMODE1_MASK     (0x07u << PWM_PulseLEDs_CTRL_CMPMODE1_SHIFT)
-    #endif
+    #endif /* (CY_PSOC3 || CY_PSOC5LP) */
     
     /* Control2 Register Bit Masks */
-    #define PWM_PulseLEDs_CTRL2_IRQ_SEL_SHIFT    0x00u       /* As defined in Register Map, Part of the TMRX_CFG1 register */
+    /* As defined in Register Map, Part of the TMRX_CFG1 register */
+    #define PWM_PulseLEDs_CTRL2_IRQ_SEL_SHIFT    0x00u       
     #define PWM_PulseLEDs_CTRL2_IRQ_SEL          (0x01u << PWM_PulseLEDs_CTRL2_IRQ_SEL_SHIFT)  
     
     /* Status Register Bit Locations */
@@ -394,13 +403,13 @@ void PWM_PulseLEDs_RestoreConfig(void) ;
     #define PWM_PulseLEDs_STATUS_TC_INT_EN_MASK              (PWM_PulseLEDs_STATUS_TC >> 4)
     #define PWM_PulseLEDs_STATUS_CMP1_INT_EN_MASK            (PWM_PulseLEDs_STATUS_CMP1 >> 4)
     
-    /*RT1 Synch Constants: Applicable for PSoC3 ES2/PSoC3 ES3 PSoC5 ES2*/
-    #define PWM_PulseLEDs_RT1_SHIFT              0x04u
-    #define PWM_PulseLEDs_RT1_MASK               (0x03u << PWM_PulseLEDs_RT1_SHIFT)  /* Sync TC and CMP bit masks */
-    #define PWM_PulseLEDs_SYNC                   (0x03u << PWM_PulseLEDs_RT1_SHIFT)
-    #define PWM_PulseLEDs_SYNCDSI_SHIFT          0x00u
-    #define PWM_PulseLEDs_SYNCDSI_MASK           (0x0Fu << PWM_PulseLEDs_SYNCDSI_SHIFT) /* Sync all DSI inputs */
-    #define PWM_PulseLEDs_SYNCDSI_EN             (0x0Fu << PWM_PulseLEDs_SYNCDSI_SHIFT) /* Sync all DSI inputs */
+    /*RT1 Synch Constants: Applicable for PSoC3 and PSoC5LP*/
+    #define PWM_PulseLEDs_RT1_SHIFT             0x04u
+    #define PWM_PulseLEDs_RT1_MASK              (0x03u << PWM_PulseLEDs_RT1_SHIFT)/* Sync TC and CMP bit masks */
+    #define PWM_PulseLEDs_SYNC                  (0x03u << PWM_PulseLEDs_RT1_SHIFT)
+    #define PWM_PulseLEDs_SYNCDSI_SHIFT         0x00u
+    #define PWM_PulseLEDs_SYNCDSI_MASK          (0x0Fu << PWM_PulseLEDs_SYNCDSI_SHIFT) /* Sync all DSI inputs */
+    #define PWM_PulseLEDs_SYNCDSI_EN            (0x0Fu << PWM_PulseLEDs_SYNCDSI_SHIFT) /* Sync all DSI inputs */
     
 
 #else
@@ -416,6 +425,7 @@ void PWM_PulseLEDs_RestoreConfig(void) ;
     /***********************************
     *          Constants
     ***********************************/
+
     /* Control Register definitions */
     #define PWM_PulseLEDs_CTRL_ENABLE_SHIFT      0x07u
     #define PWM_PulseLEDs_CTRL_RESET_SHIFT       0x06u
@@ -466,3 +476,6 @@ void PWM_PulseLEDs_RestoreConfig(void) ;
 #endif /* PWM_PulseLEDs_UsingFixedFunction */
 
 #endif  /* CY_PWM_PWM_PulseLEDs_H */
+
+
+/* [] END OF FILE */

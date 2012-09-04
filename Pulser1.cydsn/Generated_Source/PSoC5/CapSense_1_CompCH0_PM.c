@@ -1,21 +1,20 @@
 /*******************************************************************************
-* File Name: CapSense_1_CompCH0_PM.c  
-* Version 1.70
+* File Name: CapSense_1_CompCH0.c
+* Version 1.90
 *
-*  Description:
-*     This file provides the power management source code APIs for the
-*     Comparator.  
+* Description:
+*  This file provides the power management source code APIs for the
+*  Comparator.
 *
-*   Note:
-*     None
+* Note:
+*  None
 *
-*******************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
+********************************************************************************
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions, 
 * disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
-********************************************************************************/
-
+*******************************************************************************/
 
 #include "CapSense_1_CompCH0.h"
 
@@ -27,19 +26,16 @@ static CapSense_1_CompCH0_backupStruct CapSense_1_CompCH0_backup;
 ********************************************************************************
 *
 * Summary:
-*     Save the current user configuration
+*  Save the current user configuration
 *
-* Parameters:  
-*  void:  
+* Parameters:
+*  void:
 *
-* Return: 
+* Return:
 *  void
 *
-* Reentrant:
-*  No
-*
 *******************************************************************************/
-void CapSense_1_CompCH0_SaveConfig(void)
+void CapSense_1_CompCH0_SaveConfig(void) 
 {
     /* Empty since all are system reset for retention flops */
 }
@@ -52,17 +48,14 @@ void CapSense_1_CompCH0_SaveConfig(void)
 * Summary:
 *  Restores the current user configuration.
 *
-* Parameters:  
+* Parameters:
 *  void
 *
-* Return: 
+* Return:
 *  void
 *
-* Reentrant:
-*  No
-*
-*******************************************************************************/
-void CapSense_1_CompCH0_RestoreConfig(void)
+********************************************************************************/
+void CapSense_1_CompCH0_RestoreConfig(void) 
 {
     /* Empty since all are system reset for retention flops */    
 }
@@ -73,23 +66,20 @@ void CapSense_1_CompCH0_RestoreConfig(void)
 ********************************************************************************
 *
 * Summary:
-*     Stop and Save the user configuration
+*  Stop and Save the user configuration
 *
-* Parameters:  
-*  void:  
+* Parameters:
+*  void:
 *
-* Return: 
+* Return:
 *  void
 *
 * Global variables:
 *  CapSense_1_CompCH0_backup.enableState:  Is modified depending on the enable 
 *   state of the block before entering sleep mode.
 *
-* Reentrant:
-*  No
-*
 *******************************************************************************/
-void CapSense_1_CompCH0_Sleep(void)
+void CapSense_1_CompCH0_Sleep(void) 
 {
     /* Save Comp's enable state */    
     if(CapSense_1_CompCH0_ACT_PWR_EN == (CapSense_1_CompCH0_PWRMGR & CapSense_1_CompCH0_ACT_PWR_EN))
@@ -115,18 +105,15 @@ void CapSense_1_CompCH0_Sleep(void)
 * Summary:
 *  Restores and enables the user configuration
 *  
-* Parameters:  
+* Parameters:
 *  void
 *
-* Return: 
+* Return:
 *  void
 *
 * Global variables:
 *  CapSense_1_CompCH0_backup.enableState:  Is used to restore the enable state of 
 *  block on wakeup from sleep mode.
-*
-* Reentrant:
-*  Yes
 *
 *******************************************************************************/
 void CapSense_1_CompCH0_Wakeup(void) 
@@ -138,7 +125,7 @@ void CapSense_1_CompCH0_Wakeup(void)
         /* Enable Comp's operation */
         CapSense_1_CompCH0_Enable();
 
-    } /* Do nothing if Comp was disabled before */    
+    } /* Do nothing if Comp was disabled before */
     
 }
 

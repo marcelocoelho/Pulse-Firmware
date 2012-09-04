@@ -1,18 +1,18 @@
 /*******************************************************************************
 * File Name: ADC_SAR_ProxIR_PM.c
-* Version 1.71
+* Version 1.80
 *
 * Description:
 *  This file provides Sleep/WakeUp APIs functionality.
 *
 * Note:
 *
-*******************************************************************************
+********************************************************************************
 * Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions,
 * disclaimers, and limitations in the end user license agreement accompanying
 * the software package with which this file was provided.
-********************************************************************************/
+*******************************************************************************/
 
 #include "ADC_SAR_ProxIR.h"
 

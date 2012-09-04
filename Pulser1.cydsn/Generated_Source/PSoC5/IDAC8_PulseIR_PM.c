@@ -1,20 +1,20 @@
 /*******************************************************************************
-* File Name: IDAC8_PulseIR_PM.c  
-* Version 1.80
+* File Name: IDAC8_PulseIR.c
+* Version 1.90
 *
-*  Description:
-*     This file provides the power management source code to API for the
-*     IDAC8.  
+* Description:
+*  This file provides the power management source code to API for the
+*  IDAC8.
 *
-*   Note:
-*     None
+* Note:
+*  None
 *
-*******************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
+********************************************************************************
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions, 
 * disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
-********************************************************************************/
+*******************************************************************************/
 
 
 #include "IDAC8_PulseIR.h"
@@ -28,16 +28,19 @@ static IDAC8_PulseIR_backupStruct IDAC8_PulseIR_backup;
 * Summary:
 *  Save the current user configuration
 *
-* Parameters:  
-*  void  
+* Parameters:
+*  void
 *
-* Return: 
+* Return:
 *  void
 *
 *******************************************************************************/
-void IDAC8_PulseIR_SaveConfig(void)
+void IDAC8_PulseIR_SaveConfig(void) 
 {
-    IDAC8_PulseIR_backup.data_value = IDAC8_PulseIR_Data;
+    if (!((IDAC8_PulseIR_CR1 & IDAC8_PulseIR_SRC_MASK) == IDAC8_PulseIR_SRC_UDB))
+    {
+        IDAC8_PulseIR_backup.data_value = IDAC8_PulseIR_Data;
+    }
 }
 
 
@@ -48,16 +51,28 @@ void IDAC8_PulseIR_SaveConfig(void)
 * Summary:
 *  Restores the current user configuration.
 *
-* Parameters:  
+* Parameters:
 *  void
 *
-* Return: 
+* Return:
 *  void
 *
 *******************************************************************************/
-void IDAC8_PulseIR_RestoreConfig(void)
+void IDAC8_PulseIR_RestoreConfig(void) 
 {
-    IDAC8_PulseIR_Data = IDAC8_PulseIR_backup.data_value;
+    if (!((IDAC8_PulseIR_CR1 & IDAC8_PulseIR_SRC_MASK) == IDAC8_PulseIR_SRC_UDB))
+    {
+        if((IDAC8_PulseIR_Strobe & IDAC8_PulseIR_STRB_MASK) == IDAC8_PulseIR_STRB_EN)
+        {
+            IDAC8_PulseIR_Strobe &= ~IDAC8_PulseIR_STRB_MASK;
+            IDAC8_PulseIR_Data = IDAC8_PulseIR_backup.data_value;
+            IDAC8_PulseIR_Strobe |= IDAC8_PulseIR_STRB_EN;
+        }
+        else
+        {
+            IDAC8_PulseIR_Data = IDAC8_PulseIR_backup.data_value;
+        }
+    }
 }
 
 
@@ -65,20 +80,20 @@ void IDAC8_PulseIR_RestoreConfig(void)
 * Function Name: IDAC8_PulseIR_Sleep
 ********************************************************************************
 * Summary:
-*     Stop and Save the user configuration
+*  Stop and Save the user configuration
 *
-* Parameters:  
-*  void:  
+* Parameters:
+*  void:
 *
-* Return: 
+* Return:
 *  void
 *
 * Global variables:
-*  IDAC8_PulseIR_backup.enableState:  Is modified depending on the enable 
-*   state of the block before entering sleep mode.
+*  IDAC8_PulseIR_backup.enableState: Is modified depending on the enable 
+*  state of the block before entering sleep mode.
 *
 *******************************************************************************/
-void IDAC8_PulseIR_Sleep(void)
+void IDAC8_PulseIR_Sleep(void) 
 {
     if(IDAC8_PulseIR_ACT_PWR_EN == (IDAC8_PulseIR_PWRMGR & IDAC8_PulseIR_ACT_PWR_EN))
     {
@@ -90,7 +105,7 @@ void IDAC8_PulseIR_Sleep(void)
         /* IDAC8 is disabled */
         IDAC8_PulseIR_backup.enableState = 0u;
     }
-    
+
     IDAC8_PulseIR_Stop();
     IDAC8_PulseIR_SaveConfig();
 }
@@ -103,18 +118,18 @@ void IDAC8_PulseIR_Sleep(void)
 * Summary:
 *  Restores and enables the user configuration
 *  
-* Parameters:  
+* Parameters:
 *  void
 *
-* Return: 
+* Return:
 *  void
 *
 * Global variables:
-*  IDAC8_PulseIR_backup.enableState:  Is used to restore the enable state of 
+*  IDAC8_PulseIR_backup.enableState: Is used to restore the enable state of 
 *  block on wakeup from sleep mode.
 *
 *******************************************************************************/
-void IDAC8_PulseIR_Wakeup(void)
+void IDAC8_PulseIR_Wakeup(void) 
 {
     IDAC8_PulseIR_RestoreConfig();
     
@@ -122,7 +137,7 @@ void IDAC8_PulseIR_Wakeup(void)
     {
         /* Enable IDAC8's operation */
         IDAC8_PulseIR_Enable();
-       
+        
         /* Set the data register */
         IDAC8_PulseIR_SetValue(IDAC8_PulseIR_Data);
     } /* Do nothing if IDAC8 was disabled before */    

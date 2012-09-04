@@ -1,18 +1,18 @@
 /*******************************************************************************
-* File Name: PrISM_PulseIndicator_1.c
-* Version 2.0
+* File Name: PrISM_PulseIndicator_1_PM.c
+* Version 2.10
 *
 * Description:
 *  This file provides Sleep/WakeUp APIs functionality of the PrISM component
 *
 * Note:
 *
-*******************************************************************************
-* Copyright 2008-2010, Cypress Semiconductor Corporation.  All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions,
-* disclaimers, and limitations in the end user license agreement accompanying
+********************************************************************************
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
+* You may use this file only in accordance with the license, terms, conditions, 
+* disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
-********************************************************************************/
+*******************************************************************************/
 
 #include "PrISM_PulseIndicator_1.h"
 
@@ -20,7 +20,7 @@
 /***************************************
 * Forward function references
 ***************************************/
-void PrISM_PulseIndicator_1_Enable(void);
+void PrISM_PulseIndicator_1_Enable(void) ;
 
 
 /***************************************
@@ -43,12 +43,12 @@ static PrISM_PulseIndicator_1_BACKUP_STRUCT  PrISM_PulseIndicator_1_backup =
     PrISM_PulseIndicator_1_SEED,
     /* polynom */
     PrISM_PulseIndicator_1_POLYNOM,
-    #if(PrISM_PulseIndicator_1_PSOC3_ES2 || PrISM_PulseIndicator_1_PSOC5_ES1) /* PSoC3 ES2 or early, PSoC5 ES1*/
+    #if(CY_UDB_V0)
         /* density0 */
         PrISM_PulseIndicator_1_DENSITY0,
         /* density1 */
         PrISM_PulseIndicator_1_DENSITY1,
-    #endif /*End PrISM_PulseIndicator_1_PSOC3_ES2 || PrISM_PulseIndicator_1_PSOC5_ES1*/
+    #endif /*End CY_UDB_V0*/
 };
 
 
@@ -72,11 +72,9 @@ static PrISM_PulseIndicator_1_BACKUP_STRUCT  PrISM_PulseIndicator_1_backup =
 *  No.
 *
 *******************************************************************************/
-void PrISM_PulseIndicator_1_SaveConfig(void)
+void PrISM_PulseIndicator_1_SaveConfig(void) 
 {
-    /* PSoC3 ES2 or early, PSoC5 ES1*/
-    #if (PrISM_PulseIndicator_1_PSOC3_ES2 || PrISM_PulseIndicator_1_PSOC5_ES1)
-
+    #if (CY_UDB_V0)
         #if(!PrISM_PulseIndicator_1_PULSE_TYPE_HARDCODED)
             PrISM_PulseIndicator_1_backup.cr = PrISM_PulseIndicator_1_CONTROL_REG;
         #endif /* End PrISM_PulseIndicator_1_PULSE_TYPE_HARDCODED */
@@ -85,18 +83,14 @@ void PrISM_PulseIndicator_1_SaveConfig(void)
         PrISM_PulseIndicator_1_backup.polynom = PrISM_PulseIndicator_1_ReadPolynomial();
         PrISM_PulseIndicator_1_backup.density0 = PrISM_PulseIndicator_1_ReadPulse0();
         PrISM_PulseIndicator_1_backup.density1 = PrISM_PulseIndicator_1_ReadPulse1();
-    
-    /* PSoC3 ES3 or later, PSoC5 ES2 or later*/
-    #elif (PrISM_PulseIndicator_1_PSOC3_ES3 || PrISM_PulseIndicator_1_PSOC5_ES2)
-
+    #else /* CY_UDB_V1 */
         #if(!PrISM_PulseIndicator_1_PULSE_TYPE_HARDCODED)
             PrISM_PulseIndicator_1_backup.cr = PrISM_PulseIndicator_1_CONTROL_REG;
         #endif /* End PrISM_PulseIndicator_1_PULSE_TYPE_HARDCODED */
         PrISM_PulseIndicator_1_backup.seed = PrISM_PulseIndicator_1_ReadSeed();
         PrISM_PulseIndicator_1_backup.seed_copy = CY_GET_REG8(PrISM_PulseIndicator_1_SEED_COPY_PTR);
         PrISM_PulseIndicator_1_backup.polynom = PrISM_PulseIndicator_1_ReadPolynomial();
-    
-    #endif  /* Unknown chip die is not taken into account */
+    #endif  /* CY_UDB_V0 */
 }
 
 
@@ -119,8 +113,7 @@ void PrISM_PulseIndicator_1_SaveConfig(void)
 *******************************************************************************/
 void PrISM_PulseIndicator_1_RestoreConfig(void) 
 {
-    /* PSoC3 ES2 or early, PSoC5 ES1*/
-    #if (PrISM_PulseIndicator_1_PSOC3_ES2 || PrISM_PulseIndicator_1_PSOC5_ES1)
+    #if (CY_UDB_V0)
     
         uint8 enableInterrupts;
         
@@ -154,8 +147,7 @@ void PrISM_PulseIndicator_1_RestoreConfig(void)
         #endif                                /* End PrISM_PulseIndicator_1_RESOLUTION */
         CyExitCriticalSection(enableInterrupts);
    
-    /* PSoC3 ES3 or later, PSoC5 ES2 or later*/
-    #elif (PrISM_PulseIndicator_1_PSOC3_ES3 || PrISM_PulseIndicator_1_PSOC5_ES2)
+    #else   /* CY_UDB_V1 */
 
         #if(!PrISM_PulseIndicator_1_PULSE_TYPE_HARDCODED)
             PrISM_PulseIndicator_1_CONTROL_REG = PrISM_PulseIndicator_1_backup.cr;
@@ -165,7 +157,7 @@ void PrISM_PulseIndicator_1_RestoreConfig(void)
         CY_SET_REG8(PrISM_PulseIndicator_1_SEED_PTR, PrISM_PulseIndicator_1_backup.seed);
         PrISM_PulseIndicator_1_WritePolynomial(PrISM_PulseIndicator_1_backup.polynom);
     
-    #endif  /* End PrISM_PulseIndicator_1_PSOC3_ES2 || PrISM_PulseIndicator_1_PSOC5_ES1 */
+    #endif  /* End CY_UDB_V0 */
 }
 
 
@@ -189,7 +181,7 @@ void PrISM_PulseIndicator_1_RestoreConfig(void)
 *  No.
 *
 *******************************************************************************/
-void PrISM_PulseIndicator_1_Sleep(void)
+void PrISM_PulseIndicator_1_Sleep(void) 
 {
     #if(!PrISM_PulseIndicator_1_PULSE_TYPE_HARDCODED)
         if((PrISM_PulseIndicator_1_CONTROL_REG & PrISM_PulseIndicator_1_CTRL_ENABLE) != 0u) 

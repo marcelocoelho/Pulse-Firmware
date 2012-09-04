@@ -1,6 +1,6 @@
 /*******************************************************************************
-* File Name: TIA_PulseIn.h  
-* Version 1.80
+* File Name: TIA_PulseIn.h
+* Version 1.91
 *
 * Description:
 *  This file contains the function prototypes and constants used in
@@ -9,17 +9,23 @@
 * Note:
 *
 ********************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions, 
 * disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
-********************************************************************************/
+*******************************************************************************/
 
 #if !defined(CY_TIA_TIA_PulseIn_H) 
 #define CY_TIA_TIA_PulseIn_H 
 
 #include "cytypes.h"
 #include "cyfitter.h"
+
+/* Check to see if required defines such as CY_PSOC5LP are available */
+/* They are defined starting with cy_boot v3.0 */
+#if !defined (CY_PSOC5LP)
+    #error Component TIA_v1_91 requires cy_boot v3.0 or later
+#endif /* (CY_ PSOC5LP) */
 
 
 /***************************************
@@ -36,24 +42,24 @@ typedef struct _TIA_PulseIn_backupStruct
 
 
 /***************************************
-*        Function Prototypes 
+*        Function Prototypes
 ***************************************/
 
-void TIA_PulseIn_Start(void); 
-void TIA_PulseIn_Stop(void) ;
-void TIA_PulseIn_SetPower(uint8 power) ;
+void TIA_PulseIn_Start(void)                  ;
+void TIA_PulseIn_Stop(void)                   ;
+void TIA_PulseIn_SetPower(uint8 power)        ;
 void TIA_PulseIn_SetResFB(uint8 res_feedback) ;
 void TIA_PulseIn_SetCapFB(uint8 cap_feedback) ;
-void TIA_PulseIn_Sleep(void);
-void TIA_PulseIn_Wakeup(void) ;
-void TIA_PulseIn_SaveConfig(void);
-void TIA_PulseIn_RestoreConfig(void);
-void TIA_PulseIn_Init(void) ;
-void TIA_PulseIn_Enable(void) ;
+void TIA_PulseIn_Sleep(void)                  ;
+void TIA_PulseIn_Wakeup(void)                 ;
+void TIA_PulseIn_SaveConfig(void)             ;
+void TIA_PulseIn_RestoreConfig(void)          ;
+void TIA_PulseIn_Init(void)                   ;
+void TIA_PulseIn_Enable(void)                 ;
 
 
 /***************************************
-*           API Constants        
+*           API Constants
 ***************************************/
 
 /* Power constants for SetPower function */
@@ -95,7 +101,7 @@ void TIA_PulseIn_Enable(void) ;
 
 
 /***************************************
-*              Registers        
+*              Registers
 ***************************************/
 
 #define TIA_PulseIn_CR0_REG            (* (reg8 *) TIA_PulseIn_SC__CR0 )
@@ -104,15 +110,20 @@ void TIA_PulseIn_Enable(void) ;
 #define TIA_PulseIn_CR1_PTR            (  (reg8 *) TIA_PulseIn_SC__CR1 )
 #define TIA_PulseIn_CR2_REG            (* (reg8 *) TIA_PulseIn_SC__CR2 )
 #define TIA_PulseIn_CR2_PTR            (  (reg8 *) TIA_PulseIn_SC__CR2 )
-#define TIA_PulseIn_PM_ACT_CFG_REG     (* (reg8 *) TIA_PulseIn_SC__PM_ACT_CFG )   /* Power manager */
+/* Power manager */
+#define TIA_PulseIn_PM_ACT_CFG_REG     (* (reg8 *) TIA_PulseIn_SC__PM_ACT_CFG )
 #define TIA_PulseIn_PM_ACT_CFG_PTR     (  (reg8 *) TIA_PulseIn_SC__PM_ACT_CFG )
-#define TIA_PulseIn_PM_STBY_CFG_REG    (* (reg8 *) TIA_PulseIn_SC__PM_STBY_CFG )   /* Power manager */
+/* Power manager */
+#define TIA_PulseIn_PM_STBY_CFG_REG    (* (reg8 *) TIA_PulseIn_SC__PM_STBY_CFG )
 #define TIA_PulseIn_PM_STBY_CFG_PTR    (  (reg8 *) TIA_PulseIn_SC__PM_STBY_CFG )
-#define TIA_PulseIn_BSTCLK_REG         (* (reg8 *) TIA_PulseIn_SC__BST )          /* SC Boost Clk Control */
+/* SC Boost Clk Control */
+#define TIA_PulseIn_BSTCLK_REG         (* (reg8 *) TIA_PulseIn_SC__BST )
 #define TIA_PulseIn_BSTCLK_PTR         (  (reg8 *) TIA_PulseIn_SC__BST )
-#define TIA_PulseIn_SC_MISC_REG        (* (reg8 *) CYDEV_ANAIF_RT_SC_MISC)     /* Pump Register for SC block */
+/* Pump Register for SC block */
+#define TIA_PulseIn_SC_MISC_REG        (* (reg8 *) CYDEV_ANAIF_RT_SC_MISC)
 #define TIA_PulseIn_SC_MISC_PTR        (  (reg8 *) CYDEV_ANAIF_RT_SC_MISC)
-#define TIA_PulseIn_PUMP_CR1_REG       (* (reg8 *) CYDEV_ANAIF_CFG_PUMP_CR1)   /* Pump clock selectin register */
+/* Pump clock selectin register */
+#define TIA_PulseIn_PUMP_CR1_REG       (* (reg8 *) CYDEV_ANAIF_CFG_PUMP_CR1)
 #define TIA_PulseIn_PUMP_CR1_PTR       (  (reg8 *) CYDEV_ANAIF_CFG_PUMP_CR1)
 
 /* PM_ACT_CFG (Active Power Mode CFG Register) mask */ 
@@ -212,12 +223,12 @@ void TIA_PulseIn_Enable(void) ;
 /* SC Blook Boost Clock Selection Register - Boost Clock Enable  SCxx_BST[3] */
 #define TIA_PulseIn_BST_CLK_EN             (0x01u << 3)
 
-#endif /* CY_TIA_TIA_PulseIn_H */
-
 /* Constant for Minimum VDDA Threshold */
 #define TIA_PulseIn_MINIMUM_VDDA_THRESHOLD_MV   (2700u)
 
-#define  TIA_PulseIn_SC_REG_CLR         (0x00u);
+#define TIA_PulseIn_SC_REG_CLR         (0x00u)
+
+#endif /* CY_TIA_TIA_PulseIn_H */
 
 
 /* [] END OF FILE */

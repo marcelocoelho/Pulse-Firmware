@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: Clock_1.c
-* Version 1.60
+* Version 1.70
 *
 *  Description:
 *   This file provides the source code to the API for the clock component.
@@ -24,10 +24,7 @@
 #define CLK_DIST_DMASK           (* (reg8 *) CYREG_CLKDIST_DMASK)
 #define CLK_DIST_AMASK           (* (reg8 *) CYREG_CLKDIST_AMASK)
 
-#define HAS_CLKDIST_LD_DISABLE   ((CYDEV_CHIP_FAMILY_USED == CYDEV_CHIP_FAMILY_PSOC3 &&\
-                                   CYDEV_CHIP_REVISION_USED >= CYDEV_CHIP_REVISION_3A_ES3) ||\
-                                  (CYDEV_CHIP_FAMILY_USED == CYDEV_CHIP_FAMILY_PSOC5 &&\
-                                   CYDEV_CHIP_REVISION_USED > CYDEV_CHIP_REVISION_5A_ES1))
+#define HAS_CLKDIST_LD_DISABLE   (CY_PSOC3 || CY_PSOC5LP)
 
 
 /*******************************************************************************
@@ -75,10 +72,7 @@ void Clock_1_Stop(void)
 }
 
 
-#if(!(CYDEV_CHIP_FAMILY_USED == CYDEV_CHIP_FAMILY_PSOC3 && \
-    CYDEV_CHIP_REVISION_USED == CYDEV_CHIP_REVISION_3A_ES2) && \
-	!(CYDEV_CHIP_FAMILY_USED == CYDEV_CHIP_FAMILY_PSOC5 && \
-	CYDEV_CHIP_REVISION_USED == CYDEV_CHIP_REVISION_5A_ES1))
+#if(CY_PSOC3 || CY_PSOC5LP)
 /*******************************************************************************
 * Function Name: Clock_1_StopBlock
 ********************************************************************************
@@ -464,10 +458,8 @@ uint8 Clock_1_GetSourceRegister(void)
 * Parameters:
 *  clkPhase: Amount to delay the phase of the clock, in 1.0ns increments.
 *   clkPhase must be from 1 to 11 inclusive. Other values, including 0,
-*   disable the clock. Note that in PSoC 3 ES2 and earlier, there is a fixed
-*   1.5ns offset such that clkPhase = 1 produces a 2.5ns delay and clkPhase =
-*   11 produces a 12.5ns delay. For PSoC 3 ES3 and later, clkPhase = 1
-*   produces a 0ns delay and clkPhase = 11 produces a 10ns delay.
+*   disable the clock. clkPhase = 1 produces a 0ns delay and clkPhase = 11 
+*   produces a 10ns delay.
 *
 * Returns:
 *  void

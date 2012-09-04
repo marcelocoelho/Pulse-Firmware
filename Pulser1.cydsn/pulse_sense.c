@@ -25,6 +25,9 @@ void pulserInit(Pulser *pPulse)
 	pPulse->brightnessIR256=PulserMinIR256;
 }
 
+
+int going_down=0;
+
 void pulserProcessPulseSample(Pulser *pPulse)
 {
 	uint32 rawPulse=ADC_PulseIn_GetResult32();
@@ -36,6 +39,8 @@ void pulserProcessPulseSample(Pulser *pPulse)
 		{
 			pPulse->brightnessIR256 +=142;
 		}
+		else
+			going_down=1;
 	}
 	if (pPulse->curRawPulseVal > PulserIRTargetHigh)
 	{ // too dim, crank it up
@@ -43,6 +48,8 @@ void pulserProcessPulseSample(Pulser *pPulse)
 		{
 			pPulse->brightnessIR256 -=142;
 		}
+		else
+			going_down=0;
 	}
 	
 	pPulse->curFilteredPulseVal=Filter_PulseInBand_Read24(PulserChan0);
@@ -51,7 +58,7 @@ void pulserProcessPulseSample(Pulser *pPulse)
 
 	int32 curFP=pPulse->curFilteredPulseVal; // current filtered pulse;
 
-	pPulse->scaledPulseVal=(255*(curFP-pPulse->scaledPulseMax))/(pPulse->scaledPulseMax-pPulse->scaledPulseMin);
+	pPulse->scaledPulseVal=(255*(curFP-pPulse->scaledPulseMin))/(pPulse->scaledPulseMax-pPulse->scaledPulseMin);
 	if (pPulse->scaledPulseVal < 0)
 	{
 		pPulse->scaledPulseVal=0;

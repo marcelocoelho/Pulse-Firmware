@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: USBUART_1_hid.h
-* Version 2.12
+* Version 2.30
 *
 * Description:
 *  Header File for the USFS component. Contains prototypes and constant values.

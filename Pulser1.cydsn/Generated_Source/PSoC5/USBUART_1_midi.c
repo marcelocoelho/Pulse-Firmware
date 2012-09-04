@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: USBUART_1_midi.c
-* Version 2.12
+* Version 2.30
 *
 * Description:
 *  MIDI Streaming request handler.
@@ -943,7 +943,7 @@ void USBUART_1_PrepareInBuffer(uint8 ic, uint8 *srcBuff, uint8 eventLen, uint8 c
         uint8 rxData;
         #if (MIDI1_UART_RXBUFFERSIZE >= 256u)
             uint16 loc_rxBufferRead;
-            #if CY_PSOC3 /* This local variable required only for PSOC3 and large buffer */
+            #if CY_PSOC3 /* This local variable is required only for PSOC3 and large buffer */
                 uint16 loc_rxBufferWrite;
             #endif /* end CY_PSOC3 */    
         #else    
@@ -991,7 +991,7 @@ void USBUART_1_PrepareInBuffer(uint8 ic, uint8 *srcBuff, uint8 eventLen, uint8 c
                         
                     msgRtn = USBUART_1_ProcessMidiIn(rxData, 
                                                     (USBUART_1_MIDI_RX_STATUS *)&USBUART_1_MIDI1_Event);
-        		}
+                }
             
             /* Finally, update the real output pointer, then return with
             *  an indication as to whether there's a complete message in the buffer. 
@@ -999,7 +999,7 @@ void USBUART_1_PrepareInBuffer(uint8 ic, uint8 *srcBuff, uint8 eventLen, uint8 c
             #if ((MIDI1_UART_RXBUFFERSIZE >= 256u) && (CY_PSOC3))
                 CyIntDisable(MIDI1_UART_RX_VECT_NUM);
             #endif /* End MIDI1_UART_RXBUFFERSIZE >= 256 */    
-        	MIDI1_UART_rxBufferRead = loc_rxBufferRead;
+            MIDI1_UART_rxBufferRead = loc_rxBufferRead;
             #if ((MIDI1_UART_RXBUFFERSIZE >= 256u) && (CY_PSOC3))
                 CyIntEnable(MIDI1_UART_RX_VECT_NUM);
             #endif /* End MIDI1_UART_RXBUFFERSIZE >= 256 */   
@@ -1195,7 +1195,7 @@ void USBUART_1_PrepareInBuffer(uint8 ic, uint8 *srcBuff, uint8 eventLen, uint8 c
                         
                     msgRtn = USBUART_1_ProcessMidiIn(rxData, 
                                                     (USBUART_1_MIDI_RX_STATUS *)&USBUART_1_MIDI2_Event);
-        		}
+                }
             
             /* Finally, update the real output pointer, then return with
             *  an indication as to whether there's a complete message in the buffer. 
@@ -1203,7 +1203,7 @@ void USBUART_1_PrepareInBuffer(uint8 ic, uint8 *srcBuff, uint8 eventLen, uint8 c
             #if ((MIDI2_UART_RXBUFFERSIZE >= 256u) && (CY_PSOC3))
                 CyIntDisable(MIDI2_UART_RX_VECT_NUM);
             #endif /* End MIDI2_UART_RXBUFFERSIZE >= 256 */    
-        	MIDI2_UART_rxBufferRead = loc_rxBufferRead;
+            MIDI2_UART_rxBufferRead = loc_rxBufferRead;
             #if ((MIDI2_UART_RXBUFFERSIZE >= 256u) && (CY_PSOC3))
                 CyIntEnable(MIDI2_UART_RX_VECT_NUM);
             #endif /* End MIDI2_UART_RXBUFFERSIZE >= 256 */   

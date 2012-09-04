@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: Filter_PulseInBand_PVT.h
-* Version 2.0
+* Version 2.10
 *
 * Description:
 *  This header file contains internal definitions for the FILT component.

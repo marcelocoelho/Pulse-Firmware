@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: CapSense_1_INT.c
-* Version 3.10
+* Version 3.20
 *
 * Description:
 *  This file provides the source code of Interrupt Service Routine (ISR)
@@ -9,7 +9,7 @@
 * Note:
 *
 ********************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions,
 * disclaimers, and limitations in the end user license agreement accompanying
 * the software package with which this file was provided.
@@ -27,26 +27,26 @@
 /* Extern functions declarations, Start and Compete the scan */
 extern void CapSense_1_PreScan(uint8 sensor) ;
 #if (CapSense_1_DESIGN_TYPE == CapSense_1_ONE_CHANNEL_DESIGN)
-    extern void CapSense_1_PostScan(uint8 sensor);
+    extern void CapSense_1_PostScan(uint8 sensor) ;
 #else
-    extern void CapSense_1_PostScanCh0(uint8 sensor);
-    extern void CapSense_1_PostScanCh1(uint8 sensor);
-#endif  /* End CapSense_1_DESIGN_TYPE */
+    extern void CapSense_1_PostScanCh0(uint8 sensor) ;
+    extern void CapSense_1_PostScanCh1(uint8 sensor) ;
+#endif  /* CapSense_1_DESIGN_TYPE */
 
  #if (CapSense_1_DESIGN_TYPE == CapSense_1_ONE_CHANNEL_DESIGN)
     extern uint8 CapSense_1_FindNextSensor(uint8 snsIndex) ;
-#endif  /* End (CapSense_1_DESIGN_TYPE == CapSense_1_ONE_CHANNEL_DESIGN) */
+#endif  /* (CapSense_1_DESIGN_TYPE == CapSense_1_ONE_CHANNEL_DESIGN) */
  
 #if (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN)
     extern uint8 CapSense_1_FindNextPair(uint8 snsIndex) ;
-#endif  /* End (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) */
+#endif  /* (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) */
 
 /* Global variables and arrays */
 extern volatile uint8 CapSense_1_csv;
 extern volatile uint8 CapSense_1_sensorIndex;
 
 
-#if (CapSense_1_DESIGN_TYPE == CapSense_1_ONE_CHANNEL_DESIGN)   
+#if (CapSense_1_DESIGN_TYPE == CapSense_1_ONE_CHANNEL_DESIGN)
     /*******************************************************************************
     * Function Name: CapSense_1_IsrCH0_ISR
     ********************************************************************************
@@ -105,12 +105,8 @@ extern volatile uint8 CapSense_1_sensorIndex;
                 CapSense_1_csv &= ~CapSense_1_SW_STS_BUSY;
             } 
         }
-    
-        #if (CY_PSOC3_ES2 && (CapSense_1_IsrCH0__ES2_PATCH))
-                CapSense_1_ISR_PATCH();
-        #endif /* End (CY_PSOC3_ES2 && (CapSense_1_IsrCH0__ES2_PATCH)) */
     }
- #endif  /* End CapSense_1_DESIGN_TYPE */
+ #endif  /* (CapSense_1_DESIGN_TYPE == CapSense_1_ONE_CHANNEL_DESIGN) */
 
 
  #if (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN)   
@@ -184,10 +180,6 @@ extern volatile uint8 CapSense_1_sensorIndex;
         {
             /* Do nothing */
         }
-    
-        #if (CY_PSOC3_ES2 && (CapSense_1_IsrCH0__ES2_PATCH))
-                CapSense_1_ISR_PATCH();
-        #endif /* End (CY_PSOC3_ES2 && (CapSense_1_IsrCH0__ES2_PATCH)) */
     }
 
     
@@ -261,12 +253,8 @@ extern volatile uint8 CapSense_1_sensorIndex;
         {
             /* Do nothing */
         }
-    
-        #if (CY_PSOC3_ES2 && (CapSense_1_IsrCH1__ES2_PATCH))
-                CapSense_1_ISR_PATCH();
-        #endif /* End (CY_PSOC3_ES2 && (CapSense_1_IsrCH1__ES2_PATCH)) */
     }
-#endif  /* End CapSense_1_DESIGN_TYPE */
+#endif  /* (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) */
 
 
 /* [] END OF FILE */

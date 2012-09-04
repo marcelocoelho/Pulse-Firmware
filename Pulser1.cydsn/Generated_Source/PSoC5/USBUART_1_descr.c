@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: USBUART_1_descr.c
-* Version 2.12
+* Version 2.30
 *
 * Description:
 *  USB descriptors and storage.

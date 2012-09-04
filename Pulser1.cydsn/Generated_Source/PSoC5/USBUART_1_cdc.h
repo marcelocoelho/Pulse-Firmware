@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: USBUART_1_cdc.h
-* Version 2.12
+* Version 2.30
 *
 * Description:
 *  Header File for the USFS component.

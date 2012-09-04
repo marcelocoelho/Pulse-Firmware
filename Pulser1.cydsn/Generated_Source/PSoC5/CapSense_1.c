@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: CapSense_1.c
-* Version 3.10
+* Version 3.20
 *
 * Description:
 *  This file provides the source code of scanning APIs for the CapSense CSD 
@@ -9,7 +9,7 @@
 * Note:
 *
 ********************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions,
 * disclaimers, and limitations in the end user license agreement accompanying
 * the software package with which this file was provided.
@@ -49,40 +49,20 @@ void CapSense_1_PreScan(uint8 sensor) ;
 #if (CapSense_1_DESIGN_TYPE == CapSense_1_ONE_CHANNEL_DESIGN)
     void CapSense_1_PostScan(uint8 sensor);
 #else
-    void CapSense_1_PostScanCh0(uint8 sensor);
-    void CapSense_1_PostScanCh1(uint8 sensor);
-#endif  /* End CapSense_1_DESIGN_TYPE */
-
-/* Idac functions definitions */
-#if (CapSense_1_CURRENT_SOURCE)
-    void CapSense_1_SetIdacRange(uint8 range) ;
-    void CapSense_1_IdacCH0_Init(void) ;
-    void CapSense_1_IdacCH0_Enable(void) ;
-    void CapSense_1_IdacCH0_SetRange(uint8 range) ;
-    void CapSense_1_IdacCH0_DacTrim(void) ;
-    void CapSense_1_IdacCH0_SetValue(uint8 value) ;
-    void CapSense_1_IdacCH0_Stop(void) ;
-    
-    #if (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN)
-        void CapSense_1_IdacCH1_Init(void) ;
-        void CapSense_1_IdacCH1_Enable(void) ;
-        void CapSense_1_IdacCH1_SetRange(uint8 range) ;
-        void CapSense_1_IdacCH1_DacTrim(void) ;
-        void CapSense_1_IdacCH1_SetValue(uint8 value) ;
-        void CapSense_1_IdacCH1_Stop(void) ;
-    #endif /* End CapSense_1_CURRENT_SOURCE */ 
-    
+    void CapSense_1_PostScanCh0(uint8 sensor) ;
+    void CapSense_1_PostScanCh1(uint8 sensor) ;
 #endif  /* End CapSense_1_DESIGN_TYPE */
 
 #if (CapSense_1_PRESCALER_OPTIONS)
     void CapSense_1_SetPrescaler(uint8 prescaler) ;
 #endif  /* End CapSense_1_PRESCALER_OPTIONS */
+
 void CapSense_1_SetScanSpeed(uint8 scanspeed) ;
 
 /* SmartSense functions */
 #if (CapSense_1_TUNING_METHOD == CapSense_1_AUTO_TUNING)
-    extern void CapSense_1_AutoTune(void);
     uint8 CapSense_1_lowLevelTuningDone = 0u;
+    extern void CapSense_1_AutoTune(void) ;
 #endif /* End (CapSense_1_TUNING_METHOD == CapSense_1_AUTO_TUNING) */
 
 uint8 CapSense_1_initVar = 0u;
@@ -95,15 +75,15 @@ volatile uint8 CapSense_1_sensorIndex = 0u;    /* Index of scannig sensor */
     uint8  CapSense_1_RbCh0_cur = CapSense_1_RBLEED1;
     #if (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN)
         uint8  CapSense_1_RbCh1_cur = (CapSense_1_RBLEED1 + CapSense_1_TOTAL_RB_NUMBER__CH0);
-    #endif /* End (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN)*/ 
+    #endif /* (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN)*/ 
 #else
-    #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+    #if (CY_PSOC5A)
         uint8 CapSense_1_idac_cfg_restore = 0u;
         uint8 CapSense_1_idac_ch0_cr0reg = 0u;
         #if (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN)
             uint8 CapSense_1_idac_ch1_cr0reg = 0u;
-        #endif /* End (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN)*/ 
-    #endif /* End (CY_PSOC3_ES2 || CY_PSOC5_ES1) */
+        #endif /* (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) */ 
+    #endif /* (CY_PSOC5A) */
 #endif /* (CapSense_1_CURRENT_SOURCE == CapSense_1_EXTERNAL_RB) */ 
         
 /* Global array of Raw Counts */
@@ -152,6 +132,7 @@ const uint8 CYCODE CapSense_1_widgetNumber[] = {
 
 
 
+
 /*******************************************************************************
 * Function Name: CapSense_1_Init
 ********************************************************************************
@@ -175,10 +156,11 @@ void CapSense_1_Init(void)
             (CapSense_1_IMPLEMENTATION_CH1 == CapSense_1_MEASURE_IMPLEMENTATION_UDB)) )
         
         uint8 enableInterrupts;
-    #endif /* End ( (CapSense_1_PRS_OPTIONS) || \
-                    (CapSense_1_IMPLEMENTATION_CH0 == CapSense_1_MEASURE_IMPLEMENTATION_UDB) || \
-                    ( (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) && \
-                      (CapSense_1_IMPLEMENTATION_CH1 == CapSense_1_MEASURE_IMPLEMENTATION_UDB)) ) */
+    #endif /* ( (CapSense_1_PRS_OPTIONS) || \
+           * (CapSense_1_IMPLEMENTATION_CH0 == CapSense_1_MEASURE_IMPLEMENTATION_UDB) || \
+           * ( (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) && \
+           * (CapSense_1_IMPLEMENTATION_CH1 == CapSense_1_MEASURE_IMPLEMENTATION_UDB)) ) 
+           */
     
     /* Clear all sensors */
     CapSense_1_ClearSensors();
@@ -188,21 +170,17 @@ void CapSense_1_Init(void)
         /* Do nothing = config without prescaler */
     #elif (CapSense_1_PRESCALER_OPTIONS == CapSense_1_PRESCALER_FF)
         CapSense_1_PRESCALER_CONTROL_REG   = (CapSense_1_PRESCALER_CTRL_ENABLE |
-                                                CapSense_1_PRESCALER_CTRL_MODE_CMP);
+                                                    CapSense_1_PRESCALER_CTRL_MODE_CMP);
                                                
         CapSense_1_PRESCALER_CONTROL2_REG |= CapSense_1_PRESCALER_CTRL_CMP_LESS_EQ;
-/*         
-        CY_SET_REG16(CapSense_1_PRESCALER_PERIOD_PTR, (uint16) CapSense_1_PRESCALER_VALUE);
-        CY_SET_REG16(CapSense_1_PRESCALER_COMPARE_PTR, (uint16) (CapSense_1_PRESCALER_VALUE >> 0x01u));
-*/        
     #else
         /* Do nothing = config without prescaler */
-    #endif  /* End (CapSense_1_PRESCALER_OPTIONS == CapSense_1_PRESCALER_UDB) */
+    #endif  /* (CapSense_1_PRESCALER_OPTIONS == CapSense_1_PRESCALER_UDB) */
 
     /* Set PRS */
     #if (CapSense_1_PRS_OPTIONS)
         CapSense_1_SetAnalogSwitchesSource(CapSense_1_ANALOG_SWITCHES_SRC_PRS);
-    #endif
+    #endif /* (CapSense_1_PRS_OPTIONS) */
 
     #if (CapSense_1_PRS_OPTIONS == CapSense_1_PRS_8BITS)
         /* Aux control set FIFO as REG */
@@ -242,7 +220,7 @@ void CapSense_1_Init(void)
         
     #else
         /* Do nothing = config without PRS */
-    #endif  /* End (CapSense_1_PRS_OPTIONS == CapSense_1_PRS_8BITS) */ 
+    #endif  /* (CapSense_1_PRS_OPTIONS == CapSense_1_PRS_8BITS) */ 
     
     /* Set ScanSpeed */
     CapSense_1_SCANSPEED_PERIOD_REG = CapSense_1_SCANSPEED_VALUE;
@@ -308,9 +286,9 @@ void CapSense_1_Init(void)
             CapSense_1_RAW_CH1_PERIOD_HI_REG    = CapSense_1_MEASURE_FULL_RANGE_LOW;
             CapSense_1_RAW_CH1_PERIOD_LO_REG    = CapSense_1_MEASURE_FULL_RANGE_LOW;
             
-        #endif  /* End (CapSense_1_IMPLEMENTATION_CH1 == CapSense_1_MEASURE_IMPLEMENTATION_FF) */
+        #endif  /* (CapSense_1_IMPLEMENTATION_CH1 == CapSense_1_MEASURE_IMPLEMENTATION_FF) */
     
-    #endif  /* End (CapSense_1_DESIGN_TYPE == TWO_CHANNELS_DESIGN)*/
+    #endif  /* (CapSense_1_DESIGN_TYPE == TWO_CHANNELS_DESIGN) */
     
     /* Setup ISR */
     CyIntDisable(CapSense_1_IsrCH0_ISR_NUMBER);
@@ -321,7 +299,7 @@ void CapSense_1_Init(void)
         CyIntDisable(CapSense_1_IsrCH1_ISR_NUMBER);
         CyIntSetVector(CapSense_1_IsrCH1_ISR_NUMBER, CapSense_1_IsrCH1_ISR);
         CyIntSetPriority(CapSense_1_IsrCH1_ISR_NUMBER, CapSense_1_IsrCH1_ISR_PRIORITY);
-    #endif  /* End CapSense_1_DESIGN_TYPE */
+    #endif  /* CapSense_1_DESIGN_TYPE */
     
     /* Setup AMux Bus: Connect Cmod, Cmp, Idac */
     CapSense_1_AMuxCH0_Init();
@@ -329,7 +307,7 @@ void CapSense_1_Init(void)
     CapSense_1_AMuxCH0_Connect(CapSense_1_AMuxCH0_CMP_VP_CHANNEL);
     #if (CapSense_1_CURRENT_SOURCE)
         CapSense_1_AMuxCH0_Connect(CapSense_1_AMuxCH0_IDAC_CHANNEL);
-    #endif  /* End CapSense_1_CURRENT_SOURCE */
+    #endif  /* CapSense_1_CURRENT_SOURCE */
     
     #if (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) 
         CapSense_1_AMuxCH1_Init();
@@ -337,40 +315,46 @@ void CapSense_1_Init(void)
         CapSense_1_AMuxCH1_Connect(CapSense_1_AMuxCH1_CMP_VP_CHANNEL);
         #if (CapSense_1_CURRENT_SOURCE)
             CapSense_1_AMuxCH1_Connect(CapSense_1_AMuxCH1_IDAC_CHANNEL);
-        #endif  /* End CapSense_1_CURRENT_SOURCE */
-    #endif  /* End CapSense_1_DESIGN_TYPE */
+        #endif  /* CapSense_1_CURRENT_SOURCE */
+    #endif  /* CapSense_1_DESIGN_TYPE */
     
     /* Int Rb */
     #if (CapSense_1_CURRENT_SOURCE == CapSense_1_EXTERNAL_RB)
         CapSense_1_InitRb();
-    #endif /* End (CapSense_1_CURRENT_SOURCE == CapSense_1_EXTERNAL_RB) */
+    #endif /* (CapSense_1_CURRENT_SOURCE == CapSense_1_EXTERNAL_RB) */
     
     /* Enable window generation */
     CapSense_1_CONTROL_REG |= CapSense_1_CTRL_WINDOW_EN__CH0;
     #if (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN)
         CapSense_1_CONTROL_REG |= CapSense_1_CTRL_WINDOW_EN__CH1;
-    #endif  /* End CapSense_1_DESIGN_TYPE */
+    #endif  /* CapSense_1_DESIGN_TYPE */
     
     /* Initialize Cmp and Idac */
     CapSense_1_CompCH0_Init();
     #if (CapSense_1_CURRENT_SOURCE)
         CapSense_1_IdacCH0_Init();
-    #endif  /* End CapSense_1_CURRENT_SOURCE */
+        CapSense_1_IdacCH0_SetPolarity(CapSense_1_IdacCH0_IDIR);
+        CapSense_1_IdacCH0_SetRange(CapSense_1_IDAC_RANGE_VALUE);
+        CapSense_1_IdacCH0_SetValue(CapSense_1_TURN_OFF_IDAC);
+    #endif  /* CapSense_1_CURRENT_SOURCE */
     
     #if (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) 
         CapSense_1_CompCH1_Init();
         #if (CapSense_1_CURRENT_SOURCE)
             CapSense_1_IdacCH1_Init();
-        #endif  /* End CapSense_1_CURRENT_SOURCE */
-    #endif  /* End CapSense_1_DESIGN_TYPE */
+            CapSense_1_IdacCH1_SetPolarity(CapSense_1_IdacCH1_IDIR);
+            CapSense_1_IdacCH1_SetRange(CapSense_1_IDAC_RANGE_VALUE);
+            CapSense_1_IdacCH1_SetValue(CapSense_1_TURN_OFF_IDAC);
+        #endif  /* CapSense_1_CURRENT_SOURCE */
+    #endif  /* CapSense_1_DESIGN_TYPE */
     
     /* Initialize Vref if as VDAC */
     #if (CapSense_1_VREF_OPTIONS == CapSense_1_VREF_VDAC)
         CapSense_1_VdacRefCH0_Init();
         #if (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN)
             CapSense_1_VdacRefCH1_Init();
-        #endif  /* End CapSense_1_DESIGN_TYPE */
-    #endif  /* End CapSense_1_VREF_OPTIONS */
+        #endif  /* CapSense_1_DESIGN_TYPE */
+    #endif  /* CapSense_1_VREF_OPTIONS */
 }
 
 
@@ -404,7 +388,7 @@ void CapSense_1_Enable(void)
         
     #else
         /* Do nothing = config without prescaler */
-    #endif  /* End (CapSense_1_PRESCALER_OPTIONS == CapSense_1_PRESCALER_UDB) */
+    #endif  /* (CapSense_1_PRESCALER_OPTIONS == CapSense_1_PRESCALER_UDB) */
     
     /* Enable ScanSpeed */
     CapSense_1_SCANSPEED_AUX_CONTROL_REG |= CapSense_1_SCANSPEED_CTRL_ENABLE;
@@ -440,27 +424,27 @@ void CapSense_1_Enable(void)
         /* Window PWM -  Do nothing */
         /* Raw Counter - Do nothing */
         
-        #endif  /* End (CapSense_1_IMPLEMENTATION_CH1 == CapSense_1_MEASURE_IMPLEMENTATION_FF) */
+        #endif  /* (CapSense_1_IMPLEMENTATION_CH1 == CapSense_1_MEASURE_IMPLEMENTATION_FF) */
     
-    #endif  /* End (CapSense_1_DESIGN_TYPE == TWO_CHANNELS_DESIGN)*/
+    #endif  /* (CapSense_1_DESIGN_TYPE == TWO_CHANNELS_DESIGN)*/
     
     /* Enable the Clock */
     #if (CapSense_1_CLOCK_SOURCE == CapSense_1_INTERNAL_CLOCK)
        CapSense_1_IntClock_Enable();
-    #endif  /* End CapSense_1_CLOCK_SOURCE */
+    #endif  /* CapSense_1_CLOCK_SOURCE */
     
     /* Setup Cmp and Idac */
     CapSense_1_CompCH0_Enable();
     #if (CapSense_1_CURRENT_SOURCE)
         CapSense_1_IdacCH0_Enable();
-    #endif  /* End CapSense_1_CURRENT_SOURCE */
+    #endif  /* CapSense_1_CURRENT_SOURCE */
     
     #if (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) 
         CapSense_1_CompCH1_Enable();
         #if (CapSense_1_CURRENT_SOURCE)
             CapSense_1_IdacCH1_Enable();
-        #endif  /* End CapSense_1_CURRENT_SOURCE */
-    #endif  /* End CapSense_1_DESIGN_TYPE */
+        #endif  /* CapSense_1_CURRENT_SOURCE */
+    #endif  /* CapSense_1_DESIGN_TYPE */
     
     /* Enable Vref */
     #if (CapSense_1_VREF_OPTIONS == CapSense_1_VREF_VDAC)
@@ -469,7 +453,7 @@ void CapSense_1_Enable(void)
         #if (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN)
             CapSense_1_VdacRefCH1_Enable();
             CapSense_1_VdacRefCH1_SetValue(CapSense_1_VdacRefCH1_DEFAULT_DATA);
-        #endif  /* End (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) */
+        #endif  /* (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) */
     #else
         /* Enable CapSense Buf */
         CapSense_1_BufCH0_STBY_PWRMGR_REG |= CapSense_1_BufCH0_STBY_PWR_EN;
@@ -478,8 +462,8 @@ void CapSense_1_Enable(void)
         #if (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN)
             CapSense_1_BufCH1_STBY_PWRMGR_REG |= CapSense_1_BufCH1_STBY_PWR_EN;
             CapSense_1_BufCH1_ACT_PWRMGR_REG  |= CapSense_1_BufCH1_ACT_PWR_EN;
-        #endif  /* End (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) */
-    #endif  /* End (CapSense_1_VREF_VDAC == CapSense_1_VREF_OPTIONS) */
+        #endif  /* (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) */
+    #endif  /* (CapSense_1_VREF_VDAC == CapSense_1_VREF_OPTIONS) */
     
     /* Set reference on AMux Bus */
     #if (CapSense_1_VREF_OPTIONS == CapSense_1_VREF_VDAC)
@@ -487,7 +471,7 @@ void CapSense_1_Enable(void)
         CapSense_1_AMuxCH0_Connect(CapSense_1_AMuxCH0_VREF_CHANNEL);
         #if (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN)
             CapSense_1_AMuxCH1_Connect(CapSense_1_AMuxCH1_VREF_CHANNEL);
-        #endif  /* End (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) */
+        #endif  /* (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) */
         
     #else
         /* Enable CapSense Buf */
@@ -495,8 +479,8 @@ void CapSense_1_Enable(void)
         
         #if (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN)
             CapSense_1_BufCH1_CAPS_CFG0_REG |= CapSense_1_CSBUF_ENABLE;
-        #endif  /* End (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) */
-    #endif  /* End (CapSense_1_VREF_VDAC == CapSense_1_VREF_OPTIONS)*/
+        #endif  /* (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) */
+    #endif  /* (CapSense_1_VREF_VDAC == CapSense_1_VREF_OPTIONS)*/
     
     CyExitCriticalSection(enableInterrupts);
     
@@ -504,7 +488,7 @@ void CapSense_1_Enable(void)
     CyIntEnable(CapSense_1_IsrCH0_ISR_NUMBER);
     #if (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) 
         CyIntEnable(CapSense_1_IsrCH1_ISR_NUMBER);
-    #endif  /* End CapSense_1_DESIGN_TYPE */
+    #endif  /* CapSense_1_DESIGN_TYPE */
     
     /* Set CapSense Enable state */
     CapSense_1_CONTROL_REG |= CapSense_1_CTRL_CAPSENSE_EN;
@@ -537,7 +521,7 @@ void CapSense_1_Enable(void)
 *  No
 *
 *******************************************************************************/
-void CapSense_1_Start(void)
+void CapSense_1_Start(void)  
 {
     if (CapSense_1_initVar == 0u)
     {
@@ -551,7 +535,7 @@ void CapSense_1_Start(void)
         /* AutoTune by sensor or pair of sensor basis */
         CapSense_1_AutoTune();
         CapSense_1_lowLevelTuningDone = 1u;
-    #endif /* End (CapSense_1_TUNING_METHOD == CapSense_1_AUTO_TUNING) */
+    #endif /* (CapSense_1_TUNING_METHOD == CapSense_1_AUTO_TUNING) */
 }
 
 
@@ -583,7 +567,7 @@ void CapSense_1_Stop(void)
     CyIntDisable(CapSense_1_IsrCH0_ISR_NUMBER);
     #if (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) 
         CyIntDisable(CapSense_1_IsrCH1_ISR_NUMBER);
-    #endif  /* End CapSense_1_DESIGN_TYPE */
+    #endif  /* CapSense_1_DESIGN_TYPE */
     
     /* Clear all sensors */
     CapSense_1_ClearSensors();
@@ -597,7 +581,7 @@ void CapSense_1_Stop(void)
         
     #else
         /* Do nothing = config without prescaler */
-    #endif  /* End (CapSense_1_PRESCALER_OPTIONS == CapSense_1_PRESCALER_UDB) */
+    #endif  /* (CapSense_1_PRESCALER_OPTIONS == CapSense_1_PRESCALER_UDB) */
     
     /* Disable ScanSpeed */
     CapSense_1_SCANSPEED_AUX_CONTROL_REG &= ~CapSense_1_SCANSPEED_CTRL_ENABLE;
@@ -633,35 +617,35 @@ void CapSense_1_Stop(void)
         /* Window PWM -  Do nothing */
         /* Raw Counter - Do nothing */
         
-        #endif  /* End (CapSense_1_IMPLEMENTATION_CH1 == CapSense_1_MEASURE_IMPLEMENTATION_FF) */
+        #endif  /* (CapSense_1_IMPLEMENTATION_CH1 == CapSense_1_MEASURE_IMPLEMENTATION_FF) */
     
-    #endif  /* End (CapSense_1_DESIGN_TYPE == TWO_CHANNELS_DESIGN)*/
+    #endif  /* (CapSense_1_DESIGN_TYPE == TWO_CHANNELS_DESIGN)*/
     
     /* Disable the Clock */
     #if (CapSense_1_CLOCK_SOURCE == CapSense_1_INTERNAL_CLOCK)
        CapSense_1_IntClock_Stop();
-    #endif  /* End CapSense_1_CLOCK_SOURCE */
+    #endif  /* CapSense_1_CLOCK_SOURCE */
     
     /* Disable power from Cmp and Idac */
     CapSense_1_CompCH0_Stop();
     #if (CapSense_1_CURRENT_SOURCE)
         CapSense_1_IdacCH0_Stop();
-    #endif  /* End CapSense_1_CURRENT_SOURCE */
+    #endif  /* CapSense_1_CURRENT_SOURCE */
     
     #if (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) 
         CapSense_1_CompCH1_Stop();
         #if (CapSense_1_CURRENT_SOURCE)
             CapSense_1_IdacCH1_Stop();
-        #endif  /* End CapSense_1_CURRENT_SOURCE */
-    #endif  /* End CapSense_1_DESIGN_TYPE */    
+        #endif  /* CapSense_1_CURRENT_SOURCE */
+    #endif  /* CapSense_1_DESIGN_TYPE */    
     
     /* Disable Vref if as VDAC */
     #if (CapSense_1_VREF_OPTIONS == CapSense_1_VREF_VDAC)
         CapSense_1_VdacRefCH0_Stop();
         #if (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN)
             CapSense_1_VdacRefCH1_Stop();
-        #endif  /* End CapSense_1_DESIGN_TYPE */
-    #endif  /* End CapSense_1_VREF_OPTIONS */
+        #endif  /* CapSense_1_DESIGN_TYPE */
+    #endif  /* CapSense_1_VREF_OPTIONS */
 
     #if (CapSense_1_VREF_VDAC == CapSense_1_VREF_OPTIONS)
         /* The Idac turn off before */
@@ -675,8 +659,8 @@ void CapSense_1_Stop(void)
             CapSense_1_BufCH1_CAPS_CFG0_REG &= ~CapSense_1_CSBUF_ENABLE;
             CapSense_1_BufCH1_ACT_PWRMGR_REG &= ~CapSense_1_BufCH1_ACT_PWR_EN;
             CapSense_1_BufCH1_STBY_PWRMGR_REG &= ~CapSense_1_BufCH1_STBY_PWR_EN;
-        #endif  /* End (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) */
-    #endif  /* End (CapSense_1_VREF_VDAC == CapSense_1_VREF_OPTIONS) */
+        #endif  /*(CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) */
+    #endif  /* (CapSense_1_VREF_VDAC == CapSense_1_VREF_OPTIONS) */
     
     /* Set CapSense Disable state */
     CapSense_1_CONTROL_REG &= ~CapSense_1_CTRL_CAPSENSE_EN;
@@ -733,7 +717,7 @@ void CapSense_1_Stop(void)
         
         return snsIndex;
     }
- #endif  /* End CapSense_1_DESIGN_TYPE */
+ #endif  /* CapSense_1_DESIGN_TYPE == CapSense_1_ONE_CHANNEL_DESIGN */
  
  
 #if (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN)
@@ -836,7 +820,7 @@ void CapSense_1_Stop(void)
         
         return snsIndex;
     }
-#endif  /* End CapSense_1_DESIGN_TYPE */
+#endif  /* CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN */
 
 
 /*******************************************************************************
@@ -872,7 +856,7 @@ void CapSense_1_SetScanSlotSettings(uint8 slot)
         /* Set Idac Value */
         #if (CapSense_1_CURRENT_SOURCE)
             CapSense_1_IdacCH0_SetValue(CapSense_1_idacSettings[slot]);
-        #endif  /* End CapSense_1_CURRENT_SOURCE */
+        #endif  /* CapSense_1_CURRENT_SOURCE */
         
         /* Window PWM */
         #if (CapSense_1_IMPLEMENTATION_CH0 == CapSense_1_MEASURE_IMPLEMENTATION_FF)
@@ -880,7 +864,7 @@ void CapSense_1_SetScanSlotSettings(uint8 slot)
                 ((uint16) CapSense_1_widgetResolution[widget] << 8u) | CapSense_1_MEASURE_FULL_RANGE_LOW);
         #else
             CapSense_1_PWM_CH0_PERIOD_HI_REG = CapSense_1_widgetResolution[widget];
-        #endif  /* End (CapSense_1_IMPLEMENTATION_CH0 == CapSense_1_MEASURE_IMPLEMENTATION_FF) */ 
+        #endif  /* (CapSense_1_IMPLEMENTATION_CH0 == CapSense_1_MEASURE_IMPLEMENTATION_FF) */ 
 
         #if ( (CapSense_1_MULTIPLE_PRESCALER_ENABLED) || \
               (CapSense_1_TUNING_METHOD == CapSense_1_AUTO_TUNING) )
@@ -888,7 +872,8 @@ void CapSense_1_SetScanSlotSettings(uint8 slot)
         #elif (CapSense_1_PRESCALER_OPTIONS)
             CapSense_1_SetPrescaler(CapSense_1_AnalogSwitchDivider);
         #endif /* ((CapSense_1_MULTIPLE_PRESCALER_ENABLED) || \
-                   (CapSense_1_TUNING_METHOD == CapSense_1_AUTO_TUNING)) */
+               *   (CapSense_1_TUNING_METHOD == CapSense_1_AUTO_TUNING))
+               */
 
     #else
         if(slot < CapSense_1_TOTAL_SENSOR_COUNT__CH0)
@@ -899,7 +884,7 @@ void CapSense_1_SetScanSlotSettings(uint8 slot)
             /* Set Idac Value */
             #if (CapSense_1_CURRENT_SOURCE)
                 CapSense_1_IdacCH0_SetValue(CapSense_1_idacSettings[slot]);
-            #endif  /* End CapSense_1_CURRENT_SOURCE */
+            #endif  /* CapSense_1_CURRENT_SOURCE */
             
             /* Set Pwm Resolution */
             #if (CapSense_1_IMPLEMENTATION_CH0 == CapSense_1_MEASURE_IMPLEMENTATION_FF)
@@ -907,7 +892,7 @@ void CapSense_1_SetScanSlotSettings(uint8 slot)
                   ((uint16) CapSense_1_widgetResolution[widget] << 8u) | CapSense_1_MEASURE_FULL_RANGE_LOW);
             #else
                 CapSense_1_PWM_CH0_PERIOD_HI_REG = CapSense_1_widgetResolution[widget];
-            #endif  /* End (CapSense_1_IMPLEMENTATION_CH0 == CapSense_1_MEASURE_IMPLEMENTATION_FF)*/ 
+            #endif  /* (CapSense_1_IMPLEMENTATION_CH0 == CapSense_1_MEASURE_IMPLEMENTATION_FF)*/ 
         }
         
         if(slot < CapSense_1_TOTAL_SENSOR_COUNT__CH1)
@@ -916,8 +901,9 @@ void CapSense_1_SetScanSlotSettings(uint8 slot)
         
             /* Set Idac Value */
             #if (CapSense_1_CURRENT_SOURCE)
-                CapSense_1_IdacCH1_SetValue(CapSense_1_idacSettings[slot+CapSense_1_TOTAL_SENSOR_COUNT__CH0]);
-            #endif  /* End CapSense_1_CURRENT_SOURCE */
+                CapSense_1_IdacCH1_SetValue(CapSense_1_idacSettings[slot+
+                                                                             CapSense_1_TOTAL_SENSOR_COUNT__CH0]);
+            #endif  /* CapSense_1_CURRENT_SOURCE */
             
             /* Set Pwm Resolution */
             #if (CapSense_1_IMPLEMENTATION_CH1 == CapSense_1_MEASURE_IMPLEMENTATION_FF)
@@ -925,7 +911,7 @@ void CapSense_1_SetScanSlotSettings(uint8 slot)
                   ((uint16) CapSense_1_widgetResolution[widget] << 8u) | CapSense_1_MEASURE_FULL_RANGE_LOW);
             #else
                 CapSense_1_PWM_CH1_PERIOD_HI_REG = CapSense_1_widgetResolution[widget];
-            #endif  /* End (CapSense_1_IMPLEMENTATION_CH1 == CapSense_1_MEASURE_IMPLEMENTATION_FF)*/ 
+            #endif  /* (CapSense_1_IMPLEMENTATION_CH1 == CapSense_1_MEASURE_IMPLEMENTATION_FF)*/ 
         }
 
         #if ( (CapSense_1_MULTIPLE_PRESCALER_ENABLED) || \
@@ -934,9 +920,10 @@ void CapSense_1_SetScanSlotSettings(uint8 slot)
         #elif (CapSense_1_PRESCALER_OPTIONS)
             CapSense_1_SetPrescaler(CapSense_1_AnalogSwitchDivider);
         #endif /* ((CapSense_1_MULTIPLE_PRESCALER_ENABLED) || \
-                   (CapSense_1_TUNING_METHOD == CapSense_1_AUTO_TUNING)) */
+               *   (CapSense_1_TUNING_METHOD == CapSense_1_AUTO_TUNING))
+               */
 
-    #endif  /* End CapSense_1_DESIGN_TYPE */
+    #endif  /* CapSense_1_DESIGN_TYPE */
 }
 
 
@@ -970,7 +957,7 @@ void CapSense_1_SetScanSlotSettings(uint8 slot)
 *  No
 *
 *******************************************************************************/
-void CapSense_1_ScanSensor(uint8 sensor)
+void CapSense_1_ScanSensor(uint8 sensor)  
 {
     /* Clears status/control variable and set sensorIndex */
     CapSense_1_csv = 0u;
@@ -1011,7 +998,7 @@ void CapSense_1_ScanSensor(uint8 sensor)
             CapSense_1_PreScan(sensor);
         }
         
-    #endif  /* End CapSense_1_DESIGN_TYPE */
+    #endif  /* CapSense_1_DESIGN_TYPE */
 }
 
 
@@ -1047,7 +1034,7 @@ void CapSense_1_ScanSensor(uint8 sensor)
 *  No
 *
 *******************************************************************************/
-void CapSense_1_ScanEnabledWidgets(void)
+void CapSense_1_ScanEnabledWidgets(void) 
 {
     /* Clears status/control variable and set sensorIndex */
     CapSense_1_csv = 0u;
@@ -1076,7 +1063,7 @@ void CapSense_1_ScanEnabledWidgets(void)
             CapSense_1_PreScan(CapSense_1_sensorIndex);
         }
         
-    #endif  /* End CapSense_1_DESIGN_TYPE */
+    #endif  /* CapSense_1_DESIGN_TYPE */
 }
 
 
@@ -1266,7 +1253,7 @@ void CapSense_1_ClearSensors(void)
             }
         } 
     }
-#endif  /* End CapSense_1_IS_COMPLEX_SCANSLOTS */
+#endif  /* CapSense_1_IS_COMPLEX_SCANSLOTS */
 
 
 /*******************************************************************************
@@ -1305,8 +1292,9 @@ void CapSense_1_EnableSensor(uint8 sensor)
     #if ((CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) && \
          (CapSense_1_IS_COMPLEX_SCANSLOTS))
         uint8 amuxCh = CapSense_1_amuxIndex[sensor];
-    #endif  /* End ((CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) && \
-                   (CapSense_1_IS_COMPLEX_SCANSLOTS)) */
+    #endif  /* ((CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) && \
+            *   (CapSense_1_IS_COMPLEX_SCANSLOTS))
+            */
     
     /* Make sensor High-Z */
     *CapSense_1_pcTable[sensor] = CapSense_1_PRT_PC_HIGHZ;
@@ -1324,7 +1312,7 @@ void CapSense_1_EnableSensor(uint8 sensor)
             CapSense_1_AMuxCH0_Connect(CapSense_1_amuxIndex[sensor]);
         #else
             CapSense_1_AMuxCH0_Connect(sensor);
-        #endif  /* End CapSense_1_IS_COMPLEX_SCANSLOTS */
+        #endif  /* CapSense_1_IS_COMPLEX_SCANSLOTS */
                 
     #else
         #if (CapSense_1_IS_COMPLEX_SCANSLOTS)
@@ -1348,9 +1336,9 @@ void CapSense_1_EnableSensor(uint8 sensor)
                 CapSense_1_AMuxCH1_Connect(sensor - CapSense_1_TOTAL_SENSOR_COUNT__CH0);
             }
             
-        #endif  /* End CapSense_1_IS_COMPLEX_SCANSLOTS */
+        #endif  /* CapSense_1_IS_COMPLEX_SCANSLOTS */
         
-    #endif  /* End CapSense_1_DESIGN_TYPE */
+    #endif  /* CapSense_1_DESIGN_TYPE == CapSense_1_ONE_CHANNEL_DESIGN */
 }
 
 
@@ -1389,8 +1377,9 @@ void CapSense_1_DisableSensor(uint8 sensor)
     #if ((CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) && \
          (CapSense_1_IS_COMPLEX_SCANSLOTS))
         uint8 amuxCh = CapSense_1_amuxIndex[sensor];
-    #endif  /* End ((CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) && \
-                   (CapSense_1_IS_COMPLEX_SCANSLOTS)) */
+    #endif  /* ((CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) && \
+            *   (CapSense_1_IS_COMPLEX_SCANSLOTS))
+            */
     
     /* Disconnect from AMUX */
     #if (CapSense_1_DESIGN_TYPE == CapSense_1_ONE_CHANNEL_DESIGN)
@@ -1398,7 +1387,7 @@ void CapSense_1_DisableSensor(uint8 sensor)
             CapSense_1_AMuxCH0_Disconnect(CapSense_1_amuxIndex[sensor]);
         #else
             CapSense_1_AMuxCH0_Disconnect(sensor);
-        #endif  /* End CapSense_1_IS_COMPLEX_SCANSLOTS */
+        #endif  /* CapSense_1_IS_COMPLEX_SCANSLOTS */
                 
     #else
         #if (CapSense_1_IS_COMPLEX_SCANSLOTS)
@@ -1422,9 +1411,9 @@ void CapSense_1_DisableSensor(uint8 sensor)
                 CapSense_1_AMuxCH1_Disconnect(sensor - CapSense_1_TOTAL_SENSOR_COUNT__CH0);
             }
             
-        #endif  /* End CapSense_1_IS_COMPLEX_SCANSLOTS */
+        #endif  /* CapSense_1_IS_COMPLEX_SCANSLOTS */
         
-    #endif  /* End CapSense_1_DESIGN_TYPE */
+    #endif  /* CapSense_1_DESIGN_TYPE */
     
     /* Disconnect from DSI output */
 	if(port == 15u)
@@ -1440,7 +1429,7 @@ void CapSense_1_DisableSensor(uint8 sensor)
         *CapSense_1_pcTable[sensor] = CapSense_1_PRT_PC_HIGHZ;
     #else
         *CapSense_1_pcTable[sensor] = CapSense_1_PRT_PC_SHIELD;
-    #endif  /* End (CapSense_1_CONNECT_INACTIVE_SNS == CapSense_1_CIS_GND) */
+    #endif  /* (CapSense_1_CONNECT_INACTIVE_SNS == CapSense_1_CIS_GND) */
 }
 
 
@@ -1484,7 +1473,7 @@ void CapSense_1_PreScan(uint8 sensor)
                 CapSense_1_AMuxCH0_Disconnect(CapSense_1_AMuxCH0_VREF_CHANNEL);
             #else
                 CapSense_1_BufCH0_CAPS_CFG0_REG &= ~CapSense_1_CSBUF_ENABLE;
-            #endif  /*End (CapSense_1_VREF_VDAC != CapSense_1_VREF_OPTIONS) */
+            #endif  /* (CapSense_1_VREF_VDAC != CapSense_1_VREF_OPTIONS) */
 
             /* Enable Sensor */
             CapSense_1_EnableScanSlot(sensor);
@@ -1521,7 +1510,7 @@ void CapSense_1_PreScan(uint8 sensor)
                     CapSense_1_AMuxCH0_Disconnect(CapSense_1_AMuxCH0_VREF_CHANNEL);
                 #else
                     CapSense_1_BufCH0_CAPS_CFG0_REG &= ~CapSense_1_CSBUF_ENABLE;
-                #endif  /*End (CapSense_1_VREF_VDAC != CapSense_1_VREF_OPTIONS) */
+                #endif  /* (CapSense_1_VREF_VDAC != CapSense_1_VREF_OPTIONS) */
                 
                 /* Enable Sensor */
                 CapSense_1_EnableScanSlot(sensor);
@@ -1560,7 +1549,7 @@ void CapSense_1_PreScan(uint8 sensor)
                    CapSense_1_AMuxCH1_Disconnect(CapSense_1_AMuxCH1_VREF_CHANNEL);
                 #else 
                     CapSense_1_BufCH1_CAPS_CFG0_REG &= ~CapSense_1_CSBUF_ENABLE;
-                #endif  /* End (CapSense_1_VREF_VDAC == CapSense_1_VREF_OPTIONS) */
+                #endif  /* (CapSense_1_VREF_VDAC == CapSense_1_VREF_OPTIONS) */
                 
                 /* Enable Sensor */
                 CapSense_1_EnableScanSlot(sensor);
@@ -1624,7 +1613,7 @@ void CapSense_1_PreScan(uint8 sensor)
     *  No
     *
     *******************************************************************************/
-    void CapSense_1_PostScan(uint8 sensor)
+    void CapSense_1_PostScan(uint8 sensor) 
     {
         /* Stop Capsensing and rearm sync */
         CapSense_1_CONTROL_REG &= ~(CapSense_1_CTRL_START | CapSense_1_CTRL_SYNC_EN);
@@ -1638,7 +1627,7 @@ void CapSense_1_PreScan(uint8 sensor)
             CapSense_1_SensorRaw[sensor] |= (uint16) CapSense_1_RAW_CH0_COUNTER_LO_REG;
             CapSense_1_SensorRaw[sensor]  = CapSense_1_MEASURE_FULL_RANGE -
                                                       CapSense_1_SensorRaw[sensor];
-        #endif  /* End (CapSense_1_IMPLEMENTATION == CapSense_1_MEASURE_IMPLEMENTATION_FF)*/
+        #endif  /* (CapSense_1_IMPLEMENTATION == CapSense_1_MEASURE_IMPLEMENTATION_FF) */
         
         /* Disable Sensor */
         CapSense_1_DisableScanSlot(sensor);
@@ -1649,18 +1638,18 @@ void CapSense_1_PreScan(uint8 sensor)
             #if (CapSense_1_CURRENT_SOURCE == CapSense_1_IDAC_SINK)
                 /* Disconnect IDAC */
                 CapSense_1_AMuxCH0_Disconnect(CapSense_1_AMuxCH0_IDAC_CHANNEL);
-            #endif  /* End (CapSense_1_CURRENT_SOURCE == CapSense_1_IDAC_SINK) */
+            #endif  /* (CapSense_1_CURRENT_SOURCE == CapSense_1_IDAC_SINK) */
         #else
             /* Disconnect DSI output from Rb */
             *CapSense_1_rbTable[CapSense_1_RbCh0_cur] &= ~CapSense_1_BYP_MASK; 
-        #endif  /* End (CapSense_1_CURRENT_SOURCE)*/
+        #endif  /* (CapSense_1_CURRENT_SOURCE)*/
             
         /* Enable Vref on AMUX */
         #if (CapSense_1_VREF_OPTIONS == CapSense_1_VREF_VDAC)
             CapSense_1_AMuxCH0_Connect(CapSense_1_AMuxCH0_VREF_CHANNEL);
         #else
             CapSense_1_BufCH0_CAPS_CFG0_REG |= CapSense_1_CSBUF_ENABLE;
-        #endif  /* End (CapSense_1_VREF_VDAC == CapSense_1_VREF_OPTIONS) */
+        #endif  /* (CapSense_1_VREF_VDAC == CapSense_1_VREF_OPTIONS) */
     }
     
 #else
@@ -1688,7 +1677,7 @@ void CapSense_1_PreScan(uint8 sensor)
     *  No
     *
     *******************************************************************************/
-    void CapSense_1_PostScanCh0(uint8 sensor)
+    void CapSense_1_PostScanCh0(uint8 sensor) 
     {
         if (((CapSense_1_CONTROL_REG & CapSense_1_CTRL_WINDOW_EN__CH0) == 0u) && 
             ((CapSense_1_CONTROL_REG & CapSense_1_CTRL_WINDOW_EN__CH1) == 0u)) 
@@ -1706,7 +1695,7 @@ void CapSense_1_PreScan(uint8 sensor)
             CapSense_1_SensorRaw[sensor] |= (uint16) CapSense_1_RAW_CH0_COUNTER_LO_REG;
             CapSense_1_SensorRaw[sensor]  = CapSense_1_MEASURE_FULL_RANGE - 
                                                       CapSense_1_SensorRaw[sensor];
-        #endif  /* End (CapSense_1_IMPLEMENTATION_CH0 == CapSense_1_MEASURE_IMPLEMENTATION_FF)*/
+        #endif  /* (CapSense_1_IMPLEMENTATION_CH0 == CapSense_1_MEASURE_IMPLEMENTATION_FF)*/
         
         /* Disable Sensor */
         CapSense_1_DisableScanSlot(sensor);
@@ -1717,18 +1706,18 @@ void CapSense_1_PreScan(uint8 sensor)
             #if (CapSense_1_CURRENT_SOURCE == CapSense_1_IDAC_SINK)
                 /* Disconnect IDAC */
                 CapSense_1_AMuxCH0_Disconnect(CapSense_1_AMuxCH0_IDAC_CHANNEL);
-            #endif  /* End (CapSense_1_CURRENT_SOURCE == CapSense_1_IDAC_SINK) */
+            #endif  /* (CapSense_1_CURRENT_SOURCE == CapSense_1_IDAC_SINK) */
         #else
             /* Disconnect DSI output from Rb */
             *CapSense_1_rbTable[CapSense_1_RbCh0_cur] &= ~CapSense_1_BYP_MASK; 
-        #endif  /* End (CapSense_1_CURRENT_SOURCE)*/
+        #endif  /* (CapSense_1_CURRENT_SOURCE)*/
         
         /* Enable Vref on AMUX */
         #if (CapSense_1_VREF_OPTIONS == CapSense_1_VREF_VDAC)
             CapSense_1_AMuxCH0_Connect(CapSense_1_AMuxCH0_VREF_CHANNEL);
         #else
             CapSense_1_BufCH0_CAPS_CFG0_REG |= CapSense_1_CSBUF_ENABLE;
-        #endif  /* End (CapSense_1_VREF_VDAC == CapSense_1_VREF_OPTIONS) */
+        #endif  /* (CapSense_1_VREF_VDAC == CapSense_1_VREF_OPTIONS) */
     }
     
     
@@ -1755,7 +1744,7 @@ void CapSense_1_PreScan(uint8 sensor)
     *  No
     *
     *******************************************************************************/
-    void CapSense_1_PostScanCh1(uint8 sensor)
+    void CapSense_1_PostScanCh1(uint8 sensor) 
     {
         if (((CapSense_1_CONTROL_REG & CapSense_1_CTRL_WINDOW_EN__CH0) == 0u) && 
             ((CapSense_1_CONTROL_REG & CapSense_1_CTRL_WINDOW_EN__CH1) == 0u))
@@ -1773,7 +1762,7 @@ void CapSense_1_PreScan(uint8 sensor)
             CapSense_1_SensorRaw[sensor] |= (uint16) CapSense_1_RAW_CH1_COUNTER_LO_REG;
             CapSense_1_SensorRaw[sensor]  = CapSense_1_MEASURE_FULL_RANGE - 
                                                       CapSense_1_SensorRaw[sensor];
-        #endif  /* End (CapSense_1_IMPLEMENTATION_CH1 == CapSense_1_MEASURE_IMPLEMENTATION_FF)*/
+        #endif  /* (CapSense_1_IMPLEMENTATION_CH1 == CapSense_1_MEASURE_IMPLEMENTATION_FF)*/
         
         /* Disable Sensor */
         CapSense_1_DisableScanSlot(sensor);
@@ -1784,21 +1773,21 @@ void CapSense_1_PreScan(uint8 sensor)
             #if (CapSense_1_CURRENT_SOURCE == CapSense_1_IDAC_SINK)
                 /* Disconnect IDAC */
                 CapSense_1_AMuxCH1_Disconnect(CapSense_1_AMuxCH1_IDAC_CHANNEL);
-            #endif  /* End (CapSense_1_CURRENT_SOURCE == CapSense_1_IDAC_SINK) */
+            #endif  /* (CapSense_1_CURRENT_SOURCE == CapSense_1_IDAC_SINK) */
         #else
             /* Disconnect DSI output from Rb */
             *CapSense_1_rbTable[CapSense_1_RbCh1_cur] &= ~CapSense_1_BYP_MASK; 
-        #endif  /* End (CapSense_1_CURRENT_SOURCE)*/
+        #endif  /* (CapSense_1_CURRENT_SOURCE)*/
 
         /* Enable Vref on AMUX */
         #if (CapSense_1_VREF_OPTIONS == CapSense_1_VREF_VDAC)
             CapSense_1_AMuxCH1_Connect(CapSense_1_AMuxCH1_VREF_CHANNEL);
         #else
             CapSense_1_BufCH1_CAPS_CFG0_REG |= CapSense_1_CSBUF_ENABLE;
-        #endif  /* End (CapSense_1_VREF_VDAC == CapSense_1_VREF_OPTIONS) */
+        #endif  /* (CapSense_1_VREF_VDAC == CapSense_1_VREF_OPTIONS) */
     }
     
-#endif  /* End CapSense_1_DESIGN_TYPE */
+#endif  /* CapSense_1_DESIGN_TYPE */
 
 
 #if (CapSense_1_CURRENT_SOURCE == CapSense_1_EXTERNAL_RB)
@@ -1860,7 +1849,7 @@ void CapSense_1_PreScan(uint8 sensor)
     *  No
     *
     *******************************************************************************/
-    void CapSense_1_SetRBleed(uint8 rbleed)
+    void CapSense_1_SetRBleed(uint8 rbleed) 
     {
         #if (CapSense_1_DESIGN_TYPE == CapSense_1_ONE_CHANNEL_DESIGN)
             CapSense_1_RbCh0_cur = rbleed;
@@ -1875,406 +1864,9 @@ void CapSense_1_PreScan(uint8 sensor)
                 CapSense_1_RbCh1_cur = (rbleed - CapSense_1_TOTAL_RB_NUMBER__CH0);   
             }
     
-        #endif  /* End CapSense_1_DESIGN_TYPE */ 
+        #endif  /* CapSense_1_DESIGN_TYPE == CapSense_1_ONE_CHANNEL_DESIGN */ 
     }
-#endif /* End CapSense_1_CURRENT_SOURCE */ 
-
-
-#if (CapSense_1_CURRENT_SOURCE)
-    /*******************************************************************************
-    * Function Name: CapSense_1_IdacCH0_Init
-    ********************************************************************************
-    *
-    * Summary:
-    *  Sets VIDAC8 block to: IDAC mode, current direction (Source/Sink), current 
-    *  control from UDB (Ioff), IDAC range (32uA/255uA/2048uA) and IDAC value 0.
-    *  This function only available when Current Source is IDAC.
-    *
-    * Parameters:
-    *  None
-    *
-    * Return:
-    *  None
-    *
-    *******************************************************************************/
-    void CapSense_1_IdacCH0_Init(void) 
-    {
-        /* Set I mode of operation */
-        CapSense_1_IdacCH0_CR0_REG = CapSense_1_IDAC_MODE_I;
-        
-        /* Set Source/Sink direction and source of control */
-        CapSense_1_IdacCH0_CR1_REG = CapSense_1_IdacCH0_IDIR | CapSense_1_IDAC_IDIR_CTL_UDB;
-            
-        /* Set Range and IDAC value */
-        CapSense_1_IdacCH0_SetRange(CapSense_1_IDAC_RANGE_VALUE);
-        CapSense_1_IdacCH0_SetValue(CapSense_1_TURN_OFF_IDAC);       
-    }
-    
-    
-    /*******************************************************************************
-    * Function Name: CapSense_1_IdacCH0_Enable
-    ********************************************************************************
-    *
-    * Summary:
-    *  Turn on IDAC8.
-    *  This function only available when Current Source is IDAC.
-    *
-    * Parameters:
-    *  None
-    *
-    * Return:
-    *  None
-    *
-    *******************************************************************************/
-    void CapSense_1_IdacCH0_Enable(void) 
-    {
-        /* Set I mode of operation */
-        #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
-            if (0u != (CapSense_1_idac_cfg_restore & CapSense_1_IdacCH0_RESTORE_CFG))
-            {
-                CapSense_1_idac_cfg_restore &= ~CapSense_1_IdacCH0_RESTORE_CFG;
-                CapSense_1_IdacCH0_CR0_REG = CapSense_1_idac_ch0_cr0reg;
-            }
-        #endif  /* End (CY_PSOC3_ES2 || CY_PSOC5_ES1) */
-        
-        /* Enable power to DAC */
-        CapSense_1_IdacCH0_ACT_PWRMGR_REG  |= CapSense_1_IdacCH0_ACT_PWR_EN;
-        CapSense_1_IdacCH0_STBY_PWRMGR_REG |= CapSense_1_IdacCH0_STBY_PWR_EN;
-    }
-    
-    
-    /*******************************************************************************
-    * Function Name: CapSense_1_IdacCH0_Stop
-    ********************************************************************************
-    *
-    * Summary:
-    *  Powers down IDAC8 to lowest power state.
-    *  This function only available when Current Source is IDAC.
-    *
-    * Parameters:
-    *  None
-    *
-    * Return:
-    *  None
-    *
-    *******************************************************************************/
-    void CapSense_1_IdacCH0_Stop(void) 
-    {
-        /* Disble power to DAC */
-        CapSense_1_IdacCH0_ACT_PWRMGR_REG  &= ~CapSense_1_IdacCH0_ACT_PWR_EN;
-        CapSense_1_IdacCH0_STBY_PWRMGR_REG &= ~CapSense_1_IdacCH0_STBY_PWR_EN;
-        
-        /* Set to V mode */
-        #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
-            CapSense_1_idac_cfg_restore |= CapSense_1_IdacCH0_RESTORE_CFG;
-            CapSense_1_idac_ch0_cr0reg = CapSense_1_IdacCH0_CR0_REG;
-            CapSense_1_IdacCH0_CR0_REG = CapSense_1_IDAC_STOP_CR0_VAL;
-        #endif   /* End (CY_PSOC3_ES2 || CY_PSOC5_ES1) */
-    }
-    
-    
-    /*******************************************************************************
-    * Function Name: CapSense_1_IdacCH0_SetValue
-    ********************************************************************************
-    *
-    * Summary:
-    *  Sets IDAC8 value.
-    *  This function only available when Current Source is IDAC.
-    *
-    * Parameters:
-    *  value:  Sets DAC value between 0 and 255.
-    *
-    * Return:
-    *  None
-    *
-    *******************************************************************************/
-    void CapSense_1_IdacCH0_SetValue(uint8 value) 
-    {
-        #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
-            uint8 cts;
-            cts = CyEnterCriticalSection();
-        #endif  /* End  (CY_PSOC3_ES2 || CY_PSOC5_ES1) */
-        
-        /* Set Value */
-        CapSense_1_IdacCH0_DATA_REG = value;
-        
-        #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
-            CapSense_1_IdacCH0_DATA_REG = value;
-            CyExitCriticalSection(cts);
-        #endif  /* End  (CY_PSOC3_ES2 || CY_PSOC5_ES1) */
-    }
-    
-    
-    /*******************************************************************************
-    * Function Name: CapSense_1_IdacCH0_DacTrim
-    ********************************************************************************
-    *
-    * Summary:
-    *  Sets the trim value for the given range.
-    *  This function only available when Current Source is IDAC.
-    *
-    * Parameters:
-    *  None
-    * 
-    * Return:
-    *  None
-    *
-    *******************************************************************************/
-    void CapSense_1_IdacCH0_DacTrim(void) 
-    {
-        uint8 mode;
-        
-        mode = ((CapSense_1_IdacCH0_CR0_REG & CapSense_1_IDAC_RANGE_MASK) >> 1u);
-        
-        if((CapSense_1_IDAC_IDIR_MASK & CapSense_1_IdacCH0_CR1_REG) == CapSense_1_IDAC_IDIR_SINK)
-        {
-            mode++;
-        }
-        
-        CapSense_1_IdacCH0_TR_REG = CY_GET_XTND_REG8((uint8 *)(CapSense_1_IdacCH0_DAC_TRIM_BASE + mode));
-    }
-    
-    
-    /*******************************************************************************
-    * Function Name: CapSense_1_IdacCH0_SetRange
-    ********************************************************************************
-    *
-    * Summary:
-    *  Sets current range.
-    *  This function only available when Current Source is IDAC.
-    *
-    * Parameters:
-    *  range:  Sets on of three valid ranges.
-    *
-    * Return:
-    *  None
-    *
-    *******************************************************************************/
-    void CapSense_1_IdacCH0_SetRange(uint8 range) 
-    {
-        /* Clear existing mode */
-        CapSense_1_IdacCH0_CR0_REG &= ~CapSense_1_IDAC_RANGE_MASK;
-        
-        /* Set Range */
-        CapSense_1_IdacCH0_CR0_REG |= (range & CapSense_1_IDAC_RANGE_MASK);
-        CapSense_1_IdacCH0_DacTrim();
-    }
-
-    #if (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN)
-        
-        /*******************************************************************************
-        * Function Name: CapSense_1_IdacCH1_Init
-        ********************************************************************************
-        *
-        * Summary:
-        *  Sets VIDAC8 block to: IDAC mode, current direction (Source/Sink), current 
-        *  control from UDB (Ioff), IDAC range (32uA/255uA/2048uA) and IDAC value 0.
-        *  This function only available when Current Source is IDAC and two channels 
-        *  design is selected.
-        *
-        * Parameters:
-        *  None
-        *
-        * Return:
-        *  None
-        *
-        *******************************************************************************/
-        void CapSense_1_IdacCH1_Init(void) 
-        {
-            /* Set I mode of operation */
-            CapSense_1_IdacCH1_CR0_REG = CapSense_1_IDAC_MODE_I;
-            
-            /* Set Source/Sink direction and source of control */
-            CapSense_1_IdacCH1_CR1_REG = (CapSense_1_IdacCH1_IDIR | CapSense_1_IDAC_IDIR_CTL_UDB);
-            
-            /* Set Range and IDAC value */
-            CapSense_1_IdacCH1_SetRange(CapSense_1_IDAC_RANGE_VALUE);
-            CapSense_1_IdacCH1_SetValue(CapSense_1_TURN_OFF_IDAC);
-        }
-        
-        /*******************************************************************************
-        * Function Name: CapSense_1_IdacCH1_Enable
-        ********************************************************************************
-        *
-        * Summary:
-        *  Turn on IDAC8.
-        *  This function only available when Current Source is IDAC and two channels 
-        *  design is selected.
-        *
-        * Parameters:
-        *  None
-        *
-        * Return:
-        *  None
-        *
-        *******************************************************************************/
-        void CapSense_1_IdacCH1_Enable(void) 
-        {
-            /* Set I mode of operation */
-            #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
-                if (0u != (CapSense_1_idac_cfg_restore & CapSense_1_IdacCH1_RESTORE_CFG))
-                {
-                    CapSense_1_idac_cfg_restore &= ~CapSense_1_IdacCH1_RESTORE_CFG;
-                    CapSense_1_IdacCH1_CR0_REG = CapSense_1_idac_ch1_cr0reg;
-                }
-            #endif   /* End (CY_PSOC3_ES2 || CY_PSOC5_ES1) */
-            
-            /* Enable power to DAC */
-            CapSense_1_IdacCH1_ACT_PWRMGR_REG  |= CapSense_1_IdacCH1_ACT_PWR_EN;
-            CapSense_1_IdacCH1_STBY_PWRMGR_REG |= CapSense_1_IdacCH1_STBY_PWR_EN;
-        }
-        
-        /*******************************************************************************
-        * Function Name: CapSense_1_IdacCH1_Stop
-        ********************************************************************************
-        *
-        * Summary:
-        *  Powers down IDAC8 to lowest power state.
-        *  This function only available when Current Source is IDAC and two channels 
-        *  design is selected.
-        *
-        * Parameters:
-        *   None
-        *
-        * Return:
-        *  None
-        *
-        *******************************************************************************/
-        void CapSense_1_IdacCH1_Stop(void) 
-        {
-            /* Disable power from DAC */
-            CapSense_1_IdacCH1_ACT_PWRMGR_REG  &= ~CapSense_1_IdacCH1_ACT_PWR_EN;
-            CapSense_1_IdacCH1_STBY_PWRMGR_REG &= ~CapSense_1_IdacCH1_STBY_PWR_EN;
-
-            /* Set to V mode */
-            #if  (CY_PSOC3_ES2 || CY_PSOC5_ES1)
-                CapSense_1_idac_cfg_restore |= CapSense_1_IdacCH1_RESTORE_CFG;
-                CapSense_1_idac_ch1_cr0reg = CapSense_1_IdacCH1_CR0_REG;
-                CapSense_1_IdacCH1_CR0_REG = CapSense_1_IDAC_STOP_CR0_VAL;
-            #endif  /* End (CY_PSOC3_ES2 || CY_PSOC5_ES1) */
-        }
-        
-            
-        /*******************************************************************************
-        * Function Name: CapSense_1_IdacCH1_SetValue
-        ********************************************************************************
-        *
-        * Summary:
-        *  Sets IDAC8 value.
-        *  This function only available when Current Source is IDAC and two channels 
-        *  design is selected.
-        *
-        * Parameters:
-        *  value:  Sets DAC value between 0 and 255.
-        *
-        * Return:
-        *  None
-        *
-        *******************************************************************************/
-        void CapSense_1_IdacCH1_SetValue(uint8 value) 
-        {
-            #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
-                uint8 cts;
-                cts = CyEnterCriticalSection();
-            #endif  /* End  (CY_PSOC3_ES2 || CY_PSOC5_ES1) */
-
-            /* Set Value */
-            CapSense_1_IdacCH1_DATA_REG = value;
-            
-            #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
-                CapSense_1_IdacCH1_DATA_REG = value;
-                CyExitCriticalSection(cts);
-            #endif  /* End (CY_PSOC3_ES2 || CY_PSOC5_ES1) */
-        }
-        
-        
-        /*******************************************************************************
-        * Function Name: CapSense_1_IdacCH1_DacTrim
-        ********************************************************************************
-        *
-        * Summary:
-        *  Sets the trim value for the given range.
-        *  This function only available when Current Source is IDAC and two channels 
-        *  design is selected.
-        *
-        * Parameters:
-        *  None
-        * 
-        * Return:
-        *  None
-        *
-        *******************************************************************************/
-        void CapSense_1_IdacCH1_DacTrim(void) 
-        {
-            uint8 mode;
-            
-            mode = ((CapSense_1_IdacCH1_CR0_REG & CapSense_1_IDAC_RANGE_MASK) >> 1u);
-            
-            if((CapSense_1_IDAC_IDIR_MASK & CapSense_1_IdacCH1_CR1_REG) == CapSense_1_IDAC_IDIR_SINK)
-            {
-                mode++;
-            }
-            
-            CapSense_1_IdacCH1_TR_REG = 
-                                 CY_GET_XTND_REG8((uint8 *)(CapSense_1_IdacCH1_DAC_TRIM_BASE + mode));
-        }
-        
-        
-        /*******************************************************************************
-        * Function Name: CapSense_1_IdacCH1_SetRange
-        ********************************************************************************
-        *
-        * Summary:
-        *  Sets current range.
-        *  This function only available when Current Source is IDAC and two channels 
-        *  design is selected.
-        *
-        * Parameters:
-        *  range:  Sets on of three valid ranges.
-        *
-        * Return:
-        *  None
-        *
-        *******************************************************************************/
-        void CapSense_1_IdacCH1_SetRange(uint8 range) 
-        {
-            /* Clear existing mode */
-            CapSense_1_IdacCH1_CR0_REG &= ~CapSense_1_IDAC_RANGE_MASK;
-            
-            /* Set Range */
-            CapSense_1_IdacCH1_CR0_REG |= (range & CapSense_1_IDAC_RANGE_MASK);
-            CapSense_1_IdacCH1_DacTrim();
-        }
-        
-    #endif /* End CapSense_1_CURRENT_SOURCE */ 
-
-#endif /* End CapSense_1_CURRENT_SOURCE */ 
-
-
-#if (CapSense_1_CURRENT_SOURCE)
-    /*******************************************************************************
-    * Function Name: CapSense_1_SetIdacRange
-    ********************************************************************************
-    *
-    * Summary:
-    *  Sets DAC Range for one or two channels, depends on design type.
-    *
-    * Parameters:
-    *  range:  Sets on of three valid ranges.
-    *
-    * Return:
-    *  None
-    *
-    *******************************************************************************/
-    void CapSense_1_SetIdacRange(uint8 range)   
-    {
-        CapSense_1_IdacCH0_SetRange(range);
-        #if (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN)
-            CapSense_1_IdacCH1_SetRange(range);
-        #endif  /* End CapSense_1_DESIGN_TYPE */
-    }
-#endif /* End CapSense_1_CURRENT_SOURCE */     
-
+#endif /* CapSense_1_CURRENT_SOURCE == CapSense_1_EXTERNAL_RB */ 
 
 #if (CapSense_1_PRESCALER_OPTIONS)
     /*******************************************************************************
@@ -2302,7 +1894,7 @@ void CapSense_1_PreScan(uint8 sensor)
             CY_SET_REG16(CapSense_1_PRESCALER_COMPARE_PTR, (uint16) (prescaler >> 0x01u));
         #else
             /* Do nothing = config without prescaler */
-        #endif  /* End (CapSense_1_PRESCALER_OPTIONS == CapSense_1_PRESCALER_UDB) */
+        #endif  /* (CapSense_1_PRESCALER_OPTIONS == CapSense_1_PRESCALER_UDB) */
     }
 
 
@@ -2333,11 +1925,11 @@ void CapSense_1_PreScan(uint8 sensor)
             
         #else
             /* Do nothing = config without prescaler */
-        #endif  /* End (CapSense_1_PRESCALER_OPTIONS == CapSense_1_PRESCALER_UDB) */
+        #endif  /* (CapSense_1_PRESCALER_OPTIONS == CapSense_1_PRESCALER_UDB) */
         
         return prescaler;
     }
-#endif  /* End CapSense_1_PRESCALER_OPTIONS */
+#endif  /* CapSense_1_PRESCALER_OPTIONS */
 
 
 /*******************************************************************************
@@ -2378,8 +1970,11 @@ void CapSense_1_SetScanSpeed(uint8 scanspeed)
     * Return:
     *  None
     *
+    * Reentrant:
+    *  No
     *******************************************************************************/
     void CapSense_1_SetAnalogSwitchesSource(uint8 src)
+                      
     {
         if(src == CapSense_1_ANALOG_SWITCHES_SRC_PRESCALER)
         {
@@ -2390,6 +1985,6 @@ void CapSense_1_SetScanSpeed(uint8 scanspeed)
             CapSense_1_CONTROL_REG |= 0x10u;
         }
     }
-#endif
+#endif /* (CapSense_1_PRS_OPTIONS) */
 
 /* [] END OF FILE */

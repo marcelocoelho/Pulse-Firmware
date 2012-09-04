@@ -1,18 +1,18 @@
 /*******************************************************************************
-* File Name: UART_Net.c
-* Version 2.10
+* File Name: UART_Net_PM.c
+* Version 2.20
 *
 * Description:
 *  This file provides Sleep/WakeUp APIs functionality.
 *
 * Note:
 *
-*******************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions,
-* disclaimers, and limitations in the end user license agreement accompanying
+********************************************************************************
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
+* You may use this file only in accordance with the license, terms, conditions, 
+* disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
-********************************************************************************/
+*******************************************************************************/
 
 #include "UART_Net.h"
 
@@ -51,8 +51,7 @@ static UART_Net_BACKUP_STRUCT  UART_Net_backup =
 *******************************************************************************/
 void UART_Net_SaveConfig(void)
 {
-    /* PSoC3 ES2 or early, PSoC5 ES1*/
-    #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+    #if (CY_UDB_V0)
 
         #if(UART_Net_CONTROL_REG_REMOVED == 0u)
             UART_Net_backup.cr = UART_Net_CONTROL_REG;
@@ -77,14 +76,14 @@ void UART_Net_SaveConfig(void)
             UART_Net_backup.tx_mask = UART_Net_TXSTATUS_MASK_REG;
         #endif /*End UART_Net_TX_ENABLED */
 
-    /* PSoC3 ES3 or later, PSoC5 ES2 or later*/
-    #elif (CY_PSOC3_ES3 || CY_PSOC5_ES2)
+    
+    #else /* CY_UDB_V1 */
 
         #if(UART_Net_CONTROL_REG_REMOVED == 0u)
             UART_Net_backup.cr = UART_Net_CONTROL_REG;
         #endif /* End UART_Net_CONTROL_REG_REMOVED */
 
-    #endif  /* End PSOC3_ES3 || PSOC5_ES2 */
+    #endif  /* End CY_UDB_V0 */
 }
 
 
@@ -110,8 +109,8 @@ void UART_Net_SaveConfig(void)
 *******************************************************************************/
 void UART_Net_RestoreConfig(void)
 {
-    /* PSoC3 ES2 or early, PSoC5 ES1*/
-    #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+
+    #if (CY_UDB_V0)
 
         #if(UART_Net_CONTROL_REG_REMOVED == 0u)
             UART_Net_CONTROL_REG = UART_Net_backup.cr;
@@ -136,14 +135,13 @@ void UART_Net_RestoreConfig(void)
             UART_Net_TXSTATUS_MASK_REG = UART_Net_backup.tx_mask;
         #endif /*End UART_Net_TX_ENABLED */
 
-    /* PSoC3 ES3 or later, PSoC5 ES2 or later*/
-    #elif (CY_PSOC3_ES3 || CY_PSOC5_ES2)
+    #else /* CY_UDB_V1 */
 
         #if(UART_Net_CONTROL_REG_REMOVED == 0u)
             UART_Net_CONTROL_REG = UART_Net_backup.cr;
         #endif /* End UART_Net_CONTROL_REG_REMOVED */
 
-    #endif  /* End PSOC3_ES3 || PSOC5_ES2 */
+    #endif  /* End CY_UDB_V0 */
 }
 
 

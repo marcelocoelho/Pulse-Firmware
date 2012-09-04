@@ -1,19 +1,18 @@
 /*******************************************************************************
 * File Name: UART_Debug.c
-* Version 2.10
+* Version 2.20
 *
 * Description:
 *  This file provides all API functionality of the UART component
 *
 * Note:
 *
-*******************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions,
-* disclaimers, and limitations in the end user license agreement accompanying
+********************************************************************************
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
+* You may use this file only in accordance with the license, terms, conditions, 
+* disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
-********************************************************************************/
-
+*******************************************************************************/
 
 #include "UART_Debug.h"
 #include "CyLib.h"
@@ -452,7 +451,8 @@ void  UART_Debug_WriteControlRegister(uint8 control)
                         /* When Hardware Flow Control selected - return RX mask */
                         #if( UART_Debug_HD_ENABLED )
                             if((UART_Debug_CONTROL_REG & UART_Debug_CTRL_HD_SEND) == 0)
-                            {   /* In Half duplex mode return RX mask only in RX configuration set, otherwise 
+                            {   /* In Half duplex mode return RX mask only in RX 
+                                *  configuration set, otherwise 
                                 *  mask will be returned in LoadRxConfig() API. 
                                 */
                                 UART_Debug_RXSTATUS_MASK_REG  |= UART_Debug_RX_STS_FIFO_NOTEMPTY;
@@ -588,7 +588,8 @@ void  UART_Debug_WriteControlRegister(uint8 control)
                         /* When Hardware Flow Control selected - return RX mask */
                         #if( UART_Debug_HD_ENABLED )
                             if((UART_Debug_CONTROL_REG & UART_Debug_CTRL_HD_SEND) == 0)
-                            {   /* In Half duplex mode return RX mask only in RX configuration set, otherwise 
+                            {   /* In Half duplex mode return RX mask only if 
+                                *  RX configuration set, otherwise 
                                 *  mask will be returned in LoadRxConfig() API. 
                                 */
                                 UART_Debug_RXSTATUS_MASK_REG  |= UART_Debug_RX_STS_FIFO_NOTEMPTY;
@@ -1641,6 +1642,10 @@ void  UART_Debug_WriteControlRegister(uint8 control)
 
         UART_Debug_WriteControlRegister(UART_Debug_ReadControlRegister() | UART_Debug_CTRL_HD_SEND);
         UART_Debug_RXBITCTR_PERIOD_REG = UART_Debug_HD_TXBITCTR_INIT;
+        #if(CY_UDB_V0) /* Manually clear status register when mode has been changed */
+            /* Clear status register */
+            CY_GET_REG8(UART_Debug_RXSTATUS_PTR);
+        #endif /* CY_UDB_V0 */
     }
 
 
@@ -1670,13 +1675,17 @@ void  UART_Debug_WriteControlRegister(uint8 control)
     *******************************************************************************/
     void UART_Debug_LoadRxConfig(void) 
     {
-        #if((UART_Debug_RX_INTERRUPT_ENABLED) && (UART_Debug_RXBUFFERSIZE > UART_Debug_FIFO_LENGTH))
-            /* Enable RX interrupt mask before set RX configuration */
-            UART_Debug_SetRxInterruptMode(UART_Debug_INIT_RX_INTERRUPTS_MASK);    
-        #endif /* UART_Debug_RX_INTERRUPT_ENABLED */
-        
         UART_Debug_WriteControlRegister(UART_Debug_ReadControlRegister() & ~UART_Debug_CTRL_HD_SEND);
         UART_Debug_RXBITCTR_PERIOD_REG = UART_Debug_HD_RXBITCTR_INIT;
+        #if(CY_UDB_V0) /* Manually clear status register when mode has been changed */
+            /* Clear status register */
+            CY_GET_REG8(UART_Debug_RXSTATUS_PTR);
+        #endif /* CY_UDB_V0 */
+
+        #if((UART_Debug_RX_INTERRUPT_ENABLED) && (UART_Debug_RXBUFFERSIZE > UART_Debug_FIFO_LENGTH))
+            /* Enable RX interrupt after set RX configuration */
+            UART_Debug_SetRxInterruptMode(UART_Debug_INIT_RX_INTERRUPTS_MASK);    
+        #endif /* UART_Debug_RX_INTERRUPT_ENABLED */
     }
 
 #endif  /* UART_Debug_HD_ENABLED */

@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: USBUART_1.h
-* Version 2.12
+* Version 2.30
 *
 * Description:
 *  Header File for the USFS component. Contains prototypes and constant values.
@@ -25,16 +25,11 @@
 * Conditional Compilation Parameters
 ***************************************/
 
-/* Check to see if required defines such as CY_PSOC3 and CY_PSOC5 are available */
-/* They are defined starting with cy_boot v2.30 */
-#ifndef CY_PSOC3
-    #error Component USBFS_v2_12 requires cy_boot v2.30 or later
-#endif /* End CY_PSOC3 */
-
-#if(CY_PSOC3_ES2)
-    #include <intrins.h>
-    #define USBUART_1_ISR_PATCH() _nop_(); _nop_(); _nop_(); _nop_(); _nop_(); _nop_(); _nop_(); _nop_();
-#endif  /* End PSOC3_ES2 */
+/* Check to see if required defines such as CY_PSOC5LP are available */
+/* They are defined starting with cy_boot v3.0 */
+#if !defined (CY_PSOC5LP)
+    #error Component USBFS_v2_30 requires cy_boot v3.0 or later
+#endif /* (CY_PSOC5LP) */
 
 
 /***************************************
@@ -192,7 +187,7 @@ void   USBUART_1_InitComponent(uint8 device, uint8 mode) ;
 void   USBUART_1_Stop(void) ;
 uint8  USBUART_1_CheckActivity(void) ;
 uint8  USBUART_1_GetConfiguration(void) ;
-uint8 USBUART_1_IsConfigurationChanged(void) ;
+uint8  USBUART_1_IsConfigurationChanged(void) ;
 uint8  USBUART_1_GetInterfaceSetting(uint8 interfaceNumber)
                                                         ;
 uint8  USBUART_1_GetEPState(uint8 epNumber) ;
@@ -212,9 +207,9 @@ void   USBUART_1_TerminateEP(uint8 ep) ;
 
 void   USBUART_1_Suspend(void) ;
 void   USBUART_1_Resume(void) ;
-#if(CY_PSOC5_ES1)
+#if(CY_PSOC5A)
     uint8 USBUART_1_Resume_Condition(void);
-#endif /* CY_PSOC5_ES1 */    
+#endif /* CY_PSOC5A */    
 
 #if (USBUART_1_MON_VBUS == 1u)
     uint8  USBUART_1_VBusPresent(void) ;
@@ -757,15 +752,15 @@ void   USBUART_1_Resume(void) ;
 
 #define USBUART_1_DIE_ID             CYDEV_FLSHID_CUST_TABLES_BASE
 
-#if(CY_PSOC3_ES2 || CY_PSOC5_ES1)
+#if(CY_PSOC5A)
     #define USBUART_1_PM_AVAIL_CR_PTR    (  (reg8 *) CYREG_PM_AVAIL_CR6)
     #define USBUART_1_PM_AVAIL_CR_REG    (* (reg8 *) CYREG_PM_AVAIL_CR6)
-#else  /* CY_PSOC3_ES3 || CY_PSOC5_ES2 */
+#else
     #define USBUART_1_PM_USB_CR0_PTR     (  (reg8 *) CYREG_PM_USB_CR0)
     #define USBUART_1_PM_USB_CR0_REG     (* (reg8 *) CYREG_PM_USB_CR0)
     #define USBUART_1_DYN_RECONFIG_PTR   (  (reg8 *) USBUART_1_USB__DYN_RECONFIG)
     #define USBUART_1_DYN_RECONFIG_REG   (* (reg8 *) USBUART_1_USB__DYN_RECONFIG)
-#endif /* End CY_PSOC3_ES2 || CY_PSOC5_ES1 */
+#endif /* End CY_PSOC5A */
 
 #define USBUART_1_DM_INP_DIS_PTR     (  (reg8 *) USBUART_1_Dm__INP_DIS)
 #define USBUART_1_DM_INP_DIS_REG     (* (reg8 *) USBUART_1_Dm__INP_DIS)
@@ -899,9 +894,9 @@ void   USBUART_1_Resume(void) ;
 
 #define USBUART_1_PM_ACT_CFG     USBUART_1_PM_ACT_CFG_PTR
 #define USBUART_1_PM_STBY_CFG    USBUART_1_PM_STBY_CFG_PTR
-#if(CY_PSOC3_ES2 || CY_PSOC5_ES1)
+#if(CY_PSOC5A)
     #define USBUART_1_PM_AVAIL_CR    USBUART_1_PM_AVAIL_CR_PTR
-#endif /* End CY_PSOC3_ES2 || CY_PSOC5_ES1 */
+#endif /* End CY_PSOC5A */
 #define USBUART_1_SIE_EP_INT_EN  USBUART_1_SIE_EP_INT_EN_PTR
 #define USBUART_1_SIE_EP_INT_SR  USBUART_1_SIE_EP_INT_SR_PTR
 
@@ -1047,9 +1042,9 @@ void   USBUART_1_Resume(void) ;
 #define USBUART_1_CR1_ENABLE_LOCK            (0x02u)
 #define USBUART_1_CR1_BUS_ACTIVITY_SHIFT     (0x02u)
 #define USBUART_1_CR1_BUS_ACTIVITY           (0x01u << USBUART_1_CR1_BUS_ACTIVITY_SHIFT)
-#if(CY_PSOC3_ES3 || CY_PSOC5_ES2)
+#if(!CY_PSOC5A)
     #define USBUART_1_CR1_TRIM_MSB_EN            (0x08u)
-#endif /* End CY_PSOC3_ES3 || CY_PSOC5_ES2 */
+#endif /* End !CY_PSOC5A */
 
 #define USBUART_1_EP0_CNT_DATA_TOGGLE        (0x80u)
 #define USBUART_1_EPX_CNT_DATA_TOGGLE        (0x80u)
@@ -1061,19 +1056,19 @@ void   USBUART_1_Resume(void) ;
 
 #define USBUART_1_CR0_ENABLE                 (0x80u)
 
-#if(CY_PSOC3_ES2 || CY_PSOC5_ES1)
-    /* USB_BUS_RST_CNT register 2 bits wide only in ES2, therefore we use max length */
+#if(CY_PSOC5A)
+    /* USB_BUS_RST_CNT register 2 bits wide only in PSOC5A, therefore we use max length */
     #define USBUART_1_BUS_RST_COUNT              (0x03u)
     #define USBUART_1_USBIO_CR1_IOMODE           (0x80u)
     #define USBUART_1_USBIO_CR1_DRIVE_MODE       (0x40u)
     #define USBUART_1_USBIO_CR1_DPI              (0x20u)
     #define USBUART_1_USBIO_CR1_DMI              (0x10u)
     #define USBUART_1_USBIO_CR1_P2PUEN           (0x08u)
-#else  /* CY_PSOC3_ES3 || CY_PSOC5_ES2 */
+#else
     /* In leopard, a 100 KHz clock is used. Recommended is to count 10 pulses */
     #define USBUART_1_BUS_RST_COUNT              (0x0au)
     #define USBUART_1_USBIO_CR1_IOMODE           (0x20u)
-#endif /* End CY_PSOC3_ES2 || CY_PSOC5_ES1 */
+#endif /* End CY_PSOC5A */
 #define USBUART_1_USBIO_CR1_USBPUEN          (0x04u)
 #define USBUART_1_USBIO_CR1_DP0              (0x02u)
 #define USBUART_1_USBIO_CR1_DM0              (0x01u)

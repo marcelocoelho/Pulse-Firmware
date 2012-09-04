@@ -1,29 +1,23 @@
 /*******************************************************************************
-* File Name: Cm3Start.c  
-* Version 2.40
+* File Name: Cm3Start.c
+* Version 3.10
 *
 *  Description:
 *  Startup code for the ARM CM3.
 *
-*
-*
-*  Note:
-*
-*   
-*
 ********************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions, 
-* disclaimers, and limitations in the end user license agreement accompanying 
+* Copyright 2008-2012, Cypress Semiconductor Corporation. All rights reserved.
+* You may use this file only in accordance with the license, terms, conditions,
+* disclaimers, and limitations in the end user license agreement accompanying
 * the software package with which this file was provided.
-********************************************************************************/
+*******************************************************************************/
 
-#include <CYDEVICE_TRM.H>
-#include <CYTYPES.H>
-#include <CYFITTER_CFG.H>
-#include <CYLIB.H>
-#include <CYDMAC.H>
-#include <CYFITTER.H>
+#include "cydevice_trm.h"
+#include "cytypes.h"
+#include "cyfitter_cfg.h"
+#include "CyLib.h"
+#include "CyDmac.h"
+#include "cyfitter.h"
 
 
 #define NUM_INTERRUPTS              32
@@ -34,16 +28,15 @@
 #define NVIC_APINT_VECTKEY          0x05FA0000  /* This key is required in order to write the NVIC_APINT register */
 #define NVIC_CFG_STACKALIGN         0x00000200  /* This specifies that the exception stack must be 8 byte aligned */
 
-/* extern functions */
+/* Extern functions */
 extern void CyBtldr_CheckLaunch(void);
-/* function prototypes */
+
+/* Function prototypes */
 void initialize_psoc(void);
 
 
 /*******************************************************************************
-*
 * Default Ram Interrupt Vector table storage area. Must be 256-byte aligned.
-*
 *******************************************************************************/
 __attribute__ ((section(".ramvectors")))
 #if defined(__ARMCC_VERSION)
@@ -58,28 +51,25 @@ cyisraddress CyRamVectors[NUM_VECTORS];
 * Function Name: IntDefaultHandler
 ********************************************************************************
 * Summary:
-*   This function is called for all interrupts, other than reset, that get
-*   called before the system is setup.
-*
+*  This function is called for all interrupts, other than reset, that get
+*  called before the system is setup.
 *
 * Parameters:
-*   void.
-*
+*  None
 *
 * Return:
-*   void.
-*   
+*  None
 *
 * Theory:
-*   Any value other than zero is acceptable.
-*
+*  Any value other than zero is acceptable.
 *
 *******************************************************************************/
 CY_ISR(IntDefaultHandler)
 {
-    /* We should never get here. If we do, a serious problem occured, so 
-     * go into an infinite loop. 
-     */
+    /***************************************************************************
+    * We should never get here. If we do, a serious problem occured, so go into
+    * an infinite loop.
+    ***************************************************************************/
     while(1);
 }
 
@@ -161,50 +151,49 @@ const cyisraddress RomVectors[NUM_VECTORS] =
 * Function Name: Reset
 ********************************************************************************
 * Summary:
-*   This function handles the reset interrupt for the RVDS/MDK toolchains.  
-*   This is the first bit of code that is executed at startup.
-*   
+*  This function handles the reset interrupt for the RVDS/MDK toolchains.
+*  This is the first bit of code that is executed at startup.
 *
 * Parameters:
-*   void.
-*
+*  None
 *
 * Return:
-*   void.
-*   
+*  None
 *
 *******************************************************************************/
 __asm void Reset(void)
 {
-	PRESERVE8 
-	EXTERN __main
-	EXTERN CyResetStatus
-	
-#if (CYDEV_BOOTLOADER_ENABLE)
-	EXTERN CyBtldr_CheckLaunch
-#endif
+    PRESERVE8
+    EXTERN __main
+    EXTERN CyResetStatus
 
-#if (CYDEV_PROJ_TYPE != CYDEV_PROJ_TYPE_LOADABLE)
-  #if (CYDEV_DEBUGGING_ENABLE)
+    #if(CYDEV_BOOTLOADER_ENABLE)
+        EXTERN CyBtldr_CheckLaunch
+    #endif  /* (CYDEV_BOOTLOADER_ENABLE) */
+
+
+    #if(CYDEV_PROJ_TYPE != CYDEV_PROJ_TYPE_LOADABLE)
+        #if(CYDEV_DEBUGGING_ENABLE)
     ldr  r3, =0x400046e8 /* CYDEV_DEBUG_ENABLE_REGISTER */
-    ldrb r4, [r3, #0]
-    orr  r4, r4, #01
-    strb r4, [r3, #0]
+            ldrb r4, [r3, #0]
+            orr  r4, r4, #01
+            strb r4, [r3, #0]
 debugEnabled
-  #endif
-	
+        #endif    /* (CYDEV_DEBUGGING_ENABLE) */
+
     ldr  r3, =0x400046f8 /* CYREG_RESET_SR0 */
-    ldrb r2, [r3, #0]
-#endif
-	
+        ldrb r2, [r3, #0]
+
+    #endif  /* (CYDEV_PROJ_TYPE != CYDEV_PROJ_TYPE_LOADABLE) */
+
     ldr  r3, =0x400076BC /* CYREG_PHUB_CFGMEM23_CFG1 */
     strb r2, [r3, #0]
-	
-#if (CYDEV_BOOTLOADER_ENABLE)
-    bl CyBtldr_CheckLaunch
-#endif /* CYDEV_BOOTLOADER_ENABLE */
 
-    /* Let RealView setup the libraries. */    
+    #if(CYDEV_BOOTLOADER_ENABLE)
+        bl CyBtldr_CheckLaunch
+    #endif /* (CYDEV_BOOTLOADER_ENABLE) */
+
+    /* Let RealView setup the libraries. */
     bl __main
 
     ALIGN
@@ -215,16 +204,13 @@ debugEnabled
 * Function Name: $Sub$$main
 ********************************************************************************
 * Summary:
-*   This function is called imediatly before the users main
-*
+*  This function is called imediatly before the users main
 *
 * Parameters:
-*   void.
-*
+*  None
 *
 * Return:
-*   void.
-*   
+*  None
 *
 *******************************************************************************/
 void $Sub$$main(void)
@@ -250,45 +236,43 @@ extern void __cs3_start_c(void);
 * Function Name: Reset
 ********************************************************************************
 * Summary:
-*   This function handles the reset interrupt for the GCC toolchain.  This is 
-*   the first bit of code that is executed at startup.
-*
+*  This function handles the reset interrupt for the GCC toolchain.  This is the
+*  first bit of code that is executed at startup.
 *
 * Parameters:
-*   void.
-*
+*  None
 *
 * Return:
-*   void.
-*
+*  None
 *
 *******************************************************************************/
 __attribute__ ((naked))
 void Reset(void)
 {
     __asm volatile(
-#if (CYDEV_PROJ_TYPE != CYDEV_PROJ_TYPE_LOADABLE)
-  #if (CYDEV_DEBUGGING_ENABLE)
+#if(CYDEV_PROJ_TYPE != CYDEV_PROJ_TYPE_LOADABLE)
+
+  #if(CYDEV_DEBUGGING_ENABLE)
     "    ldr  r3, =%0\n"
     "    ldrb r4, [r3, #0]\n"
     "    orr  r4, r4, #01\n"
     "    strb r4, [r3, #0]\n"
     "debugEnabled:\n"
-  #endif
-	
+  #endif    /* (CYDEV_DEBUGGING_ENABLE) */
+
     "    ldr  r3, =%1\n"
     "    ldrb r2, [r3, #0]\n"
     "    uxtb r2, r2\n"
-#endif
-	
+#endif  /* (CYDEV_PROJ_TYPE != CYDEV_PROJ_TYPE_LOADABLE) */
+
     "    ldr  r3, =%2\n"
     "    strb r2, [r3, #0]\n"
-	
-#if (CYDEV_BOOTLOADER_ENABLE)
-    "    bl CyBtldr_CheckLaunch\n"
-#endif /* CYDEV_BOOTLOADER_ENABLE */
 
-    /* Let RealView setup the libraries. */    
+#if(CYDEV_BOOTLOADER_ENABLE)
+    "    bl CyBtldr_CheckLaunch\n"
+#endif /* (CYDEV_BOOTLOADER_ENABLE) */
+
+    /*  Switch to C initialization phase */
     "    bl __cs3_start_c\n" : : "i" (CYDEV_DEBUG_ENABLE_REGISTER), "i" (CYREG_RESET_SR0), "i" (CYREG_PHUB_CFGMEM23_CFG1));
 }
 
@@ -298,37 +282,36 @@ void Reset(void)
 * Function Name: initialize_psoc
 ********************************************************************************
 * Summary:
-*   This function used to initialize the PSoC chip before calling main.
-*
+*  This function used to initialize the PSoC chip before calling main.
 *
 * Parameters:
-*   void.
-*
+*  None
 *
 * Return:
-*   void.
-*
+*  None
 *
 *******************************************************************************/
 #if (defined(__GNUC__) && !defined(__ARMCC_VERSION))
 __attribute__ ((constructor(101)))
 #endif
+
 void initialize_psoc(void)
 {
     unsigned long index;
 
     /* Set Priority group 5. */
-    /* Writes to the NVIC_APINT register require the VECTKEY in the upper half */
+
+    /* Writes to NVIC_APINT register require the VECTKEY in the upper half */
     *NVIC_APINT = NVIC_APINT_VECTKEY | NVIC_APINT_PRIGROUP_3_5;
     *NVIC_CFG_CTRL |= NVIC_CFG_STACKALIGN;
-	
+
     /* Set Ram interrupt vectors to default functions. */
     for(index = 0; index < NUM_VECTORS; index++)
     {
         CyRamVectors[index] = RomVectors[index];
     }
 
-    /* ResetStatus was stored in CFGMEM to avoid being cleared while SRAM gets cleared */
+    /* Was stored in CFGMEM to avoid being cleared while SRAM gets cleared */
     CyResetStatus = CY_GET_REG8(CYREG_PHUB_CFGMEM23_CFG1);
 
     /* Point NVIC at the RAM vector table. */
@@ -337,6 +320,13 @@ void initialize_psoc(void)
     /* Initialize the configuration registers. */
     cyfitter_cfg();
 
-    /* Setup DMA td linked list. */
-    CyDmacConfigure();
+    #if(0u != DMA_CHANNELS_USED__MASK0)
+
+        /* Setup DMA - only necessary if the design contains a DMA component. */
+        CyDmacConfigure();
+
+    #endif  /* (0u != DMA_CHANNELS_USED__MASK0) */
 }
+
+
+/* [] END OF FILE */

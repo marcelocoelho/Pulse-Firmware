@@ -1,12 +1,9 @@
 ;******************************************************************************
 ; File Name: USBUART_1_cdc.inf
-; Version 2.12
+; Version 2.30
 ;
 ; Description:
 ;  Windows USB CDC setup file for USBUART Device.
-;
-; Note:
-;  VID, PID should be updated to match the configuration in customizer.
 ;
 ;******************************************************************************
 ; Copyright 2007-2012, Cypress Semiconductor Corporation.  All rights reserved.

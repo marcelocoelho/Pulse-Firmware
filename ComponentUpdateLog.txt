@@ -1,0 +1,67 @@
+Last Modified Date & Time: 08/24/2012 13:42:02
+
+Project : Pulser1
+		Schematic : TopDesign/TopDesign.cysch
+
+		VDAC_PulseRef	v 1.70	v 1.80
+		ADC_PulseIn	v 2.20	v 2.30
+		Pin_DebugButton	v 1.60	v 1.70
+		Pin_DebugLED	v 1.60	v 1.70
+		Pin_PylonType1	v 1.60	v 1.70
+		Pin_PylonType0	v 1.60	v 1.70
+		Pin_Rx_Debug	v 1.60	v 1.70
+		Pin_Tx_Debug	v 1.60	v 1.70
+		Pin_Rx_Net	v 1.60	v 1.70
+		Pin_Tx_Net	v 1.60	v 1.70
+		Pin_ProxIR_1	v 1.60	v 1.70
+		Pin_ProxIR_2	v 1.60	v 1.70
+		Pin_ProxIR_3	v 1.60	v 1.70
+		Pin_PulseIn_minus	v 1.60	v 1.70
+		Pin_PulseRef	v 1.60	v 1.70
+		Pin_DevId_0	v 1.60	v 1.70
+		Pin_PulseIR_Intensity	v 1.60	v 1.70
+		Pin_PulseRed_Intensity	v 1.60	v 1.70
+		Pin_PulseIn_plus	v 1.60	v 1.70
+		Pin_PulseIR_on	v 1.60	v 1.70
+		Pin_PulseRed_on	v 1.60	v 1.70
+		Pin_BrightLEDCool	v 1.60	v 1.70
+		Pin_BrightLEDWarm	v 1.60	v 1.70
+		Pin_BrightLEDRed	v 1.60	v 1.70
+		Pin_DevId_1	v 1.60	v 1.70
+		Pin_DevId_2	v 1.60	v 1.70
+		Pin_DevId_3	v 1.60	v 1.70
+		Pin_DevId_4	v 1.60	v 1.70
+		Pin_DevId_5	v 1.60	v 1.70
+		Pin_DevId_6	v 1.60	v 1.70
+		Pin_DevId_7	v 1.60	v 1.70
+		Pin_Rx_Net_Enable	v 1.60	v 1.70
+		Pin_Tx_Net_Enable	v 1.60	v 1.70
+		Pin_LightsOn	v 1.60	v 1.70
+		IDAC8_PulseIR	v 1.80	v 1.90
+		IDAC8_PulseRed	v 1.80	v 1.90
+		CapSense_1	v 3.10	v 3.20
+		UART_Debug	v 2.10	v 2.20
+		UART_Net	v 2.10	v 2.20
+		AMux_ProxIR	v 1.50	v 1.60
+		ADC_SAR_ProxIR	v 1.71	v 1.80
+		TIA_PulseIn	v 1.80	v 1.91
+		Opamp_PulseRef	v 1.70	v 1.80
+		Filter_PulseInBand	v 2.0	v 2.10
+		Clock_PWM_PulseLEDs	v 1.60	v 1.70
+		Clock_1	v 1.60	v 1.70
+		PWM_PulseLEDs	v 2.10	v 2.20
+		isr_PulseReadAmbient	v 1.50	v 1.60
+		isr_PulseReadIR	v 1.50	v 1.60
+		PrISM_PulseIndicator	v 2.0	v 2.10
+		PrISM_PulseIndicator_1	v 2.0	v 2.10
+		PrISM_PulseIndicator_2	v 2.0	v 2.10
+		ShiftReg_DelaySenseIR	v 2.0	v 2.10
+		USBUART_1	v 2.12	v 2.30
+		Status_Reg_DevID	v 1.60	v 1.70
+
+Project : Pulser1
+		Design Wide APIs
+
+		cy_boot	v 2.40	v 3.10
+
+

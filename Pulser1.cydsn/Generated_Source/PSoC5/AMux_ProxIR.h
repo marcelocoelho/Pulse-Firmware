@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: AMux_ProxIR.h
-* Version 1.50
+* Version 1.60
 *
 *  Description:
 *    This file contains the constants and function prototypes for the Analog
@@ -28,14 +28,14 @@
 ***************************************/
 
 void AMux_ProxIR_Start(void);
-void AMux_ProxIR_Init(void);
-void AMux_ProxIR_Stop(void);
-void AMux_ProxIR_Select(uint8 channel) ;
+# define AMux_ProxIR_Init() AMux_ProxIR_Start()
 void AMux_ProxIR_FastSelect(uint8 channel) ;
-void AMux_ProxIR_DisconnectAll(void) ;
-/* The Connect and Disconnect functions are declared elsewhere */
+/* The Stop, Select, Connect, Disconnect and DisconnectAll functions are declared elsewhere */
+/* void AMux_ProxIR_Stop(void); */
+/* void AMux_ProxIR_Select(uint8 channel); */
 /* void AMux_ProxIR_Connect(uint8 channel); */
 /* void AMux_ProxIR_Disconnect(uint8 channel); */
+/* void AMux_ProxIR_DisconnectAll(void) */
 
 
 /***************************************
@@ -44,7 +44,7 @@ void AMux_ProxIR_DisconnectAll(void) ;
 
 #define AMux_ProxIR_CHANNELS  3
 #define AMux_ProxIR_MUXTYPE   1
-
+#define AMux_ProxIR_ATMOSTONE 0
 
 /***************************************
 *             API Constants
@@ -60,11 +60,25 @@ void AMux_ProxIR_DisconnectAll(void) ;
 ***************************************/
 
 #if AMux_ProxIR_MUXTYPE == AMux_ProxIR_MUX_SINGLE
+#if !AMux_ProxIR_ATMOSTONE
 # define AMux_ProxIR_Connect(channel) AMux_ProxIR_Set(channel)
+#endif
 # define AMux_ProxIR_Disconnect(channel) AMux_ProxIR_Unset(channel)
 #else
+#if !AMux_ProxIR_ATMOSTONE
 void AMux_ProxIR_Connect(uint8 channel) ;
+#endif
 void AMux_ProxIR_Disconnect(uint8 channel) ;
+#endif
+
+#if AMux_ProxIR_ATMOSTONE
+# define AMux_ProxIR_Stop() AMux_ProxIR_DisconnectAll()
+# define AMux_ProxIR_Select(channel) AMux_ProxIR_FastSelect(channel)
+void AMux_ProxIR_DisconnectAll(void) ;
+#else
+# define AMux_ProxIR_Stop() AMux_ProxIR_Start()
+void AMux_ProxIR_Select(uint8 channel) ;
+# define AMux_ProxIR_DisconnectAll() AMux_ProxIR_Start()
 #endif
 
 #endif /* CY_AMUX_AMux_ProxIR_H */

@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: Pin_DevId_5.c  
-* Version 1.60
+* Version 1.70
 *
 * Description:
 *  This file contains API to enable firmware control of a Pins component.
@@ -18,8 +18,7 @@
 #include "Pin_DevId_5.h"
 
 /* APIs are not generated for P15[7:6] */
-#if !(CYDEV_CHIP_FAMILY_USED == CYDEV_CHIP_FAMILY_PSOC5 &&\
-     CYDEV_CHIP_REVISION_USED == CYDEV_CHIP_REVISION_5A_PRODUCTION &&\
+#if !(CY_PSOC5A &&\
 	 Pin_DevId_5__PORT == 15 && (Pin_DevId_5__MASK & 0xC0))
 
 /*******************************************************************************

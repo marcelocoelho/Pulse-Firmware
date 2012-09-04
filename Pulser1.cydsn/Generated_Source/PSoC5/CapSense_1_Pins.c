@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: CapSense_1_Pins.c
-* Version 3.10
+* Version 3.20
 *
 * Description:
 *  This file contains API to enable firmware control of a Pins component.
@@ -8,7 +8,7 @@
 * Note:
 *
 ********************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions,
 * disclaimers, and limitations in the end user license agreement accompanying
 * the software package with which this file was provided.
@@ -86,7 +86,7 @@ void CapSense_1_SetAllCmodsDriveMode(uint8 mode)
         /* Set pins drive mode */
       
     }
-#endif  /* End (CapSense_1_CURRENT_SOURCE == CapSense_1_EXTERNAL_RB) */
+#endif  /* (CapSense_1_CURRENT_SOURCE == CapSense_1_EXTERNAL_RB) */
 
 
 /* [] END OF FILE */

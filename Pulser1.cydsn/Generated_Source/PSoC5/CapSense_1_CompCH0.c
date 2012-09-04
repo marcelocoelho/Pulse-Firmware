@@ -1,29 +1,35 @@
 /*******************************************************************************
-* File Name: CapSense_1_CompCH0.c  
-* Version 1.70
+* File Name: CapSense_1_CompCH0.c
+* Version 1.90
 *
-*  Description:
-*    This file provides the source code to the API for the Comparator component.
+* Description:
+*  This file provides the source code to the API for the Comparator component
 *
-*  Note:
-*     
-*******************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
+* Note:
+*  None
+*
+********************************************************************************
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions, 
 * disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
-********************************************************************************/
+*******************************************************************************/
 
 #include "CapSense_1_CompCH0.h"
 
 uint8 CapSense_1_CompCH0_initVar = 0u;
-static CapSense_1_CompCH0_backupStruct  CapSense_1_CompCH0_backup;
+
+
+/* static CapSense_1_CompCH0_backupStruct  CapSense_1_CompCH0_backup; */
+#if (CY_PSOC5A)
+    static CapSense_1_CompCH0_LOWPOWER_BACKUP_STRUCT  CapSense_1_CompCH0_lowPowerBackup;
+#endif /* CY_PSOC5A */
 
 /* variable to decide whether or not to restore the control register in 
-   Enable() API for PSoC5 ES1 only */
-#if (CY_PSOC5_ES1)
+   Enable() API for PSoC5A only */
+#if (CY_PSOC5A)
     uint8 CapSense_1_CompCH0_restoreReg = 0u;
-#endif /* CY_PSOC5_ES1 */
+#endif /* CY_PSOC5A */
 
 
 /*******************************************************************************
@@ -33,14 +39,11 @@ static CapSense_1_CompCH0_backupStruct  CapSense_1_CompCH0_backup;
 * Summary:
 *  Initialize to the schematic state
 * 
-* Parameters:  
-*  void  
-*
-* Return: 
+* Parameters:
 *  void
 *
-* Reentrant:
-*  Yes
+* Return:
+*  void
 *
 *******************************************************************************/
 void CapSense_1_CompCH0_Init(void) 
@@ -58,8 +61,8 @@ void CapSense_1_CompCH0_Init(void)
         CapSense_1_CompCH0_CR &= ~CapSense_1_CompCH0_HYST_OFF; 
     }
     
-    /* Power down override feature is not supported for PSoC5. */
-    #if (CY_PSOC3)
+    /* Power down override feature is not supported for PSoC5A. */
+    #if (CY_PSOC3 || CY_PSOC5LP)
         /* Set default Power Down Override */
         if ( CapSense_1_CompCH0_DEFAULT_PWRDWN_OVRD == 0u )
         {
@@ -69,7 +72,7 @@ void CapSense_1_CompCH0_Init(void)
         {
             CapSense_1_CompCH0_CR |= CapSense_1_CompCH0_PWRDWN_OVRD;
         }
-    #endif /* CY_PSOC3 */
+    #endif /* CY_PSOC3 || CY_PSOC5LP */
     
     /* Set mux always on logic */
     CapSense_1_CompCH0_CR |= CapSense_1_CompCH0_MX_AO;
@@ -94,14 +97,11 @@ void CapSense_1_CompCH0_Init(void)
 * Summary:
 *  Enable the Comparator
 * 
-* Parameters:  
-*  void  
-*
-* Return: 
+* Parameters:
 *  void
 *
-* Reentrant:
-*  Yes
+* Return:
+*  void
 *
 *******************************************************************************/
 void CapSense_1_CompCH0_Enable(void) 
@@ -111,15 +111,15 @@ void CapSense_1_CompCH0_Enable(void)
      
      /* This is to restore the value of register CR which is saved 
     in prior to the modification in stop() API */
-    #if (CY_PSOC5_ES1)
-    if(CapSense_1_CompCH0_restoreReg == 1u)
-    {
-        CapSense_1_CompCH0_CR = CapSense_1_CompCH0_backup.compCRReg;
+    #if (CY_PSOC5A)
+        if(CapSense_1_CompCH0_restoreReg == 1u)
+        {
+            CapSense_1_CompCH0_CR = CapSense_1_CompCH0_lowPowerBackup.compCRReg;
 
-        /* Clear the flag */
-        CapSense_1_CompCH0_restoreReg = 0u;
-    }
-    #endif /* CY_PSOC5_ES1 */
+            /* Clear the flag */
+            CapSense_1_CompCH0_restoreReg = 0u;
+        }
+    #endif /* CY_PSOC5A */
 }
 
 
@@ -133,16 +133,13 @@ void CapSense_1_CompCH0_Enable(void)
 * Parameters:
 *  void
 *
-* Return:  
+* Return:
 *  void 
 *
 * Global variables:
 *  CapSense_1_CompCH0_initVar: Is modified when this function is called for the 
-*    first time. Is used to ensure that initialization happens only once.
+*   first time. Is used to ensure that initialization happens only once.
 *  
-* Reentrant:
-*  No
-*
 *******************************************************************************/
 void CapSense_1_CompCH0_Start(void) 
 {
@@ -152,7 +149,7 @@ void CapSense_1_CompCH0_Start(void)
         CapSense_1_CompCH0_Init();
         
         CapSense_1_CompCH0_initVar = 1u;
-    }    
+    }   
 
     /* Enable power to comparator */
     CapSense_1_CompCH0_Enable();    
@@ -166,14 +163,11 @@ void CapSense_1_CompCH0_Start(void)
 * Summary:
 *  Powers down amplifier to lowest power state.
 *
-* Parameters:  
+* Parameters:
 *  void
 *
-* Return: 
-*  void 
-*
-* Reentrant:
-*  Yes
+* Return:
+*  void
 *
 *******************************************************************************/
 void CapSense_1_CompCH0_Stop(void) 
@@ -182,14 +176,14 @@ void CapSense_1_CompCH0_Stop(void)
     CapSense_1_CompCH0_PWRMGR &= ~CapSense_1_CompCH0_ACT_PWR_EN;
     CapSense_1_CompCH0_STBY_PWRMGR &= ~CapSense_1_CompCH0_STBY_PWR_EN;    
 
-    #if (CY_PSOC5_ES1)
+    #if (CY_PSOC5A)
         /* Enable the variable */
         CapSense_1_CompCH0_restoreReg = 1u;
 
         /* Save the control register before clearing it */
-        CapSense_1_CompCH0_backup.compCRReg = CapSense_1_CompCH0_CR;
+        CapSense_1_CompCH0_lowPowerBackup.compCRReg = CapSense_1_CompCH0_CR;
         CapSense_1_CompCH0_CR = CapSense_1_CompCH0_COMP_REG_CLR;
-    #endif /* CY_PSOC5_ES1 */
+    #endif /* CY_PSOC5A */
 }
 
 
@@ -198,17 +192,14 @@ void CapSense_1_CompCH0_Stop(void)
 ********************************************************************************
 *
 * Summary:
-*  This function sets the speed of the Analog Comparator.  The faster the speed
+*  This function sets the speed of the Analog Comparator. The faster the speed
 *  the more power that is used.
 *
-* Parameters:  
-*  speed:   (uint8) Sets operation mode of Comparator
+* Parameters:
+*  speed: (uint8) Sets operation mode of Comparator
 *
-* Return:  
-*  void 
-*
-* Reentrant:
-*  Yes
+* Return:
+*  void
 *
 *******************************************************************************/
 void CapSense_1_CompCH0_SetSpeed(uint8 speed) 
@@ -220,29 +211,29 @@ void CapSense_1_CompCH0_SetSpeed(uint8 speed)
     /* Set trim value for high speed comparator */
     if(speed == CapSense_1_CompCH0_HIGHSPEED)
     {
-        /* PSoC3 ES2 or early, PSoC5 ES1 or early */
-        #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
-        CapSense_1_CompCH0_TR = CapSense_1_CompCH0_HS_TRIM_TR0;
-        #endif /* CY_PSOC3_ES2 || CY_PSOC5_ES1 */
+        /* PSoC5A */
+        #if (CY_PSOC5A)
+            CapSense_1_CompCH0_TR = CapSense_1_CompCH0_HS_TRIM_TR0;
+        #endif /* CY_PSOC5A */
         
-        /* PSoC3 ES3 or later, PSoC5 ES2 or later */
-        #if (CY_PSOC3_ES3 || CY_PSOC5_ES2) 
-        CapSense_1_CompCH0_TR0 = CapSense_1_CompCH0_HS_TRIM_TR0;
-        CapSense_1_CompCH0_TR1 = CapSense_1_CompCH0_HS_TRIM_TR1;
-        #endif /* CY_PSOC3_ES2 || CY_PSOC5_ES1 */
+        /* PSoC3, PSoC5LP or later */
+        #if (CY_PSOC3 || CY_PSOC5LP) 
+            CapSense_1_CompCH0_TR0 = CapSense_1_CompCH0_HS_TRIM_TR0;
+            CapSense_1_CompCH0_TR1 = CapSense_1_CompCH0_HS_TRIM_TR1;
+        #endif /* CY_PSOC3 || CY_PSOC5LP */
     }
     else
     {
-    /* PSoC3 ES2 or early, PSoC5 ES1 or early */
-        #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
-        CapSense_1_CompCH0_TR = CapSense_1_CompCH0_LS_TRIM_TR0;
-        #endif /* CY_PSOC3_ES2 || CY_PSOC5_ES1 */
+    /* PSoC5A */
+        #if (CY_PSOC5A)
+            CapSense_1_CompCH0_TR = CapSense_1_CompCH0_LS_TRIM_TR0;
+        #endif /* CY_PSOC5A */
         
-        /* PSoC3 ES3 or later, PSoC5 ES2 or later */
-        #if (CY_PSOC3_ES3 || CY_PSOC5_ES2) 
-        CapSense_1_CompCH0_TR0 = CapSense_1_CompCH0_LS_TRIM_TR0;
-        CapSense_1_CompCH0_TR1 = CapSense_1_CompCH0_LS_TRIM_TR1;
-        #endif /* CY_PSOC3_ES2 || CY_PSOC5_ES1 */
+        /* PSoC3, PSoC5LP or later */
+        #if (CY_PSOC3 || CY_PSOC5LP) 
+            CapSense_1_CompCH0_TR0 = CapSense_1_CompCH0_LS_TRIM_TR0;
+            CapSense_1_CompCH0_TR1 = CapSense_1_CompCH0_LS_TRIM_TR1;
+        #endif /* CY_PSOC3 || CY_PSOC5LP */
     }
 
 }
@@ -255,15 +246,12 @@ void CapSense_1_CompCH0_SetSpeed(uint8 speed)
 * Summary:
 *  This function returns the comparator output value.
 *
-* Parameters:  
+* Parameters:
 *   None
 *
-* Return:  
+* Return:
 *  (uint8)  0  if Pos_Input less than Neg_input
-*           1  if Pos_Input greater than Neg_input. 
-*
-* Reentrant:
-*  Yes
+*           1  if Pos_Input greater than Neg_input.
 *
 *******************************************************************************/
 uint8 CapSense_1_CompCH0_GetCompare(void) 
@@ -296,13 +284,10 @@ uint8 CapSense_1_CompCH0_GetCompare(void)
 *  Routine uses a course 1ms delay following each trim adjustment to allow 
 *  the comparator output to respond.
 *
-* Reentrant:
-*  No
-*
 *******************************************************************************/
-void CapSense_1_CompCH0_trimAdjust(uint8 nibble)
+void CapSense_1_CompCH0_trimAdjust(uint8 nibble) 
 {
-    uint8 trimCnt;
+    uint8 trimCnt, trimCntMax;
     uint8 cmpState;   
 
     /* get current state of comparator output */
@@ -313,15 +298,15 @@ void CapSense_1_CompCH0_trimAdjust(uint8 nibble)
         /* if comparator output is high, negative offset adjust is required */
         if ( cmpState != 0u )
         {
-            /* PSoC3 ES2 or early, PSoC5 ES1 or early */
-            #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+            /* PSoC5A */
+            #if (CY_PSOC5A)
                 CapSense_1_CompCH0_TR |= CapSense_1_CompCH0_CMP_TRIM1_DIR;
-            #endif /* CY_PSOC3_ES2 || CY_PSOC5_ES1 */
+            #endif /* CY_PSOC5A */
             
-            /* PSoC3 ES3 or later, PSoC5 ES2 or later */
-            #if (CY_PSOC3_ES3 || CY_PSOC5_ES2)
+            /* PSoC3, PSoC5LP or later */
+            #if (CY_PSOC3 || CY_PSOC5LP)
                 CapSense_1_CompCH0_TR0 |= CapSense_1_CompCH0_CMP_TR0_DIR;
-            #endif /* CY_PSOC3_ES3 || CY_PSOC5_ES2 */
+            #endif /* CY_PSOC3 || CY_PSOC5LP */
         }
     }
     else
@@ -329,47 +314,65 @@ void CapSense_1_CompCH0_trimAdjust(uint8 nibble)
         /* if comparator output is low, positive offset adjust is required */
         if ( cmpState == 0u )
         {
-            /* PSoC3 ES2 or early, PSoC5 ES1 or early */
-            #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+            /* PSoC5A */
+            #if (CY_PSOC5A)
                 CapSense_1_CompCH0_TR |= CapSense_1_CompCH0_CMP_TRIM2_DIR; 
-            #endif /* CY_PSOC3_ES2 || CY_PSOC5_ES1 */
+            #endif /* CY_PSOC5A */
             
-            /* PSoC3 ES3 or later, PSoC5 ES2 or later */
-            #if (CY_PSOC3_ES3 || CY_PSOC5_ES2)
+            /* PSoC3, PSoC5LP or later */
+            #if (CY_PSOC3 || CY_PSOC5LP)
                 CapSense_1_CompCH0_TR1 |= CapSense_1_CompCH0_CMP_TR1_DIR;
-            #endif /* CY_PSOC3_ES3 || CY_PSOC5_ES2 */
+            #endif /* CY_PSOC3 || CY_PSOC5LP */
         }
     }
 
     /* Increment trim value until compare output changes state */
-    for ( trimCnt = 0; trimCnt < 7; trimCnt++ )
-    {
+	
+    /* PSoC5A */
+	#if (CY_PSOC5A)
+	trimCntMax = 7;
+    #endif
+	
+	/* PSoC3, PSoC5LP or later */
+	#if (CY_PSOC3 || CY_PSOC5LP)
+	if(nibble == 0u)
+	{
+		trimCntMax = 15;
+	}
+	else
+	{
+		trimCntMax = 7;
+	}
+	#endif
+	
+    for ( trimCnt = 0; trimCnt < trimCntMax; trimCnt++ )
+	{
         if (nibble == 0u)
         {
-            /* PSoC3 ES2 or early, PSoC5 ES1 or early */
-            #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+            /* PSoC5A */
+            #if (CY_PSOC5A)
                 CapSense_1_CompCH0_TR += 1u;
-            #endif /* CY_PSOC3_ES2 || CY_PSOC5_ES1 */
+            #endif /* CY_PSOC5A */
             
-            /* PSoC3 ES3 or later, PSoC5 ES2 or later */
-            #if (CY_PSOC3_ES3 || CY_PSOC5_ES2)
+            /* PSoC3, PSoC5LP or later */
+            #if (CY_PSOC3 || CY_PSOC5LP)
                 CapSense_1_CompCH0_TR0 += 1u;
-            #endif /* CY_PSOC3_ES3 || CY_PSOC5_ES2 */
+            #endif /* CY_PSOC3 || CY_PSOC5LP */
         }
         else
         {
-            /* PSoC3 ES2 or early, PSoC5 ES1 or early */
-            #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+            /* PSoC5A */
+            #if (CY_PSOC5A)
                 CapSense_1_CompCH0_TR += 0x10u;
-            #endif /* CY_PSOC3_ES2 || CY_PSOC5_ES1 */
+            #endif /* CY_PSOC5A */
             
-            /* PSoC3 ES3 or later, PSoC5 ES2 or later */
-            #if (CY_PSOC3_ES3 || CY_PSOC5_ES2)
-                CapSense_1_CompCH0_TR1 += 0x10u;
-            #endif /* CY_PSOC3_ES3 || CY_PSOC5_ES2 */
+            /* PSoC3, PSoC5LP or later */
+            #if (CY_PSOC3 || CY_PSOC5LP)
+                CapSense_1_CompCH0_TR1 += 1u;
+            #endif /* CY_PSOC3 || CY_PSOC5LP */
         }
         
-        CyDelay(1);
+        CyDelayUs(10);
         
         /* Check for change in comparator output */
         if ((CapSense_1_CompCH0_WRK & CapSense_1_CompCH0_CMP_OUT_MASK) != cmpState)
@@ -387,10 +390,10 @@ void CapSense_1_CompCH0_trimAdjust(uint8 nibble)
 * Summary:
 *  This function calibrates the offset of the Analog Comparator.
 *
-* Parameters:  
+* Parameters:
 *  None
 *
-* Return:  
+* Return:
 *  (uint16)  value written in trim register when calibration complete.
 *
 * Theory: 
@@ -401,15 +404,18 @@ void CapSense_1_CompCH0_trimAdjust(uint8 nibble)
 *   - offset is defined as negative if the output transitions to high after inP
 *     is greater than inP
 *
+*  PSoC5A
 *  The Analog Comparator provides 1 byte for offset trim.  The byte contains two
 *  4 bit trim fields - one is a course trim and the other allows smaller
-*  offset adjustments.
-*  - low nibble - fine trim for Fast mode, course trim for Slow mode
-*  - high nibble - fine trim for Slow mode, course trim
-*    for Fast mode
-*  - trim[3] selects positive or negative offset adjust
-*  - for low nibble: trim[3]is set high to add negative offset
-*  - for high nibble: trim[3]is set high to add positive offset  
+*  offset adjustments only for slow modes.
+*  - low nibble - fine trim
+*  - high nibble - course trim
+*  PSoC3, PSoC5LP or later
+*  The Analog Comparator provides 2 bytes for offset trim.  The bytes contain two
+*  5 bit trim fields - one is a course trim and the other allows smaller
+*  offset adjustments only for slow modes.
+*  - TR0 - fine trim
+*  - TR1 - course trim
 *
 *  Trim algorithm is a two phase process
 *  The first phase performs course offset adjustment
@@ -421,7 +427,7 @@ void CapSense_1_CompCH0_trimAdjust(uint8 nibble)
 *    second trim value will serve as fine trim (in the opposite direction)to
 *    ensure the offset is < 1 mV.
 *
-*  Trim Process:   
+* Trim Process:   
 *  1) User applies a voltage to the negative input.  Voltage should be in the
 *     comparator operating range or an average of the operating voltage range.
 *  2) Clear registers associated with analog routing to the positive input.
@@ -429,24 +435,19 @@ void CapSense_1_CompCH0_trimAdjust(uint8 nibble)
 *  4) Set the calibration bit to short the negative and positive inputs to
 *     the users calibration voltage.
 *  5) Clear the TR register  ( TR = 0x00 )
-*  ** SLOW MODE
-*  6) Check if compare output is high, if so, set trim[3] of lower 
-*     nibble to a 1.
-*  7) Increment trim[2:0] of lower nibble until the compare output changes
-*     (course trim).
-*  8) Check if compare output is low, if so, set trim[3] of higher 
-*     nibble to a 1.
-*  9) Increment trim[2:0] of higher nibble until the compare output changes 
-*     state (fine trim)
-*  ** FAST MODE - change order of steps 6,7 vs. steps 8,9
+*  ** LOW MODES
+*  6) Check if compare output is high, if so, set the MSb of course trim field 
+*     to a 1.
+*  7) Increment the course trim field until the compare output changes
+*  8) Check if compare output is low, if so, set the MSb of fine trim field
+*     to a 1.
+*  9) Increment the fine trim field until the compare output changes
+*  ** FAST MODE - skip the steps 8,9
 *
 * Side Effects:
 *  Routine clears analog routing associated with the comparator positive input.  
 *  This may affect routing of signals from other components that are connected
 *  to the positive input of the comparator.
-*
-* Reentrant:
-*  Yes
 *
 *******************************************************************************/
 uint16 CapSense_1_CompCH0_ZeroCal(void) 
@@ -474,27 +475,26 @@ uint16 CapSense_1_CompCH0_ZeroCal(void)
     CapSense_1_CompCH0_CR |= (CapSense_1_CompCH0_CAL_ON | CapSense_1_CompCH0_HYST_OFF);
     
     /* Write default low values to trim register - no offset adjust */
-    /* PSoC3 ES2 or early, PSoC5 ES1 or early */
-    #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+    /* PSoC5A */
+    #if (CY_PSOC5A)
         CapSense_1_CompCH0_TR = CapSense_1_CompCH0_DEFAULT_CMP_TRIM;
-    #endif /* CY_PSOC3_ES2 || CY_PSOC5_ES1 */
+    #endif /* CY_PSOC5A */
     
-    /* PSoC3 ES3 or later, PSoC5 ES2 or later */
-    #if (CY_PSOC3_ES3 || CY_PSOC5_ES2)
+    /* PSoC3, PSoC5LP or later */
+    #if (CY_PSOC3 || CY_PSOC5LP)
         CapSense_1_CompCH0_TR0 = CapSense_1_CompCH0_DEFAULT_CMP_TRIM;
         CapSense_1_CompCH0_TR1 = CapSense_1_CompCH0_DEFAULT_CMP_TRIM;
-    #endif /* CY_PSOC3_ES3 || CY_PSOC5_ES2 */
-
-    /* Two phase trim - mode determines which value is trimmed first */   
+    #endif /* CY_PSOC3 || CY_PSOC5LP */
+	
+	/* Two phase trim - slow modes, one phase trim - for fast */ 
     if ( (CapSense_1_CompCH0_CR & CapSense_1_CompCH0_PWR_MODE_MASK) == CapSense_1_CompCH0_PWR_MODE_FAST)
     {
-        CapSense_1_CompCH0_trimAdjust(1);          /* course trim */
-        CapSense_1_CompCH0_trimAdjust(0);          /* fine trim */
+        CapSense_1_CompCH0_trimAdjust(0);
     }
-    else /* default to trim for slow mode */
+    else /* default to trim for fast modes */
     {
-        CapSense_1_CompCH0_trimAdjust(0);          /* course trim */
-        CapSense_1_CompCH0_trimAdjust(1);          /* fine trim */
+        CapSense_1_CompCH0_trimAdjust(1);
+		CapSense_1_CompCH0_trimAdjust(0);
     }
    
     /* Restore Config Register */
@@ -505,15 +505,15 @@ uint16 CapSense_1_CompCH0_ZeroCal(void)
     CapSense_1_CompCH0_SW2 = tmpSW2;
     CapSense_1_CompCH0_SW3 = tmpSW3;
     
-    /* PSoC3 ES2 or early, PSoC5 ES1 or early */
-    #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+    /* PSoC5A */
+    #if (CY_PSOC5A)
         return (uint16) CapSense_1_CompCH0_TR;
-    #endif /* CY_PSOC3_ES2 || CY_PSOC5_ES1 */
+    #endif /* CY_PSOC5A */
     
-    /* PSoC3 ES3 or later, PSoC5 ES2 or later */
-    #if (CY_PSOC3_ES3 || CY_PSOC5_ES2)
-        return ((CapSense_1_CompCH0_TR0)|(CapSense_1_CompCH0_TR1));        
-    #endif /* CY_PSOC3_ES3 || CY_PSOC5_ES2 */
+    /* PSoC3, PSoC5LP or later */
+    #if (CY_PSOC3 || CY_PSOC5LP)
+        return (((uint16)CapSense_1_CompCH0_TR1 << 8) | (CapSense_1_CompCH0_TR0));        
+    #endif /* CY_PSOC3 || CY_PSOC5LP */
 }
 
 
@@ -525,85 +525,77 @@ uint16 CapSense_1_CompCH0_ZeroCal(void)
 *  This function stores a value in the Analog Comparator trim register.
 *
 * Parameters:  
-*  uint8    trimVal - trim value.  This value is the same format as the value 
-*           returned by the _ZeroCal routine.
+*  uint8 trimVal - trim value.  This value is the same format as the value 
+*  returned by the _ZeroCal routine.
 *
-* Return:  
+* Return:
 *  None
-*
-* Reentrant:
-*  Yes
 *
 *******************************************************************************/
 void CapSense_1_CompCH0_LoadTrim(uint16 trimVal) 
 {
     /* Stores value in the Analog Comparator trim register */
-    /* PSoC3 ES2 or early, PSoC5 ES1 or early */
-    #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+    /* PSoC5A */
+    #if (CY_PSOC5A)
         CapSense_1_CompCH0_TR = (uint8) trimVal;
-    #endif /* CY_PSOC3_ES2 || CY_PSOC5_ES1 */
+    #endif /* CY_PSOC5A */
     
-    /* PSoC3 ES3 or later, PSoC5 ES2 or later */
-    #if (CY_PSOC3_ES3 || CY_PSOC5_ES2)
+    /* PSoC3, PSoC5LP or later */
+    #if (CY_PSOC3 || CY_PSOC5LP)
         /* Stores value in the Analog Comparator trim register for P-type load */
         CapSense_1_CompCH0_TR0 = (uint8) trimVal;
         
         /* Stores value in the Analog Comparator trim register for N-type load */
         CapSense_1_CompCH0_TR1 = (uint8) (trimVal >> 8); 
-    #endif /* CY_PSOC3_ES3 || CY_PSOC5_ES2 */
+    #endif /* CY_PSOC3 || CY_PSOC5LP */
 }
 
 
-#if (CY_PSOC3)
-/*******************************************************************************
-* Function Name: CapSense_1_CompCH0_PwrDwnOverrideEnable
-********************************************************************************
-*
-* Summary:
-*  This is the power down over-ride feature. This function ignores sleep 
-*  parameter and allows the component to stay active during sleep mode.
-*
-* Parameters:  
-*  None
-*
-* Return:  
-*  None
-*
-* Reentrant:
-*  Yes
-*
-*******************************************************************************/
-void CapSense_1_CompCH0_PwrDwnOverrideEnable(void) 
-{
-    /* Set the pd_override bit in CMP_CR register */
-    CapSense_1_CompCH0_CR |= CapSense_1_CompCH0_PWRDWN_OVRD;
-}
+#if (CY_PSOC3 || CY_PSOC5LP)
+
+    /*******************************************************************************
+    * Function Name: CapSense_1_CompCH0_PwrDwnOverrideEnable
+    ********************************************************************************
+    *
+    * Summary:
+    *  This is the power down over-ride feature. This function ignores sleep 
+    *  parameter and allows the component to stay active during sleep mode.
+    *
+    * Parameters:
+    *  None
+    *
+    * Return:
+    *  None
+    *
+    *******************************************************************************/
+    void CapSense_1_CompCH0_PwrDwnOverrideEnable(void) 
+    {
+        /* Set the pd_override bit in CMP_CR register */
+        CapSense_1_CompCH0_CR |= CapSense_1_CompCH0_PWRDWN_OVRD;
+    }
 
 
-/*******************************************************************************
-* Function Name: CapSense_1_CompCH0_PwrDwnOverrideDisable
-********************************************************************************
-*
-* Summary:
-*  This is the power down over-ride feature. This allows the component to stay
-*  inactive during sleep.
-*
-* Parameters:  
-*  None
-*
-* Return:  
-*  None
-*
-* Reentrant:
-*  Yes
-*
-*******************************************************************************/
-void CapSense_1_CompCH0_PwrDwnOverrideDisable(void) 
-{
-    /* Reset the pd_override bit in CMP_CR register */
-    CapSense_1_CompCH0_CR &= ~CapSense_1_CompCH0_PWRDWN_OVRD;
-}
-#endif /* (CY_PSOC3) */
+    /*******************************************************************************
+    * Function Name: CapSense_1_CompCH0_PwrDwnOverrideDisable
+    ********************************************************************************
+    *
+    * Summary:
+    *  This is the power down over-ride feature. This allows the component to stay
+    *  inactive during sleep.
+    *
+    * Parameters:
+    *  None
+    *
+    * Return:
+    *  None
+    *
+    *******************************************************************************/
+    void CapSense_1_CompCH0_PwrDwnOverrideDisable(void) 
+    {
+        /* Reset the pd_override bit in CMP_CR register */
+        CapSense_1_CompCH0_CR &= ~CapSense_1_CompCH0_PWRDWN_OVRD;
+    }
+#endif /* (CY_PSOC3 || CY_PSOC5LP) */
 
 
 /* [] END OF FILE */

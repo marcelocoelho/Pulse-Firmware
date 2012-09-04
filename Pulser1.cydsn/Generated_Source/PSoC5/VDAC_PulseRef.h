@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: VDAC_PulseRef.h  
-* Version 1.70
+* Version 1.80
 *
 *  Description:
 *    This file contains the function prototypes and constants used in
@@ -10,7 +10,7 @@
 *     
 *
 ********************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions, 
 * disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
@@ -22,6 +22,11 @@
 #include "cytypes.h"
 #include "cyfitter.h"
 
+/* Check to see if required defines such as CY_PSOC5LP are available */
+/* They are defined starting with cy_boot v3.0 */
+#if !defined (CY_PSOC5LP)
+    #error Component VDAC8_v1_80 requires cy_boot v3.0 or later
+#endif /* (CY_ PSOC5LP) */
 
 
 /***************************************
@@ -40,7 +45,7 @@ typedef struct VDAC_PulseRef_backupStruct
 *        Function Prototypes 
 ***************************************/
 
-void VDAC_PulseRef_Start(void);
+void VDAC_PulseRef_Start(void)           ;
 void VDAC_PulseRef_Stop(void)            ;
 void VDAC_PulseRef_SetSpeed(uint8 speed) ;
 void VDAC_PulseRef_SetRange(uint8 range) ;
@@ -48,12 +53,12 @@ void VDAC_PulseRef_SetValue(uint8 value) ;
 void VDAC_PulseRef_DacTrim(void)         ;
 void VDAC_PulseRef_Init(void)            ;
 void VDAC_PulseRef_Enable(void)          ;
-void VDAC_PulseRef_SaveConfig(void);
-void VDAC_PulseRef_RestoreConfig(void);
-void VDAC_PulseRef_Sleep(void);
+void VDAC_PulseRef_SaveConfig(void)      ;
+void VDAC_PulseRef_RestoreConfig(void)   ;
+void VDAC_PulseRef_Sleep(void)           ;
 void VDAC_PulseRef_Wakeup(void)          ;
-  
-  
+
+
 /***************************************
 *            API Constants
 ***************************************/
@@ -74,17 +79,17 @@ void VDAC_PulseRef_Wakeup(void)          ;
 ***************************************/
 
  /* Default DAC range */
-#define VDAC_PulseRef_DEFAULT_RANGE    4
+#define VDAC_PulseRef_DEFAULT_RANGE    4u
  /* Default DAC speed */
-#define VDAC_PulseRef_DEFAULT_SPEED    2
+#define VDAC_PulseRef_DEFAULT_SPEED    2u
  /* Default Control */
 #define VDAC_PulseRef_DEFAULT_CNTL      0x00u
 /* Default Strobe mode */
-#define VDAC_PulseRef_DEFAULT_STRB     0
+#define VDAC_PulseRef_DEFAULT_STRB     0u
  /* Initial DAC value */
-#define VDAC_PulseRef_DEFAULT_DATA     255
+#define VDAC_PulseRef_DEFAULT_DATA     255u
  /* Default Data Source */
-#define VDAC_PulseRef_DEFAULT_DATA_SRC 0
+#define VDAC_PulseRef_DEFAULT_DATA_SRC 0u
 
 
 /***************************************

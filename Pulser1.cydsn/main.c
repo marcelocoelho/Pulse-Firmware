@@ -52,7 +52,7 @@
 *  rate depending on the raw count coming from the ADC.
 *******************************************************************************/
 #include <device.h>
-   
+#include <stdio.h>
 #include "pulse_sense.h"   
    
 /* LCD specific */
@@ -82,22 +82,6 @@
 uint8 DMA_Chan;
 uint8 DMA_TD[1];
 
-/* Table of voltage values for DMA to send to the DAC. These values range 
- * between 0x3D and 0x9F because these are the two points where the LED 
- * is not visible and where the LED is saturated */
-const uint8 voltageWave[] = 
-{
- 	0x6D, 0x6F, 0x71, 0x73, 0x75, 0x77, 0x79, 0x7B, 0x7D, 0x7F, 0x81, 0x83, 0x85, 
-	0x87, 0x89, 0x8B, 0x8D, 0x8F, 0x91, 0x93, 0x95, 0x97, 0x99, 0x9B, 0x9C, 0x9D, 0x9D, 0x9E, 
-	0x9E, 0x9F, 0x9F, 0x9F, 0x9E, 0x9E, 0x9E, 0x9C, 0x9C, 0x9B, 0x99, 0x97, 0x95, 0x93, 0x91, 
-	0x8F, 0x8D, 0x8B, 0x89, 0x87, 0x85, 0x83, 0x81, 0x7F, 0x7D, 0x7B, 0x79, 0x77, 
-	0x75, 0x73, 0x71, 0x6F, 0x6D, 0x6B, 0x69, 0x67, 0x65, 0x63, 0x61, 0x5F, 0x5D, 
-	0x5B, 0x59, 0x57, 0x55, 0x53, 0x51, 0x4F, 0x4D, 0x4B, 0x49, 0x47, 0x45, 0x43, 
-	0x41, 0x40, 0x40, 0x3F, 0x3F, 0x3D, 0x3D, 0x3D, 0x3D, 0x3D, 0x3D, 0x3F, 0x41, 
-	0x43, 0x45, 0x47, 0x49, 0x4B, 0x4D, 0x4F, 0x51,
-	0x53, 0x55, 0x57, 0x59, 0x5B, 0x5D, 0x5F, 0x61, 0x63, 0x65, 0x67, 0x69, 0x6B
-};
-
 
 
 Pulser g_Pulser;
@@ -118,8 +102,10 @@ void main()
 {
     int16 voltageRawCount;
     
+	CyPins_SetPin(Pin_DebugLED_0);
 	pulserInit(&g_Pulser);
-	
+	UART_Debug_Start();
+	UART_Debug_PutString("\r\nPulser 1.27\r\n");
 	AMux_ProxIR_Start();
 	ShiftReg_DelaySenseIR_Start();
     ADC_PulseIn_Start();     
@@ -137,7 +123,9 @@ void main()
 	ADC_SAR_ProxIR_Start();
 	ADC_SAR_ProxIR_StartConvert();
 	
-	PrISM_PulseIndicator_WritePulse0(250);
+	//PrISM_PulseIndicator_WritePulse0(250);
+	
+	PWM_PulseLEDs_WriteCompare2(1);
     //VDAC_Start();               
     //Opamp_Start(); 
     
@@ -195,9 +183,11 @@ void main()
 ///	        LCD_PrintString("   ");
 //	        LCD_Position(ROW_1, 13); 
 //	        LCD_PrintNumber(g_Pulser.scaledPulseVal);
-			
-			PrISM_PulseIndicator_WritePulse0(g_Pulser.scaledPulseVal);
+static char buff[200];
 
+			//PrISM_PulseIndicator_WritePulse0(g_Pulser.scaledPulseVal);
+			PWM_PulseLEDs_WriteCompare2(g_Pulser.scaledPulseVal>>1);
+			
 			voltageRawCount=g_Pulser.curRawPulseVal;
 			
 			uint16 prox1=ADC_SAR_ProxIR_GetResult16();
@@ -216,13 +206,17 @@ void main()
 //	        LCD_PrintString("    ");
 //	        LCD_Position(ROW_1, 7); 
 //	        LCD_PrintNumber(g_Pulser.scaledPulseMax);
+			sprintf(buff, "Pulse: Filtered=%5ld, scaled=%5ld\r", g_Pulser.curFilteredPulseVal,
+			//sprintf(buff, "Pulse: raw=%5ld, scaled=%5ld, min=%5ld, max=%5ld ", g_Pulser.curRawPulseVal,
+			g_Pulser.scaledPulseVal); // , (-g_Pulser.scaledPulseMin),g_Pulser.scaledPulseMax );
+			UART_Debug_PutString(buff);
 			
 	            /* Clear last characters */
 //	        LCD_Position(ROW_0, COLUMN_11); 
 //	        LCD_PrintString("     "); 
   //          LCD_Position(ROW_0,COLUMN_11); 
 	//        LCD_PrintNumber(voltageRawCount);
-
+			//UART_Debug_PutString("\r");
 		}
     }
 }

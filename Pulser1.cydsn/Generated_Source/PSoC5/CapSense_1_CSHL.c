@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: CapSense_1_CSHL.c
-* Version 3.10
+* Version 3.20
 *
 * Description:
 *  This file provides the source code to the High Level APIs for the CapSesne
@@ -9,7 +9,7 @@
 * Note:
 *
 ********************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions,
 * disclaimers, and limitations in the end user license agreement accompanying
 * the software package with which this file was provided.
@@ -19,50 +19,51 @@
 
 /* SmartSense functions */
 #if (CapSense_1_TUNING_METHOD == CapSense_1_AUTO_TUNING)
-    extern void CapSense_1_CalculateThresholds(uint8 SensorNumber);
-#endif /* End (CapSense_1_TUNING_METHOD == CapSense_1_AUTO_TUNING) */
+    extern void CapSense_1_CalculateThresholds(uint8 SensorNumber)
+           ;
+#endif /* (CapSense_1_TUNING_METHOD == CapSense_1_AUTO_TUNING) */
 
 /* Median filter function prototype */
 #if ( (CapSense_1_RAW_FILTER_MASK & CapSense_1_MEDIAN_FILTER) || \
       (CapSense_1_POS_FILTERS_MASK & CapSense_1_MEDIAN_FILTER) )
-    uint16 CapSense_1_MedianFilter(uint16 x1, uint16 x2, uint16 x3) \
+    uint16 CapSense_1_MedianFilter(uint16 x1, uint16 x2, uint16 x3)
     ;
-#endif /* End CapSense_1_RAW_FILTER_MASK && CapSense_1_POS_FILTERS_MASK */
+#endif /* CapSense_1_RAW_FILTER_MASK && CapSense_1_POS_FILTERS_MASK */
 
 /* Averaging filter function prototype */
 #if ( (CapSense_1_RAW_FILTER_MASK & CapSense_1_AVERAGING_FILTER) || \
       (CapSense_1_POS_FILTERS_MASK & CapSense_1_AVERAGING_FILTER) )
-    uint16 CapSense_1_AveragingFilter(uint16 x1, uint16 x2, uint16 x3) \
+    uint16 CapSense_1_AveragingFilter(uint16 x1, uint16 x2, uint16 x3)
     ;
-#endif /* End CapSense_1_RAW_FILTER_MASK && CapSense_1_POS_FILTERS_MASK */
+#endif /* CapSense_1_RAW_FILTER_MASK && CapSense_1_POS_FILTERS_MASK */
 
 /* IIR2Filter(1/2prev + 1/2cur) filter function prototype */
 #if ( (CapSense_1_RAW_FILTER_MASK & CapSense_1_IIR2_FILTER) || \
       (CapSense_1_POS_FILTERS_MASK & CapSense_1_IIR2_FILTER) )
-uint16 CapSense_1_IIR2Filter(uint16 x1, uint16 x2) ;
-#endif /* End CapSense_1_RAW_FILTER_MASK && CapSense_1_POS_FILTERS_MASK */
+    uint16 CapSense_1_IIR2Filter(uint16 x1, uint16 x2) ;
+#endif /* CapSense_1_RAW_FILTER_MASK && CapSense_1_POS_FILTERS_MASK */
 
 /* IIR4Filter(3/4prev + 1/4cur) filter function prototype */
 #if ( (CapSense_1_RAW_FILTER_MASK & CapSense_1_IIR4_FILTER) || \
       (CapSense_1_POS_FILTERS_MASK & CapSense_1_IIR4_FILTER) )
     uint16 CapSense_1_IIR4Filter(uint16 x1, uint16 x2) ;
-#endif /* End CapSense_1_RAW_FILTER_MASK && CapSense_1_POS_FILTERS_MASK */
+#endif /* CapSense_1_RAW_FILTER_MASK && CapSense_1_POS_FILTERS_MASK */
 
 /* IIR8Filter(7/8prev + 1/8cur) filter function prototype - RawCounts only */
 #if (CapSense_1_RAW_FILTER_MASK & CapSense_1_IIR8_FILTER)
     uint16 CapSense_1_IIR8Filter(uint16 x1, uint16 x2) ;
-#endif /* End CapSense_1_RAW_FILTER_MASK */
+#endif /* CapSense_1_RAW_FILTER_MASK */
 
 /* IIR16Filter(15/16prev + 1/16cur) filter function prototype - RawCounts only */
 #if (CapSense_1_RAW_FILTER_MASK & CapSense_1_IIR16_FILTER)
     uint16 CapSense_1_IIR16Filter(uint16 x1, uint16 x2) ;
-#endif /* End CapSense_1_RAW_FILTER_MASK */
+#endif /* CapSense_1_RAW_FILTER_MASK */
 
 /* JitterFilter filter function prototype */
 #if ( (CapSense_1_RAW_FILTER_MASK & CapSense_1_JITTER_FILTER) || \
       (CapSense_1_POS_FILTERS_MASK & CapSense_1_JITTER_FILTER) )
     uint16 CapSense_1_JitterFilter(uint16 x1, uint16 x2) ;
-#endif /* End CapSense_1_RAW_FILTER_MASK && CapSense_1_POS_FILTERS_MASK */
+#endif /* CapSense_1_RAW_FILTER_MASK && CapSense_1_POS_FILTERS_MASK */
 
 /* Storage of filters data */
 #if ( (CapSense_1_RAW_FILTER_MASK & CapSense_1_MEDIAN_FILTER) || \
@@ -81,7 +82,9 @@ uint16 CapSense_1_IIR2Filter(uint16 x1, uint16 x2) ;
 
 #else
     /* No Raw filters */
-#endif  /* End CapSense_1_RAW_FILTER_MASK */
+#endif  /* ( (CapSense_1_RAW_FILTER_MASK & CapSense_1_MEDIAN_FILTER) || \
+        *    (CapSense_1_RAW_FILTER_MASK & CapSense_1_AVERAGING_FILTER) )
+        */
 
 extern uint16 CapSense_1_SensorRaw[CapSense_1_TOTAL_SENSOR_COUNT];
 extern uint8 CapSense_1_SensorEnableMask[(((CapSense_1_TOTAL_SENSOR_COUNT - 1u) / 8u) + 1u)];
@@ -97,7 +100,7 @@ uint8 CapSense_1_LowBaselineResetCnt[CapSense_1_TOTAL_SENSOR_COUNT];
 /* Helps while centroid calulation */
 #if (CapSense_1_TOTAL_CENTROIDS_COUNT)
     static uint16 CapSense_1_centroid[3];
-#endif  /* End (CapSense_1_TOTAL_CENTROIDS_COUNT) */
+#endif  /* (CapSense_1_TOTAL_CENTROIDS_COUNT) */
 
 const uint8 CYCODE CapSense_1_fingerThreshold[] = {
     100u, 100u, 
@@ -130,6 +133,7 @@ const uint8 CYCODE CapSense_1_numberOfSensors[] = {
     1u, /* ProximitySensor1__PROX */
 
 };
+
 
 
 
@@ -173,7 +177,7 @@ const uint8 CYCODE CapSense_1_numberOfSensors[] = {
 *  No
 *
 *******************************************************************************/
-void CapSense_1_BaseInit(uint8 sensor)
+void CapSense_1_BaseInit(uint8 sensor) 
 {
     #if ((CapSense_1_TOTAL_BUTTONS_COUNT) || (CapSense_1_TOTAL_MATRIX_BUTTONS_COUNT) || \
          (CapSense_1_TOTAL_GENERICS_COUNT))
@@ -182,13 +186,13 @@ void CapSense_1_BaseInit(uint8 sensor)
     
     #if (CapSense_1_TOTAL_MATRIX_BUTTONS_COUNT)
         uint8 debounceIndex;
-    #endif  /* End (CapSense_1_TOTAL_MATRIX_BUTTONS_COUNT != 0u) */
+    #endif  /* (CapSense_1_TOTAL_MATRIX_BUTTONS_COUNT) */
     
     #if (CapSense_1_TOTAL_GENERICS_COUNT)
         /* Exclude generic widget */
         if(widget < CapSense_1_END_OF_WIDGETS_INDEX)
         {
-    #endif  /* End CapSense_1_TOTAL_GENERICS_COUNT */
+    #endif  /* CapSense_1_TOTAL_GENERICS_COUNT */
     
     /* Initialize Baseline */
     CapSense_1_SensorBaseline[sensor] = CapSense_1_SensorRaw[sensor];
@@ -214,12 +218,14 @@ void CapSense_1_BaseInit(uint8 sensor)
     
     #else
         /* No Raw filters */
-    #endif  /* End CapSense_1_RAW_FILTER_MASK */
+    #endif  /* ((CapSense_1_RAW_FILTER_MASK & CapSense_1_MEDIAN_FILTER) || \
+            *   (CapSense_1_RAW_FILTER_MASK & CapSense_1_AVERAGING_FILTER))
+            */
     
     #if (CapSense_1_TOTAL_GENERICS_COUNT)
         /* Exclude generic widget */
         }
-    #endif  /* End CapSense_1_TOTAL_GENERICS_COUNT */
+    #endif  /* CapSense_1_TOTAL_GENERICS_COUNT */
 }
 
 
@@ -245,6 +251,7 @@ void CapSense_1_BaseInit(uint8 sensor)
 *
 *******************************************************************************/
 void CapSense_1_InitializeSensorBaseline(uint8 sensor)
+                          
 {
     /* Scan sensor */
     CapSense_1_ScanSensor(sensor);
@@ -268,7 +275,7 @@ void CapSense_1_InitializeSensorBaseline(uint8 sensor)
             CapSense_1_BaseInit(sensor + CapSense_1_TOTAL_SENSOR_COUNT__CH0);
         }
     
-    #endif  /* End (CapSense_1_DESIGN_TYPE == CapSense_1_ONE_CHANNEL_DESIGN) */
+    #endif  /* (CapSense_1_DESIGN_TYPE == CapSense_1_ONE_CHANNEL_DESIGN) */
 }
 
 
@@ -293,6 +300,7 @@ void CapSense_1_InitializeSensorBaseline(uint8 sensor)
 *
 *******************************************************************************/
 void CapSense_1_InitializeAllBaselines(void)
+                          
 {
     uint8 i;
     
@@ -325,6 +333,7 @@ void CapSense_1_InitializeAllBaselines(void)
 *
 *******************************************************************************/
 void CapSense_1_InitializeEnabledBaselines(void)
+                             
 {
     uint8 i;
     uint8 pos;
@@ -388,6 +397,7 @@ void CapSense_1_InitializeEnabledBaselines(void)
 *
 *******************************************************************************/
  void CapSense_1_UpdateSensorBaseline(uint8 sensor)
+                                 
 {
     uint32 calc;
     uint16 tempRaw;
@@ -399,7 +409,7 @@ void CapSense_1_InitializeEnabledBaselines(void)
         /* Exclude generic widget */
         if(widget < CapSense_1_END_OF_WIDGETS_INDEX)
         {
-    #endif  /* End CapSense_1_TOTAL_GENERICS_COUNT */
+    #endif  /* CapSense_1_TOTAL_GENERICS_COUNT */
     
     filteredRawData = CapSense_1_SensorRaw[sensor];
     
@@ -439,11 +449,11 @@ void CapSense_1_InitializeEnabledBaselines(void)
         
     #else
         /* No Raw filters */
-    #endif  /* End (CapSense_1_RAW_FILTER_MASK & CapSense_1_MEDIAN_FILTER) */
+    #endif  /* (CapSense_1_RAW_FILTER_MASK & CapSense_1_MEDIAN_FILTER) */
     
     #if (CapSense_1_TUNING_METHOD == CapSense_1_AUTO_TUNING)
         CapSense_1_CalculateThresholds(sensor);
-    #endif /* End (CapSense_1_TUNING_METHOD == CapSense_1_AUTO_TUNING) */
+    #endif /* (CapSense_1_TUNING_METHOD == CapSense_1_AUTO_TUNING) */
 
 
     /* Baseline calculation */
@@ -515,7 +525,7 @@ void CapSense_1_InitializeEnabledBaselines(void)
             }
         #else
             CapSense_1_SensorSignal[sensor] = ((uint16) tempRaw);
-        #endif  /* End (CapSense_1_SIGNAL_SIZE == CapSense_1_SIGNAL_SIZE_UINT8) */
+        #endif  /* (CapSense_1_SIGNAL_SIZE == CapSense_1_SIGNAL_SIZE_UINT8) */
     }
     else
     {
@@ -526,7 +536,7 @@ void CapSense_1_InitializeEnabledBaselines(void)
     #if (CapSense_1_TOTAL_GENERICS_COUNT)
         /* Exclude generic widget */
         }
-    #endif  /* End CapSense_1_TOTAL_GENERICS_COUNT */
+    #endif  /* CapSense_1_TOTAL_GENERICS_COUNT */
 }
 
 
@@ -560,6 +570,7 @@ void CapSense_1_InitializeEnabledBaselines(void)
 *
 *******************************************************************************/
  void CapSense_1_UpdateEnabledBaselines(void)
+                                 
 {
     uint8 i;
     uint8 pos;
@@ -617,6 +628,7 @@ void CapSense_1_InitializeEnabledBaselines(void)
 *
 *******************************************************************************/
 uint8 CapSense_1_CheckIsSensorActive(uint8 sensor)
+                                  
 {
     uint8 debounceIndex;
     /* Get On/Off mask */
@@ -687,6 +699,7 @@ uint8 CapSense_1_CheckIsSensorActive(uint8 sensor)
 *
 *******************************************************************************/
 uint8 CapSense_1_CheckIsWidgetActive(uint8 widget)
+                                 
 {
     uint8 rawIndex = CapSense_1_rawDataIndex[widget];
     uint8 numberOfSensors = CapSense_1_numberOfSensors[widget] + rawIndex;
@@ -730,6 +743,7 @@ uint8 CapSense_1_CheckIsWidgetActive(uint8 widget)
 *
 *******************************************************************************/
 uint8 CapSense_1_CheckIsAnyWidgetActive(void)
+                                 
 {
     uint8 i;
     uint8 state = 0u;
@@ -775,6 +789,7 @@ uint8 CapSense_1_CheckIsAnyWidgetActive(void)
 *
 *******************************************************************************/
 void CapSense_1_EnableWidget(uint8 widget)
+                                   
 {
     uint8 pos;
     uint8 enMask;
@@ -824,6 +839,7 @@ void CapSense_1_EnableWidget(uint8 widget)
 *
 *******************************************************************************/
 void CapSense_1_DisableWidget(uint8 widget)
+                                    
 {
     uint8 pos;
     uint8 enMask;
@@ -870,9 +886,11 @@ void CapSense_1_DisableWidget(uint8 widget)
     *******************************************************************************/
     #if (CapSense_1_IS_DIPLEX_SLIDER)
         uint8 CapSense_1_FindMaximum(uint8 offset, uint8 count, uint8 fingerThreshold, const uint8 CYCODE *diplex)
+	                                       
     #else 
         uint8 CapSense_1_FindMaximum(uint8 offset, uint8 count, uint8 fingerThreshold)
-    #endif
+	                                       
+    #endif /* (CapSense_1_IS_DIPLEX_SLIDER) */
     {
         uint8 i;
         #if (CapSense_1_IS_DIPLEX_SLIDER)        
@@ -883,7 +901,7 @@ void CapSense_1_DisableWidget(uint8 widget)
             /* The biggset centroid is zero */
             uint8 biggestCtrdSize = 0u;
             uint8 biggestCtrdStartPos = 0u;
-        #endif
+        #endif /* (CapSense_1_IS_DIPLEX_SLIDER) */
         uint8 maximum = 0xFFu;
         uint16 temp = 0u;
         uint16 *startOfSlider = &CapSense_1_SensorSignal[offset]; 
@@ -955,11 +973,11 @@ void CapSense_1_DisableWidget(uint8 widget)
                 if((biggestCtrdSize >= 2u) || ((biggestCtrdSize == 1u) && (diplex == 0u)))
             #else                    
                 if(biggestCtrdSize >= 2u)
-            #endif
+            #endif /* (CapSense_1_IS_NON_DIPLEX_SLIDER) */
                 {
                     for (i = biggestCtrdStartPos; i < (biggestCtrdStartPos + biggestCtrdSize); i++)
                     {
-                        #if (CapSense_1_IS_DIPLEX_SLIDER && CapSense_1_IS_NON_DIPLEX_SLIDER)                    
+                        #if (CapSense_1_IS_DIPLEX_SLIDER && CapSense_1_IS_NON_DIPLEX_SLIDER)
                             if (diplex == 0u)
                             {
                                 curPos = i;
@@ -970,7 +988,7 @@ void CapSense_1_DisableWidget(uint8 widget)
                             }                    
                         #elif (CapSense_1_IS_DIPLEX_SLIDER)                    
                             curPos = diplex[i];                    
-                        #endif
+                        #endif /* (CapSense_1_IS_DIPLEX_SLIDER && CapSense_1_IS_NON_DIPLEX_SLIDER) */
                         /* Looking for the grater element within centroid */
                         if(startOfSlider[curPos] > fingerThreshold)
                         {
@@ -995,7 +1013,7 @@ void CapSense_1_DisableWidget(uint8 widget)
                     }
                 }
             }    
-        #endif
+        #endif /* (CapSense_1_IS_DIPLEX_SLIDER) */
         return (maximum);
     }
     
@@ -1026,16 +1044,18 @@ void CapSense_1_DisableWidget(uint8 widget)
     *  No.
     *
     *******************************************************************************/
-    uint8 CapSense_1_CalcCentroid(uint8 maximum, uint8 offset, uint8 count, uint16 resolution, uint8 noiseThreshold)
+    uint8 CapSense_1_CalcCentroid(uint8 maximum, uint8 offset, 
+                                        uint8 count, uint16 resolution, uint8 noiseThreshold)
+	                                    
     {
-        #if ((CapSense_1_TOTAL_LINEAR_SLIDERS_COUNT > 0u) || (CapSense_1_TOTAL_TOUCH_PADS_COUNT > 0u))                
+        #if ((CapSense_1_TOTAL_LINEAR_SLIDERS_COUNT > 0u) || (CapSense_1_TOTAL_TOUCH_PADS_COUNT > 0u))
             uint8 posPrev;
             uint8 posNext;
-        #endif
+        #endif /* ((CapSense_1_TOTAL_LINEAR_SLIDERS_COUNT>0u) || (CapSense_1_TOTAL_TOUCH_PADS_COUNT>0u)) */
                
         #if (CapSense_1_IS_DIPLEX_SLIDER)                
             uint8 pos;
-        #endif
+        #endif /* (CapSense_1_IS_DIPLEX_SLIDER) */
 
         uint8 position;
         int32 numerator;
@@ -1045,7 +1065,7 @@ void CapSense_1_DisableWidget(uint8 widget)
         #if (CapSense_1_ADD_SLIDER_TYPE)
             if(type == CapSense_1_TYPE_RADIAL_SLIDER)
             {
-        #endif
+        #endif /* (CapSense_1_ADD_SLIDER_TYPE) */
 
             #if (CapSense_1_TOTAL_RADIAL_SLIDERS_COUNT > 0u)                
                 /* Copy Signal for found centriod */
@@ -1067,7 +1087,7 @@ void CapSense_1_DisableWidget(uint8 widget)
                     CapSense_1_centroid[CapSense_1_POS_PREV] = startOfSlider[maximum - 1u];
                     CapSense_1_centroid[CapSense_1_POS_NEXT] = startOfSlider[maximum + 1u];
                 }
-            #endif
+            #endif /* (CapSense_1_TOTAL_RADIAL_SLIDERS_COUNT > 0u) */
 
         #if (CapSense_1_ADD_SLIDER_TYPE)
             }
@@ -1101,14 +1121,14 @@ void CapSense_1_DisableWidget(uint8 widget)
                     /* Calculate next and previous near to maximum */
                     posPrev = maximum - 1u;
                     posNext = maximum + 1u; 
-                #endif
+                #endif /* (CapSense_1_IS_DIPLEX_SLIDER && CapSense_1_IS_NON_DIPLEX_SLIDER) */
                         
                 /* Copy Signal for found centriod */
                 #if (CapSense_1_IS_DIPLEX_SLIDER)
                     CapSense_1_centroid[CapSense_1_POS] = startOfSlider[pos];
                 #else
                     CapSense_1_centroid[CapSense_1_POS] = startOfSlider[maximum];
-                #endif
+                #endif /* (CapSense_1_IS_DIPLEX_SLIDER) */
                     
                 /* Check borders for LINEAR Slider */
                 if (maximum == 0u)                   /* Start of centroid */
@@ -1126,11 +1146,11 @@ void CapSense_1_DisableWidget(uint8 widget)
                     CapSense_1_centroid[CapSense_1_POS_PREV] = startOfSlider[posPrev];
                     CapSense_1_centroid[CapSense_1_POS_NEXT] = startOfSlider[posNext];
                 }
-            #endif
+            #endif /* ((CapSense_1_TOTAL_LINEAR_SLIDERS_COUNT>0u)||(CapSense_1_TOTAL_TOUCH_PADS_COUNT>0u))*/
 
         #if (CapSense_1_ADD_SLIDER_TYPE)
             }
-        #endif
+        #endif /* (CapSense_1_ADD_SLIDER_TYPE) */
     
         /* Subtract noiseThreshold */
         if(CapSense_1_centroid[CapSense_1_POS_PREV] > noiseThreshold)
@@ -1174,7 +1194,7 @@ void CapSense_1_DisableWidget(uint8 widget)
             {
                 denominator += ((uint16) count << 8u);
             }
-        #endif
+        #endif /* (CapSense_1_TOTAL_RADIAL_SLIDERS_COUNT > 0u) */
         
         denominator *= resolution;
         
@@ -1183,7 +1203,7 @@ void CapSense_1_DisableWidget(uint8 widget)
 
         return (position);
     }    
-#endif
+#endif /* (CapSense_1_TOTAL_CENTROIDS_COUNT) */
 
 
 #if(CapSense_1_TOTAL_LINEAR_SLIDERS_COUNT > 0u)
@@ -1223,22 +1243,24 @@ void CapSense_1_DisableWidget(uint8 widget)
     *  No.
     *
     *******************************************************************************/
-    uint16 CapSense_1_GetCentroidPos(uint8 widget)
+    uint16 CapSense_1_GetCentroidPos(uint8 widget) 
     {
         #if (CapSense_1_IS_DIPLEX_SLIDER)
             const uint8 CYCODE *diplex;
-        #endif
+        #endif /* (CapSense_1_IS_DIPLEX_SLIDER) */
                 
         #if (0u != CapSense_1_LINEAR_SLIDERS_POS_FILTERS_MASK)
             uint8 posIndex;
             uint8 firstTimeIndex = CapSense_1_posFiltersData[widget];
             uint8 posFiltersMask = CapSense_1_posFiltersMask[widget];  
+        #endif /* (0u != CapSense_1_LINEAR_SLIDERS_POS_FILTERS_MASK) */
 
-        #endif
         #if ((0u != (CapSense_1_MEDIAN_FILTER & CapSense_1_LINEAR_SLIDERS_POS_FILTERS_MASK)) || \
              (0u != (CapSense_1_AVERAGING_FILTER & CapSense_1_LINEAR_SLIDERS_POS_FILTERS_MASK)))
             uint8 tempPos;
-        #endif
+        #endif /* ((0u != (CapSense_1_MEDIAN_FILTER & CapSense_1_LINEAR_SLIDERS_POS_FILTERS_MASK)) || \
+               *   (0u != (CapSense_1_AVERAGING_FILTER & CapSense_1_LINEAR_SLIDERS_POS_FILTERS_MASK)))
+               */
 
         uint8 maximum;
         uint16 position;
@@ -1255,14 +1277,14 @@ void CapSense_1_DisableWidget(uint8 widget)
             {
                 diplex = 0u;
             }
-        #endif
+        #endif /* (CapSense_1_IS_DIPLEX_SLIDER) */
 
         /* Find Maximum within centroid */      
         #if (CapSense_1_IS_DIPLEX_SLIDER)        
-            maximum = CapSense_1_FindMaximum(offset, count, CapSense_1_fingerThreshold[widget], diplex);        
+            maximum = CapSense_1_FindMaximum(offset, count, CapSense_1_fingerThreshold[widget], diplex);
         #else
             maximum = CapSense_1_FindMaximum(offset, count, CapSense_1_fingerThreshold[widget]);
-        #endif
+        #endif /* (CapSense_1_IS_DIPLEX_SLIDER) */
 
         if (maximum != 0xFFu)
         {
@@ -1281,66 +1303,91 @@ void CapSense_1_DisableWidget(uint8 widget)
                     {
                         /* Init filters */
                         CapSense_1_posFiltersData[posIndex] = (uint8) position;
-                        #if ((0u != (CapSense_1_MEDIAN_FILTER & CapSense_1_LINEAR_SLIDERS_POS_FILTERS_MASK)) || \
-                             (0u != (CapSense_1_AVERAGING_FILTER & CapSense_1_LINEAR_SLIDERS_POS_FILTERS_MASK)))
+                        #if ((0u != (CapSense_1_MEDIAN_FILTER & \
+                                     CapSense_1_LINEAR_SLIDERS_POS_FILTERS_MASK)) || \
+                             (0u != (CapSense_1_AVERAGING_FILTER & \
+                                     CapSense_1_LINEAR_SLIDERS_POS_FILTERS_MASK)))
+
                             if ( (0u != (posFiltersMask & CapSense_1_MEDIAN_FILTER)) || 
                                  (0u != (posFiltersMask & CapSense_1_AVERAGING_FILTER)) )
                             {
                                 CapSense_1_posFiltersData[posIndex + 1u] = (uint8) position;
                             }
-                        #endif
+                        #endif /* ((0u != (CapSense_1_MEDIAN_FILTER & \
+                               *           CapSense_1_LINEAR_SLIDERS_POS_FILTERS_MASK)) || \
+                               *   (0u != (CapSense_1_AVERAGING_FILTER & \
+                               *           CapSense_1_LINEAR_SLIDERS_POS_FILTERS_MASK)))
+                               */
                         
                         CapSense_1_posFiltersData[firstTimeIndex] = 1u;
                     }
                     else
                     {
                         /* Do filtering */
-                        #if (0u != (CapSense_1_MEDIAN_FILTER & CapSense_1_LINEAR_SLIDERS_POS_FILTERS_MASK))                    
+                        #if (0u != (CapSense_1_MEDIAN_FILTER & CapSense_1_LINEAR_SLIDERS_POS_FILTERS_MASK))
                             if (0u != (posFiltersMask & CapSense_1_MEDIAN_FILTER))
                             {
                                 tempPos = (uint8) position;
-                                position = CapSense_1_MedianFilter(position, CapSense_1_posFiltersData[posIndex], CapSense_1_posFiltersData[posIndex + 1u]);
-                                CapSense_1_posFiltersData[posIndex + 1u] = CapSense_1_posFiltersData[posIndex];
+                                position = CapSense_1_MedianFilter(position, 
+                                                                    CapSense_1_posFiltersData[posIndex],
+                                                                    CapSense_1_posFiltersData[posIndex + 1u]);
+                                CapSense_1_posFiltersData[posIndex + 1u] = 
+                                                                             CapSense_1_posFiltersData[posIndex];
                                 CapSense_1_posFiltersData[posIndex] = tempPos;
                             }
-                        #endif
+                        #endif /*(0u != (CapSense_1_MEDIAN_FILTER &
+                               *         CapSense_1_LINEAR_SLIDERS_POS_FILTERS_MASK))
+                               */
 
-                        #if (0u != (CapSense_1_AVERAGING_FILTER & CapSense_1_LINEAR_SLIDERS_POS_FILTERS_MASK))                        
+                        #if(0u!=(CapSense_1_AVERAGING_FILTER & CapSense_1_LINEAR_SLIDERS_POS_FILTERS_MASK))
                             if (0u != (posFiltersMask & CapSense_1_AVERAGING_FILTER)) 
                             {
                                 tempPos = (uint8) position;
-                                position = CapSense_1_AveragingFilter(position, CapSense_1_posFiltersData[posIndex], CapSense_1_posFiltersData[posIndex + 1u]);
-                                CapSense_1_posFiltersData[posIndex + 1u] = CapSense_1_posFiltersData[posIndex];
+                                position = CapSense_1_AveragingFilter(position, 
+                                                                       CapSense_1_posFiltersData[posIndex],
+                                                                       CapSense_1_posFiltersData[posIndex + 1u]);
+                                CapSense_1_posFiltersData[posIndex+1u]=CapSense_1_posFiltersData[posIndex];
                                 CapSense_1_posFiltersData[posIndex] = tempPos;
                             }
-                        #endif
+                        #endif /* (0u != (CapSense_1_AVERAGING_FILTER & \
+                               *           CapSense_1_LINEAR_SLIDERS_POS_FILTERS_MASK))
+                               */
 
                         #if (0u != (CapSense_1_IIR2_FILTER & CapSense_1_LINEAR_SLIDERS_POS_FILTERS_MASK)) 
                             if (0u != (posFiltersMask & CapSense_1_IIR2_FILTER)) 
                             {
-                                position = CapSense_1_IIR2Filter(position, CapSense_1_posFiltersData[posIndex]);
+                                position = CapSense_1_IIR2Filter(position,
+                                                                       CapSense_1_posFiltersData[posIndex]);
                                 CapSense_1_posFiltersData[posIndex] = (uint8) position;
                             }
-                        #endif
+                        #endif /* (0u != (CapSense_1_IIR2_FILTER & \
+                               *          CapSense_1_LINEAR_SLIDERS_POS_FILTERS_MASK))
+                               */
 
                         #if (0u != (CapSense_1_IIR4_FILTER & CapSense_1_LINEAR_SLIDERS_POS_FILTERS_MASK))
                             if (0u != (posFiltersMask & CapSense_1_IIR4_FILTER))
                             {
-                                position = CapSense_1_IIR4Filter(position, CapSense_1_posFiltersData[posIndex]);
+                                position = CapSense_1_IIR4Filter(position, 
+                                                                       CapSense_1_posFiltersData[posIndex]);
                                 CapSense_1_posFiltersData[posIndex] = (uint8) position;
                             }                                
-                        #endif
+                        #endif /* (0u != (CapSense_1_IIR4_FILTER & \
+                               *          CapSense_1_LINEAR_SLIDERS_POS_FILTERS_MASK))
+                               */
 
-                        #if (0u != (CapSense_1_JITTER_FILTER & CapSense_1_LINEAR_SLIDERS_POS_FILTERS_MASK))                        
+                        #if (0u != (CapSense_1_JITTER_FILTER & CapSense_1_LINEAR_SLIDERS_POS_FILTERS_MASK))
                             if (0u != (posFiltersMask & CapSense_1_JITTER_FILTER))
                             {
-                                position = CapSense_1_JitterFilter(position, CapSense_1_posFiltersData[posIndex]);
+                                position = CapSense_1_JitterFilter(position, 
+                                                                         CapSense_1_posFiltersData[posIndex]);
                                 CapSense_1_posFiltersData[posIndex] = (uint8) position;
                             }
-                        #endif
+                        #endif /* (0u != (CapSense_1_JITTER_FILTER & \
+                               *           CapSense_1_LINEAR_SLIDERS_POS_FILTERS_MASK))
+                               */
                     }
                 }
-            #endif
+            #endif /* (0u != CapSense_1_LINEAR_SLIDERS_POS_FILTERS_MASK) */
 
         }
         else
@@ -1354,13 +1401,13 @@ void CapSense_1_DisableWidget(uint8 widget)
                 {
                     CapSense_1_posFiltersData[firstTimeIndex] = 0u;
                 }
-            #endif
+            #endif /* (0u != CapSense_1_LINEAR_SLIDERS_POS_FILTERS_MASK) */
         }
 
         
         return (position);
     }
-#endif
+#endif /* (CapSense_1_TOTAL_LINEAR_SLIDERS_COUNT > 0u) */
 
 
 #if(CapSense_1_TOTAL_RADIAL_SLIDERS_COUNT > 0u)
@@ -1401,17 +1448,20 @@ void CapSense_1_DisableWidget(uint8 widget)
     *
     *******************************************************************************/
      uint16 CapSense_1_GetRadialCentroidPos(uint8 widget)
+	                                       
     {
         #if (0u != CapSense_1_RADIAL_SLIDERS_POS_FILTERS_MASK)
             uint8 posIndex;
             uint8 firstTimeIndex = CapSense_1_posFiltersData[widget];
             uint8 posFiltersMask = CapSense_1_posFiltersMask[widget]; 
+        #endif /* (0u != CapSense_1_RADIAL_SLIDERS_POS_FILTERS_MASK) */
 
-        #endif
         #if ((0u != (CapSense_1_MEDIAN_FILTER & CapSense_1_RADIAL_SLIDERS_POS_FILTERS_MASK)) || \
              (0u != (CapSense_1_AVERAGING_FILTER & CapSense_1_RADIAL_SLIDERS_POS_FILTERS_MASK)))
             uint8 tempPos;
-        #endif
+        #endif /* ((0u != (CapSense_1_MEDIAN_FILTER & CapSense_1_RADIAL_SLIDERS_POS_FILTERS_MASK)) || \
+               *   (0u != (CapSense_1_AVERAGING_FILTER & CapSense_1_RADIAL_SLIDERS_POS_FILTERS_MASK)))
+               */
 
         uint8 maximum;
         uint16 position;
@@ -1423,7 +1473,7 @@ void CapSense_1_DisableWidget(uint8 widget)
             maximum = CapSense_1_FindMaximum(offset, count, CapSense_1_fingerThreshold[widget], 0u);
         #else
             maximum = CapSense_1_FindMaximum(offset, count, CapSense_1_fingerThreshold[widget]);
-        #endif
+        #endif /* (CapSense_1_IS_DIPLEX_SLIDER) */
         
         if (maximum != 0xFFu)
         {
@@ -1442,14 +1492,21 @@ void CapSense_1_DisableWidget(uint8 widget)
                     {
                         /* Init filters */
                         CapSense_1_posFiltersData[posIndex] = (uint8) position;
-                        #if ((0u != (CapSense_1_MEDIAN_FILTER & CapSense_1_RADIAL_SLIDERS_POS_FILTERS_MASK)) || \
-                             (0u != (CapSense_1_AVERAGING_FILTER & CapSense_1_RADIAL_SLIDERS_POS_FILTERS_MASK)))
+                        #if ((0u != (CapSense_1_MEDIAN_FILTER & \
+                                     CapSense_1_RADIAL_SLIDERS_POS_FILTERS_MASK)) || \
+                             (0u != (CapSense_1_AVERAGING_FILTER & \
+                                     CapSense_1_RADIAL_SLIDERS_POS_FILTERS_MASK)))
+
                             if ( (0u != (posFiltersMask & CapSense_1_MEDIAN_FILTER))  || 
                                  (0u != (posFiltersMask & CapSense_1_AVERAGING_FILTER)) )
                             {
                                 CapSense_1_posFiltersData[posIndex + 1u] = (uint8) position;
                             }
-                        #endif
+                        #endif /* ((0u != (CapSense_1_MEDIAN_FILTER & \
+                               *           CapSense_1_RADIAL_SLIDERS_POS_FILTERS_MASK)) || \
+                               *   (0u != (CapSense_1_AVERAGING_FILTER & \
+                               *           CapSense_1_RADIAL_SLIDERS_POS_FILTERS_MASK)))
+                               */
                         
                         CapSense_1_posFiltersData[firstTimeIndex] = 1u;
                     }
@@ -1460,50 +1517,67 @@ void CapSense_1_DisableWidget(uint8 widget)
                             if (0u != (posFiltersMask & CapSense_1_MEDIAN_FILTER))
                             {
                                 tempPos = (uint8) position;
-                                position = CapSense_1_MedianFilter(position,CapSense_1_posFiltersData[posIndex], 
-                                  CapSense_1_posFiltersData[posIndex + 1u]);
-                                CapSense_1_posFiltersData[posIndex + 1u] = CapSense_1_posFiltersData[posIndex];
+                                position = CapSense_1_MedianFilter(position,
+                                                                        CapSense_1_posFiltersData[posIndex],
+                                                                        CapSense_1_posFiltersData[posIndex + 1u]);
+                                CapSense_1_posFiltersData[posIndex + 1u] = 
+                                                                              CapSense_1_posFiltersData[posIndex];
                                 CapSense_1_posFiltersData[posIndex] = tempPos;
                             }
-                        #endif
+                        #endif /* (0u != (CapSense_1_MEDIAN_FILTER & 
+                               *          CapSense_1_RADIAL_SLIDERS_POS_FILTERS_MASK))
+                               */
 
-                        #if (0u != (CapSense_1_AVERAGING_FILTER & CapSense_1_RADIAL_SLIDERS_POS_FILTERS_MASK))
+                        #if (0u != (CapSense_1_AVERAGING_FILTER & \
+                                    CapSense_1_RADIAL_SLIDERS_POS_FILTERS_MASK))
                             if (0u != (posFiltersMask & CapSense_1_AVERAGING_FILTER))
                             {
                                 tempPos = (uint8) position;
-                                position = CapSense_1_AveragingFilter(position, CapSense_1_posFiltersData[posIndex], 
-                                  CapSense_1_posFiltersData[posIndex + 1u]);
-                                CapSense_1_posFiltersData[posIndex + 1u] = CapSense_1_posFiltersData[posIndex];
+                                position = CapSense_1_AveragingFilter(position, 
+                                                                       CapSense_1_posFiltersData[posIndex],
+                                                                       CapSense_1_posFiltersData[posIndex + 1u]);
+                                CapSense_1_posFiltersData[posIndex+1u]= CapSense_1_posFiltersData[posIndex];
                                 CapSense_1_posFiltersData[posIndex] = tempPos;
                             }
-                        #endif
+                        #endif /* (0u != (CapSense_1_AVERAGING_FILTER & \
+                               *          CapSense_1_RADIAL_SLIDERS_POS_FILTERS_MASK))
+                               */
 
                         #if (0u != (CapSense_1_IIR2_FILTER & CapSense_1_RADIAL_SLIDERS_POS_FILTERS_MASK))
                             if (0u != (posFiltersMask & CapSense_1_IIR2_FILTER))
                             {
-                                position = CapSense_1_IIR2Filter(position, CapSense_1_posFiltersData[posIndex]);
+                                position = CapSense_1_IIR2Filter(position, 
+                                                                       CapSense_1_posFiltersData[posIndex]);
                                 CapSense_1_posFiltersData[posIndex] = (uint8) position;
                             }
-                        #endif
+                        #endif /* (0u != (CapSense_1_IIR2_FILTER & 
+                               *          CapSense_1_RADIAL_SLIDERS_POS_FILTERS_MASK))
+                               */
 
                         #if (0u != (CapSense_1_IIR4_FILTER & CapSense_1_RADIAL_SLIDERS_POS_FILTERS_MASK))
                             if (0u != (posFiltersMask & CapSense_1_IIR4_FILTER))
                             {
-                                position = CapSense_1_IIR4Filter(position, CapSense_1_posFiltersData[posIndex]);
+                                position = CapSense_1_IIR4Filter(position, 
+                                                                       CapSense_1_posFiltersData[posIndex]);
                                 CapSense_1_posFiltersData[posIndex] = (uint8) position;
                             }
-                        #endif
+                        #endif /* (0u != (CapSense_1_IIR4_FILTER & 
+                               *          CapSense_1_RADIAL_SLIDERS_POS_FILTERS_MASK))
+                               */
 
                         #if (0u != (CapSense_1_JITTER_FILTER & CapSense_1_RADIAL_SLIDERS_POS_FILTERS_MASK))
                             if (0u != (posFiltersMask & CapSense_1_JITTER_FILTER))
                             {
-                                position = CapSense_1_JitterFilter(position, CapSense_1_posFiltersData[posIndex]);
+                                position = CapSense_1_JitterFilter(position, 
+                                                                         CapSense_1_posFiltersData[posIndex]);
                                 CapSense_1_posFiltersData[posIndex] = (uint8) position;
                             }
-                        #endif
+                        #endif /* (0u != (CapSense_1_JITTER_FILTER &
+                               *           CapSense_1_RADIAL_SLIDERS_POS_FILTERS_MASK))
+                               */
                     }
                 }
-            #endif
+            #endif /* (0u != CapSense_1_RADIAL_SLIDERS_POS_FILTERS_MASK) */
 
         }
         else
@@ -1517,7 +1591,7 @@ void CapSense_1_DisableWidget(uint8 widget)
                 {
                     CapSense_1_posFiltersData[firstTimeIndex] = 0u;
                 }
-            #endif
+            #endif /* (0u != CapSense_1_RADIAL_SLIDERS_POS_FILTERS_MASK) */
         }
         
         return (position);
@@ -1562,17 +1636,21 @@ void CapSense_1_DisableWidget(uint8 widget)
     *
     *******************************************************************************/
     uint8 CapSense_1_GetTouchCentroidPos(uint8 widget, uint16* pos)
+	                                    
     {
         #if (0u != CapSense_1_TOUCH_PADS_POS_FILTERS_MASK)
             uint8 posXIndex;
             uint8 posYIndex;
             uint8 firstTimeIndex = CapSense_1_posFiltersData[widget];
             uint8 posFiltersMask = CapSense_1_posFiltersMask[widget];
-        #endif
+        #endif /* (0u != CapSense_1_TOUCH_PADS_POS_FILTERS_MASK) */
+
         #if ((0u != (CapSense_1_MEDIAN_FILTER & CapSense_1_TOUCH_PADS_POS_FILTERS_MASK)) || \
              (0u != (CapSense_1_AVERAGING_FILTER & CapSense_1_TOUCH_PADS_POS_FILTERS_MASK)))
             uint16 tempPos;
-        #endif
+        #endif /* ((0u != (CapSense_1_MEDIAN_FILTER & CapSense_1_TOUCH_PADS_POS_FILTERS_MASK)) || \
+               *   (0u != (CapSense_1_AVERAGING_FILTER & CapSense_1_TOUCH_PADS_POS_FILTERS_MASK)))
+               */
 
         uint8 MaxX;
         uint8 MaxY;
@@ -1587,7 +1665,7 @@ void CapSense_1_DisableWidget(uint8 widget)
             MaxX = CapSense_1_FindMaximum(offset, count, CapSense_1_fingerThreshold[widget], 0u);
         #else
             MaxX = CapSense_1_FindMaximum(offset, count, CapSense_1_fingerThreshold[widget]);
-        #endif
+        #endif /* (CapSense_1_IS_DIPLEX_SLIDER) */
 
         if (MaxX != 0xFFu)
         {
@@ -1599,7 +1677,7 @@ void CapSense_1_DisableWidget(uint8 widget)
                 MaxY = CapSense_1_FindMaximum(offset, count, CapSense_1_fingerThreshold[widget + 1u], 0u);
             #else
                 MaxY = CapSense_1_FindMaximum(offset, count, CapSense_1_fingerThreshold[widget + 1u]);
-            #endif
+            #endif /* (CapSense_1_IS_DIPLEX_SLIDER) */
 
             if (MaxY != 0xFFu)
             {
@@ -1630,15 +1708,23 @@ void CapSense_1_DisableWidget(uint8 widget)
                             /* Init filters */
                             CapSense_1_posFiltersData[posXIndex] = posX;
                             CapSense_1_posFiltersData[posYIndex] = posY;
-                            #if ((0u != (CapSense_1_MEDIAN_FILTER & CapSense_1_TOUCH_PADS_POS_FILTERS_MASK)) || \
-                                 (0u != (CapSense_1_AVERAGING_FILTER & CapSense_1_TOUCH_PADS_POS_FILTERS_MASK)))
+
+                            #if((0u != (CapSense_1_MEDIAN_FILTER & \
+                                        CapSense_1_TOUCH_PADS_POS_FILTERS_MASK))|| \
+                                (0u != (CapSense_1_AVERAGING_FILTER & \
+                                        CapSense_1_TOUCH_PADS_POS_FILTERS_MASK)))
+
                                 if ( (0u != (posFiltersMask & CapSense_1_MEDIAN_FILTER)) || 
                                      (0u != (posFiltersMask & CapSense_1_AVERAGING_FILTER)) )
                                 {
                                     CapSense_1_posFiltersData[posXIndex + 1u] = posX;
                                     CapSense_1_posFiltersData[posYIndex + 1u] = posY;
                                 }
-                            #endif
+                            #endif /* ((0u != (CapSense_1_MEDIAN_FILTER & \
+                                   *           CapSense_1_TOUCH_PADS_POS_FILTERS_MASK)) || \
+                                   *    (0u != (CapSense_1_AVERAGING_FILTER & \
+                                   *            CapSense_1_TOUCH_PADS_POS_FILTERS_MASK)))
+                                   */
                             
                             CapSense_1_posFiltersData[firstTimeIndex] = 1u;
                         }
@@ -1649,75 +1735,99 @@ void CapSense_1_DisableWidget(uint8 widget)
                                 if (0u != (posFiltersMask & CapSense_1_MEDIAN_FILTER))
                                 {
                                     tempPos = posX;
-                                    posX = (uint8) CapSense_1_MedianFilter(posX, CapSense_1_posFiltersData[posXIndex], 
-                                      CapSense_1_posFiltersData[posXIndex + 1u]);
-                                    CapSense_1_posFiltersData[posXIndex + 1u] = CapSense_1_posFiltersData[posXIndex];
+                                    posX = (uint8) CapSense_1_MedianFilter(posX,
+                                                                      CapSense_1_posFiltersData[posXIndex],
+                                                                      CapSense_1_posFiltersData[posXIndex + 1u]);
+                                    CapSense_1_posFiltersData[posXIndex + 1u] = 
+                                                                             CapSense_1_posFiltersData[posXIndex];
                                     CapSense_1_posFiltersData[posXIndex] = tempPos;
                                     
                                     tempPos = posY;
-                                    posY = (uint8) CapSense_1_MedianFilter(posY, CapSense_1_posFiltersData[posYIndex], 
-                                      CapSense_1_posFiltersData[posYIndex + 1u]);
-                                    CapSense_1_posFiltersData[posYIndex + 1u] = CapSense_1_posFiltersData[posYIndex];
+                                    posY = (uint8) CapSense_1_MedianFilter(posY,
+                                                                       CapSense_1_posFiltersData[posYIndex], 
+                                                                       CapSense_1_posFiltersData[posYIndex + 1u]);
+                                    CapSense_1_posFiltersData[posYIndex + 1u] = 
+                                                                             CapSense_1_posFiltersData[posYIndex];
                                     CapSense_1_posFiltersData[posYIndex] = tempPos;
                                 }
                                 
-                            #endif
+                            #endif /* (0u != (CapSense_1_MEDIAN_FILTER & \
+                                   *          CapSense_1_TOUCH_PADS_POS_FILTERS_MASK))
+                                   */
 
-                            #if (0u != (CapSense_1_AVERAGING_FILTER & CapSense_1_TOUCH_PADS_POS_FILTERS_MASK))
+                            #if(0u !=(CapSense_1_AVERAGING_FILTER & CapSense_1_TOUCH_PADS_POS_FILTERS_MASK))
                                 if (0u != (posFiltersMask & CapSense_1_AVERAGING_FILTER))
                                 {
                                     tempPos = posX;
-                                    posX = (uint8) CapSense_1_AveragingFilter(posX, CapSense_1_posFiltersData[posXIndex], 
-                                      CapSense_1_posFiltersData[posXIndex + 1u]);
-                                    CapSense_1_posFiltersData[posXIndex + 1u] = CapSense_1_posFiltersData[posXIndex];
+                                    posX = (uint8) CapSense_1_AveragingFilter(posX,
+                                                                       CapSense_1_posFiltersData[posXIndex], 
+                                                                       CapSense_1_posFiltersData[posXIndex + 1u]);
+                                    CapSense_1_posFiltersData[posXIndex + 1u] = 
+                                                                             CapSense_1_posFiltersData[posXIndex];
                                     CapSense_1_posFiltersData[posXIndex] = tempPos;
                                     
                                     tempPos = posY;
-                                    posY = (uint8) CapSense_1_AveragingFilter(posY, CapSense_1_posFiltersData[posYIndex], 
-                                      CapSense_1_posFiltersData[posYIndex + 1u]);
-                                    CapSense_1_posFiltersData[posYIndex + 1u] = CapSense_1_posFiltersData[posYIndex];
+                                    posY = (uint8) CapSense_1_AveragingFilter(posY, 
+                                                                      CapSense_1_posFiltersData[posYIndex], 
+                                                                      CapSense_1_posFiltersData[posYIndex + 1u]);
+                                    CapSense_1_posFiltersData[posYIndex + 1u] = 
+                                                                            CapSense_1_posFiltersData[posYIndex];
                                     CapSense_1_posFiltersData[posYIndex] = tempPos;
                                 }
-                                
-                            #endif
+
+                            #endif /* (0u != (CapSense_1_AVERAGING_FILTER & \
+                                   *           CapSense_1_TOUCH_PADS_POS_FILTERS_MASK))
+                                   */
 
                             #if (0u != (CapSense_1_IIR2_FILTER & CapSense_1_TOUCH_PADS_POS_FILTERS_MASK))
                                 if (0u != (posFiltersMask & CapSense_1_IIR2_FILTER))
                                 {
-                                    posX = (uint8) CapSense_1_IIR2Filter(posX, CapSense_1_posFiltersData[posXIndex]);
+                                    posX = (uint8) CapSense_1_IIR2Filter(posX, 
+                                                                           CapSense_1_posFiltersData[posXIndex]);
                                     CapSense_1_posFiltersData[posXIndex] = posX;
                                     
-                                    posY = (uint8) CapSense_1_IIR2Filter(posY, CapSense_1_posFiltersData[posYIndex]);
+                                    posY = (uint8) CapSense_1_IIR2Filter(posY, 
+                                                                            CapSense_1_posFiltersData[posYIndex]);
                                     CapSense_1_posFiltersData[posYIndex] = posY;
                                 }
                                 
-                            #endif
+                            #endif /* (0u != (CapSense_1_IIR2_FILTER & \
+                                   *          CapSense_1_TOUCH_PADS_POS_FILTERS_MASK))
+                                   */
 
                             #if (0u != (CapSense_1_IIR4_FILTER & CapSense_1_TOUCH_PADS_POS_FILTERS_MASK))
                                 if (0u != (posFiltersMask & CapSense_1_IIR4_FILTER))
                                 {
-                                    posX = (uint8) CapSense_1_IIR4Filter(posX, CapSense_1_posFiltersData[posXIndex]);
+                                    posX = (uint8) CapSense_1_IIR4Filter(posX, 
+                                                                            CapSense_1_posFiltersData[posXIndex]);
                                     CapSense_1_posFiltersData[posXIndex] = posX;
                                     
-                                    posY = (uint8) CapSense_1_IIR4Filter(posY, CapSense_1_posFiltersData[posYIndex]);
+                                    posY = (uint8) CapSense_1_IIR4Filter(posY, 
+                                                                            CapSense_1_posFiltersData[posYIndex]);
                                     CapSense_1_posFiltersData[posYIndex] = posY;
                                 }
                                 
-                            #endif
+                            #endif /* (0u != (CapSense_1_IIR4_FILTER & \
+                                   *           CapSense_1_TOUCH_PADS_POS_FILTERS_MASK))
+                                   */
 
                             #if (0u != (CapSense_1_JITTER_FILTER & CapSense_1_TOUCH_PADS_POS_FILTERS_MASK))
                                 if (0u != (posFiltersMask & CapSense_1_JITTER_FILTER))
                                     {
-                                        posX = (uint8) CapSense_1_JitterFilter(posX, CapSense_1_posFiltersData[posXIndex]);
+                                        posX = (uint8) CapSense_1_JitterFilter(posX, 
+                                                                            CapSense_1_posFiltersData[posXIndex]);
                                         CapSense_1_posFiltersData[posXIndex] = posX;
                                         
-                                        posY = (uint8) CapSense_1_JitterFilter(posY, CapSense_1_posFiltersData[posYIndex]);
+                                        posY = (uint8) CapSense_1_JitterFilter(posY, 
+                                                                            CapSense_1_posFiltersData[posYIndex]);
                                         CapSense_1_posFiltersData[posYIndex] = posY;
                                     }
-                            #endif
+                            #endif /* (0u != (CapSense_1_JITTER_FILTER & \
+                                   *           CapSense_1_TOUCH_PADS_POS_FILTERS_MASK))
+                                   */
                         }
                     }
-                #endif
+                #endif /* (0u != CapSense_1_TOUCH_PADS_POS_FILTERS_MASK) */
 
                 /* Save positions */
                 pos[0u] = posX;
@@ -1734,11 +1844,11 @@ void CapSense_1_DisableWidget(uint8 widget)
                     CapSense_1_posFiltersData[firstTimeIndex] = 0u;
                 }
             }
-        #endif
+        #endif /* (0u != CapSense_1_TOUCH_PADS_POS_FILTERS_MASK) */
         
         return (touch);
     }
-#endif
+#endif /* (CapSense_1_TOTAL_TOUCH_PADS_COUNT > 0u) */
 
 
 #if ( (CapSense_1_RAW_FILTER_MASK & CapSense_1_MEDIAN_FILTER) || \
@@ -1761,7 +1871,7 @@ void CapSense_1_DisableWidget(uint8 widget)
     *  Returns filtered value.
     *
     *******************************************************************************/
-    uint16 CapSense_1_MedianFilter(uint16 x1, uint16 x2, uint16 x3) \
+    uint16 CapSense_1_MedianFilter(uint16 x1, uint16 x2, uint16 x3)
                                          
     {
         uint16 tmp;
@@ -1780,7 +1890,9 @@ void CapSense_1_DisableWidget(uint8 widget)
         
         return ((x1 > x2) ? x1 : x2);
     }
-#endif /* End CapSense_1_RAW_FILTER_MASK && CapSense_1_POS_FILTERS_MASK */
+#endif /* ( (CapSense_1_RAW_FILTER_MASK & CapSense_1_MEDIAN_FILTER) || \
+       *    (CapSense_1_POS_FILTERS_MASK & CapSense_1_MEDIAN_FILTER) )
+       */
 
 
 #if ( (CapSense_1_RAW_FILTER_MASK & CapSense_1_AVERAGING_FILTER) || \
@@ -1803,14 +1915,16 @@ void CapSense_1_DisableWidget(uint8 widget)
     *  Returns filtered value.
     *
     *******************************************************************************/
-    uint16 CapSense_1_AveragingFilter(uint16 x1, uint16 x2, uint16 x3) \
+    uint16 CapSense_1_AveragingFilter(uint16 x1, uint16 x2, uint16 x3)
                                             
     {
         uint32 tmp = ((uint32)x1 + (uint32)x2 + (uint32)x3) / 3u;
         
         return ((uint16) tmp);
     }
-#endif /* End CapSense_1_RAW_FILTER_MASK && CapSense_1_POS_FILTERS_MASK */
+#endif /* ( (CapSense_1_RAW_FILTER_MASK & CapSense_1_AVERAGING_FILTER) || \
+       *    (CapSense_1_POS_FILTERS_MASK & CapSense_1_AVERAGING_FILTER) )
+       */
 
 
 #if ( (CapSense_1_RAW_FILTER_MASK & CapSense_1_IIR2_FILTER) || \
@@ -1830,7 +1944,7 @@ void CapSense_1_DisableWidget(uint8 widget)
     *  Returns filtered value.
     *
     *******************************************************************************/
-    uint16 CapSense_1_IIR2Filter(uint16 x1, uint16 x2) \
+    uint16 CapSense_1_IIR2Filter(uint16 x1, uint16 x2)
                                        
     {
         uint32 tmp;
@@ -1841,7 +1955,9 @@ void CapSense_1_DisableWidget(uint8 widget)
     
         return ((uint16) tmp);
     }
-#endif /* End CapSense_1_RAW_FILTER_MASK && CapSense_1_POS_FILTERS_MASK */
+#endif /* ( (CapSense_1_RAW_FILTER_MASK & CapSense_1_IIR2_FILTER) || \
+       *    (CapSense_1_POS_FILTERS_MASK & CapSense_1_IIR2_FILTER) )
+       */
 
 
 #if ( (CapSense_1_RAW_FILTER_MASK & CapSense_1_IIR4_FILTER) || \
@@ -1861,7 +1977,7 @@ void CapSense_1_DisableWidget(uint8 widget)
     *  Returns filtered value.
     *
     *******************************************************************************/
-    uint16 CapSense_1_IIR4Filter(uint16 x1, uint16 x2) \
+    uint16 CapSense_1_IIR4Filter(uint16 x1, uint16 x2)
                                        
     {
         uint32 tmp;
@@ -1873,7 +1989,9 @@ void CapSense_1_DisableWidget(uint8 widget)
         
         return ((uint16) tmp);
     }
-#endif /* End CapSense_1_RAW_FILTER_MASK && CapSense_1_POS_FILTERS_MASK */
+#endif /* ( (CapSense_1_RAW_FILTER_MASK & CapSense_1_IIR4_FILTER) || \
+       *    (CapSense_1_POS_FILTERS_MASK & CapSense_1_IIR4_FILTER) )
+       */
 
 
 #if ( (CapSense_1_RAW_FILTER_MASK & CapSense_1_JITTER_FILTER) || \
@@ -1893,7 +2011,7 @@ void CapSense_1_DisableWidget(uint8 widget)
     *  Returns filtered value.
     *
     *******************************************************************************/
-    uint16 CapSense_1_JitterFilter(uint16 x1, uint16 x2) \
+    uint16 CapSense_1_JitterFilter(uint16 x1, uint16 x2)
                                          
     {
         if (x1 > x2)
@@ -1910,7 +2028,9 @@ void CapSense_1_DisableWidget(uint8 widget)
     
         return x1;
     }
-#endif /* End CapSense_1_RAW_FILTER_MASK && CapSense_1_POS_FILTERS_MASK */
+#endif /* ( (CapSense_1_RAW_FILTER_MASK & CapSense_1_JITTER_FILTER) || \
+       *    (CapSense_1_POS_FILTERS_MASK & CapSense_1_JITTER_FILTER) )
+       */
 
 
 #if (CapSense_1_RAW_FILTER_MASK & CapSense_1_IIR8_FILTER)
@@ -1930,7 +2050,7 @@ void CapSense_1_DisableWidget(uint8 widget)
     *  Returns filtered value.
     *
     *******************************************************************************/
-    uint16 CapSense_1_IIR8Filter(uint16 x1, uint16 x2) \
+    uint16 CapSense_1_IIR8Filter(uint16 x1, uint16 x2)
                                        
     {
         uint32 tmp;
@@ -1942,7 +2062,7 @@ void CapSense_1_DisableWidget(uint8 widget)
     
         return ((uint16) tmp);
     }
-#endif /* End (CapSense_1_RAW_FILTER_MASK & CapSense_1_IIR8_FILTER) */
+#endif /* (CapSense_1_RAW_FILTER_MASK & CapSense_1_IIR8_FILTER) */
 
 
 #if (CapSense_1_RAW_FILTER_MASK & CapSense_1_IIR16_FILTER)
@@ -1962,7 +2082,7 @@ void CapSense_1_DisableWidget(uint8 widget)
     *  Returns filtered value.
     *
     *******************************************************************************/
-    uint16 CapSense_1_IIR16Filter(uint16 x1, uint16 x2) \
+    uint16 CapSense_1_IIR16Filter(uint16 x1, uint16 x2)
                                         
     {
         uint32 tmp;
@@ -1974,7 +2094,7 @@ void CapSense_1_DisableWidget(uint8 widget)
         
         return ((uint16) tmp);
     }
-#endif /* End (CapSense_1_RAW_FILTER_MASK & CapSense_1_IIR16_FILTER) */
+#endif /* (CapSense_1_RAW_FILTER_MASK & CapSense_1_IIR16_FILTER) */
 
 
 #if (CapSense_1_TOTAL_MATRIX_BUTTONS_COUNT)
@@ -2003,6 +2123,7 @@ void CapSense_1_DisableWidget(uint8 widget)
     *
     *******************************************************************************/
     uint8 CapSense_1_GetMatrixButtonPos(uint8 widget, uint8* pos)
+	                                          
     {
         uint8 i;
         uint16 row_sig_max = 0u;
@@ -2045,6 +2166,6 @@ void CapSense_1_DisableWidget(uint8 widget)
         return 0u;
     }
 
-#endif /* End (CapSense_1_TOTAL_MATRIX_BUTTONS_COUNT) */
+#endif /* (CapSense_1_TOTAL_MATRIX_BUTTONS_COUNT) */
 
 /* [] END OF FILE */

@@ -1,23 +1,32 @@
 /*******************************************************************************
-* File Name: IDAC8_PulseRed.h  
-* Version 1.80
+* File Name: IDAC8_PulseRed.c
+* Version 1.90
 *
-*  Description:
-*    This file contains the function prototypes and constants used in
-*    the 8-bit Current DAC (IDAC8) User Module.
+* Description:
+*  This file contains the function prototypes and constants used in
+*  the 8-bit Current DAC (IDAC8) User Module.
+*
+* Note:
+*  None
 *
 ********************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions, 
 * disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
-********************************************************************************/
+*******************************************************************************/
 
 #if !defined(CY_IDAC8_IDAC8_PulseRed_H)  
 #define CY_IDAC8_IDAC8_PulseRed_H
 
 #include "cytypes.h"
 #include "cyfitter.h"
+
+/* Check to see if required defines such as CY_PSOC5LP are available */
+/* They are defined starting with cy_boot v3.0 */
+#if !defined (CY_PSOC5LP)
+    #error Component IDAC8_v1_90 requires cy_boot v3.0 or later
+#endif /* (CY_PSOC5LP) */
 
 
 /***************************************
@@ -29,31 +38,39 @@ typedef struct IDAC8_PulseRed_backupStruct
 {
     uint8 enableState;
     uint8 data_value;
-    uint8 DACCR0Reg;
 }IDAC8_PulseRed_backupStruct;
+
+
+#if (CY_PSOC5A)
+    /* Stop API changes for PSoC5A */
+    typedef struct _IDAC8_PulseRed_lowPowerBackupStruct
+    {
+        uint8 DACCR0Reg;
+    }   IDAC8_PulseRed_LOWPOWER_BACKUP_STRUCT;
+#endif /* CY_PSOC5A */
 
 
 /***************************************
 *        Function Prototypes 
 ***************************************/
 
-void    IDAC8_PulseRed_Start(void);
-void    IDAC8_PulseRed_Stop(void) ;
-void    IDAC8_PulseRed_SetSpeed(uint8 speed) ;
+void    IDAC8_PulseRed_Start(void)                 ;
+void    IDAC8_PulseRed_Stop(void)                  ;
+void    IDAC8_PulseRed_SetSpeed(uint8 speed)       ;
 void    IDAC8_PulseRed_SetPolarity(uint8 polarity) ;
-void    IDAC8_PulseRed_SetRange(uint8 iRange) ;
-void    IDAC8_PulseRed_SetValue(uint8 value) ;
-void    IDAC8_PulseRed_DacTrim(void) ;
+void    IDAC8_PulseRed_SetRange(uint8 range)      ;
+void    IDAC8_PulseRed_SetValue(uint8 value)       ;
+void    IDAC8_PulseRed_DacTrim(void)               ;
 
 /* Sleep Retention APIs */
-void IDAC8_PulseRed_Init(void) ;
-void IDAC8_PulseRed_Enable(void) ;
-void IDAC8_PulseRed_SaveConfig(void);
-void IDAC8_PulseRed_RestoreConfig(void);
-void IDAC8_PulseRed_Sleep(void);
-void IDAC8_PulseRed_Wakeup(void);
- 
-  
+void IDAC8_PulseRed_Init(void)                     ;
+void IDAC8_PulseRed_Enable(void)                   ;
+void IDAC8_PulseRed_SaveConfig(void)               ;
+void IDAC8_PulseRed_RestoreConfig(void)            ;
+void IDAC8_PulseRed_Sleep(void)                    ;
+void IDAC8_PulseRed_Wakeup(void)                   ;
+
+
 /***************************************
 *       Paramater Initial Values
 ***************************************/
@@ -66,6 +83,8 @@ void IDAC8_PulseRed_Wakeup(void);
 #define IDAC8_PulseRed_DEFAULT_POLARITY 4u       /* Default Sink or Source */
 #define IDAC8_PulseRed_DEFAULT_DATA_SRC 0u    /* Default Data Source */   
 #define IDAC8_PulseRed_HARDWARE_ENABLE  0u /*Hardware Enable */
+
+
 /***************************************
 *              API Constants        
 ***************************************/
@@ -80,6 +99,7 @@ void IDAC8_PulseRed_Wakeup(void);
 #define IDAC8_PulseRed_SOURCE                 (0x00u)
 #define IDAC8_PulseRed_SINK                   (0x04u)
 #define IDAC8_PulseRed_HARDWARE_CONTROLLED    (0x02u)
+
 /* Power setting for SetSpeed API  */
 #define IDAC8_PulseRed_LOWSPEED               (0x00u)
 #define IDAC8_PulseRed_HIGHSPEED              (0x02u)
@@ -121,9 +141,9 @@ void IDAC8_PulseRed_Wakeup(void);
 *
 * The data set for the 4 VIDACs are arranged using a left side/right 
 * side approach:
-*   Left 0, Left 1, Right 0, Right 1.
+*  Left 0, Left 1, Right 0, Right 1.
 * When mapped to the VIDAC0 thru VIDAC3 as:
-*   VIDAC 0, VIDAC 2, VIDAC 1, VIDAC 3
+*  VIDAC 0, VIDAC 2, VIDAC 1, VIDAC 3
 ******************************************************************************/
 
 #define IDAC8_PulseRed_DAC_TRIM_BASE   IDAC8_PulseRed_viDAC8__TRIM__M1
@@ -171,7 +191,7 @@ void IDAC8_PulseRed_Wakeup(void);
 
 /* Bit Field  DAC_I_DIR                  */
 /* Register control of current direction      */
-#define IDAC8_PulseRed_IDIR_MASK      (0x04u)   
+#define IDAC8_PulseRed_IDIR_MASK      (0x04u)
 #define IDAC8_PulseRed_IDIR_SRC       (0x00u)
 #define IDAC8_PulseRed_IDIR_SINK      (0x04u)
 
@@ -184,7 +204,7 @@ void IDAC8_PulseRed_Wakeup(void);
 /* Bit Field  DAC_MX_IOFF                   */
 /* Register control of IDAC                 */
 /* Only valid if IOFF CTL is set to Reg     */
-#define IDAC8_PulseRed_I_OFF_MASK     (0x01u)   
+#define IDAC8_PulseRed_I_OFF_MASK     (0x01u)
 #define IDAC8_PulseRed_I_OFF          (0x00u)
 #define IDAC8_PulseRed_I_ON           (0x01u)
 

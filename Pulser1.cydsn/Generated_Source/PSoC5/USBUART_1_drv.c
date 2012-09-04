@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: USBUART_1_drv.c
-* Version 2.12
+* Version 2.30
 *
 * Description:
 *  Endpoint 0 Driver for the USBFS Component.
@@ -165,10 +165,6 @@ CY_ISR(USBUART_1_EP_0_ISR)
             }
         }
     }
-    /* PSoC3 ES1, ES2 RTC ISR PATCH  */
-    #if(CY_PSOC3_ES2 && (USBUART_1_ep_0__ES2_PATCH))
-        USBUART_1_ISR_PATCH();
-    #endif /* End CY_PSOC3_ES2*/
 }
 
 

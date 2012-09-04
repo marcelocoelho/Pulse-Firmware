@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: ADC_PulseIn_AMux.c
-* Version 1.50
+* Version 1.60
 *
 *  Description:
 *    This file contains all functions required for the analog multiplexer
@@ -17,7 +17,6 @@
 
 #include "ADC_PulseIn_AMux.h"
 
-uint8 ADC_PulseIn_AMux_initVar = 0u;
 uint8 ADC_PulseIn_AMux_lastChannel = ADC_PulseIn_AMux_NULL_CHANNEL;
 
 
@@ -36,49 +35,23 @@ uint8 ADC_PulseIn_AMux_lastChannel = ADC_PulseIn_AMux_NULL_CHANNEL;
 *******************************************************************************/
 void ADC_PulseIn_AMux_Start(void)
 {
-    ADC_PulseIn_AMux_DisconnectAll();
-    ADC_PulseIn_AMux_initVar = 1u;
+    uint8 chan;
+
+    for(chan = 0; chan < ADC_PulseIn_AMux_CHANNELS ; chan++)
+    {
+#if(ADC_PulseIn_AMux_MUXTYPE == ADC_PulseIn_AMux_MUX_SINGLE)
+        ADC_PulseIn_AMux_Unset(chan);
+#else
+        ADC_PulseIn_AMux_CYAMUXSIDE_A_Unset(chan);
+        ADC_PulseIn_AMux_CYAMUXSIDE_B_Unset(chan);
+#endif
+    }
+
+	ADC_PulseIn_AMux_lastChannel = ADC_PulseIn_AMux_NULL_CHANNEL;
 }
 
 
-/*******************************************************************************
-* Function Name: ADC_PulseIn_AMux_Init
-********************************************************************************
-* Summary:
-*  Disconnect all channels.
-*
-* Parameters:
-*  void
-*
-* Return:
-*  void
-*
-*******************************************************************************/
-void ADC_PulseIn_AMux_Init(void)
-{
-    ADC_PulseIn_AMux_DisconnectAll();
-}
-
-
-/*******************************************************************************
-* Function Name: ADC_PulseIn_AMux_Stop
-********************************************************************************
-* Summary:
-*  Disconnect all channels.
-*
-* Parameters:
-*  void
-*
-* Return:
-*  void
-*
-*******************************************************************************/
-void ADC_PulseIn_AMux_Stop(void)
-{
-    ADC_PulseIn_AMux_DisconnectAll();
-}
-
-
+#if(!ADC_PulseIn_AMux_ATMOSTONE)
 /*******************************************************************************
 * Function Name: ADC_PulseIn_AMux_Select
 ********************************************************************************
@@ -99,6 +72,7 @@ void ADC_PulseIn_AMux_Select(uint8 channel)
     ADC_PulseIn_AMux_Connect(channel);       /* Make the given selection */
     ADC_PulseIn_AMux_lastChannel = channel;  /* Update last channel */
 }
+#endif
 
 
 /*******************************************************************************
@@ -120,18 +94,26 @@ void ADC_PulseIn_AMux_Select(uint8 channel)
 void ADC_PulseIn_AMux_FastSelect(uint8 channel) 
 {
     /* Disconnect the last valid channel */
-    if( ADC_PulseIn_AMux_lastChannel != ADC_PulseIn_AMux_NULL_CHANNEL)   /* Update last channel */
+    if( ADC_PulseIn_AMux_lastChannel != ADC_PulseIn_AMux_NULL_CHANNEL)
     {
         ADC_PulseIn_AMux_Disconnect(ADC_PulseIn_AMux_lastChannel);
     }
 
     /* Make the new channel connection */
-    ADC_PulseIn_AMux_Connect(channel);
-    ADC_PulseIn_AMux_lastChannel = channel;   /* Update last channel */
+#if(ADC_PulseIn_AMux_MUXTYPE == ADC_PulseIn_AMux_MUX_SINGLE)
+    ADC_PulseIn_AMux_Set(channel);
+#else
+    ADC_PulseIn_AMux_CYAMUXSIDE_A_Set(channel);
+    ADC_PulseIn_AMux_CYAMUXSIDE_B_Set(channel);
+#endif
+
+
+	ADC_PulseIn_AMux_lastChannel = channel;   /* Update last channel */
 }
 
 
 #if(ADC_PulseIn_AMux_MUXTYPE == ADC_PulseIn_AMux_MUX_DIFF)
+#if(!ADC_PulseIn_AMux_ATMOSTONE)
 /*******************************************************************************
 * Function Name: ADC_PulseIn_AMux_Connect
 ********************************************************************************
@@ -150,7 +132,7 @@ void ADC_PulseIn_AMux_Connect(uint8 channel)
     ADC_PulseIn_AMux_CYAMUXSIDE_A_Set(channel);
     ADC_PulseIn_AMux_CYAMUXSIDE_B_Set(channel);
 }
-
+#endif
 
 /*******************************************************************************
 * Function Name: ADC_PulseIn_AMux_Disconnect
@@ -173,7 +155,7 @@ void ADC_PulseIn_AMux_Disconnect(uint8 channel)
 }
 #endif
 
-
+#if(ADC_PulseIn_AMux_ATMOSTONE)
 /*******************************************************************************
 * Function Name: ADC_PulseIn_AMux_DisconnectAll
 ********************************************************************************
@@ -189,21 +171,12 @@ void ADC_PulseIn_AMux_Disconnect(uint8 channel)
 *******************************************************************************/
 void ADC_PulseIn_AMux_DisconnectAll(void) 
 {
-    uint8 chan;
-
-#if(ADC_PulseIn_AMux_MUXTYPE == ADC_PulseIn_AMux_MUX_SINGLE)
-    for(chan = 0; chan < ADC_PulseIn_AMux_CHANNELS ; chan++)
+    if(ADC_PulseIn_AMux_lastChannel != ADC_PulseIn_AMux_NULL_CHANNEL) 
     {
-        ADC_PulseIn_AMux_Unset(chan);
+        ADC_PulseIn_AMux_Disconnect(ADC_PulseIn_AMux_lastChannel);
+		ADC_PulseIn_AMux_lastChannel = ADC_PulseIn_AMux_NULL_CHANNEL;
     }
-#else
-    for(chan = 0; chan < ADC_PulseIn_AMux_CHANNELS ; chan++)
-    {
-        ADC_PulseIn_AMux_CYAMUXSIDE_A_Unset(chan);
-        ADC_PulseIn_AMux_CYAMUXSIDE_B_Unset(chan);
-    }
-#endif
 }
-
+#endif
 
 /* [] END OF FILE */

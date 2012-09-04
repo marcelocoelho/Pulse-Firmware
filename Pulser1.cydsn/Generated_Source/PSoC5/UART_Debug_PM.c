@@ -1,18 +1,18 @@
 /*******************************************************************************
-* File Name: UART_Debug.c
-* Version 2.10
+* File Name: UART_Debug_PM.c
+* Version 2.20
 *
 * Description:
 *  This file provides Sleep/WakeUp APIs functionality.
 *
 * Note:
 *
-*******************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions,
-* disclaimers, and limitations in the end user license agreement accompanying
+********************************************************************************
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
+* You may use this file only in accordance with the license, terms, conditions, 
+* disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
-********************************************************************************/
+*******************************************************************************/
 
 #include "UART_Debug.h"
 
@@ -51,8 +51,7 @@ static UART_Debug_BACKUP_STRUCT  UART_Debug_backup =
 *******************************************************************************/
 void UART_Debug_SaveConfig(void)
 {
-    /* PSoC3 ES2 or early, PSoC5 ES1*/
-    #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+    #if (CY_UDB_V0)
 
         #if(UART_Debug_CONTROL_REG_REMOVED == 0u)
             UART_Debug_backup.cr = UART_Debug_CONTROL_REG;
@@ -77,14 +76,14 @@ void UART_Debug_SaveConfig(void)
             UART_Debug_backup.tx_mask = UART_Debug_TXSTATUS_MASK_REG;
         #endif /*End UART_Debug_TX_ENABLED */
 
-    /* PSoC3 ES3 or later, PSoC5 ES2 or later*/
-    #elif (CY_PSOC3_ES3 || CY_PSOC5_ES2)
+    
+    #else /* CY_UDB_V1 */
 
         #if(UART_Debug_CONTROL_REG_REMOVED == 0u)
             UART_Debug_backup.cr = UART_Debug_CONTROL_REG;
         #endif /* End UART_Debug_CONTROL_REG_REMOVED */
 
-    #endif  /* End PSOC3_ES3 || PSOC5_ES2 */
+    #endif  /* End CY_UDB_V0 */
 }
 
 
@@ -110,8 +109,8 @@ void UART_Debug_SaveConfig(void)
 *******************************************************************************/
 void UART_Debug_RestoreConfig(void)
 {
-    /* PSoC3 ES2 or early, PSoC5 ES1*/
-    #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+
+    #if (CY_UDB_V0)
 
         #if(UART_Debug_CONTROL_REG_REMOVED == 0u)
             UART_Debug_CONTROL_REG = UART_Debug_backup.cr;
@@ -136,14 +135,13 @@ void UART_Debug_RestoreConfig(void)
             UART_Debug_TXSTATUS_MASK_REG = UART_Debug_backup.tx_mask;
         #endif /*End UART_Debug_TX_ENABLED */
 
-    /* PSoC3 ES3 or later, PSoC5 ES2 or later*/
-    #elif (CY_PSOC3_ES3 || CY_PSOC5_ES2)
+    #else /* CY_UDB_V1 */
 
         #if(UART_Debug_CONTROL_REG_REMOVED == 0u)
             UART_Debug_CONTROL_REG = UART_Debug_backup.cr;
         #endif /* End UART_Debug_CONTROL_REG_REMOVED */
 
-    #endif  /* End PSOC3_ES3 || PSOC5_ES2 */
+    #endif  /* End CY_UDB_V0 */
 }
 
 

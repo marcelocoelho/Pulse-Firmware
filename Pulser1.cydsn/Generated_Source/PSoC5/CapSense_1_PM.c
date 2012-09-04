@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: CapSense_1_PM.c
-* Version 3.10
+* Version 3.20
 *
 * Description:
 *  This file provides Sleep APIs for CapSense CSD Component.
@@ -8,7 +8,7 @@
 * Note:
 *
 ********************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions, 
 * disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
@@ -20,9 +20,9 @@ CapSense_1_BACKUP_STRUCT CapSense_1_backup =
 {   
     0x00u, /* enableState; */
     /* Set ScanSpeed */
-    #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+    #if (CY_PSOC5A)
         CapSense_1_SCANSPEED_VALUE,  /* scan speed value */
-    #endif  /* End (CY_PSOC3_ES2 || CY_PSOC5_ES1) */
+    #endif  /* (CY_PSOC5A) */
 };
 
 
@@ -45,19 +45,15 @@ CapSense_1_BACKUP_STRUCT CapSense_1_backup =
 *  mode and none-retention registers.
 *
 * Reentrant:
-*  No - for PSoC3 ES2 and PSoC5 ES1 silicon, Yes - for PSoC3 ES3.
+*  No - for PSoC5 ES1 silicon, Yes - for PSoC3 ES3.
 *
 *******************************************************************************/
-#if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
-    void CapSense_1_SaveConfig(void)
-#else
-    void CapSense_1_SaveConfig(void) 
-#endif  /* End (CY_PSOC3_ES2 || CY_PSOC5_ES1) */
+void CapSense_1_SaveConfig(void) 
 {    
     /* Set ScanSpeed */
-    #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+    #if (CY_PSOC5A)
         CapSense_1_backup.scanspeed = CapSense_1_SCANSPEED_PERIOD_REG;
-    #endif  /* End (CY_PSOC3_ES2 || CY_PSOC5_ES1) */
+    #endif  /* (CY_PSOC5A) */
 
     /* Set CONTROL_REG */
     CapSense_1_backup.ctrlreg = CapSense_1_CONTROL_REG;
@@ -93,7 +89,7 @@ CapSense_1_BACKUP_STRUCT CapSense_1_backup =
 *  No
 *
 *******************************************************************************/
-void CapSense_1_Sleep(void)
+void CapSense_1_Sleep(void) 
 {
     /* Check and save enable state */
     if(CapSense_1_IS_CAPSENSE_ENABLE(CapSense_1_CONTROL_REG))
@@ -138,18 +134,19 @@ void CapSense_1_RestoreConfig(void)
            (CapSense_1_IMPLEMENTATION_CH0 == CapSense_1_MEASURE_IMPLEMENTATION_UDB) || \
            ( (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) && \
              (CapSense_1_IMPLEMENTATION_CH1 == CapSense_1_MEASURE_IMPLEMENTATION_UDB))) && \
-          (CY_PSOC3_ES2 || CY_PSOC5_ES1) )
+          (CY_PSOC5A) )
         
         uint8 enableInterrupts;
-    #endif /* End ( ((CapSense_1_PRS_OPTIONS) || \
-                     (CapSense_1_IMPLEMENTATION_CH0 == CapSense_1_MEASURE_IMPLEMENTATION_UDB) || \
-                     ( (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) && \
-                       (CapSense_1_IMPLEMENTATION_CH1 == CapSense_1_MEASURE_IMPLEMENTATION_UDB))) && \
-                    (CY_PSOC3_ES2 || CY_PSOC5_ES1) ) */
+    #endif /* ( ((CapSense_1_PRS_OPTIONS) || \
+           *     (CapSense_1_IMPLEMENTATION_CH0 == CapSense_1_MEASURE_IMPLEMENTATION_UDB) || \
+           *   ( (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) && \
+           *     (CapSense_1_IMPLEMENTATION_CH1 == CapSense_1_MEASURE_IMPLEMENTATION_UDB))) && \
+           *     (CY_PSOC5A) )
+           */
     
     /* Set PRS */
     #if (CapSense_1_PRS_OPTIONS == CapSense_1_PRS_8BITS)
-        #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+        #if (CY_PSOC5A)
             /* Aux control set FIFO as REG */ 
             enableInterrupts = CyEnterCriticalSection();
             CapSense_1_AUX_CONTROL_A_REG |= CapSense_1_AUXCTRL_FIFO_SINGLE_REG;
@@ -157,13 +154,13 @@ void CapSense_1_RestoreConfig(void)
             
             /* Write polynomial */
             CapSense_1_POLYNOM_REG   = CapSense_1_PRS8_DEFAULT_POLYNOM;             /* D0 register */
-        #endif  /* End (CY_PSOC3_ES2 || CY_PSOC5_ES1) */
+        #endif  /* (CY_PSOC5A) */
         
         /* Write FIFO with seed */
         CapSense_1_SEED_COPY_REG = CapSense_1_MEASURE_FULL_RANGE_LOW;               /* F0 register */
     
     #elif (CapSense_1_PRS_OPTIONS == CapSense_1_PRS_16BITS)
-        #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+        #if (CY_PSOC5A)
             /* Aux control set FIFO as REG */
             enableInterrupts = CyEnterCriticalSection();
             CapSense_1_AUX_CONTROL_A_REG |= CapSense_1_AUXCTRL_FIFO_SINGLE_REG;
@@ -172,13 +169,13 @@ void CapSense_1_RestoreConfig(void)
             
             /* Write polynomial */
             CY_SET_REG16(CapSense_1_POLYNOM_PTR, CapSense_1_PRS16_DEFAULT_POLYNOM); /* D0 register */
-        #endif  /* End (CY_PSOC3_ES2 || CY_PSOC5_ES1) */
+        #endif  /* (CY_PSOC5A) */
         
         /* Write FIFO with seed */
         CY_SET_REG16(CapSense_1_SEED_COPY_PTR, CapSense_1_MEASURE_FULL_RANGE);      /* F0 register */
                 
     #elif (CapSense_1_PRS_OPTIONS == CapSense_1_PRS_16BITS_4X)
-        #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+        #if (CY_PSOC5A)
             /* Aux control set FIFO as REG */
             enableInterrupts = CyEnterCriticalSection();
             CapSense_1_AUX_CONTROL_A_REG  |= CapSense_1_AUXCTRL_FIFO_SINGLE_REG;
@@ -187,7 +184,7 @@ void CapSense_1_RestoreConfig(void)
             /* Write polynomial */
             CapSense_1_POLYNOM_A__D1_REG   = HI8(CapSense_1_PRS16_DEFAULT_POLYNOM); /* D0 register */
             CapSense_1_POLYNOM_A__D0_REG   = LO8(CapSense_1_PRS16_DEFAULT_POLYNOM); /* D1 register */
-        #endif  /* End (CY_PSOC3_ES2 || CY_PSOC5_ES1) */
+        #endif  /* (CY_PSOC5A) */
         
         /* Write FIFO with seed */
         CapSense_1_SEED_COPY_A__F1_REG = CapSense_1_MEASURE_FULL_RANGE_LOW;         /* F0 register */
@@ -195,12 +192,12 @@ void CapSense_1_RestoreConfig(void)
         
     #else
         /* Do nothing = config without PRS */
-    #endif  /* End (CapSense_1_PRS_OPTIONS == CapSense_1_PRS_8BITS) */
+    #endif  /* (CapSense_1_PRS_OPTIONS == CapSense_1_PRS_8BITS) */
     
-    #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+    #if (CY_PSOC5A)
         /* Set ScanSpeed */
         CapSense_1_SCANSPEED_PERIOD_REG = CapSense_1_backup.scanspeed;       /* Counter7_PERIOD register */
-    #endif  /* End (CY_PSOC3_ES2 || CY_PSOC5_ES1) */
+    #endif  /* (CY_PSOC5A) */
     
     /* Set the Measure */
     #if (CapSense_1_IMPLEMENTATION_CH0 == CapSense_1_MEASURE_IMPLEMENTATION_FF)
@@ -208,7 +205,7 @@ void CapSense_1_RestoreConfig(void)
         /* Raw Counter - FF Timer register are retention */
     #else
         /* Window PWM and Raw Counter AUX and D0 set */ 
-        #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+        #if (CY_PSOC5A)
             enableInterrupts = CyEnterCriticalSection();
             CapSense_1_PWM_CH0_AUX_CONTROL_REG |= CapSense_1_AUXCTRL_FIFO_SINGLE_REG;   /* AUX register */
             CapSense_1_RAW_CH0_AUX_CONTROL_REG |= CapSense_1_AUXCTRL_FIFO_SINGLE_REG;   /* AUX register */
@@ -217,7 +214,7 @@ void CapSense_1_RestoreConfig(void)
             CapSense_1_PWM_CH0_ADD_VALUE_REG    = CapSense_1_MEASURE_FULL_RANGE_LOW;    /* D0 register */
             CapSense_1_RAW_CH0_ADD_VALUE_REG    = CapSense_1_MEASURE_FULL_RANGE_LOW;    /* D0 register */
             
-        #endif  /* End (CY_PSOC3_ES2 || CY_PSOC5_ES1) */
+        #endif  /* (CY_PSOC5A) */
         
         /* Window PWM */
         CapSense_1_PWM_CH0_PERIOD_LO_REG    = CapSense_1_MEASURE_FULL_RANGE_LOW;        /* F0 register */
@@ -234,7 +231,7 @@ void CapSense_1_RestoreConfig(void)
             /* Raw Counter - FF Timer register are retention */
         #else
             /* Window PWM and Raw Counter AUX and D0 set */ 
-            #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+            #if (CY_PSOC5A)
                 enableInterrupts = CyEnterCriticalSection();
                 CapSense_1_PWM_CH1_AUX_CONTROL_REG |= CapSense_1_AUXCTRL_FIFO_SINGLE_REG; /* AUX register */
                 CapSense_1_RAW_CH1_AUX_CONTROL_REG |= CapSense_1_AUXCTRL_FIFO_SINGLE_REG; /* AUX register */
@@ -242,7 +239,7 @@ void CapSense_1_RestoreConfig(void)
                 
                 CapSense_1_RAW_CH1_ADD_VALUE_REG    = CapSense_1_MEASURE_FULL_RANGE_LOW;   /* D0 register */
                 CapSense_1_PWM_CH1_ADD_VALUE_REG    = CapSense_1_MEASURE_FULL_RANGE_LOW;   /* D0 register */
-            #endif  /* End (CY_PSOC3_ES2 || CY_PSOC5_ES1) */
+            #endif  /* (CY_PSOC5A) */
             
             /* Window PWM */
             CapSense_1_PWM_CH1_PERIOD_LO_REG    = CapSense_1_MEASURE_FULL_RANGE_LOW;       /* F0 register */
@@ -251,9 +248,9 @@ void CapSense_1_RestoreConfig(void)
             CapSense_1_RAW_CH1_PERIOD_HI_REG    = CapSense_1_MEASURE_FULL_RANGE_LOW;       /* F1 register */
             CapSense_1_RAW_CH1_PERIOD_LO_REG    = CapSense_1_MEASURE_FULL_RANGE_LOW;       /* F0 register */
             
-        #endif  /* End (CapSense_1_IMPLEMENTATION_CH1 == CapSense_1_MEASURE_IMPLEMENTATION_FF) */
+        #endif  /* (CapSense_1_IMPLEMENTATION_CH1 == CapSense_1_MEASURE_IMPLEMENTATION_FF) */
     
-    #endif  /* End (CapSense_1_DESIGN_TYPE == TWO_CHANNELS_DESIGN)*/
+    #endif  /* (CapSense_1_DESIGN_TYPE == TWO_CHANNELS_DESIGN)*/
 
     /* Set CONTROL_REG */
     CapSense_1_CONTROL_REG = CapSense_1_backup.ctrlreg;
@@ -262,7 +259,7 @@ void CapSense_1_RestoreConfig(void)
     CapSense_1_CONTROL_REG |= CapSense_1_CTRL_WINDOW_EN__CH0;
     #if (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) 
         CapSense_1_CONTROL_REG |= CapSense_1_CTRL_WINDOW_EN__CH1; 
-    #endif  /* End CapSense_1_DESIGN_TYPE */
+    #endif  /* CapSense_1_DESIGN_TYPE */
  
     /* The pins enable are customer concern: Cmod and Rb */
  }

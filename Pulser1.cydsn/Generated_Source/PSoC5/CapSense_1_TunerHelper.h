@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: CapSense_1_TunerHelper.h
-* Version 3.10
+* Version 3.20
 *
 * Description:
 *  This file provides constants and structure declarations for the tunner hepl
@@ -9,7 +9,7 @@
 * Note:
 *
 ********************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions,
 * disclaimers, and limitations in the end user license agreement accompanying
 * the software package with which this file was provided.
@@ -23,7 +23,7 @@
 #if (CapSense_1_TUNER_API_GENERATE)
     #include "CapSense_1_MBX.h"
     #include "EZI2C.h"
-#endif /* End (CapSense_1_TUNER_API_GENERATE) */
+#endif /* (CapSense_1_TUNER_API_GENERATE) */
 
 
 /***************************************
@@ -37,11 +37,11 @@
 *        Function Prototypes
 ***************************************/
 
-void CapSense_1_TunerStart(void);
-void CapSense_1_TunerComm(void);
+void CapSense_1_TunerStart(void) ;
+void CapSense_1_TunerComm(void) ;
 
 
-#endif  /* End (CY_CAPSENSE_CSD_TUNERHELPER_CapSense_1_H)*/
+#endif  /* (CY_CAPSENSE_CSD_TUNERHELPER_CapSense_1_H)*/
 
 
 /* [] END OF FILE */

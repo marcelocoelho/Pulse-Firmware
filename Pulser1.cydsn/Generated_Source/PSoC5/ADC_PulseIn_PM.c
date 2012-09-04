@@ -1,15 +1,15 @@
 /*******************************************************************************
 * File Name: ADC_PulseIn_PM.c  
-* Version 2.20
+* Version 2.30
 *
 * Description:
 *  This file provides the power manager source code to the API for the 
-*  Delta-Sigma ADC  Component.
+*  Delta-Sigma ADC Component.
 *
 * Note:
 *
 *******************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions, 
 * disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
@@ -41,13 +41,9 @@ static ADC_PulseIn_BACKUP_STRUCT ADC_PulseIn_backup =
 *  ADC_PulseIn_backup:  This global structure variable is used to store 
 *  configuration registers which are non retention whenever user wants to go 
 *  sleep mode by calling Sleep() API.
-
-*
-* Reentrance:
-*  No
 *
 *******************************************************************************/
-void ADC_PulseIn_SaveConfig(void)
+void ADC_PulseIn_SaveConfig(void) 
 {
     ADC_PulseIn_backup.deccr = ADC_PulseIn_DEC_CR_REG;
 }
@@ -70,9 +66,6 @@ void ADC_PulseIn_SaveConfig(void)
 *  ADC_PulseIn_backup:  This global structure variable is used to restore 
 *  configuration registers which are non retention whenever user wants to switch 
 *  to active power mode by calling Wakeup() API.
-*
-* Reentrance:
-*  No
 *
 *******************************************************************************/
 void ADC_PulseIn_RestoreConfig(void) 
@@ -97,13 +90,9 @@ void ADC_PulseIn_RestoreConfig(void)
 * Global variables:
 *  ADC_PulseIn_backup:  The structure field 'enableState' is modified 
 *  depending on the enable state of the block before entering to sleep mode.
-
-*
-* Reentrance: 
-*  No
 *
 *******************************************************************************/
-void ADC_PulseIn_Sleep(void)
+void ADC_PulseIn_Sleep(void) 
 {
     /* Save ADC enable state */
     if((ADC_PulseIn_ACT_PWR_DEC_EN == (ADC_PulseIn_PWRMGR_DEC_REG & ADC_PulseIn_ACT_PWR_DEC_EN)) &&
@@ -142,9 +131,6 @@ void ADC_PulseIn_Sleep(void)
 * Global variables:
 *  ADC_PulseIn_backup:  The structure field 'enableState' is used to 
 *  restore the enable state of block after wakeup from sleep mode.
-*
-* Reentrance: 
-*  No
 *
 *******************************************************************************/
 void ADC_PulseIn_Wakeup(void) 

@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: ADC_PulseIn.h  
-* Version 2.20
+* Version 2.30
 *
 * Description:
 *  This file contains the function prototypes and constants used in
@@ -9,7 +9,7 @@
 * Note:
 *
 ********************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions, 
 * disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
@@ -23,19 +23,11 @@
 #include "cyfitter.h"
 #include "cydevice_trm.h" 
 
-/* Check to see if required defines such as CY_PSOC3 and CY_PSOC5 are available */
-/* They are defined starting with cy_boot v2.30 */
-#ifndef CY_PSOC3
-#error Component ADC_DelSig_v2_20 requires cy_boot v2.30 or later
-#endif /* CY_PSOC3 */
-
-/* ISR patch code for PSoC3 ES2*/
-#if(CYDEV_CHIP_MEMBER_USED == CYDEV_CHIP_MEMBER_3A)     
-    #if(CYDEV_CHIP_REVISION_USED <= CYDEV_CHIP_REVISION_3A_ES2)      
-        #include <intrins.h>
-        #define ADC_PulseIn_ISR_PATCH() _nop_(); _nop_(); _nop_(); _nop_(); _nop_(); _nop_(); _nop_(); _nop_();
-    #endif /* Silicon revision check */
-#endif /* Chip member selection */
+/* Check to see if required defines such as CY_PSOC5LP are available */
+/* They are defined starting with cy_boot v3.0 */
+#if !defined (CY_PSOC5LP)
+    #error Component ADC_DelSig_v2_30 requires cy_boot v3.0 or later
+#endif /* (CY_ PSOC5LP) */
 
 
 /***************************************
@@ -54,8 +46,8 @@ typedef struct ADC_PulseIn_backupStruct
 *       Type defines
 ***************************************/
 
-/* only valid for PSoC5 ES1 */
-#if (CY_PSOC5_ES1)
+/* only valid for PSoCA */
+#if (CY_PSOC5A)
     /* Power Mode register backup Support */
     typedef struct ADC_PulseIn_powerModeBackupStruct 
     {
@@ -71,29 +63,29 @@ typedef struct ADC_PulseIn_backupStruct
            in the stop API*/
         uint8 bypassRestore;
     }   ADC_PulseIn_POWERMODE_BACKUP_STRUCT;
-#endif /* CY_PSOC5_ES1 */
+#endif /* CY_PSOC5A */
 
 
 /***************************************
 *        Function Prototypes 
 ***************************************/
 
-void ADC_PulseIn_Start(void);
+void ADC_PulseIn_Start(void) ;
 void ADC_PulseIn_Stop(void) ;
-void ADC_PulseIn_Sleep(void);
+void ADC_PulseIn_Sleep(void) ;
 void ADC_PulseIn_Wakeup(void) ;
 void ADC_PulseIn_Init(void) ;   
 void ADC_PulseIn_Enable(void) ;
-void ADC_PulseIn_SaveConfig(void);
+void ADC_PulseIn_SaveConfig(void) ;
 void ADC_PulseIn_RestoreConfig(void) ;
 void ADC_PulseIn_SetBufferGain(uint8 gain) ;
 void ADC_PulseIn_StartConvert(void) ;
 void ADC_PulseIn_SetCoherency(uint8 coherency) ;
 uint8 ADC_PulseIn_SetGCOR(float gainAdjust) ;
 uint16 ADC_PulseIn_ReadGCOR(void) ;
-void ADC_PulseIn_StopConvert(void);
-void ADC_PulseIn_SetOffset(int32 offset); 
-void ADC_PulseIn_SetGain(int32 adcGain); 
+void ADC_PulseIn_StopConvert(void) ;
+void ADC_PulseIn_SetOffset(int32 offset) ; 
+void ADC_PulseIn_SetGain(int32 adcGain) ; 
 int8 ADC_PulseIn_GetResult8(void) ;
 int16 ADC_PulseIn_GetResult16(void) ;
 int32 ADC_PulseIn_GetResult32(void) ;
@@ -107,14 +99,17 @@ CY_ISR_PROTO(ADC_PulseIn_ISR3);
 CY_ISR_PROTO(ADC_PulseIn_ISR4);
 void ADC_PulseIn_SelectConfiguration(uint8 config, uint8 restart) \
                                            ;
-void ADC_PulseIn_InitConfig(uint8 config);
+void ADC_PulseIn_InitConfig(uint8 config) ;
 void ADC_PulseIn_GainCompensation(uint8 inputRange, uint16 IdealDecGain, uint16 IdealOddDecGain, uint8 resolution)\
                                               ;
-void ADC_PulseIn_SavePowerRegisters(void) ;
-void ADC_PulseIn_RestorePowerRegisters(void) ;
-void ADC_PulseIn_SetLowPower(void) ;
+#if (CY_PSOC5A)
+    void ADC_PulseIn_SavePowerRegisters(void) ;
+    void ADC_PulseIn_RestorePowerRegisters(void) ;
+    void ADC_PulseIn_SetLowPower(void) ;
+#endif /* CY_PSOC5A */
 uint16 ADC_PulseIn_RoundValue(uint32 busClockFreq, uint32 clockFreq) \
                                               ;
+void ADC_PulseIn_SetDSMRef0Reg(uint8 value) ;
 
 /* These functions may not be supported in the released version */
 void    ADC_PulseIn_SetBufferChop(uint8 chopen, uint8 chopFreq) \
@@ -169,11 +164,11 @@ void ADC_PulseIn_IRQ_Start(void) ;
 #define ADC_PulseIn_DISABLED                   (0x00u)
 
 /* Defines for deciding whether or not to restore the 
-   power registers in Enable API. Valid only for PSoC5 ES1*/
-#if (CY_PSOC5_ES1)
+   power registers in Enable API. Valid only for PSoC5A*/
+#if (CY_PSOC5A)
     #define ADC_PulseIn_BYPASS_ENABLED                    (0x01u)
     #define ADC_PulseIn_BYPASS_DISABLED                   (0x00u)
-#endif /* CY_PSOC5_ES1 */
+#endif /* CY_PSOC5A */
 
 /* Ideal Gain Constant */
 #define ADC_PulseIn_IDEAL_GAIN_CONST           (0x8000u)
@@ -244,7 +239,7 @@ void ADC_PulseIn_IRQ_Start(void) ;
 
 /* Trim value defines */
 
-#if (CY_PSOC3_ES3 || CY_PSOC5_ES2)
+#if (CY_PSOC3 || CY_PSOC5LP)
     #define ADC_PulseIn_DEC_TRIM_VREF_DIFF_8_15        (CY_GET_XTND_REG8(ADC_PulseIn_DEC__TRIM__M5))
     #define ADC_PulseIn_DEC_TRIM_VREF_DIFF_16_20       (CY_GET_XTND_REG8(ADC_PulseIn_DEC__TRIM__M1))
     #define ADC_PulseIn_DEC_TRIM_VREF_2_DIFF_8_15      (CY_GET_XTND_REG8(ADC_PulseIn_DEC__TRIM__M6))
@@ -253,7 +248,7 @@ void ADC_PulseIn_IRQ_Start(void) ;
     #define ADC_PulseIn_DEC_TRIM_VREF_4_DIFF_16_20     (CY_GET_XTND_REG8(ADC_PulseIn_DEC__TRIM__M3))
     #define ADC_PulseIn_DEC_TRIM_VREF_16_DIFF_8_15     (CY_GET_XTND_REG8(ADC_PulseIn_DEC__TRIM__M8))
     #define ADC_PulseIn_DEC_TRIM_VREF_16_DIFF_16_20    (CY_GET_XTND_REG8(ADC_PulseIn_DEC__TRIM__M4))
-#elif (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+#elif (CY_PSOC5A)
     #define ADC_PulseIn_DEC_TRIM_VREF_DIFF_8_15        (CY_GET_XTND_REG8(ADC_PulseIn_DEC__TRIM__16L))
     #define ADC_PulseIn_DEC_TRIM_VREF_DIFF_16_20       (CY_GET_XTND_REG8(ADC_PulseIn_DEC__TRIM__1L))
     #define ADC_PulseIn_DEC_TRIM_VREF_2_DIFF_8_15      (CY_GET_XTND_REG8(ADC_PulseIn_DEC__TRIM__16H))
@@ -263,7 +258,7 @@ void ADC_PulseIn_IRQ_Start(void) ;
     #define ADC_PulseIn_DEC_TRIM_VREF_16_DIFF_8_15     (CY_GET_XTND_REG8(ADC_PulseIn_DEC__TRIM__P25H))
     #define ADC_PulseIn_DEC_TRIM_VREF_16_DIFF_16_20    (CY_GET_XTND_REG8(ADC_PulseIn_DEC__TRIM__4H))
 
-#endif /* CY_PSOC3_ES2 || CY_PSOC5_ES1 */
+#endif /* CY_PSOC5A */
 
 
 /**************************************
@@ -1038,12 +1033,12 @@ void ADC_PulseIn_IRQ_Start(void) ;
 
 /* Active and Alternative active power masks for DSM */
 
-#if (CY_PSOC3_ES3 || CY_PSOC5_ES2)
+#if (CY_PSOC3 || CY_PSOC5LP)
     #define ADC_PulseIn_ACT_PWR_DSM_EN         (0x10u) /* Active Power enable mask */
     #define ADC_PulseIn_STBY_PWR_DSM_EN        (0x10u) /* Alternate active Power enable mask */
-#elif (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+#elif (CY_PSOC5A)
     #define ADC_PulseIn_ACT_PWR_DSM_EN         (0x01u) /* Power enable mask */
-#endif /* CY_PSOC3_ES2 || CY_PSOC5_ES1 */
+#endif /* CY_PSOC5A */
 
 
 /* Internal and charge pump clock power enable masks */
@@ -1052,10 +1047,8 @@ void ADC_PulseIn_IRQ_Start(void) ;
     #define ADC_PulseIn_STBY_PWR_CLK_EN             ADC_PulseIn_theACLK__PM_STBY_MSK 
 #endif /* ADC_PulseIn_DEFAULT_INTERNAL_CLK */
 
-#if(ADC_PulseIn_DEFAULT_CHARGE_PUMP_CLOCK)
-    #define ADC_PulseIn_ACT_PWR_CHARGE_PUMP_CLK_EN  ADC_PulseIn_Ext_CP_Clk__PM_ACT_MSK 
-    #define ADC_PulseIn_STBY_PWR_CHARGE_PUMP_CLK_EN ADC_PulseIn_Ext_CP_Clk__PM_STBY_MSK 
-#endif /* ADC_PulseIn_DEFAULT_CHARGE_PUMP_CLOCK */
+#define ADC_PulseIn_ACT_PWR_CHARGE_PUMP_CLK_EN  ADC_PulseIn_Ext_CP_Clk__PM_ACT_MSK 
+#define ADC_PulseIn_STBY_PWR_CHARGE_PUMP_CLK_EN ADC_PulseIn_Ext_CP_Clk__PM_STBY_MSK 
 
 
 /***********************************************/
@@ -1064,16 +1057,16 @@ void ADC_PulseIn_IRQ_Start(void) ;
 #define ADC_PulseIn_DSM_VP_VSSA                (0x04u) 
 
 /* To connect negative input to analog mux Bus. This is valid only
-   PSoC3 ES2/PSoC5 ES1 */
-#if(CY_PSOC3_ES2 || CY_PSOC5_ES1)
+   for PSoC5A */
+#if(CY_PSOC5A)
     #define ADC_PulseIn_DSM_VN_AMX             (0x10u) 
-#endif /* CY_PSOC3_ES2 || CY_PSOC5_ES1 */
+#endif /* CY_PSOC5A */
 
 /* To connect positive input to analog mux Bus. This is valid only
-   for PSoC3 ES3 or later and PSoC5 ES2 or later */
-#if(CY_PSOC3_ES3 || CY_PSOC5_ES2)
+   for PSoC3 or PSoC5LP silicon */
+#if(CY_PSOC3 || CY_PSOC5LP)
     #define ADC_PulseIn_DSM_VP_AMX             (0x01u) 
-#endif /* CY_PSOC3_ES3 || CY_PSOC5_ES2 */
+#endif /* CY_PSOC3 || CY_PSOC5LP */
 
 #define ADC_PulseIn_DSM_VN_VREF                (0x20u) 
 #define ADC_PulseIn_DSM_VN_VSSA                (0x40u) 
@@ -1087,15 +1080,6 @@ void ADC_PulseIn_IRQ_Start(void) ;
 #define ADC_PulseIn_PUMP_CR1_CLKSEL            (0x04u)
 #define ADC_PulseIn_PUMP_CR1_FORCE             (0x02u)
 #define ADC_PulseIn_PUMP_CR1_AUTO              (0x01u)
-
-
-/***********************************************/
-/* RESET_CR3 Reset Enable Control Register     */
-/***********************************************/ 
-
-#define ADC_PulseIn_EN_PRESA                   (0x80u) 
-#define ADC_PulseIn_EN_PRESD                   (0x40u)
-
 
 /***********************************************/
 /* RESET_CR4 Reset Ignore Control Register     */
@@ -1325,20 +1309,20 @@ void ADC_PulseIn_IRQ_Start(void) ;
 
 /* DSM Active Power manager register */
 
-#if(CY_PSOC3_ES3 || CY_PSOC5_ES2)
+#if(CY_PSOC3 || CY_PSOC5LP)
     #define ADC_PulseIn_PWRMGR_DSM_REG       (* (reg8 *) CYDEV_PM_ACT_CFG10 )  /* Modulator Power manager */
     #define ADC_PulseIn_PWRMGR_DSM_PTR       (  (reg8 *) CYDEV_PM_ACT_CFG10 )  /* Modulator Power manager */
-#elif (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+#elif (CY_PSOC5A)
     #define ADC_PulseIn_PWRMGR_DSM_REG       (* (reg8 *) CYDEV_PM_AVAIL_CR5 )  /* Modulator Power manager */
     #define ADC_PulseIn_PWRMGR_DSM_PTR       (  (reg8 *) CYDEV_PM_AVAIL_CR5 )  /* Modulator Power manager */
-#endif /* CY_PSOC3_ES2 || CY_PSOC5_ES1 */
+#endif /* CY_PSOC5A */
 
 /* DSM Alternative Active Power manager register */
 
-#if(CY_PSOC3_ES3 || CY_PSOC5_ES2)
+#if(CY_PSOC3 || CY_PSOC5LP)
     #define ADC_PulseIn_STBY_PWRMGR_DSM_REG  (* (reg8 *) CYDEV_PM_STBY_CFG10 )  
     #define ADC_PulseIn_STBY_PWRMGR_DSM_PTR  (  (reg8 *) CYDEV_PM_STBY_CFG10 )  
-#endif /* CY_PSOC3_ES3 || CY_PSOC5_ES2 */
+#endif /* CY_PSOC3 || CY_PSOC5LP */
 
 /* This is only valid if there is an internal clock */
 #if(ADC_PulseIn_DEFAULT_INTERNAL_CLK)
@@ -1352,34 +1336,29 @@ void ADC_PulseIn_IRQ_Start(void) ;
 /* This is only valid if there is an external charge clock */
 
 /* Clock power manager register */
-#if(ADC_PulseIn_DEFAULT_CHARGE_PUMP_CLOCK)
-    #define ADC_PulseIn_PWRMGR_CHARGE_PUMP_CLK_REG       (* (reg8 *) ADC_PulseIn_Ext_CP_Clk__PM_ACT_CFG )
-    #define ADC_PulseIn_PWRMGR_CHARGE_PUMP_CLK_PTR       (  (reg8 *) ADC_PulseIn_Ext_CP_Clk__PM_ACT_CFG )
+#define ADC_PulseIn_PWRMGR_CHARGE_PUMP_CLK_REG       (* (reg8 *) ADC_PulseIn_Ext_CP_Clk__PM_ACT_CFG )
+#define ADC_PulseIn_PWRMGR_CHARGE_PUMP_CLK_PTR       (  (reg8 *) ADC_PulseIn_Ext_CP_Clk__PM_ACT_CFG )
 
-    #define ADC_PulseIn_STBY_PWRMGR_CHARGE_PUMP_CLK_REG  (* (reg8 *) ADC_PulseIn_Ext_CP_Clk__PM_STBY_CFG ) 
-    #define ADC_PulseIn_STBY_PWRMGR_CHARGE_PUMP_CLK_PTR  (  (reg8 *) ADC_PulseIn_Ext_CP_Clk__PM_STBY_CFG ) 
-#endif /* ADC_PulseIn_DEFAULT_CHARGE_PUMP_CLOCK */
+#define ADC_PulseIn_STBY_PWRMGR_CHARGE_PUMP_CLK_REG  (* (reg8 *) ADC_PulseIn_Ext_CP_Clk__PM_STBY_CFG ) 
+#define ADC_PulseIn_STBY_PWRMGR_CHARGE_PUMP_CLK_PTR  (  (reg8 *) ADC_PulseIn_Ext_CP_Clk__PM_STBY_CFG ) 
 
 /* PRES-A related registers */
-#if (CY_PSOC3_ES3 || CY_PSOC5_ES2)
+#if (CY_PSOC3 || CY_PSOC5LP)
 
-    #define ADC_PulseIn_RESET_CR3_REG                    (* (reg8 *) CYDEV_RESET_CR3)
-    #define ADC_PulseIn_RESET_CR3_PTR                    (  (reg8 *) CYDEV_RESET_CR3)
-    
     #define ADC_PulseIn_RESET_CR4_REG                    (* (reg8 *) CYDEV_RESET_CR4)
     #define ADC_PulseIn_RESET_CR4_PTR                    (  (reg8 *) CYDEV_RESET_CR4)
 
     #define ADC_PulseIn_RESET_CR5_REG                    (* (reg8 *) CYDEV_RESET_CR5)
     #define ADC_PulseIn_RESET_CR5_PTR                    (  (reg8 *) CYDEV_RESET_CR5)
     
-#elif (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+#elif (CY_PSOC5A)
     #define ADC_PulseIn_RESET_CR1_REG                    (* (reg8 *) CYDEV_RESET_CR1)
     #define ADC_PulseIn_RESET_CR1_PTR                    (  (reg8 *) CYDEV_RESET_CR1)
 
     #define ADC_PulseIn_RESET_CR3_REG                    (* (reg8 *) CYDEV_RESET_CR3)
     #define ADC_PulseIn_RESET_CR3_PTR                    (  (reg8 *) CYDEV_RESET_CR3)
     
-#endif /* CY_PSOC3_ES2 || CY_PSOC5_ES1 */
+#endif /* CY_PSOC5A */
     
 
 /* Default register settings for the Config 1 */
@@ -1392,64 +1371,65 @@ void ADC_PulseIn_IRQ_Start(void) ;
 /* ADC_PulseIn_CFG1 Resolution: 18 bits */
 /* ADC_PulseIn_CFG1 Clock: 3072000 Hz */
 
-#define ADC_PulseIn_CFG1_DEC_CR             (0x78u)
-#define ADC_PulseIn_CFG1_DEC_SR             (0x14u)
-#define ADC_PulseIn_CFG1_DEC_SHIFT1         (0x04u)
-#define ADC_PulseIn_CFG1_DEC_SHIFT2         (0x08u)
-#define ADC_PulseIn_CFG1_DEC_DR2            (0x0Fu)
-#define ADC_PulseIn_CFG1_DEC_DR2H           (0x00u)
-#define ADC_PulseIn_CFG1_DEC_DR1            (0x3Fu)
-#define ADC_PulseIn_CFG1_DEC_OCOR           (0x00u)
-#define ADC_PulseIn_CFG1_DEC_OCORM          (0x00u)
-#define ADC_PulseIn_CFG1_DEC_OCORH          (0x00u)
-#define ADC_PulseIn_CFG1_DEC_GVAL           (0x0Fu)
-#define ADC_PulseIn_CFG1_DEC_GCOR           (0x00u)
-#define ADC_PulseIn_CFG1_DEC_GCORH          (0x00u)
-#define ADC_PulseIn_CFG1_DEC_COHER          (0x01u)
-#define ADC_PulseIn_CFG1_DSM_CR0            (0x0Au)
-#define ADC_PulseIn_CFG1_DSM_CR1            (0x00u)
-#define ADC_PulseIn_CFG1_DSM_CR2            (0x7Au)
-#define ADC_PulseIn_CFG1_DSM_CR3            (0x00u)
-#define ADC_PulseIn_CFG1_DSM_CR4            (0x50u)
-#define ADC_PulseIn_CFG1_DSM_CR5            (0x0Eu)
-#define ADC_PulseIn_CFG1_DSM_CR6            (0x3Eu)
-#define ADC_PulseIn_CFG1_DSM_CR7            (0x00u)
-#define ADC_PulseIn_CFG1_DSM_CR8            (0x12u)
-#define ADC_PulseIn_CFG1_DSM_CR9            (0x13u)
-#define ADC_PulseIn_CFG1_DSM_CR10           (0x44u)
-#define ADC_PulseIn_CFG1_DSM_CR11           (0x48u)
-#define ADC_PulseIn_CFG1_DSM_CR12           (0x01u)
-#define ADC_PulseIn_CFG1_DSM_CR13           (0x00u)
-#define ADC_PulseIn_CFG1_DSM_CR14           (0x02u)
-#define ADC_PulseIn_CFG1_DSM_CR15           (0x12u)
-#define ADC_PulseIn_CFG1_DSM_CR16           (0x28u)
-#define ADC_PulseIn_CFG1_DSM_CR17           (0xEBu)
-#define ADC_PulseIn_CFG1_DSM_REF0           (0x52u)
-#define ADC_PulseIn_CFG1_DSM_REF1           (0x00u)
-#define ADC_PulseIn_CFG1_DSM_REF2           (0x58u)
-#define ADC_PulseIn_CFG1_DSM_REF3           (0x00u)
-#define ADC_PulseIn_CFG1_DSM_DEM0           (0x07u)
-#define ADC_PulseIn_CFG1_DSM_DEM1           (0x00u)
-#define ADC_PulseIn_CFG1_DSM_MISC           (0x00u)
-#define ADC_PulseIn_CFG1_DSM_CLK            (0x18u)
-#define ADC_PulseIn_CFG1_DSM_BUF0           (0x05u)
-#define ADC_PulseIn_CFG1_DSM_BUF1           (0x02u)
-#define ADC_PulseIn_CFG1_DSM_BUF2           (0x00u)
-#define ADC_PulseIn_CFG1_DSM_BUF3           (0x00u)
-#define ADC_PulseIn_CFG1_DSM_OUT0           (0x00u)
-#define ADC_PulseIn_CFG1_DSM_OUT1           (0x00u)
-#define ADC_PulseIn_CFG1_DSM_SW3            (0x40u)
-#define ADC_PulseIn_CFG1_CLOCKS_PER_SAMPLE  (0x0400u)
+#define ADC_PulseIn_CFG1_DEC_CR             (0X78u)
+#define ADC_PulseIn_CFG1_DEC_SR             (0X14u)
+#define ADC_PulseIn_CFG1_DEC_SHIFT1         (0X04u)
+#define ADC_PulseIn_CFG1_DEC_SHIFT2         (0X08u)
+#define ADC_PulseIn_CFG1_DEC_DR2            (0X0Fu)
+#define ADC_PulseIn_CFG1_DEC_DR2H           (0X00u)
+#define ADC_PulseIn_CFG1_DEC_DR1            (0X3Fu)
+#define ADC_PulseIn_CFG1_DEC_OCOR           (0X00u)
+#define ADC_PulseIn_CFG1_DEC_OCORM          (0X00u)
+#define ADC_PulseIn_CFG1_DEC_OCORH          (0X00u)
+#define ADC_PulseIn_CFG1_DEC_GVAL           (0X0Fu)
+#define ADC_PulseIn_CFG1_DEC_GCOR           (0X00u)
+#define ADC_PulseIn_CFG1_DEC_GCORH          (0X00u)
+#define ADC_PulseIn_CFG1_DEC_COHER          (0X01u)
+#define ADC_PulseIn_CFG1_DSM_CR0            (0X0Au)
+#define ADC_PulseIn_CFG1_DSM_CR1            (0X00u)
+#define ADC_PulseIn_CFG1_DSM_CR2            (0X7Au)
+#define ADC_PulseIn_CFG1_DSM_CR3            (0X00u)
+#define ADC_PulseIn_CFG1_DSM_CR4            (0X50u)
+#define ADC_PulseIn_CFG1_DSM_CR5            (0X0Eu)
+#define ADC_PulseIn_CFG1_DSM_CR6            (0X3Eu)
+#define ADC_PulseIn_CFG1_DSM_CR7            (0X00u)
+#define ADC_PulseIn_CFG1_DSM_CR8            (0X12u)
+#define ADC_PulseIn_CFG1_DSM_CR9            (0X13u)
+#define ADC_PulseIn_CFG1_DSM_CR10           (0X44u)
+#define ADC_PulseIn_CFG1_DSM_CR11           (0X48u)
+#define ADC_PulseIn_CFG1_DSM_CR12           (0X01u)
+#define ADC_PulseIn_CFG1_DSM_CR13           (0X00u)
+#define ADC_PulseIn_CFG1_DSM_CR14           (0X02u)
+#define ADC_PulseIn_CFG1_DSM_CR15           (0X12u)
+#define ADC_PulseIn_CFG1_DSM_CR16           (0X28u)
+#define ADC_PulseIn_CFG1_DSM_CR17           (0XEBu)
+#define ADC_PulseIn_CFG1_DSM_REF0           (0X52u)
+#define ADC_PulseIn_CFG1_DSM_REF1           (0X00u)
+#define ADC_PulseIn_CFG1_DSM_REF2           (0X58u)
+#define ADC_PulseIn_CFG1_DSM_REF3           (0X00u)
+#define ADC_PulseIn_CFG1_DSM_DEM0           (0X07u)
+#define ADC_PulseIn_CFG1_DSM_DEM1           (0X00u)
+#define ADC_PulseIn_CFG1_DSM_MISC           (0X00u)
+#define ADC_PulseIn_CFG1_DSM_CLK            (0X18u)
+#define ADC_PulseIn_CFG1_DSM_BUF0           (0X05u)
+#define ADC_PulseIn_CFG1_DSM_BUF1           (0X02u)
+#define ADC_PulseIn_CFG1_DSM_BUF2           (0X00u)
+#define ADC_PulseIn_CFG1_DSM_BUF3           (0X00u)
+#define ADC_PulseIn_CFG1_DSM_OUT0           (0X00u)
+#define ADC_PulseIn_CFG1_DSM_OUT1           (0X00u)
+#define ADC_PulseIn_CFG1_DSM_SW3            (0X40u)
+#define ADC_PulseIn_CFG1_CLOCKS_PER_SAMPLE  (0X0400u)
 #define ADC_PulseIn_CFG1_CLOCK_FREQ         (3072000u)
+#define ADC_PulseIn_CFG1_CP_CLOCK_FREQ      (12000000u)
 #define ADC_PulseIn_CFG1_REFERENCE_VOLTAGE  (1.2500)
 #define ADC_PulseIn_CFG1_COUNTS_PER_VOLT    (52429u)
-#define ADC_PulseIn_CFG1_IDEAL_DEC_GAIN     (0x8E58u)
+#define ADC_PulseIn_CFG1_IDEAL_DEC_GAIN     (0X8E58u)
 
-#define ADC_PulseIn_CFG1_IDEAL_ODDDEC_GAIN  (0x8000u)
+#define ADC_PulseIn_CFG1_IDEAL_ODDDEC_GAIN  (0X8000u)
 
 /* Input and DAC Cap values in pF */
-#define ADC_PulseIn_CFG1_IPCAP1VALUE        (0x0570u)
-#define ADC_PulseIn_CFG1_DACAPVALUE         (0x1830u)
+#define ADC_PulseIn_CFG1_IPCAP1VALUE        (0X0570u)
+#define ADC_PulseIn_CFG1_DACAPVALUE         (0X1830u)
 
 /* Below defines are depricated and should not be used. These are provided 
    just to keep the component backward compatible */
@@ -1482,58 +1462,59 @@ void ADC_PulseIn_IRQ_Start(void) ;
 /* ADC_PulseIn_CFG2 Resolution: 16 bits */
 /* ADC_PulseIn_CFG2 Clock: 640000 Hz */
 
-#define ADC_PulseIn_CFG2_DEC_CR             (0x38u)
-#define ADC_PulseIn_CFG2_DEC_SR             (0x14u)
-#define ADC_PulseIn_CFG2_DEC_SHIFT1         (0x04u)
-#define ADC_PulseIn_CFG2_DEC_SHIFT2         (0x06u)
-#define ADC_PulseIn_CFG2_DEC_DR2            (0x00u)
-#define ADC_PulseIn_CFG2_DEC_DR2H           (0x00u)
-#define ADC_PulseIn_CFG2_DEC_DR1            (0x3Fu)
-#define ADC_PulseIn_CFG2_DEC_OCOR           (0x00u)
-#define ADC_PulseIn_CFG2_DEC_OCORM          (0x00u)
-#define ADC_PulseIn_CFG2_DEC_OCORH          (0x00u)
-#define ADC_PulseIn_CFG2_DEC_GVAL           (0x0Fu)
-#define ADC_PulseIn_CFG2_DEC_GCOR           (0x00u)
-#define ADC_PulseIn_CFG2_DEC_GCORH          (0x00u)
-#define ADC_PulseIn_CFG2_DEC_COHER          (0x01u)
-#define ADC_PulseIn_CFG2_DSM_CR0            (0x0Au)
-#define ADC_PulseIn_CFG2_DSM_CR1            (0x00u)
-#define ADC_PulseIn_CFG2_DSM_CR2            (0x7Au)
-#define ADC_PulseIn_CFG2_DSM_CR3            (0x00u)
-#define ADC_PulseIn_CFG2_DSM_CR4            (0x50u)
-#define ADC_PulseIn_CFG2_DSM_CR5            (0x27u)
-#define ADC_PulseIn_CFG2_DSM_CR6            (0x2Cu)
-#define ADC_PulseIn_CFG2_DSM_CR7            (0x00u)
-#define ADC_PulseIn_CFG2_DSM_CR8            (0x12u)
-#define ADC_PulseIn_CFG2_DSM_CR9            (0x13u)
-#define ADC_PulseIn_CFG2_DSM_CR10           (0x55u)
-#define ADC_PulseIn_CFG2_DSM_CR11           (0x5Au)
-#define ADC_PulseIn_CFG2_DSM_CR12           (0x05u)
-#define ADC_PulseIn_CFG2_DSM_CR13           (0x00u)
-#define ADC_PulseIn_CFG2_DSM_CR14           (0x01u)
-#define ADC_PulseIn_CFG2_DSM_CR15           (0x11u)
-#define ADC_PulseIn_CFG2_DSM_CR16           (0x19u)
-#define ADC_PulseIn_CFG2_DSM_CR17           (0x97u)
-#define ADC_PulseIn_CFG2_DSM_REF0           (0x44u)
-#define ADC_PulseIn_CFG2_DSM_REF2           (0x58u)
-#define ADC_PulseIn_CFG2_DSM_REF3           (0x00u)
-#define ADC_PulseIn_CFG2_DSM_DEM0           (0x07u)
-#define ADC_PulseIn_CFG2_DSM_DEM1           (0x00u)
-#define ADC_PulseIn_CFG2_DSM_BUF0           (0x05u)
-#define ADC_PulseIn_CFG2_DSM_BUF1           (0x02u)
-#define ADC_PulseIn_CFG2_DSM_BUF2           (0x01u)
-#define ADC_PulseIn_CFG2_DSM_BUF3           (0x00u)
-#define ADC_PulseIn_CFG2_DSM_OUT0           (0x00u)
-#define ADC_PulseIn_CFG2_DSM_OUT1           (0x00u)
-#define ADC_PulseIn_CFG2_DSM_SW3            (0x40u)
+#define ADC_PulseIn_CFG2_DEC_CR             (0X38u)
+#define ADC_PulseIn_CFG2_DEC_SR             (0X14u)
+#define ADC_PulseIn_CFG2_DEC_SHIFT1         (0X04u)
+#define ADC_PulseIn_CFG2_DEC_SHIFT2         (0X06u)
+#define ADC_PulseIn_CFG2_DEC_DR2            (0X00u)
+#define ADC_PulseIn_CFG2_DEC_DR2H           (0X00u)
+#define ADC_PulseIn_CFG2_DEC_DR1            (0X3Fu)
+#define ADC_PulseIn_CFG2_DEC_OCOR           (0X00u)
+#define ADC_PulseIn_CFG2_DEC_OCORM          (0X00u)
+#define ADC_PulseIn_CFG2_DEC_OCORH          (0X00u)
+#define ADC_PulseIn_CFG2_DEC_GVAL           (0X0Fu)
+#define ADC_PulseIn_CFG2_DEC_GCOR           (0X00u)
+#define ADC_PulseIn_CFG2_DEC_GCORH          (0X00u)
+#define ADC_PulseIn_CFG2_DEC_COHER          (0X01u)
+#define ADC_PulseIn_CFG2_DSM_CR0            (0X0Au)
+#define ADC_PulseIn_CFG2_DSM_CR1            (0X00u)
+#define ADC_PulseIn_CFG2_DSM_CR2            (0X7Au)
+#define ADC_PulseIn_CFG2_DSM_CR3            (0X00u)
+#define ADC_PulseIn_CFG2_DSM_CR4            (0X50u)
+#define ADC_PulseIn_CFG2_DSM_CR5            (0X27u)
+#define ADC_PulseIn_CFG2_DSM_CR6            (0X2Cu)
+#define ADC_PulseIn_CFG2_DSM_CR7            (0X00u)
+#define ADC_PulseIn_CFG2_DSM_CR8            (0X12u)
+#define ADC_PulseIn_CFG2_DSM_CR9            (0X13u)
+#define ADC_PulseIn_CFG2_DSM_CR10           (0X55u)
+#define ADC_PulseIn_CFG2_DSM_CR11           (0X5Au)
+#define ADC_PulseIn_CFG2_DSM_CR12           (0X05u)
+#define ADC_PulseIn_CFG2_DSM_CR13           (0X00u)
+#define ADC_PulseIn_CFG2_DSM_CR14           (0X01u)
+#define ADC_PulseIn_CFG2_DSM_CR15           (0X11u)
+#define ADC_PulseIn_CFG2_DSM_CR16           (0X19u)
+#define ADC_PulseIn_CFG2_DSM_CR17           (0X97u)
+#define ADC_PulseIn_CFG2_DSM_REF0           (0X44u)
+#define ADC_PulseIn_CFG2_DSM_REF2           (0X58u)
+#define ADC_PulseIn_CFG2_DSM_REF3           (0X00u)
+#define ADC_PulseIn_CFG2_DSM_DEM0           (0X07u)
+#define ADC_PulseIn_CFG2_DSM_DEM1           (0X00u)
+#define ADC_PulseIn_CFG2_DSM_BUF0           (0X05u)
+#define ADC_PulseIn_CFG2_DSM_BUF1           (0X02u)
+#define ADC_PulseIn_CFG2_DSM_BUF2           (0X01u)
+#define ADC_PulseIn_CFG2_DSM_BUF3           (0X00u)
+#define ADC_PulseIn_CFG2_DSM_OUT0           (0X00u)
+#define ADC_PulseIn_CFG2_DSM_OUT1           (0X00u)
+#define ADC_PulseIn_CFG2_DSM_SW3            (0X40u)
 #define ADC_PulseIn_CFG2_SRATE              (10000u )
-#define ADC_PulseIn_CFG2_CLOCKS_PER_SAMPLE  (0x0040u)
+#define ADC_PulseIn_CFG2_CLOCKS_PER_SAMPLE  (0X0040u)
 #define ADC_PulseIn_CFG2_CLOCK_FREQ         (640000u)
+#define ADC_PulseIn_CFG2_CP_CLOCK_FREQ      (2560000u)
 #define ADC_PulseIn_CFG2_REFERENCE_VOLTAGE  (1.0240)
 #define ADC_PulseIn_CFG2_COUNTS_PER_VOLT    (64000u)
 #define ADC_PulseIn_CFG2_RESOLUTION         (16u)
 #define ADC_PulseIn_CFG2_CONVMODE           (2u)
-#define ADC_PulseIn_CFG2_IDEAL_DEC_GAIN     (0x90DBu)
+#define ADC_PulseIn_CFG2_IDEAL_DEC_GAIN     (0X90DBu)
 #define ADC_PulseIn_CFG2_INPUT_RANGE        (0u)
 #define ADC_PulseIn_CFG2_INPUT_RANGE_VALUE  (1.024)
 
@@ -1542,9 +1523,9 @@ void ADC_PulseIn_IRQ_Start(void) ;
 #define ADC_PulseIn_CFG2_BUFFER_GAIN        (1u)
 
 /* Input and DAC Cap values in pF */
-#define ADC_PulseIn_CFG2_IPCAP1VALUE        (0x0F30u)
-#define ADC_PulseIn_CFG2_DACAPVALUE         (0x1130u)
-#define ADC_PulseIn_CFG2_IDEAL_ODDDEC_GAIN  (0x8000u)
+#define ADC_PulseIn_CFG2_IPCAP1VALUE        (0X0F30u)
+#define ADC_PulseIn_CFG2_DACAPVALUE         (0X1130u)
+#define ADC_PulseIn_CFG2_IDEAL_ODDDEC_GAIN  (0X8000u)
 
 /* Below defines are depricated and should not be used. These are provided 
    just to keep the component backward compatible */
@@ -1578,58 +1559,59 @@ void ADC_PulseIn_IRQ_Start(void) ;
 /* ADC_PulseIn_CFG3 Resolution: 16 bits */
 /* ADC_PulseIn_CFG3 Clock: 640000 Hz */
 
-#define ADC_PulseIn_CFG3_DEC_CR             (0x38u)
-#define ADC_PulseIn_CFG3_DEC_SR             (0x14u)
-#define ADC_PulseIn_CFG3_DEC_SHIFT1         (0x04u)
-#define ADC_PulseIn_CFG3_DEC_SHIFT2         (0x06u)
-#define ADC_PulseIn_CFG3_DEC_DR2            (0x00u)
-#define ADC_PulseIn_CFG3_DEC_DR2H           (0x00u)
-#define ADC_PulseIn_CFG3_DEC_DR1            (0x3Fu)
-#define ADC_PulseIn_CFG3_DEC_OCOR           (0x00u)
-#define ADC_PulseIn_CFG3_DEC_OCORM          (0x00u)
-#define ADC_PulseIn_CFG3_DEC_OCORH          (0x00u)
-#define ADC_PulseIn_CFG3_DEC_GVAL           (0x0Fu)
-#define ADC_PulseIn_CFG3_DEC_GCOR           (0x00u)
-#define ADC_PulseIn_CFG3_DEC_GCORH          (0x00u)
-#define ADC_PulseIn_CFG3_DEC_COHER          (0x01u)
-#define ADC_PulseIn_CFG3_DSM_CR0            (0x0Au)
-#define ADC_PulseIn_CFG3_DSM_CR1            (0x00u)
-#define ADC_PulseIn_CFG3_DSM_CR2            (0x7Au)
-#define ADC_PulseIn_CFG3_DSM_CR3            (0x00u)
-#define ADC_PulseIn_CFG3_DSM_CR4            (0x50u)
-#define ADC_PulseIn_CFG3_DSM_CR5            (0x27u)
-#define ADC_PulseIn_CFG3_DSM_CR6            (0x2Cu)
-#define ADC_PulseIn_CFG3_DSM_CR7            (0x00u)
-#define ADC_PulseIn_CFG3_DSM_CR8            (0x12u)
-#define ADC_PulseIn_CFG3_DSM_CR9            (0x13u)
-#define ADC_PulseIn_CFG3_DSM_CR10           (0x55u)
-#define ADC_PulseIn_CFG3_DSM_CR11           (0x5Au)
-#define ADC_PulseIn_CFG3_DSM_CR12           (0x05u)
-#define ADC_PulseIn_CFG3_DSM_CR13           (0x00u)
-#define ADC_PulseIn_CFG3_DSM_CR14           (0x01u)
-#define ADC_PulseIn_CFG3_DSM_CR15           (0x11u)
-#define ADC_PulseIn_CFG3_DSM_CR16           (0x19u)
-#define ADC_PulseIn_CFG3_DSM_CR17           (0x97u)
-#define ADC_PulseIn_CFG3_DSM_REF0           (0x44u)
-#define ADC_PulseIn_CFG3_DSM_REF2           (0x58u)
-#define ADC_PulseIn_CFG3_DSM_REF3           (0x00u)
-#define ADC_PulseIn_CFG3_DSM_DEM0           (0x07u)
-#define ADC_PulseIn_CFG3_DSM_DEM1           (0x00u)
-#define ADC_PulseIn_CFG3_DSM_BUF0           (0x05u)
-#define ADC_PulseIn_CFG3_DSM_BUF1           (0x02u)
-#define ADC_PulseIn_CFG3_DSM_BUF2           (0x01u)
-#define ADC_PulseIn_CFG3_DSM_BUF3           (0x00u)
-#define ADC_PulseIn_CFG3_DSM_OUT0           (0x00u)
-#define ADC_PulseIn_CFG3_DSM_OUT1           (0x00u)
-#define ADC_PulseIn_CFG3_DSM_SW3            (0x40u)
+#define ADC_PulseIn_CFG3_DEC_CR             (0X38u)
+#define ADC_PulseIn_CFG3_DEC_SR             (0X14u)
+#define ADC_PulseIn_CFG3_DEC_SHIFT1         (0X04u)
+#define ADC_PulseIn_CFG3_DEC_SHIFT2         (0X06u)
+#define ADC_PulseIn_CFG3_DEC_DR2            (0X00u)
+#define ADC_PulseIn_CFG3_DEC_DR2H           (0X00u)
+#define ADC_PulseIn_CFG3_DEC_DR1            (0X3Fu)
+#define ADC_PulseIn_CFG3_DEC_OCOR           (0X00u)
+#define ADC_PulseIn_CFG3_DEC_OCORM          (0X00u)
+#define ADC_PulseIn_CFG3_DEC_OCORH          (0X00u)
+#define ADC_PulseIn_CFG3_DEC_GVAL           (0X0Fu)
+#define ADC_PulseIn_CFG3_DEC_GCOR           (0X00u)
+#define ADC_PulseIn_CFG3_DEC_GCORH          (0X00u)
+#define ADC_PulseIn_CFG3_DEC_COHER          (0X01u)
+#define ADC_PulseIn_CFG3_DSM_CR0            (0X0Au)
+#define ADC_PulseIn_CFG3_DSM_CR1            (0X00u)
+#define ADC_PulseIn_CFG3_DSM_CR2            (0X7Au)
+#define ADC_PulseIn_CFG3_DSM_CR3            (0X00u)
+#define ADC_PulseIn_CFG3_DSM_CR4            (0X50u)
+#define ADC_PulseIn_CFG3_DSM_CR5            (0X27u)
+#define ADC_PulseIn_CFG3_DSM_CR6            (0X2Cu)
+#define ADC_PulseIn_CFG3_DSM_CR7            (0X00u)
+#define ADC_PulseIn_CFG3_DSM_CR8            (0X12u)
+#define ADC_PulseIn_CFG3_DSM_CR9            (0X13u)
+#define ADC_PulseIn_CFG3_DSM_CR10           (0X55u)
+#define ADC_PulseIn_CFG3_DSM_CR11           (0X5Au)
+#define ADC_PulseIn_CFG3_DSM_CR12           (0X05u)
+#define ADC_PulseIn_CFG3_DSM_CR13           (0X00u)
+#define ADC_PulseIn_CFG3_DSM_CR14           (0X01u)
+#define ADC_PulseIn_CFG3_DSM_CR15           (0X11u)
+#define ADC_PulseIn_CFG3_DSM_CR16           (0X19u)
+#define ADC_PulseIn_CFG3_DSM_CR17           (0X97u)
+#define ADC_PulseIn_CFG3_DSM_REF0           (0X44u)
+#define ADC_PulseIn_CFG3_DSM_REF2           (0X58u)
+#define ADC_PulseIn_CFG3_DSM_REF3           (0X00u)
+#define ADC_PulseIn_CFG3_DSM_DEM0           (0X07u)
+#define ADC_PulseIn_CFG3_DSM_DEM1           (0X00u)
+#define ADC_PulseIn_CFG3_DSM_BUF0           (0X05u)
+#define ADC_PulseIn_CFG3_DSM_BUF1           (0X02u)
+#define ADC_PulseIn_CFG3_DSM_BUF2           (0X01u)
+#define ADC_PulseIn_CFG3_DSM_BUF3           (0X00u)
+#define ADC_PulseIn_CFG3_DSM_OUT0           (0X00u)
+#define ADC_PulseIn_CFG3_DSM_OUT1           (0X00u)
+#define ADC_PulseIn_CFG3_DSM_SW3            (0X40u)
 #define ADC_PulseIn_CFG3_SRATE              (10000u)
-#define ADC_PulseIn_CFG3_CLOCKS_PER_SAMPLE  (0x0040u)
+#define ADC_PulseIn_CFG3_CLOCKS_PER_SAMPLE  (0X0040u)
 #define ADC_PulseIn_CFG3_CLOCK_FREQ         (640000u)
+#define ADC_PulseIn_CFG3_CP_CLOCK_FREQ      (2560000u)
 #define ADC_PulseIn_CFG3_REFERENCE_VOLTAGE  (1.0240)
 #define ADC_PulseIn_CFG3_COUNTS_PER_VOLT    (64000u)
 #define ADC_PulseIn_CFG3_RESOLUTION         (16u)
 #define ADC_PulseIn_CFG3_CONVMODE           (2u)
-#define ADC_PulseIn_CFG3_IDEAL_DEC_GAIN     (0x90DBu)
+#define ADC_PulseIn_CFG3_IDEAL_DEC_GAIN     (0X90DBu)
 #define ADC_PulseIn_CFG3_INPUT_RANGE        (0u)
 #define ADC_PulseIn_CFG3_INPUT_MODE         (1u)
 #define ADC_PulseIn_CFG3_REFERENCE          (0u)
@@ -1637,9 +1619,9 @@ void ADC_PulseIn_IRQ_Start(void) ;
 #define ADC_PulseIn_CFG3_INPUT_RANGE_VALUE  (1.024)
 
 /* Input and DAC Cap values in pF */
-#define ADC_PulseIn_CFG3_IPCAP1VALUE        (0x0F30u)
-#define ADC_PulseIn_CFG3_DACAPVALUE         (0x1130u)
-#define ADC_PulseIn_CFG3_IDEAL_ODDDEC_GAIN  (0x8000u)
+#define ADC_PulseIn_CFG3_IPCAP1VALUE        (0X0F30u)
+#define ADC_PulseIn_CFG3_DACAPVALUE         (0X1130u)
+#define ADC_PulseIn_CFG3_IDEAL_ODDDEC_GAIN  (0X8000u)
 
 /* Below defines are depricated and should not be used. These are provided 
    just to keep the component backward compatible */
@@ -1673,58 +1655,59 @@ void ADC_PulseIn_IRQ_Start(void) ;
 /* ADC_PulseIn_CFG4 Resolution: 16 bits */
 /* ADC_PulseIn_CFG4 Clock: 640000 Hz */
 
-#define ADC_PulseIn_CFG4_DEC_CR             (0x38u)
-#define ADC_PulseIn_CFG4_DEC_SR             (0x14u)
-#define ADC_PulseIn_CFG4_DEC_SHIFT1         (0x04u)
-#define ADC_PulseIn_CFG4_DEC_SHIFT2         (0x06u)
-#define ADC_PulseIn_CFG4_DEC_DR2            (0x00u)
-#define ADC_PulseIn_CFG4_DEC_DR2H           (0x00u)
-#define ADC_PulseIn_CFG4_DEC_DR1            (0x3Fu)
-#define ADC_PulseIn_CFG4_DEC_OCOR           (0x00u)
-#define ADC_PulseIn_CFG4_DEC_OCORM          (0x00u)
-#define ADC_PulseIn_CFG4_DEC_OCORH          (0x00u)
-#define ADC_PulseIn_CFG4_DEC_GVAL           (0x0Fu)
-#define ADC_PulseIn_CFG4_DEC_GCOR           (0x00u)
-#define ADC_PulseIn_CFG4_DEC_GCORH          (0x00u)
-#define ADC_PulseIn_CFG4_DEC_COHER          (0x01u)
-#define ADC_PulseIn_CFG4_DSM_CR0            (0x0Au)
-#define ADC_PulseIn_CFG4_DSM_CR1            (0x00u)
-#define ADC_PulseIn_CFG4_DSM_CR2            (0x7Au)
-#define ADC_PulseIn_CFG4_DSM_CR3            (0x00u)
-#define ADC_PulseIn_CFG4_DSM_CR4            (0x50u)
-#define ADC_PulseIn_CFG4_DSM_CR5            (0x27u)
-#define ADC_PulseIn_CFG4_DSM_CR6            (0x2Cu)
-#define ADC_PulseIn_CFG4_DSM_CR7            (0x00u)
-#define ADC_PulseIn_CFG4_DSM_CR8            (0x12u)
-#define ADC_PulseIn_CFG4_DSM_CR9            (0x13u)
-#define ADC_PulseIn_CFG4_DSM_CR10           (0x55u)
-#define ADC_PulseIn_CFG4_DSM_CR11           (0x5Au)
-#define ADC_PulseIn_CFG4_DSM_CR12           (0x05u)
-#define ADC_PulseIn_CFG4_DSM_CR13           (0x00u)
-#define ADC_PulseIn_CFG4_DSM_CR14           (0x01u)
-#define ADC_PulseIn_CFG4_DSM_CR15           (0x11u)
-#define ADC_PulseIn_CFG4_DSM_CR16           (0x19u)
-#define ADC_PulseIn_CFG4_DSM_CR17           (0x97u)
-#define ADC_PulseIn_CFG4_DSM_REF0           (0x44u)
-#define ADC_PulseIn_CFG4_DSM_REF2           (0x58u)
-#define ADC_PulseIn_CFG4_DSM_REF3           (0x00u)
-#define ADC_PulseIn_CFG4_DSM_DEM0           (0x07u)
-#define ADC_PulseIn_CFG4_DSM_DEM1           (0x00u)
-#define ADC_PulseIn_CFG4_DSM_BUF0           (0x05u)
-#define ADC_PulseIn_CFG4_DSM_BUF1           (0x02u)
-#define ADC_PulseIn_CFG4_DSM_BUF2           (0x01u)
-#define ADC_PulseIn_CFG4_DSM_BUF3           (0x00u)
-#define ADC_PulseIn_CFG4_DSM_OUT0           (0x00u)
-#define ADC_PulseIn_CFG4_DSM_OUT1           (0x00u)
-#define ADC_PulseIn_CFG4_DSM_SW3            (0x40u)
+#define ADC_PulseIn_CFG4_DEC_CR             (0X38u)
+#define ADC_PulseIn_CFG4_DEC_SR             (0X14u)
+#define ADC_PulseIn_CFG4_DEC_SHIFT1         (0X04u)
+#define ADC_PulseIn_CFG4_DEC_SHIFT2         (0X06u)
+#define ADC_PulseIn_CFG4_DEC_DR2            (0X00u)
+#define ADC_PulseIn_CFG4_DEC_DR2H           (0X00u)
+#define ADC_PulseIn_CFG4_DEC_DR1            (0X3Fu)
+#define ADC_PulseIn_CFG4_DEC_OCOR           (0X00u)
+#define ADC_PulseIn_CFG4_DEC_OCORM          (0X00u)
+#define ADC_PulseIn_CFG4_DEC_OCORH          (0X00u)
+#define ADC_PulseIn_CFG4_DEC_GVAL           (0X0Fu)
+#define ADC_PulseIn_CFG4_DEC_GCOR           (0X00u)
+#define ADC_PulseIn_CFG4_DEC_GCORH          (0X00u)
+#define ADC_PulseIn_CFG4_DEC_COHER          (0X01u)
+#define ADC_PulseIn_CFG4_DSM_CR0            (0X0Au)
+#define ADC_PulseIn_CFG4_DSM_CR1            (0X00u)
+#define ADC_PulseIn_CFG4_DSM_CR2            (0X7Au)
+#define ADC_PulseIn_CFG4_DSM_CR3            (0X00u)
+#define ADC_PulseIn_CFG4_DSM_CR4            (0X50u)
+#define ADC_PulseIn_CFG4_DSM_CR5            (0X27u)
+#define ADC_PulseIn_CFG4_DSM_CR6            (0X2Cu)
+#define ADC_PulseIn_CFG4_DSM_CR7            (0X00u)
+#define ADC_PulseIn_CFG4_DSM_CR8            (0X12u)
+#define ADC_PulseIn_CFG4_DSM_CR9            (0X13u)
+#define ADC_PulseIn_CFG4_DSM_CR10           (0X55u)
+#define ADC_PulseIn_CFG4_DSM_CR11           (0X5Au)
+#define ADC_PulseIn_CFG4_DSM_CR12           (0X05u)
+#define ADC_PulseIn_CFG4_DSM_CR13           (0X00u)
+#define ADC_PulseIn_CFG4_DSM_CR14           (0X01u)
+#define ADC_PulseIn_CFG4_DSM_CR15           (0X11u)
+#define ADC_PulseIn_CFG4_DSM_CR16           (0X19u)
+#define ADC_PulseIn_CFG4_DSM_CR17           (0X97u)
+#define ADC_PulseIn_CFG4_DSM_REF0           (0X44u)
+#define ADC_PulseIn_CFG4_DSM_REF2           (0X58u)
+#define ADC_PulseIn_CFG4_DSM_REF3           (0X00u)
+#define ADC_PulseIn_CFG4_DSM_DEM0           (0X07u)
+#define ADC_PulseIn_CFG4_DSM_DEM1           (0X00u)
+#define ADC_PulseIn_CFG4_DSM_BUF0           (0X05u)
+#define ADC_PulseIn_CFG4_DSM_BUF1           (0X02u)
+#define ADC_PulseIn_CFG4_DSM_BUF2           (0X01u)
+#define ADC_PulseIn_CFG4_DSM_BUF3           (0X00u)
+#define ADC_PulseIn_CFG4_DSM_OUT0           (0X00u)
+#define ADC_PulseIn_CFG4_DSM_OUT1           (0X00u)
+#define ADC_PulseIn_CFG4_DSM_SW3            (0X40u)
 #define ADC_PulseIn_CFG4_SRATE              (10000u)         
-#define ADC_PulseIn_CFG4_CLOCKS_PER_SAMPLE  (0x0040u)
+#define ADC_PulseIn_CFG4_CLOCKS_PER_SAMPLE  (0X0040u)
 #define ADC_PulseIn_CFG4_CLOCK_FREQ         (640000u)
+#define ADC_PulseIn_CFG4_CP_CLOCK_FREQ      (2560000u)
 #define ADC_PulseIn_CFG4_REFERENCE_VOLTAGE  (1.0240)
 #define ADC_PulseIn_CFG4_COUNTS_PER_VOLT    (64000u)
 #define ADC_PulseIn_CFG4_RESOLUTION         (16u)
 #define ADC_PulseIn_CFG4_CONVMODE           (2u)
-#define ADC_PulseIn_CFG4_IDEAL_DEC_GAIN     (0x90DBu)
+#define ADC_PulseIn_CFG4_IDEAL_DEC_GAIN     (0X90DBu)
 #define ADC_PulseIn_CFG4_INPUT_RANGE        (0u)
 #define ADC_PulseIn_CFG4_INPUT_MODE         (1u)
 #define ADC_PulseIn_CFG4_REFERENCE          (0u)
@@ -1732,9 +1715,9 @@ void ADC_PulseIn_IRQ_Start(void) ;
 #define ADC_PulseIn_CFG4_INPUT_RANGE_VALUE  (1.024)
 
 /* Input cap and DAC Cap values in pF */
-#define ADC_PulseIn_CFG4_IPCAP1VALUE        (0x0F30u)
-#define ADC_PulseIn_CFG4_DACAPVALUE         (0x1130u)
-#define ADC_PulseIn_CFG4_IDEAL_ODDDEC_GAIN  (0x8000u)
+#define ADC_PulseIn_CFG4_IPCAP1VALUE        (0X0F30u)
+#define ADC_PulseIn_CFG4_DACAPVALUE         (0X1130u)
+#define ADC_PulseIn_CFG4_IDEAL_ODDDEC_GAIN  (0X8000u)
 
 /* Below defines are depricated and should not be used. These are provided 
    just to keep the component backward compatible */

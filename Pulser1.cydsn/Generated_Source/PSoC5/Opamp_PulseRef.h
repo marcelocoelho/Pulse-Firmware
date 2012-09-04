@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: Opamp_PulseRef.h  
-* Version 1.70
+* Version 1.80
 *
 * Description:
 *  This file contains the function prototypes and constants used in
@@ -9,17 +9,23 @@
 * Note:
 *
 ********************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions, 
 * disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
-********************************************************************************/
+*******************************************************************************/
 
 #if !defined(CY_OPAMP_Opamp_PulseRef_H) 
 #define CY_OPAMP_Opamp_PulseRef_H 
 
 #include "cytypes.h"
 #include "cyfitter.h"
+
+/* Check to see if required defines such as CY_PSOC5LP are available */
+/* They are defined starting with cy_boot v3.0 */
+#if !defined (CY_PSOC5LP)
+    #error Component OpAmp_v1_80 requires cy_boot v3.0 or later
+#endif /* (CY_ PSOC5LP) */
 
 
 /***************************************
@@ -37,23 +43,23 @@ typedef struct _Opamp_PulseRef_backupStruct
 *        Function Prototypes 
 **************************************/
 
-void Opamp_PulseRef_Start(void);
-void Opamp_PulseRef_Stop(void) ;
+void Opamp_PulseRef_Start(void)           ;
+void Opamp_PulseRef_Stop(void)            ;
 void Opamp_PulseRef_SetPower(uint8 power) ;
-void Opamp_PulseRef_Sleep(void);
-void Opamp_PulseRef_Wakeup(void) ;
-void Opamp_PulseRef_SaveConfig(void);
-void Opamp_PulseRef_RestoreConfig(void);
-void Opamp_PulseRef_Init(void) ;
-void Opamp_PulseRef_Enable(void) ;
+void Opamp_PulseRef_Sleep(void)           ;
+void Opamp_PulseRef_Wakeup(void)          ;
+void Opamp_PulseRef_SaveConfig(void)      ;
+void Opamp_PulseRef_RestoreConfig(void)   ;
+void Opamp_PulseRef_Init(void)            ;
+void Opamp_PulseRef_Enable(void)          ;
 
 
 /**************************************
-*           API Constants        
+*           API Constants
 **************************************/
 
 /* Power constants for SetPower() function */
-#if (CY_PSOC3_ES3 || CY_PSOC5_ES2)
+#if (CY_PSOC3 || CY_PSOC5LP)
     #define Opamp_PulseRef_LPOCPOWER (0x00u)
     #define Opamp_PulseRef_LOWPOWER  (0x01u)
     #define Opamp_PulseRef_MEDPOWER  (0x02u)
@@ -62,30 +68,27 @@ void Opamp_PulseRef_Enable(void) ;
     #define Opamp_PulseRef_LOWPOWER  (0x01u)
     #define Opamp_PulseRef_MEDPOWER  (0x02u)
     #define Opamp_PulseRef_HIGHPOWER (0x00u)
-#endif
+#endif /* (CY_PSOC3 || CY_PSOC5LP) */
+
 
 /**************************************
 *           Parameter Defaults        
 **************************************/
-#if (CY_PSOC3_ES3 || CY_PSOC5_ES2)
+#if (CY_PSOC3 || CY_PSOC5LP)
     #define Opamp_PulseRef_DEFAULT_POWER    (3u)
-#endif
+#endif  /* (CY_PSOC3 || CY_PSOC5LP) */
 
-#if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
-    #if (3u == 0)
-        #error "Low Power Over Compensated Mode is not supported on ES2 silicon. Please select another default power setting"
-    #elif (3u == 3)
+#if (CY_PSOC5A)
+    #if (3u == 3)
         #define Opamp_PulseRef_DEFAULT_POWER (0u)
-    #else
-        #define Opamp_PulseRef_DEFAULT_POWER (3u)
-    #endif
-#endif
+    #endif    /* (3u == 3) */
+#endif   /* (CY_PSOC5A) */
 
 #define Opamp_PulseRef_DEFAULT_MODE     (1u)
 
 
 /**************************************
-*             Registers        
+*             Registers
 **************************************/
 
 #define Opamp_PulseRef_CR_REG        (* (reg8 *) Opamp_PulseRef_ABuf__CR)
@@ -110,8 +113,8 @@ void Opamp_PulseRef_Enable(void) ;
 #define Opamp_PulseRef_PUMP_CR1_PTR  (  (reg8 *) CYDEV_ANAIF_CFG_PUMP_CR1)
 
 /* Trim register defines */
-#define Opamp_PulseRef_TRO_REG       (* (reg8 *) Opamp_PulseRef_ABuf__TR0)
-#define Opamp_PulseRef_TRO_PTR       (  (reg8 *) Opamp_PulseRef_ABuf__TR0)
+#define Opamp_PulseRef_TR0_REG       (* (reg8 *) Opamp_PulseRef_ABuf__TR0)
+#define Opamp_PulseRef_TR0_PTR       (  (reg8 *) Opamp_PulseRef_ABuf__TR0)
 
 #define Opamp_PulseRef_TR1_REG       (* (reg8 *) Opamp_PulseRef_ABuf__TR1)
 #define Opamp_PulseRef_TR1_PTR       (  (reg8 *) Opamp_PulseRef_ABuf__TR1)
@@ -124,14 +127,14 @@ void Opamp_PulseRef_Enable(void) ;
 
 
 /**************************************
-*       Register Constants        
+*       Register Constants
 **************************************/
 
 /* CX Analog Buffer Input Selection Register */
 
 /* Power mode defines */
 #define Opamp_PulseRef_PWR_MASK           (0x03u)
-#if (CY_PSOC3_ES3 || CY_PSOC5_ES2)
+#if (CY_PSOC3 || CY_PSOC5LP)
     #define Opamp_PulseRef_PWR_LPOC        (0x00u)
     #define Opamp_PulseRef_PWR_LOW         (0x01u)
     #define Opamp_PulseRef_PWR_MEDIUM      (0x02u)
@@ -140,7 +143,7 @@ void Opamp_PulseRef_Enable(void) ;
     #define Opamp_PulseRef_PWR_LOW         (0x01u)
     #define Opamp_PulseRef_PWR_MEDIUM      (0x02u)
     #define Opamp_PulseRef_PWR_HIGH        (0x00u)
-#endif
+#endif   /* (CY_PSOC3 || CY_PSOC5LP) */
 
 /* MX Analog Buffer Input Selection Register */
 
@@ -176,7 +179,6 @@ void Opamp_PulseRef_Enable(void) ;
 #define Opamp_PulseRef_PUMP_CR1_AUTO    (0x10u)
 
 #endif /* CY_OPAMP_Opamp_PulseRef_H */
-
 
 
 /* [] END OF FILE */

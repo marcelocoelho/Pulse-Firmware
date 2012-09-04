@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: UART_Debug.h
-* Version 2.10
+* Version 2.20
 *
 * Description:
 *  Contains the function prototypes and constants available to the UART
@@ -9,11 +9,11 @@
 * Note:
 *
 ********************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions,
-* disclaimers, and limitations in the end user license agreement accompanying
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
+* You may use this file only in accordance with the license, terms, conditions, 
+* disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
-********************************************************************************/
+*******************************************************************************/
 
 
 #include "cytypes.h"
@@ -43,17 +43,13 @@
 #define UART_Debug_TXCLKGEN_DP                    (1u)
 #define UART_Debug_USE23POLLING                   (1u)
 #define UART_Debug_FLOW_CONTROL                   (0u)
+#define UART_Debug_CLK_FREQ                       (0u)
 
-/* Check to see if required defines such as CY_PSOC3 and CY_PSOC5 are available */
-/* They are defined starting with cy_boot v2.30 */
-#ifndef CY_PSOC3
-    #error Component UART_v2_10 requires cy_boot v2.30 or later
-#endif /* End CY_PSOC3 */
-
-#if(CY_PSOC3_ES2 && (UART_Debug_RX_INTERRUPT_ENABLED || UART_Debug_TX_INTERRUPT_ENABLED))
-    #include <intrins.h>
-    #define UART_Debug_ISR_PATCH() _nop_(); _nop_(); _nop_(); _nop_(); _nop_(); _nop_(); _nop_(); _nop_();
-#endif /* End CY_PSOC3_ES2 */
+/* Check to see if required defines such as CY_PSOC5LP are available */
+/* They are defined starting with cy_boot v3.0 */
+#if !defined (CY_PSOC5LP)
+    #error Component UART_v2_20 requires cy_boot v3.0 or later
+#endif /* (CY_PSOC5LP) */
 
 #ifdef UART_Debug_BUART_sCR_AsyncCtl_CtrlReg__CONTROL_REG
     #define UART_Debug_CONTROL_REG_REMOVED            (0u)
@@ -76,27 +72,27 @@ typedef struct _UART_Debug_backupStruct
     #endif /* End UART_Debug_CONTROL_REG_REMOVED */    
     #if( (UART_Debug_RX_ENABLED) || (UART_Debug_HD_ENABLED) )
         uint8 rx_period;
-        #if (CY_PSOC3_ES2 || CY_PSOC5_ES1) /* PSoC3 ES2 or early, PSoC5 ES1*/
+        #if (CY_UDB_V0) 
             uint8 rx_mask;
             #if (UART_Debug_RXHW_ADDRESS_ENABLED)
                 uint8 rx_addr1;
                 uint8 rx_addr2;
             #endif /* End UART_Debug_RXHW_ADDRESS_ENABLED */
-        #endif /* End PSOC3_ES2 || PSOC5_ES1 */
+        #endif /* End CY_UDB_V0 */
     #endif  /* End (UART_Debug_RX_ENABLED) || (UART_Debug_HD_ENABLED)*/
 
     #if(UART_Debug_TX_ENABLED)
         #if(UART_Debug_TXCLKGEN_DP)
             uint8 tx_clk_ctr;
-            #if (CY_PSOC3_ES2 || CY_PSOC5_ES1) /* PSoC3 ES2 or early, PSoC5 ES1*/
+            #if (CY_UDB_V0) 
                 uint8 tx_clk_compl;
-            #endif  /* End PSOC3_ES2 || PSOC5_ES1 */
+            #endif  /* End CY_UDB_V0 */
         #else
             uint8 tx_period;
         #endif /*End UART_Debug_TXCLKGEN_DP */
-        #if (CY_PSOC3_ES2 || CY_PSOC5_ES1) /* PSoC3 ES2 or early, PSoC5 ES1*/
+        #if (CY_UDB_V0) 
             uint8 tx_mask;
-        #endif  /* End PSOC3_ES2 || PSOC5_ES1 */
+        #endif  /* End CY_UDB_V0 */
     #endif /*End UART_Debug_TX_ENABLED */
 } UART_Debug_BACKUP_STRUCT;
 

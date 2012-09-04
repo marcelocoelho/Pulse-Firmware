@@ -1,83 +1,98 @@
 /*******************************************************************************
 * FILENAME: cytypes.h
-* Version 2.40
+* Version 3.10
 *
 *  Description:
-*  CyTypes provides register access macros and approved types for use in 
+*  CyTypes provides register access macros and approved types for use in
 *  firmware.
-* 
+*
 *  Note:
 *  Due to endiannesses of the hardware and some compilers, the register
-*  access macros for big endian compilers use some library calls to arrange 
+*  access macros for big endian compilers use some library calls to arrange
 *  data the correct way.
-*   
-*  Register Access macros and functions perform their operations on an 
-*  input of type pointer to void.  The arguments passed to it should be 
-*  pointers to the type associated with the register size. 
+*
+*  Register Access macros and functions perform their operations on an
+*  input of type pointer to void.  The arguments passed to it should be
+*  pointers to the type associated with the register size.
 *  (i.e. a "uint8 *" shouldn't be passed to obtain a 16-bit register value)
 *
 ********************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions, 
-* disclaimers, and limitations in the end user license agreement accompanying 
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
+* You may use this file only in accordance with the license, terms, conditions,
+* disclaimers, and limitations in the end user license agreement accompanying
 * the software package with which this file was provided.
-********************************************************************************/
+*******************************************************************************/
 
-#if !defined(CYTYPES_H)
-#define CYTYPES_H
+#if !defined(CY_BOOT_CYTYPES_H)
+#define CY_BOOT_CYTYPES_H
 
 #if defined(__C51__)
-#include <intrins.h>
-#endif
+    #include <intrins.h>
+#endif  /* (__C51__) */
 
-#if defined(__GNUC__) || defined(__ARMCC_VERSION)
-/* Include for the ARM compilers (GCC and RealView) */
-#include <stdint.h>
-#endif
+/* ARM and C99 or later */
+#if defined(__GNUC__) || defined(__ARMCC_VERSION) || (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L)
+    #include <stdint.h>
+#endif  /* (__GNUC__) || defined(__ARMCC_VERSION) || (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) */
 
-#include <cyfitter.h>
+#include "cyfitter.h"
 
 
 /***************************************
 * Conditional Compilation Parameters
 ***************************************/
 
-/* ARCHITECTURES */
-/* Device is PSoC 3 */
+
+/*******************************************************************************
+* FAMILY encodes the overall architectural family
+*******************************************************************************/
 #define CY_PSOC3 (CYDEV_CHIP_FAMILY_USED == CYDEV_CHIP_FAMILY_PSOC3)
-
-/* Device is PSoC 4 */
 #define CY_PSOC4 (CYDEV_CHIP_FAMILY_USED == CYDEV_CHIP_FAMILY_PSOC4)
-
-/* Device is PSoC 5 */
 #define CY_PSOC5 (CYDEV_CHIP_FAMILY_USED == CYDEV_CHIP_FAMILY_PSOC5)
 
-/* SILICON REVISIONS */
+
+/*******************************************************************************
+* MEMBER encodes both the family and the detailed architecture
+*******************************************************************************/
+#define CY_PSOC5A  (CYDEV_CHIP_MEMBER_USED == CYDEV_CHIP_MEMBER_5A)
+#ifdef CYDEV_CHIP_MEMBER_5B
+    #define CY_PSOC5LP (CYDEV_CHIP_MEMBER_USED == CYDEV_CHIP_MEMBER_5B)
+#else
+    #define CY_PSOC5LP 0
+#endif
+
+
+/*******************************************************************************
+* UDB revisions
+*******************************************************************************/
+#define CY_UDB_V0 (CY_PSOC5A)
+#define CY_UDB_V1 (!CY_UDB_V0)
+
+
+/*******************************************************************************
+* Following defines are deprecated and will be removed in a future revision
+*******************************************************************************/
+
 /* Device is PSoC 3 and the revision is ES2 or earlier */
 #define CY_PSOC3_ES2 ((CYDEV_CHIP_MEMBER_USED == CYDEV_CHIP_MEMBER_3A) && \
-(CYDEV_CHIP_REVISION_USED <= CYDEV_CHIP_REVISION_3A_ES2))
-
-/* Device is PSoC 5 and the revision is ES1 or earlier */
-#define CY_PSOC5_ES1 ((CYDEV_CHIP_MEMBER_USED == CYDEV_CHIP_MEMBER_5A) && \
-(CYDEV_CHIP_REVISION_USED <= CYDEV_CHIP_REVISION_5A_ES1))
-
-/* Device is PSoC 4 and the revision is ES0 or later */
-#define CY_PSOC4_ES0 ((CYDEV_CHIP_MEMBER_USED == CYDEV_CHIP_MEMBER_4A) && \
-(CYDEV_CHIP_REVISION_USED >= CYDEV_CHIP_REVISION_4A_ES0))
+    (CYDEV_CHIP_REVISION_USED <= CYDEV_CHIP_REVISION_3A_ES2))
 
 /* Device is PSoC 3 and the revision is ES3 or later */
 #define CY_PSOC3_ES3 ((CYDEV_CHIP_MEMBER_USED == CYDEV_CHIP_MEMBER_3A) && \
-(CYDEV_CHIP_REVISION_USED >= CYDEV_CHIP_REVISION_3A_ES3))
+    (CYDEV_CHIP_REVISION_USED >= CYDEV_CHIP_REVISION_3A_ES3))
+
+/* Device is PSoC 5 and the revision is ES1 or earlier */
+#define CY_PSOC5_ES1 (CY_PSOC5A && \
+    (CYDEV_CHIP_REVISION_USED <= CYDEV_CHIP_REVISION_5A_ES1))
 
 /* Device is PSoC 5 and the revision is ES2 or later */
-#define CY_PSOC5_ES2 ((CYDEV_CHIP_MEMBER_USED == CYDEV_CHIP_MEMBER_5A) && \
-(CYDEV_CHIP_REVISION_USED > CYDEV_CHIP_REVISION_5A_ES1))
+#define CY_PSOC5_ES2 (CY_PSOC5A && \
+    (CYDEV_CHIP_REVISION_USED > CYDEV_CHIP_REVISION_5A_ES1))
 
 
 typedef char           char8;
 
 /* Acceptable types from MISRA-C specifying signedness and size.*/
-
 typedef unsigned char           uint8;
 typedef unsigned short          uint16;
 typedef unsigned long           uint32;
@@ -95,7 +110,9 @@ typedef signed long             int32;
 #define HI16(x)                 ((uint16) ((uint32)(x) >> 16))
 
 /* Swap the byte ordering of a 32 bit value */
-#define CYSWAP_ENDIAN32(x) ((uint32)(((x) >> 24) | (((x) & 0x00FF0000u) >> 8) | (((x) & 0x0000FF00u) << 8) | ((x) << 24)))
+#define CYSWAP_ENDIAN32(x)  \
+        ((uint32)(((x) >> 24) | (((x) & 0x00FF0000u) >> 8) | (((x) & 0x0000FF00u) << 8) | ((x) << 24)))
+
 /* Swap the byte ordering of a 16 bit value */
 #define CYSWAP_ENDIAN16(x) ((uint16)(((x) << 8) | ((x) >> 8)))
 
@@ -106,8 +123,8 @@ typedef signed long             int32;
 *
 *   Return values can be overloaded if documented in the function header.
 *
-*   On the 8051 a function can use a larger return type but still use the defined
-*   return codes.
+*   On the 8051 a function can use a larger return type but still use the
+*   defined return codes.
 *
 *   0 is successful, all other values indicate some form of failure.
 *
@@ -154,12 +171,14 @@ typedef signed long             int32;
 /* The operation was not setup or in a proper state. */
 #define CYRET_INVALID_STATE             0x11u
 
-/* Include for the KEIL C51 compiler
-*  KEIL for the 8051 is a Big Endian compiler This causes problems as the
-*  on chip registers are little endian.  Byte swapping for two and four byte
-*  registers is implemented in the functions below.  This will require
-*  conditional compilation of function prototypes in code.
-*/
+
+/*******************************************************************************
+* Include for the KEIL C51 compiler
+* KEIL for the 8051 is a Big Endian compiler This causes problems as the on chip
+* registers are little endian.  Byte swapping for two and four byte registers is
+* implemented in the functions below.  This will require conditional compilation
+* of function prototypes in code.
+*******************************************************************************/
 #if defined(__C51__)
 
 /* To allow code to be 8051-ARM agnostic. */
@@ -185,9 +204,12 @@ typedef void (CYCODE * cyisraddress)(void);
 /* 8051 naturally returns an 8 bit value. */
 typedef unsigned char cystatus;
 
-/* Prototypes for absolute memory address functions (cymem.a51) with built-in endian conversion.
- * These functions should be called through the CY_GET_XTND_REGxx and CY_SET_XTND_REGxx macros.
- */
+
+/*******************************************************************************
+* Prototypes for absolute memory address functions (cymem.a51) with built-in
+* endian conversion. These functions should be called through the
+* CY_GET_XTND_REGxx and CY_SET_XTND_REGxx macros.
+*******************************************************************************/
 extern uint8 cyread8(const void far *addr);
 extern void cywrite8(void far *addr, uint8 value);
 extern uint16 cyread16(const void far *addr);
@@ -203,12 +225,25 @@ extern uint32 cyread32_nodpx(const void far *addr);
 extern void cywrite32(void far *addr, uint32 value);
 extern void cywrite32_nodpx(void far *addr, uint32 value);
 
-/*
- * KEIL for the 8051 is a big endian compiler This causes problems as the
- * on chip registers are little endian.  Byte swapping for two and four byte
- * registers is implemented in the functions below.  This will require
- * conditional compilation of function prototypes in code.
- */
+
+/*******************************************************************************
+* Memory access routines from cymem.a51 for the generated device configuration
+* code. These functions may be subject to change in future revisions of the
+* cy_boot component and they are not available for all devices. Most code
+* should use memset or memcpy instead.
+*******************************************************************************/
+void cymemzero(void far *addr, unsigned short size);
+void cyconfigcpy(unsigned short size, const void far *src, void far *dest) large;
+void cyconfigcpycode(unsigned short size, const void code *src, void far *dest);
+#define CYCONFIGCPY_DECLARED 1
+
+
+/*******************************************************************************
+* KEIL for the 8051 is a big endian compiler This causes problems as the on chip
+* registers are little endian.  Byte swapping for two and four byte registers is
+* implemented in the functions below.  This will require conditional compilation
+* of function prototypes in code.
+*******************************************************************************/
 
 /* Access macros for 8, 16, 24 and 32-bit registers, IN THE FIRST 64K OF XDATA */
 #define CY_GET_REG8(addr)           (*((volatile uint8 xdata *)(addr)))
@@ -223,7 +258,7 @@ extern void cywrite32_nodpx(void far *addr, uint32 value);
 #define CY_GET_REG32(addr)          cyread32_nodpx((void far *)(uint8 xdata *)(addr))
 #define CY_SET_REG32(addr, value)   cywrite32_nodpx((void far *)(uint8 xdata *)(addr), value)
 
-/* Access macros for 8, 16, 24 and 32-bit registers, ABOVE THE FIRST 64K OF XDATA */
+/* Access 8, 16, 24 and 32-bit registers, ABOVE THE FIRST 64K OF XDATA */
 #define CY_GET_XTND_REG8(addr)           cyread8(addr)
 #define CY_SET_XTND_REG8(addr, value)    cywrite8(addr,value)
 
@@ -270,20 +305,20 @@ typedef unsigned long cystatus;
 extern void     CySetReg24(uint8 volatile *addr, uint32 value);
 
 /* 8, 16, 24 and 32-bit register access macros */
-#define CY_GET_REG8(addr)           	(*((volatile uint8 *)(addr)))
-#define CY_SET_REG8(addr, value)    	(*((volatile uint8 *)(addr))  = (uint8)(value))
+#define CY_GET_REG8(addr)               (*((volatile uint8 *)(addr)))
+#define CY_SET_REG8(addr, value)        (*((volatile uint8 *)(addr))  = (uint8)(value))
 
-#define CY_GET_REG16(addr)          	(*((volatile uint16 *)(addr)))
-#define CY_SET_REG16(addr, value)   	(*((volatile uint16 *)(addr)) = (uint16)(value))
+#define CY_GET_REG16(addr)              (*((volatile uint16 *)(addr)))
+#define CY_SET_REG16(addr, value)       (*((volatile uint16 *)(addr)) = (uint16)(value))
 
-#define CY_GET_REG24(addr)          	(*((volatile uint32 *)(addr)) & 0x00FFFFFFu)
-#define CY_SET_REG24(addr, value)   	CySetReg24((uint8 volatile *)addr, value)
+#define CY_GET_REG24(addr)              (*((volatile uint32 *)(addr)) & 0x00FFFFFFu)
+#define CY_SET_REG24(addr, value)       CySetReg24((uint8 volatile *)addr, value)
 
-#define CY_GET_REG32(addr)          	(*((volatile uint32 *)(addr)))
-#define CY_SET_REG32(addr, value)   	(*((volatile uint32 *)(addr)) = (uint32)(value))
+#define CY_GET_REG32(addr)              (*((volatile uint32 *)(addr)))
+#define CY_SET_REG32(addr, value)       (*((volatile uint32 *)(addr)) = (uint32)(value))
 
 /* To allow code to be 8051-ARM agnostic. */
-#define CY_GET_XTND_REG8(addr)			CY_GET_REG8(addr)
+#define CY_GET_XTND_REG8(addr)            CY_GET_REG8(addr)
 #define CY_SET_XTND_REG8(addr, value)   CY_SET_REG8(addr, value)
 
 #define CY_GET_XTND_REG16(addr)         CY_GET_REG16(addr)
@@ -297,19 +332,22 @@ extern void     CySetReg24(uint8 volatile *addr, uint32 value);
 
 /* Generate a NOP assembly instruction. */
 #if defined(__ARMCC_VERSION)
-/* RealView */
-#define CY_NOP      __nop()
+    /* RealView */
+    #define CY_NOP      __nop()
 #else
-/* GCC */
-#define CY_NOP      __asm("NOP\n")
-#endif
+    /* GCC */
+    #define CY_NOP      __asm("NOP\n")
+#endif  /* defined(__ARMCC_VERSION) */
 
 /* End of ARM Compiler section */
-#endif
+#endif  /* defined(__C51__) */
 
 /* Types for PSoC hardware registers. */
 typedef volatile uint8 CYXDATA reg8;
 typedef volatile uint16 CYXDATA reg16;
 typedef volatile uint32 CYXDATA reg32;
 
-#endif
+#endif  /* CY_BOOT_CYTYPES_H */
+
+
+/* [] END OF FILE */

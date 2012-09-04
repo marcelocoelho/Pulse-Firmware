@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: cyPm.h
-* Version 2.40
+* Version 3.10
 *
 * Description:
 *  Provides the function definitions for the power management API.
@@ -10,14 +10,14 @@
 *  System Reference Guide provided with PSoC Creator.
 *
 ********************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions,
 * disclaimers, and limitations in the end user license agreement accompanying
 * the software package with which this file was provided.
 *******************************************************************************/
 
-#if !defined(CY_PM_H)
-#define CY_PM_H
+#if !defined(CY_BOOT_CYPM_H)
+#define CY_BOOT_CYPM_H
 
 #include "cytypes.h"        /* Register access API      */
 #include "cydevice_trm.h"   /* Registers addresses      */
@@ -29,40 +29,32 @@
 /***************************************
 *    Function Prototypes
 ***************************************/
-void CyPmSaveClocks(void);
+void CyPmSaveClocks(void) ;
 void CyPmRestoreClocks(void) ;
-void CyPmAltAct(uint16 wakeupTime, uint16 wakeupSource);
-
-/*******************************************************************************
-* Note: PSoC 3 ES2 silicon has a defect that causes connections to several
-* analog resources to be unreliable when the device is placed in a low power
-* mode. See the silicon errata for details.
-*******************************************************************************/
-void CyPmSleep(uint8 wakeupTime, uint16 wakeupSource);
-void CyPmHibernate(void);
+void CyPmAltAct(uint16 wakeupTime, uint16 wakeupSource) ;
+void CyPmSleep(uint8 wakeupTime, uint16 wakeupSource) ;
+void CyPmHibernate(void) ;
 
 uint8 CyPmReadStatus(uint8 mask) ;
+
+/* Internal APIs and are not meant to be called directly by the user */
+void CyPmCtwSetInterval(uint8 ctwInterval) ;
+void CyPmFtwSetInterval(uint8 ftwInterval) ;
+void CyPmOppsSet(void) ;
 
 
 /***************************************
 *    API Constants
 ***************************************/
 
-/* Device is PSoC 5 */
-#if(CY_PSOC5)
+#define PM_SLEEP_SRC_NONE               (0x0000u)
+#define PM_SLEEP_TIME_NONE              (0x00u)
+#define PM_ALT_ACT_SRC_NONE             (0x0000u)
+#define PM_ALT_ACT_TIME_NONE            (0x0000u)
 
-    #define PM_SLEEP_TIME_NONE              (0x00u)
-    #define PM_SLEEP_SRC_NONE               (0x0000u)
-    #define PM_ALT_ACT_TIME_NONE            (0x0000u)
-    #define PM_ALT_ACT_SRC_NONE             (0x0000u)
-
-#endif  /* (CY_PSOC5) */
-
-
-#if(CY_PSOC3)    /* Device is PSoC 3 */
+#if(CY_PSOC3)
 
     /* Wake up time for the Sleep mode */
-    #define PM_SLEEP_TIME_NONE              (0x00u)
     #define PM_SLEEP_TIME_ONE_PPS           (0x01u)
     #define PM_SLEEP_TIME_CTW_2MS           (0x02u)
     #define PM_SLEEP_TIME_CTW_4MS           (0x03u)
@@ -77,30 +69,10 @@ uint8 CyPmReadStatus(uint8 mask) ;
     #define PM_SLEEP_TIME_CTW_2048MS        (0x0Cu)
     #define PM_SLEEP_TIME_CTW_4096MS        (0x0Du)
 
-    /* Wake up sources for the Sleep mode */
-    #define PM_SLEEP_SRC_NONE               (0x0000u)
-    #define PM_SLEEP_SRC_COMPARATOR0        (0x0001u)
-    #define PM_SLEEP_SRC_COMPARATOR1        (0x0002u)
-    #define PM_SLEEP_SRC_COMPARATOR2        (0x0004u)
-    #define PM_SLEEP_SRC_COMPARATOR3        (0x0008u)
-    #define PM_SLEEP_SRC_PICU               (0x0040u)
-    #define PM_SLEEP_SRC_I2C                (0x0080u)
-    #define PM_SLEEP_SRC_BOOSTCONVERTER     (0x0200u)
-    #define PM_SLEEP_SRC_CTW                (0x0800u)
-    #define PM_SLEEP_SRC_ONE_PPS            (0x0800u)
-
-    /* Device is PSoC 3 and the revision is ES3 or later */
-    #if(CY_PSOC3_ES3)
-
-        #define PM_SLEEP_SRC_LCD            (0x1000u)
-
-    #endif  /* (CY_PSOC3_ES3) */
-
     /* Difference between parameter's value and register's one */
     #define CY_PM_FTW_INTERVAL_SHIFT        (0x000Eu)
 
     /* Wake up time for the Alternate Active mode */
-    #define PM_ALT_ACT_TIME_NONE            (0x0000u)
     #define PM_ALT_ACT_TIME_ONE_PPS         (0x0001u)
     #define PM_ALT_ACT_TIME_CTW_2MS         (0x0002u)
     #define PM_ALT_ACT_TIME_CTW_4MS         (0x0003u)
@@ -116,8 +88,25 @@ uint8 CyPmReadStatus(uint8 mask) ;
     #define PM_ALT_ACT_TIME_CTW_4096MS      (0x000Du)
     #define PM_ALT_ACT_TIME_FTW(x)          ((x) + CY_PM_FTW_INTERVAL_SHIFT)
 
+#endif  /* (CY_PSOC3) */
+
+
+#if(CY_PSOC3 || CY_PSOC5LP)
+
+    /* Wake up sources for the Sleep mode */
+    #define PM_SLEEP_SRC_COMPARATOR0        (0x0001u)
+    #define PM_SLEEP_SRC_COMPARATOR1        (0x0002u)
+    #define PM_SLEEP_SRC_COMPARATOR2        (0x0004u)
+    #define PM_SLEEP_SRC_COMPARATOR3        (0x0008u)
+    #define PM_SLEEP_SRC_PICU               (0x0040u)
+    #define PM_SLEEP_SRC_I2C                (0x0080u)
+    #define PM_SLEEP_SRC_BOOSTCONVERTER     (0x0200u)
+    #define PM_SLEEP_SRC_VD                 (0x0400u)
+    #define PM_SLEEP_SRC_CTW                (0x0800u)
+    #define PM_SLEEP_SRC_ONE_PPS            (0x0800u)
+    #define PM_SLEEP_SRC_LCD                (0x1000u)
+
     /* Wake up sources for the Alternate Active mode */
-    #define PM_ALT_ACT_SRC_NONE             (0x0000u)
     #define PM_ALT_ACT_SRC_COMPARATOR0      (0x0001u)
     #define PM_ALT_ACT_SRC_COMPARATOR1      (0x0002u)
     #define PM_ALT_ACT_SRC_COMPARATOR2      (0x0004u)
@@ -126,19 +115,13 @@ uint8 CyPmReadStatus(uint8 mask) ;
     #define PM_ALT_ACT_SRC_PICU             (0x0040u)
     #define PM_ALT_ACT_SRC_I2C              (0x0080u)
     #define PM_ALT_ACT_SRC_BOOSTCONVERTER   (0x0200u)
-
     #define PM_ALT_ACT_SRC_FTW              (0x0400u)
+    #define PM_ALT_ACT_SRC_VD               (0x0400u)
     #define PM_ALT_ACT_SRC_CTW              (0x0800u)
     #define PM_ALT_ACT_SRC_ONE_PPS          (0x0800u)
+    #define PM_ALT_ACT_SRC_LCD              (0x1000u)
 
-    /* Device is PSoC 3 and the revision is ES3 or later */
-    #if(CY_PSOC3_ES3)
-
-        #define PM_ALT_ACT_SRC_LCD          (0x1000u)
-
-    #endif  /* (CY_PSOC3_ES3) */
-
-#endif  /* (CY_PSOC3) */
+#endif  /* (CY_PSOC3 || CY_PSOC5LP) */
 
 
 #define CY_PM_WAKEUP_PICU               (0x04u)
@@ -163,29 +146,32 @@ uint8 CyPmReadStatus(uint8 mask) ;
 #define CY_PM_FREQ_48MHZ                (48u)
 
 
-/* Device is PSoC 3 and the revision is ES2 or earlier, or
-*  device is PSoC 5 and the revision is ES1 or earlier.
-*/
-#if(CY_PSOC5_ES1 || CY_PSOC3_ES2)
+#if(CY_PSOC5A)
     #define     CY_PM_MHZ_XTAL_WAIT_NUM_OF_200_US   (650u)
 #else
     #define     CY_PM_MHZ_XTAL_WAIT_NUM_OF_200_US   (5u)
-#endif  /* (CY_PSOC5_ES1 || CY_PSOC3_ES2) */
+#endif  /* (CY_PSOC5A) */
+
+
+/* Delay line bandgap current settling time starting from a wakeup event */
+#define     CY_PM_CLK_DELAY_BANDGAP_SETTLE_US       (50u)
+
+/* Delay line internal bias settling */
+#define     CY_PM_CLK_DELAY_BIAS_SETTLE_US          (25u)
 
 
 /* Max flash wait cycles for each device */
-#if(CY_PSOC3_ES3)    /* Device is PSoC 3 and the revision is ES3 or later */
+#if(CY_PSOC3)
     #define     CY_PM_MAX_FLASH_WAIT_CYCLES        (45u)
-#endif  /* (CY_PSOC3_ES3) */
+#endif  /* (CY_PSOC3) */
 
-#if(CY_PSOC3_ES2)   /* Device is PSoC 3 and the revision is ES2 or earlier */
-    #define     CY_PM_MAX_FLASH_WAIT_CYCLES        (49u)
-#endif  /* (CY_PSOC3_ES2) */
-
-#if(CY_PSOC5)    /* Device is PSoC 5 */
+#if(CY_PSOC5A)
     #define     CY_PM_MAX_FLASH_WAIT_CYCLES        (55u)
-#endif  /* (CY_PSOC5) */
+#endif  /* (CY_PSOC5A) */
 
+#if(CY_PSOC5LP)
+    #define     CY_PM_MAX_FLASH_WAIT_CYCLES        (55u)
+#endif  /* (CY_PSOC5LP) */
 
 /*******************************************************************************
 * This marco is used to obtain the CPU frequency in MHz. It should be only used
@@ -196,16 +182,10 @@ uint8 CyPmReadStatus(uint8 mask) ;
 *******************************************************************************/
 
 /* Device is PSoC 3 and the revision is ES3 or later */
-#if(CY_PSOC3_ES3)
+#if(CY_PSOC3)
     #define CY_PM_GET_CPU_FREQ_MHZ (cyPmImoFreqReg2Mhz[CY_PM_FASTCLK_IMO_CR_REG & CY_PM_FASTCLK_IMO_CR_FREQ_MASK] / \
                                    (((CY_PM_CLKDIST_MSTR1_REG & CY_PM_CLKDIST_CPU_DIV_MASK) >> 4u) + 1u))
-#endif  /* (CY_PSOC3_ES3) */
-
-/* Device is PSoC 3 and the revision is ES2 or earlier */
-#if(CY_PSOC3_ES2)
-    #define CY_PM_GET_CPU_FREQ_MHZ (cyPmImoFreqReg2Mhz[CY_PM_FASTCLK_IMO_CR_REG & CY_PM_FASTCLK_IMO_CR_FREQ_MASK] / \
-                                    ((CY_GET_XTND_REG8(CYREG_SFR_USER_CPUCLK_DIV) & CY_PM_SFR_USER_CPUCLK_MASK) + 1u))
-#endif  /* (CY_PSOC3_ES2) */
+#endif  /* (CY_PSOC3) */
 
 /* Device is PSoC 5 */
 #if(CY_PSOC5)
@@ -241,23 +221,9 @@ uint8 CyPmReadStatus(uint8 mask) ;
 
 
 /*******************************************************************************
-* The fast timewheel (FTW) is programmed using a 5-bit terminal count for
-* PSoC3 ES2 devices and using 8-bit terminal count for PSoC3 ES3 devices.
 * The FTW should be programmed manually for PSoC5 ES1 devices.
 *******************************************************************************/
-
-/* Device is PSoC 3 and the revision is ES2 or earlier. */
-#if(CY_PSOC3_ES2)
-
-    /* FTW interval mask */
-    #define CY_PM_FTW_INTERVAL_MASK    (0x1Fu)
-
-    #define PM_ALT_ACT_FTW_INTERVAL(x) \
-        ((x) >= PM_ALT_ACT_TIME_FTW(32u) ? \
-        ((PM_ALT_ACT_TIME_FTW(31u) - CY_PM_FTW_INTERVAL_SHIFT) & CY_PM_FTW_INTERVAL_MASK) : \
-        (((x) - CY_PM_FTW_INTERVAL_SHIFT) & CY_PM_FTW_INTERVAL_MASK))
-
-#elif (CY_PSOC3_ES3) /* Device is PSoC 3 and the revision is ES3 or later */
+#if(CY_PSOC3)
 
     /* FTW interval mask */
     #define CY_PM_FTW_INTERVAL_MASK    (0xFFu)
@@ -265,24 +231,19 @@ uint8 CyPmReadStatus(uint8 mask) ;
     #define PM_ALT_ACT_FTW_INTERVAL(x) \
         (((x) - CY_PM_FTW_INTERVAL_SHIFT) & CY_PM_FTW_INTERVAL_MASK)
 
-#endif  /* (CY_PSOC3_ES2) */
+#endif  /* (CY_PSOC3) */
 
 
 /*******************************************************************************
 * This macro is used for preparing IMO frequency for correct low power mode
-* etry. It is dependant on device and silicon. The maximum allowed IMO value for
-* correct low power mode entry for PSoC3 ES2 devices is 12 MHz. The IMO
-* frequency for the PSoC3 ES3 and PSoC5 ES1 devices depends on Fast IMO
-* configuration: if Fast IMO is enabled the IMO should be set to 48 MHz
-* before LPM entry, otherwise IMO should be set to 12 MHz.
+* etry. It is dependant on device and silicon. The IMO frequency for the
+* PSoC3 ES3 and PSoC5 ES1 devices depends on Fast IMO configuration: if
+* Fast IMO is enabled the IMO should be set to 48 MHz before LPM entry,
+* otherwise IMO should be set to 12 MHz.
 *******************************************************************************/
+#if(!CY_PSOC5A)
 
-/* Device is PSoC 3 and the revision is ES3 or later, or
-*  device is PSoC 5 and the revision is ES1 or earlier.
-*/
-#if(CY_PSOC3_ES3 || CY_PSOC5_ES1)
-
-    #if(CYDEV_CONFIGURATION_IMOENABLED) /* Fast IMO is configured to 48 MHz */
+    #if(0u == CYDEV_CONFIGURATION_IMOENABLED) /* Fast IMO is configured to 48 MHz */
 
         #define CY_PM_IMO_FREQ_LPM      (CY_IMO_FREQ_48MHZ)
 
@@ -290,17 +251,16 @@ uint8 CyPmReadStatus(uint8 mask) ;
 
         #define CY_PM_IMO_FREQ_LPM      (CY_IMO_FREQ_12MHZ)
 
-    #endif  /* (CYDEV_CONFIGURATION_IMOENABLED) */
+    #endif  /* (0u == CYDEV_CONFIGURATION_IMOENABLED) */
 
-#elif(CY_PSOC3_ES2)  /* Device is PSoC 3 and the revision is ES2 or earlier */
+#else
 
-    /* IMO - set 12 MHz frequency (24/48 MHz is not allowed) */
-    #define CY_PM_IMO_FREQ_LPM          (CY_IMO_FREQ_12MHZ)
+    #define CY_PM_IMO_FREQ_LPM      (CY_IMO_FREQ_12MHZ)
 
-#endif  /* (CY_PSOC3_ES2) */
+#endif  /* (!CY_PSOC5A) */
 
 
-typedef struct _cyPmClockBackupStruct
+typedef struct cyPmClockBackupStruct
 {
     /* CyPmSaveClocks()/CyPmRestoreClocks() */
     uint8  enClkA;              /* Analog clocks enable         */
@@ -321,47 +281,56 @@ typedef struct _cyPmClockBackupStruct
 } CY_PM_CLOCK_BACKUP_STRUCT;
 
 
-typedef struct _cyPmBackupStruct
+typedef struct cyPmBackupStruct
 {
     uint8 iloPowerMode;         /* ILO power mode               */
     uint8 ilo1kEnable;          /* ILO 1K enable state          */
     uint8 ilo100kEnable;        /* ILO 100K enable state        */
 
-    #if(CY_PSOC3_ES2 || CY_PSOC5_ES1)
+    #if(CY_PSOC5A)
 
         /* State of the I2C regulator backup */
         uint8 i2cRegBackup;
 
-    #endif /* (CY_PSOC3_ES2 || CY_PSOC5_ES1) */
+    #endif /* (CY_PSOC5A) */
 
     uint8 lviaLvidHvi;          /* State of en_lvia, en_lvid, en_hvi */
 
+    #if(CY_PSOC5A)
+        uint8 buzzSleepTrim;
+    #else
+        uint8 wakeTr2;
+    #endif  /* (CY_PSOC5A) */
+
     /* Device is PSoC 3 and the revision is ES3 or later */
-    #if(CY_PSOC3_ES3)
+    #if(CY_PSOC3)
 
         uint8 slpTrBypass;      /* Sleep Trim Bypass        */
 
         uint8 swvClkEnabled;    /* SWV clock enable state   */
         uint8 prt1Dm;           /* Ports drive mode configuration */
 
+    #endif  /* (CY_PSOC3)  */
+
+    #if(CY_PSOC3 || CY_PSOC5LP)
+
         uint8 wakeupCfg0;       /* Wake up configuration 0  */
         uint8 wakeupCfg1;       /* Wake up configuration 1  */
         uint8 wakeupCfg2;       /* Wake up configuration 2  */
 
-    #endif  /* (CY_PSOC3_ES3)  */
+    #endif  /* (CY_PSOC3 || CY_PSOC5LP) */
 
 
     /* Device is PSoC 3 and the revision is ES3 or later, or
     *  device is PSoC 5 and the revision is ES1 or earlier.
     */
-    #if(CY_PSOC3_ES3 || CY_PSOC5_ES1)
+    #if(CY_PSOC3 || CY_PSOC5A)
 
         uint8 scctData[28u];   /* SC/CT routing registers  */
 
-    #endif  /* (CY_PSOC3_ES3 || CY_PSOC5_ES1)  */
+    #endif  /* (CY_PSOC3 || CY_PSOC5A)  */
 
-    /* Device is PSoC 5 and the revision is ES1 or earlier */
-    #if(CY_PSOC5_ES1)
+    #if(CY_PSOC5A)
 
         uint8 cmpData[20u];
         uint8 dacData[16u];
@@ -371,17 +340,10 @@ typedef struct _cyPmBackupStruct
         uint8 pmTwCfg2;
         uint8 picuIntType[72u];
 
-    #endif  /* (CY_PSOC5_ES1)  */
+        uint8 pres1;
+        uint8 pres2;
 
-
-    /* Device is PSoC 3 and the revision is ES2 or earlier, or
-    *  device is PSoC 5 and the revision is ES1 or earlier.
-    */
-    #if(CY_PSOC5_ES1 || CY_PSOC3_ES2)
-
-        uint8 buzzSleepTrim;
-
-    #endif  /* (CY_PSOC5_ES1 || CY_PSOC3_ES2)  */
+    #endif  /* (CY_PSOC5A)  */
 
     uint8 imoActFreq;       /* Last moment IMO change   */
     uint8 imoActFreq12Mhz;  /* 12 MHz or not            */
@@ -406,15 +368,6 @@ typedef struct _cyPmBackupStruct
 /* Master Clock Configuration Register/CPU Divider Value */
 #define CY_PM_CLKDIST_MSTR1_REG             (* (reg8 *) CYREG_CLKDIST_MSTR1 )
 #define CY_PM_CLKDIST_MSTR1_PTR             (  (reg8 *) CYREG_CLKDIST_MSTR1 )
-
-/* Device is PSoC 3 and the revision is ES2 or earlier */
-#if(CY_PSOC3_ES2)
-
-    /* CPU Divider Value (specific for PSoC3 ES2) */
-    #define CY_PM_SFR_USER_CPUCLK_DIV_REG   (* (reg8 *) CYREG_SFR_USER_CPUCLK_DIV )
-    #define CY_PM_SFR_USER_CPUCLK_DIV_PTR   (  (reg8 *) CYREG_SFR_USER_CPUCLK_DIV )
-
-#endif  /* (CY_PSOC3_ES2) */
 
 /* Clock distribution configuration Register */
 #define CY_PM_CLKDIST_CR_REG                (* (reg8 *) CYREG_CLKDIST_CR )
@@ -453,7 +406,7 @@ typedef struct _cyPmBackupStruct
 #define CY_PM_SLOWCLK_X32_CR_PTR            (  (reg8 *) CYREG_SLOWCLK_X32_CR )
 
 /* Device is PSoC 3 and the revision is ES3 or later */
-#if(CY_PSOC3_ES3)
+#if(CY_PSOC3)
 
     /* MLOGIC Debug Register */
     #define CY_PM_MLOGIC_DBG_REG            (* (reg8 *) CYREG_MLOGIC_DEBUG )
@@ -467,30 +420,39 @@ typedef struct _cyPmBackupStruct
     #define CY_PM_PWRSYS_SLP_TR_REG         (* (reg8 *) CYREG_PWRSYS_SLP_TR )
     #define CY_PM_PWRSYS_SLP_TR_PTR         (  (reg8 *) CYREG_PWRSYS_SLP_TR )
 
-    /* Power Mode Wakeup Trim Register 2 */
-    #define CY_PM_PWRSYS_WAKE_TR2_REG           (* (reg8 *) CYREG_PWRSYS_WAKE_TR2 )
-    #define CY_PM_PWRSYS_WAKE_TR2_PTR           (  (reg8 *) CYREG_PWRSYS_WAKE_TR2 )
-
-#endif /* (CY_PSOC3_ES3) */
+#endif /* (CY_PSOC3) */
 
 /* Reset System Control Register */
 #define CY_PM_RESET_CR1_REG                 (* (reg8 *) CYREG_RESET_CR1 )
 #define CY_PM_RESET_CR1_PTR                 (  (reg8 *) CYREG_RESET_CR1 )
 
+#if(CY_PSOC5A)
+
+    /* LVD/POR Test Mode Control Register */
+    #define CY_PM_RESET_CR3_REG             (* (reg8 *) CYREG_RESET_CR3 )
+    #define CY_PM_RESET_CR3_PTR             (  (reg8 *) CYREG_RESET_CR3 )
+
+#endif  /* (CY_PSOC5A) */
+
 /* Power Mode Wakeup Trim Register 0 */
 #define CY_PM_PWRSYS_WAKE_TR0_REG           (* (reg8 *) CYREG_PWRSYS_WAKE_TR0 )
 #define CY_PM_PWRSYS_WAKE_TR0_PTR           (  (reg8 *) CYREG_PWRSYS_WAKE_TR0 )
 
-/* Device is PSoC 3 and the revision is ES2 or earlier, or
-*  device is PSoC 5 and the revision is ES1 or earlier.
-*/
-#if(CY_PSOC5_ES1 || CY_PSOC3_ES2)
+#if(CY_PSOC3)
+
+    /* Power Mode Wakeup Trim Register 2 */
+    #define CY_PM_PWRSYS_WAKE_TR2_REG           (* (reg8 *) CYREG_PWRSYS_WAKE_TR2 )
+    #define CY_PM_PWRSYS_WAKE_TR2_PTR           (  (reg8 *) CYREG_PWRSYS_WAKE_TR2 )
+
+#endif  /* (CY_PSOC3) */
+
+#if(CY_PSOC5A)
 
     /* Power Mode Buzz Trim Register */
     #define CY_PM_PWRSYS_BUZZ_TR_REG        (* (reg8 *) CYREG_PWRSYS_BUZZ_TR )
     #define CY_PM_PWRSYS_BUZZ_TR_PTR        (  (reg8 *) CYREG_PWRSYS_BUZZ_TR )
 
-#endif  /* (CY_PSOC5_ES1 || CY_PSOC3_ES2) */
+#endif  /* (CY_PSOC5A) */
 
 /* Power Manager Interrupt Status Register */
 #define CY_PM_INT_SR_REG                    (* (reg8 *) CYREG_PM_INT_SR )
@@ -559,8 +521,7 @@ typedef struct _cyPmBackupStruct
 
 #endif  /* (CY_PSOC3) */
 
-/* Device is PSoC 3 and the revision is ES3 or later. */
-#if(CY_PSOC3_ES3)
+#if(CY_PSOC3 || CY_PSOC5LP)
 
     /* Power Mode Wakeup Mask Configuration Register 0 */
     #define CY_PM_WAKEUP_CFG0_REG           (* (reg8 *) CYREG_PM_WAKEUP_CFG0 )
@@ -574,16 +535,16 @@ typedef struct _cyPmBackupStruct
     #define CY_PM_WAKEUP_CFG2_REG           (* (reg8 *) CYREG_PM_WAKEUP_CFG2 )
     #define CY_PM_WAKEUP_CFG2_PTR           (  (reg8 *) CYREG_PM_WAKEUP_CFG2 )
 
-#endif  /* (CY_PSOC3_ES3) */
+#endif  /* (CY_PSOC3 || CY_PSOC5LP) */
 
 /* Device is PSoC 5 and the revision is ES1 or earlier. */
-#if(CY_PSOC5_ES1)
+#if(CY_PSOC5A)
 
     /* Watchdog Timer Configuration Register */
     #define CY_PM_WDT_CFG_REG               (* (reg8 *) CYREG_PM_WDT_CFG )
     #define CY_PM_WDT_CFG_PTR               (  (reg8 *) CYREG_PM_WDT_CFG )
 
-#endif  /* (CY_PSOC5_ES1) */
+#endif  /* (CY_PSOC5A) */
 
 
 /***************************************
@@ -680,14 +641,29 @@ typedef struct _cyPmBackupStruct
 /* The low-voltage-interrupt feature on the external digital supply */
 #define CY_PM_RESET_CR1_LVID_EN         (0x01u)
 
+#if(CY_PSOC5A)
+
+    /* Partly disables PRES-A and PRES-D circuits */
+    #define CY_PM_RESET_CR1_DIS_PRES1   (0x10u)
+
+    /* Partly disables PRES-A and PRES-D circuits */
+    #define CY_PM_RESET_CR3_DIS_PRES2   (0x08u)
+
+#endif  /* (CY_PSOC5A) */
+
 /* Allows the system to program delays on clk_sync_d */
 #define CY_PM_CLKDIST_DELAY_EN          (0x04u)
 
 
-/* Device is PSoC 3 and the revision is ES3 or later */
-#if(CY_PSOC3_ES3)
+#if(CY_PSOC3 || CY_PSOC5LP)
 
     #define CY_PM_WAKEUP_SRC_CMPS_MASK          (0x000Fu)
+
+#endif  /* (CY_PSOC3 || CY_PSOC5LP) */
+
+
+/* Device is PSoC 3 and the revision is ES3 or later */
+#if(CY_PSOC3)
 
     /* Disable the sleep regulator and shorts vccd to vpwrsleep */
     #define CY_PM_PWRSYS_SLP_TR_BYPASS          (0x10u)
@@ -710,31 +686,18 @@ typedef struct _cyPmBackupStruct
     /* When set, enables buzz wakeups */
     #define CY_PM_PWRSYS_WAKE_TR2_EN_BUZZ       (0x01u)
 
-#endif  /* (CY_PSOC3_ES3) */
+#endif  /* (CY_PSOC3) */
 
-
-/* Device is PSoC 3 and the revision is ES2 or earlier */
-#if(CY_PSOC3_ES2)
-
-    /* CPU clock divider mask */
-    #define CY_PM_SFR_USER_CPUCLK_MASK          (0x0Fu)
-
-#endif  /* (CY_PSOC3_ES2) */
-
-
-/* Device is PSoC 3 and the revision is ES2 or earlier, or
-*  device is PSoC 5 and the revision is ES1 or earlier.
-*/
-#if(CY_PSOC5_ES1 || CY_PSOC3_ES2)
+#if(CY_PSOC5A)
 
     #define CY_PM_PWRSYS_BUZZ_TR_512_TICKS      (0x08u)
     #define CY_PM_PWRSYS_BUZZ_TR_MASK           (0xF0u)
 
-#endif  /* (CY_PSOC5_ES1 || CY_PSOC3_ES2) */
+#endif  /* (CY_PSOC5A) */
 
 
 /* Device is PSoC 5 and the revision is ES1 or earlier. */
-#if(CY_PSOC5_ES1)
+#if(CY_PSOC5A)
 
     /* Watchdog Timer Configuration Register */
     #define CY_PM_WDT_CFG_CTW_RESET             (0x80u)
@@ -754,10 +717,10 @@ typedef struct _cyPmBackupStruct
     #define CY_PM_PICU_12_INT_SIZE       (CYDEV_PICU_INTTYPE_PICU12_SIZE)
     #define CY_PM_PICU_15_INT_SIZE       (CYDEV_PICU_INTTYPE_PICU15_SIZE)
 
-#endif  /* (CY_PSOC5_ES1) */
+#endif  /* (CY_PSOC5A) */
 
 
-#endif  /* CY_PM_H */
+#endif  /* (CY_BOOT_CYPM_H) */
 
 
 /* [] END OF FILE */

@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: PWM_PulseLEDs_PM.c
-* Version 2.10
+* Version 2.20
 *
 * Description:
 *  This file provides the power management source code to API for the
@@ -9,7 +9,7 @@
 * Note:
 *
 ********************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions,
 * disclaimers, and limitations in the end user license agreement accompanying
 * the software package with which this file was provided.
@@ -38,59 +38,57 @@ static PWM_PulseLEDs_backupStruct PWM_PulseLEDs_backup;
 *  store the values of non retention configuration registers when Sleep() API is 
 *  called.
 *
-* Reentrant:
-*  No.
-*
 *******************************************************************************/
-void PWM_PulseLEDs_SaveConfig(void)
+void PWM_PulseLEDs_SaveConfig(void) 
 {
     
     #if(!PWM_PulseLEDs_UsingFixedFunction)
-        #if (PWM_PulseLEDs_PSOC3_ES2 || PWM_PulseLEDs_PSOC5_ES1)
+        #if (CY_PSOC5A)
             PWM_PulseLEDs_backup.PWMUdb = PWM_PulseLEDs_ReadCounter();
             PWM_PulseLEDs_backup.PWMPeriod = PWM_PulseLEDs_ReadPeriod();
             #if (PWM_PulseLEDs_UseStatus)
                 PWM_PulseLEDs_backup.InterruptMaskValue = PWM_PulseLEDs_STATUS_MASK;
-            #endif
+            #endif /* (PWM_PulseLEDs_UseStatus) */
             
             #if(PWM_PulseLEDs_UseOneCompareMode)
                 PWM_PulseLEDs_backup.PWMCompareValue = PWM_PulseLEDs_ReadCompare();
             #else
                 PWM_PulseLEDs_backup.PWMCompareValue1 = PWM_PulseLEDs_ReadCompare1();
                 PWM_PulseLEDs_backup.PWMCompareValue2 = PWM_PulseLEDs_ReadCompare2();
-            #endif
+            #endif /* (PWM_PulseLEDs_UseOneCompareMode) */
             
            #if(PWM_PulseLEDs_DeadBandUsed)
                 PWM_PulseLEDs_backup.PWMdeadBandValue = PWM_PulseLEDs_ReadDeadTime();
-            #endif
+            #endif /* (PWM_PulseLEDs_DeadBandUsed) */
           
             #if ( PWM_PulseLEDs_KillModeMinTime)
                 PWM_PulseLEDs_backup.PWMKillCounterPeriod = PWM_PulseLEDs_ReadKillTime();
-            #endif
-        #endif
+            #endif /* ( PWM_PulseLEDs_KillModeMinTime) */
+        #endif /* (CY_PSOC5A) */
         
-        #if (PWM_PulseLEDs_PSOC3_ES3 || PWM_PulseLEDs_PSOC5_ES2)
+        #if (CY_PSOC3 || CY_PSOC5LP)
             #if(!PWM_PulseLEDs_PWMModeIsCenterAligned)
                 PWM_PulseLEDs_backup.PWMPeriod = PWM_PulseLEDs_ReadPeriod();
-            #endif
+            #endif /* (!PWM_PulseLEDs_PWMModeIsCenterAligned) */
             PWM_PulseLEDs_backup.PWMUdb = PWM_PulseLEDs_ReadCounter();
             #if (PWM_PulseLEDs_UseStatus)
                 PWM_PulseLEDs_backup.InterruptMaskValue = PWM_PulseLEDs_STATUS_MASK;
-            #endif
+            #endif /* (PWM_PulseLEDs_UseStatus) */
             
-            #if(PWM_PulseLEDs_DeadBandMode == PWM_PulseLEDs__B_PWM__DBM_256_CLOCKS || PWM_PulseLEDs_DeadBandMode == PWM_PulseLEDs__B_PWM__DBM_2_4_CLOCKS)
+            #if(PWM_PulseLEDs_DeadBandMode == PWM_PulseLEDs__B_PWM__DBM_256_CLOCKS || \
+                PWM_PulseLEDs_DeadBandMode == PWM_PulseLEDs__B_PWM__DBM_2_4_CLOCKS)
                 PWM_PulseLEDs_backup.PWMdeadBandValue = PWM_PulseLEDs_ReadDeadTime();
-            #endif
+            #endif /*  deadband count is either 2-4 clocks or 256 clocks */
             
             #if(PWM_PulseLEDs_KillModeMinTime)
                  PWM_PulseLEDs_backup.PWMKillCounterPeriod = PWM_PulseLEDs_ReadKillTime();
-            #endif
-        #endif
+            #endif /* (PWM_PulseLEDs_KillModeMinTime) */
+        #endif /* (CY_PSOC3 || CY_PSOC5LP) */
         
         #if(PWM_PulseLEDs_UseControl)
             PWM_PulseLEDs_backup.PWMControlRegister = PWM_PulseLEDs_ReadControlRegister();
-        #endif
-    #endif  
+        #endif /* (PWM_PulseLEDs_UseControl) */
+    #endif  /* (!PWM_PulseLEDs_UsingFixedFunction) */
 }
 
 
@@ -108,17 +106,14 @@ void PWM_PulseLEDs_SaveConfig(void)
 *  void
 *
 * Global variables:
-*  PWM_PulseLEDs_backup:  Variables of this global structure are used to restore 
-*  the values of non retention registers on wakeup from sleep mode.
-*
-* Reentrant:
-*  Yes.
+*  PWM_PulseLEDs_backup:  Variables of this global structure are used to  
+*  restore the values of non retention registers on wakeup from sleep mode.
 *
 *******************************************************************************/
 void PWM_PulseLEDs_RestoreConfig(void) 
 {
         #if(!PWM_PulseLEDs_UsingFixedFunction)
-            #if (PWM_PulseLEDs_PSOC3_ES2 || PWM_PulseLEDs_PSOC5_ES1)
+            #if (CY_PSOC5A)
                 /* Interrupt State Backup for Critical Region*/
                 uint8 PWM_PulseLEDs_interruptState;
                 /* Enter Critical Region*/
@@ -128,7 +123,7 @@ void PWM_PulseLEDs_RestoreConfig(void)
                     PWM_PulseLEDs_STATUS_AUX_CTRL |= PWM_PulseLEDs_STATUS_ACTL_INT_EN_MASK;
                     
                     PWM_PulseLEDs_STATUS_MASK = PWM_PulseLEDs_backup.InterruptMaskValue;
-                #endif
+                #endif /* (PWM_PulseLEDs_UseStatus) */
                 
                 #if (PWM_PulseLEDs_Resolution == 8)
                     /* Set FIFO 0 to 1 byte register for period*/
@@ -137,7 +132,7 @@ void PWM_PulseLEDs_RestoreConfig(void)
                     /* Set FIFO 0 to 1 byte register for period */
                     PWM_PulseLEDs_AUX_CONTROLDP0 |= (PWM_PulseLEDs_AUX_CTRL_FIFO0_CLR);
                     PWM_PulseLEDs_AUX_CONTROLDP1 |= (PWM_PulseLEDs_AUX_CTRL_FIFO0_CLR);
-                #endif
+                #endif /* (PWM_PulseLEDs_Resolution == 8) */
                 /* Exit Critical Region*/
                 CyExitCriticalSection(PWM_PulseLEDs_interruptState);
                 
@@ -149,39 +144,41 @@ void PWM_PulseLEDs_RestoreConfig(void)
                 #else
                     PWM_PulseLEDs_WriteCompare1(PWM_PulseLEDs_backup.PWMCompareValue1);
                     PWM_PulseLEDs_WriteCompare2(PWM_PulseLEDs_backup.PWMCompareValue2);
-                #endif
+                #endif /* (PWM_PulseLEDs_UseOneCompareMode) */
                 
-               #if(PWM_PulseLEDs_DeadBandMode == PWM_PulseLEDs__B_PWM__DBM_256_CLOCKS || PWM_PulseLEDs_DeadBandMode == PWM_PulseLEDs__B_PWM__DBM_2_4_CLOCKS)
+               #if(PWM_PulseLEDs_DeadBandMode == PWM_PulseLEDs__B_PWM__DBM_256_CLOCKS || \
+                   PWM_PulseLEDs_DeadBandMode == PWM_PulseLEDs__B_PWM__DBM_2_4_CLOCKS)
                     PWM_PulseLEDs_WriteDeadTime(PWM_PulseLEDs_backup.PWMdeadBandValue);
-                #endif
+                #endif /* deadband count is either 2-4 clocks or 256 clocks */
             
                 #if ( PWM_PulseLEDs_KillModeMinTime)
                     PWM_PulseLEDs_WriteKillTime(PWM_PulseLEDs_backup.PWMKillCounterPeriod);
-                #endif
-            #endif
+                #endif /* ( PWM_PulseLEDs_KillModeMinTime) */
+            #endif /* (CY_PSOC5A) */
             
-            #if (PWM_PulseLEDs_PSOC3_ES3 || PWM_PulseLEDs_PSOC5_ES2)
+            #if (CY_PSOC3 || CY_PSOC5LP)
                 #if(!PWM_PulseLEDs_PWMModeIsCenterAligned)
                     PWM_PulseLEDs_WritePeriod(PWM_PulseLEDs_backup.PWMPeriod);
-                #endif
+                #endif /* (!PWM_PulseLEDs_PWMModeIsCenterAligned) */
                 PWM_PulseLEDs_WriteCounter(PWM_PulseLEDs_backup.PWMUdb);
                 #if (PWM_PulseLEDs_UseStatus)
                     PWM_PulseLEDs_STATUS_MASK = PWM_PulseLEDs_backup.InterruptMaskValue;
-                #endif
+                #endif /* (PWM_PulseLEDs_UseStatus) */
                 
-                #if(PWM_PulseLEDs_DeadBandMode == PWM_PulseLEDs__B_PWM__DBM_256_CLOCKS || PWM_PulseLEDs_DeadBandMode == PWM_PulseLEDs__B_PWM__DBM_2_4_CLOCKS)
+                #if(PWM_PulseLEDs_DeadBandMode == PWM_PulseLEDs__B_PWM__DBM_256_CLOCKS || \
+                    PWM_PulseLEDs_DeadBandMode == PWM_PulseLEDs__B_PWM__DBM_2_4_CLOCKS)
                     PWM_PulseLEDs_WriteDeadTime(PWM_PulseLEDs_backup.PWMdeadBandValue);
-                #endif
+                #endif /* deadband count is either 2-4 clocks or 256 clocks */
                 
                 #if(PWM_PulseLEDs_KillModeMinTime)
                     PWM_PulseLEDs_WriteKillTime(PWM_PulseLEDs_backup.PWMKillCounterPeriod);
-                #endif
-            #endif
+                #endif /* (PWM_PulseLEDs_KillModeMinTime) */
+            #endif /* (CY_PSOC3 || CY_PSOC5LP) */
             
             #if(PWM_PulseLEDs_UseControl)
                 PWM_PulseLEDs_WriteControlRegister(PWM_PulseLEDs_backup.PWMControlRegister); 
-            #endif
-        #endif  
+            #endif /* (PWM_PulseLEDs_UseControl) */
+        #endif  /* (!PWM_PulseLEDs_UsingFixedFunction) */
     }
 
 
@@ -200,14 +197,11 @@ void PWM_PulseLEDs_RestoreConfig(void)
 *  void
 *
 * Global variables:
-*  PWM_PulseLEDs_backup.PWMEnableState:  Is modified depending on the enable state
-*  of the block before entering sleep mode.
-*
-* Reentrant:
-*  No.
+*  PWM_PulseLEDs_backup.PWMEnableState:  Is modified depending on the enable 
+*  state of the block before entering sleep mode.
 *
 *******************************************************************************/
-void PWM_PulseLEDs_Sleep(void)
+void PWM_PulseLEDs_Sleep(void) 
 {
     #if(PWM_PulseLEDs_UseControl)
         if(PWM_PulseLEDs_CTRL_ENABLE == (PWM_PulseLEDs_CONTROL & PWM_PulseLEDs_CTRL_ENABLE))
@@ -220,7 +214,7 @@ void PWM_PulseLEDs_Sleep(void)
             /* Component is disabled */
             PWM_PulseLEDs_backup.PWMEnableState = 0u;
         }
-    #endif
+    #endif /* (PWM_PulseLEDs_UseControl) */
     /* Stop component */
     PWM_PulseLEDs_Stop();
     
@@ -247,9 +241,6 @@ void PWM_PulseLEDs_Sleep(void)
 *  PWM_PulseLEDs_backup.pwmEnable:  Is used to restore the enable state of 
 *  block on wakeup from sleep mode.
 *
-* Reentrant:
-*  Yes
-*
 *******************************************************************************/
 void PWM_PulseLEDs_Wakeup(void) 
 {
@@ -263,5 +254,6 @@ void PWM_PulseLEDs_Wakeup(void)
     } /* Do nothing if component's block was disabled before */
     
 }
+
 
 /* [] END OF FILE */

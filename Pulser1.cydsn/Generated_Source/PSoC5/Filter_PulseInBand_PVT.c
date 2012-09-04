@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: Filter_PulseInBand_PVT.c
-* Version 2.0
+* Version 2.10
 *
 * Description:
 *  This file provides source code for FILT component internal functions.

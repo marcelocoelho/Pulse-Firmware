@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: isr_PulseReadAmbient.c  
-* Version 1.50
+* Version 1.60
 *
 *  Description:
 *   API for controlling the state of an interrupt.

@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: ADC_PulseIn.c  
-* Version 2.20
+* Version 2.30
 *
 * Description:
 *  This file provides the source code to the API for the Delta-Sigma ADC
@@ -9,7 +9,7 @@
 * Note:
 *
 *******************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions, 
 * disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
@@ -21,9 +21,7 @@
     #include "ADC_PulseIn_theACLK.h"
 #endif /* ADC_PulseIn_DEFAULT_INTERNAL_CLK */
 
-#if(ADC_PulseIn_DEFAULT_CHARGE_PUMP_CLOCK)
-    #include "ADC_PulseIn_Ext_CP_Clk.h"
-#endif /* ADC_PulseIn_DEFAULT_CHARGE_PUMP_CLOCK */
+#include "ADC_PulseIn_Ext_CP_Clk.h"
 
 #if(ADC_PulseIn_DEFAULT_INPUT_MODE)
     #include "ADC_PulseIn_AMux.h"
@@ -42,18 +40,21 @@ uint8 ADC_PulseIn_initVar = 0u;
 /* To check whether ADC started or not before switching the configuration */
 volatile uint8 ADC_PulseIn_started = 0u;
 
+/* Flag to hold ADC config number. By default active config is 1. */
+volatile uint8 ADC_PulseIn_Config = 1u;
+
 volatile int32 ADC_PulseIn_Offset = 0u;
 volatile int32 ADC_PulseIn_CountsPerVolt = (uint32)ADC_PulseIn_CFG1_COUNTS_PER_VOLT;
 
-/* Only valid for PSoC5 ES1 */
+/* Only valid for PSoC5A */
 /* Variable to decide whether or not to restore the register values from
     backup structure */
-#if (CY_PSOC5_ES1)
+#if (CY_PSOC5A)
     uint8 ADC_PulseIn_restoreReg = 0u;
-#endif /* CY_PSOC5_ES1 */
+#endif /* CY_PSOC5A */
 
-/* Valid only for PSoC5 ES2 silicon */
-#if (CY_PSOC5_ES1)
+/* Valid only for PSoC5A silicon */
+#if (CY_PSOC5A)
     /* Backup struct for power mode registers */
     static ADC_PulseIn_POWERMODE_BACKUP_STRUCT ADC_PulseIn_powerModeBackup = 
     {
@@ -69,7 +70,7 @@ volatile int32 ADC_PulseIn_CountsPerVolt = (uint32)ADC_PulseIn_CFG1_COUNTS_PER_V
         ADC_PulseIn_CFG1_DSM_CLK,
         ADC_PulseIn_BYPASS_DISABLED
     };
-#endif /* CY_PSOC5_ES1 */
+#endif /* CY_PSOC5A */
 
 
 /****************************************************************************** 
@@ -88,9 +89,6 @@ volatile int32 ADC_PulseIn_CountsPerVolt = (uint32)ADC_PulseIn_CFG1_COUNTS_PER_V
 * Return: 
 *  void 
 *
-* Reentrance: 
-*  Yes
-*
 *******************************************************************************/
 void ADC_PulseIn_Init(void) 
 {
@@ -102,10 +100,8 @@ void ADC_PulseIn_Init(void)
         ADC_PulseIn_theACLK_SetMode(CYCLK_DUTY);
     #endif /* ADC_PulseIn_DEFAULT_INTERNAL_CLK */
     
-    /* This is only valid if there is an external charge pump clock */
-    #if(ADC_PulseIn_DEFAULT_CHARGE_PUMP_CLOCK)
-        ADC_PulseIn_Ext_CP_Clk_SetMode(CYCLK_DUTY);
-    #endif /* ADC_PulseIn_DEFAULT_CHARGE_PUMP_CLOCK */
+    /* Set the duty cycle for charge pump clock */
+    ADC_PulseIn_Ext_CP_Clk_SetMode(CYCLK_DUTY);
 
     /* To perform ADC calibration */
     ADC_PulseIn_GainCompensation(ADC_PulseIn_CFG1_RANGE, 
@@ -129,14 +125,11 @@ void ADC_PulseIn_Init(void)
 * Return: 
 *  void 
 *
-* Reentrance: 
-*  Yes
-*
 *******************************************************************************/
 void ADC_PulseIn_Enable(void) 
 {
-    /* Restore the power registers if silicon used is PSoC5 ES1 */
-    #if (CY_PSOC5_ES1)
+    /* Restore the power registers if silicon used is PSoC5A */
+    #if (CY_PSOC5A)
         if(ADC_PulseIn_restoreReg && 
            (!(ADC_PulseIn_powerModeBackup.bypassRestore)))
         {
@@ -144,7 +137,7 @@ void ADC_PulseIn_Enable(void)
             ADC_PulseIn_restoreReg = 0u;
         }
         ADC_PulseIn_powerModeBackup.bypassRestore = ADC_PulseIn_BYPASS_DISABLED;
-    #endif /* CY_PSOC5_ES1 */
+    #endif /* CY_PSOC5A */
 
     /* Enable active mode power for ADC */
     ADC_PulseIn_PWRMGR_DEC_REG |= ADC_PulseIn_ACT_PWR_DEC_EN;
@@ -152,44 +145,48 @@ void ADC_PulseIn_Enable(void)
     
      /* Enable alternative active mode power for ADC */
     ADC_PulseIn_STBY_PWRMGR_DEC_REG |= ADC_PulseIn_STBY_PWR_DEC_EN;
-    #if (CY_PSOC3_ES3 || CY_PSOC5_ES2)
+    #if (CY_PSOC3 || CY_PSOC5LP)
     ADC_PulseIn_STBY_PWRMGR_DSM_REG |= ADC_PulseIn_STBY_PWR_DSM_EN;
-    #endif /* CY_PSOC3_ES3 || CY_PSOC5_ES2 */
+    #endif /* CY_PSOC3 || CY_PSOC5LP */
 
-    /* Disable PRES, Enable power to VCMBUF0, REFBUF0 and REFBUF1, enable 
-       PRES */
-    #if (CY_PSOC3_ES3 || CY_PSOC5_ES2)
-        ADC_PulseIn_RESET_CR4_REG |= ADC_PulseIn_IGNORE_PRESA1;
-        ADC_PulseIn_RESET_CR5_REG |= ADC_PulseIn_IGNORE_PRESA2;
-    #elif (CY_PSOC5_ES1 || CY_PSOC3_ES2)
-        ADC_PulseIn_RESET_CR1_REG |= ADC_PulseIn_DIS_PRES1;
-        ADC_PulseIn_RESET_CR3_REG |= ADC_PulseIn_DIS_PRES2;
-    #endif /* CY_PSOC5_ES1 || CY_PSOC3_ES2 */
-    
-    ADC_PulseIn_DSM_CR17_REG |= (ADC_PulseIn_DSM_EN_BUF_VREF | ADC_PulseIn_DSM_EN_BUF_VCM);
-    #if ((ADC_PulseIn_CFG1_REFERENCE == ADC_PulseIn_EXT_REF_ON_P03) || \
-         (ADC_PulseIn_CFG1_REFERENCE == ADC_PulseIn_EXT_REF_ON_P32))
-        ADC_PulseIn_DSM_CR17_REG &= ~ADC_PulseIn_DSM_EN_BUF_VREF;
-    #endif /* Check for exteranl reference option */
-    #if ((ADC_PulseIn_CFG1_RANGE == ADC_PulseIn_IR_VSSA_TO_2VREF) && \
-          (CY_PSOC3_ES3 || CY_PSOC5_ES2) && \
-          ((ADC_PulseIn_CFG1_REFERENCE != ADC_PulseIn_EXT_REF_ON_P03) && \
-         (ADC_PulseIn_CFG1_REFERENCE != ADC_PulseIn_EXT_REF_ON_P32)))
-        ADC_PulseIn_DSM_REF0_REG |= ADC_PulseIn_DSM_EN_BUF_VREF_INN;
-    #endif /* ADC_PulseIn_IR_VSSA_TO_2VREF */
-    
-        /* Wait for 3 microseconds */
-    CyDelayUs(3);
-    
-    #if (CY_PSOC3_ES3 || CY_PSOC5_ES2)
-        ADC_PulseIn_RESET_CR4_REG &= ~ADC_PulseIn_IGNORE_PRESA1;
-        ADC_PulseIn_RESET_CR5_REG &= ~ADC_PulseIn_IGNORE_PRESA2;
-        
-        ADC_PulseIn_RESET_CR3_REG = ADC_PulseIn_EN_PRESA;
-    #elif (CY_PSOC5_ES1 || CY_PSOC3_ES2)
-        ADC_PulseIn_RESET_CR1_REG &= ~ADC_PulseIn_DIS_PRES1;
-        ADC_PulseIn_RESET_CR3_REG &= ~ADC_PulseIn_DIS_PRES2;
-    #endif /* CY_PSOC5_ES1 || CY_PSOC3_ES2 */
+    /* Config selected is 1, then before enablign the REFBUF0, REFBUF1 and 
+	   VCMBUF's enable and press circuit and then after a delay of 3
+	   microseconds, disable the press circuit. */
+    if (ADC_PulseIn_Config == 1u)
+	{
+	    /* Disable PRES, Enable power to VCMBUF0, REFBUF0 and REFBUF1, enable 
+	       PRES */
+	    #if (CY_PSOC3 || CY_PSOC5LP)
+	        ADC_PulseIn_RESET_CR4_REG |= ADC_PulseIn_IGNORE_PRESA1;
+	        ADC_PulseIn_RESET_CR5_REG |= ADC_PulseIn_IGNORE_PRESA2;
+	    #elif (CY_PSOC5A)
+	        ADC_PulseIn_RESET_CR1_REG |= ADC_PulseIn_DIS_PRES1;
+	        ADC_PulseIn_RESET_CR3_REG |= ADC_PulseIn_DIS_PRES2;
+	    #endif /* CY_PSOC5A */
+	    
+	    ADC_PulseIn_DSM_CR17_REG |= (ADC_PulseIn_DSM_EN_BUF_VREF | ADC_PulseIn_DSM_EN_BUF_VCM);
+	    #if ((ADC_PulseIn_CFG1_REFERENCE == ADC_PulseIn_EXT_REF_ON_P03) || \
+	         (ADC_PulseIn_CFG1_REFERENCE == ADC_PulseIn_EXT_REF_ON_P32))
+	        ADC_PulseIn_DSM_CR17_REG &= ~ADC_PulseIn_DSM_EN_BUF_VREF;
+	    #endif /* Check for exteranl reference option */
+	    #if ((ADC_PulseIn_CFG1_RANGE == ADC_PulseIn_IR_VSSA_TO_2VREF) && \
+	          (CY_PSOC3 || CY_PSOC5LP) && \
+	          ((ADC_PulseIn_CFG1_REFERENCE != ADC_PulseIn_EXT_REF_ON_P03) && \
+	         (ADC_PulseIn_CFG1_REFERENCE != ADC_PulseIn_EXT_REF_ON_P32)))
+	        ADC_PulseIn_DSM_REF0_REG |= ADC_PulseIn_DSM_EN_BUF_VREF_INN;
+	    #endif /* ADC_PulseIn_IR_VSSA_TO_2VREF */
+	    
+	        /* Wait for 3 microseconds */
+	    CyDelayUs(3);
+        /* Enable the press circuit */
+	    #if (CY_PSOC3 || CY_PSOC5LP)
+	        ADC_PulseIn_RESET_CR4_REG &= ~ADC_PulseIn_IGNORE_PRESA1;
+	        ADC_PulseIn_RESET_CR5_REG &= ~ADC_PulseIn_IGNORE_PRESA2;
+	    #elif (CY_PSOC5A)
+	        ADC_PulseIn_RESET_CR1_REG &= ~ADC_PulseIn_DIS_PRES1;
+	        ADC_PulseIn_RESET_CR3_REG &= ~ADC_PulseIn_DIS_PRES2;
+	    #endif /* CY_PSOC5A */
+	}
     
     /* Enable negative pumps for DSM  */
     ADC_PulseIn_PUMP_CR1_REG  |= ( ADC_PulseIn_PUMP_CR1_CLKSEL | ADC_PulseIn_PUMP_CR1_FORCE );
@@ -198,29 +195,23 @@ void ADC_PulseIn_Enable(void)
     #if(ADC_PulseIn_DEFAULT_INTERNAL_CLK)
         ADC_PulseIn_PWRMGR_CLK_REG |= ADC_PulseIn_ACT_PWR_CLK_EN;        
         ADC_PulseIn_STBY_PWRMGR_CLK_REG |= ADC_PulseIn_STBY_PWR_CLK_EN;
-        
-        ADC_PulseIn_theACLK_Enable();
     #endif /* ADC_PulseIn_DEFAULT_INTERNAL_CLK */
     
-    /* This is only valid if there is an external charge pump clock */
-    #if(ADC_PulseIn_DEFAULT_CHARGE_PUMP_CLOCK)
-        ADC_PulseIn_PWRMGR_CHARGE_PUMP_CLK_REG |= ADC_PulseIn_ACT_PWR_CHARGE_PUMP_CLK_EN;
-        ADC_PulseIn_STBY_PWRMGR_CHARGE_PUMP_CLK_REG |= ADC_PulseIn_STBY_PWR_CHARGE_PUMP_CLK_EN;
+    /* Enable the active and alternate active power for charge pump clock */
+    ADC_PulseIn_PWRMGR_CHARGE_PUMP_CLK_REG |= ADC_PulseIn_ACT_PWR_CHARGE_PUMP_CLK_EN;
+    ADC_PulseIn_STBY_PWRMGR_CHARGE_PUMP_CLK_REG |= ADC_PulseIn_STBY_PWR_CHARGE_PUMP_CLK_EN;
         
-        ADC_PulseIn_Ext_CP_Clk_Enable();
-    #endif /* ADC_PulseIn_DEFAULT_CHARGE_PUMP_CLOCK */
-
 }
 
 
-#if (CY_PSOC5_ES1) /* valid only for PSoC5 ES1 silicon */
+#if (CY_PSOC5A) /* valid only for PSoC5A silicon */
     /******************************************************************************* 
     * Function Name: ADC_PulseIn_RestorePowerRegisters
     ********************************************************************************
     *
     * Summary: 
     *  Restores the power registers on calling Start() API. This API is only 
-    *   for internal use and valid only for PSoC5 ES1.
+    *   for internal use and valid only for PSoC5A.
     *  
     *
     * Parameters:  
@@ -229,11 +220,8 @@ void ADC_PulseIn_Enable(void)
     * Return: 
     *  void 
     *
-    * Reentrance: 
-    *  Yes
-    *
     ***************************************************************************/
-    void ADC_PulseIn_RestorePowerRegisters(void)
+    void ADC_PulseIn_RestorePowerRegisters(void) 
     {
         ADC_PulseIn_DSM_CR14_REG = ADC_PulseIn_powerModeBackup.DSM_CR_14;
         ADC_PulseIn_DSM_CR15_REG = ADC_PulseIn_powerModeBackup.DSM_CR_15;
@@ -253,7 +241,7 @@ void ADC_PulseIn_Enable(void)
     * Summary: 
     *  Save the power registers before stopping the block operation. This is 
     *  called by Stop() API. This API is only for internal use and valid only 
-    *  for PSoC5 ES1.
+    *  for PSoC5A.
     *  
     *
     * Parameters:  
@@ -262,11 +250,8 @@ void ADC_PulseIn_Enable(void)
     * Return: 
     *  void 
     *
-    * Reentrance: 
-    *  Yes
-    *
     **************************************************************************/
-    void ADC_PulseIn_SavePowerRegisters(void)
+    void ADC_PulseIn_SavePowerRegisters(void) 
     {
         ADC_PulseIn_powerModeBackup.DSM_CR_14 = ADC_PulseIn_DSM_CR14_REG;
         ADC_PulseIn_powerModeBackup.DSM_CR_15 = ADC_PulseIn_DSM_CR15_REG;
@@ -286,7 +271,7 @@ void ADC_PulseIn_Enable(void)
     * Summary: 
     *  Set all the power registers of DSM block to low power mode. This API is
     *   called by Stop() API. This API is only for internal use and valid for 
-    *   only PSoC5 ES1.
+    *   only PSoC5A.
     *  
     *
     * Parameters:  
@@ -295,11 +280,8 @@ void ADC_PulseIn_Enable(void)
     * Return: 
     *  void 
     *
-    * Reentrance: 
-    *  Yes
-    *
     ***************************************************************************/
-    void ADC_PulseIn_SetLowPower(void)
+    void ADC_PulseIn_SetLowPower(void) 
     {
         ADC_PulseIn_DSM_CR14_REG &= ~ADC_PulseIn_DSM_POWER1_MASK;
         ADC_PulseIn_DSM_CR14_REG |= ADC_PulseIn_DSM_POWER1_44UA;
@@ -328,7 +310,7 @@ void ADC_PulseIn_Enable(void)
         /* Disable the clock to DSM */
         ADC_PulseIn_DSM_CLK_REG &= ~(ADC_PulseIn_DSM_CLK_CLK_EN | ADC_PulseIn_DSM_CLK_BYPASS_SYNC);
     }
-#endif /* CY_PSOC5_ES1 */
+#endif /* CY_PSOC5A */
 
 
 /******************************************************************************* 
@@ -349,10 +331,6 @@ void ADC_PulseIn_Enable(void)
 * Global variables:
 *  ADC_PulseIn_initVar:  Used to check the initial configuration,
 *  modified when this function is called for the first time.
-
-*
-* Reetrance: 
-*  No
 *
 *******************************************************************************/
 void ADC_PulseIn_Start() 
@@ -384,9 +362,6 @@ void ADC_PulseIn_Start()
 * Return: 
 *  void 
 *
-* Reentrance: 
-*  Yes
-*
 *******************************************************************************/
 void ADC_PulseIn_Stop(void) 
 {
@@ -396,13 +371,13 @@ void ADC_PulseIn_Stop(void)
     
     /* Disable PRES, Disable power to VCMBUF0, REFBUF0 and REFBUF1, 
        enable PRES */
-    #if (CY_PSOC3_ES3 || CY_PSOC5_ES2)
+    #if (CY_PSOC3 || CY_PSOC5LP)
         ADC_PulseIn_RESET_CR4_REG |= ADC_PulseIn_IGNORE_PRESA1;
         ADC_PulseIn_RESET_CR5_REG |= ADC_PulseIn_IGNORE_PRESA2;
-    #elif (CY_PSOC5_ES1 || CY_PSOC3_ES2)
+    #elif (CY_PSOC5A)
         ADC_PulseIn_RESET_CR1_REG |= ADC_PulseIn_DIS_PRES1;
         ADC_PulseIn_RESET_CR3_REG |= ADC_PulseIn_DIS_PRES2;
-    #endif /* CY_PSOC5_ES1 || CY_PSOC3_ES2 */
+    #endif /* CY_PSOC5A */
     
     ADC_PulseIn_DSM_CR17_REG &= ~(ADC_PulseIn_DSM_EN_BUF_VREF | ADC_PulseIn_DSM_EN_BUF_VCM);
     ADC_PulseIn_DSM_REF0_REG &= ~ADC_PulseIn_DSM_EN_BUF_VREF_INN;
@@ -410,21 +385,19 @@ void ADC_PulseIn_Stop(void)
     /* Wait for 3 microseconds. */
     CyDelayUs(3);
     
-    #if (CY_PSOC3_ES3 || CY_PSOC5_ES2)
+	/* Enable the press circuit */
+    #if (CY_PSOC3 || CY_PSOC5LP)
         ADC_PulseIn_RESET_CR4_REG &= ~ADC_PulseIn_IGNORE_PRESA1;
         ADC_PulseIn_RESET_CR5_REG &= ~ADC_PulseIn_IGNORE_PRESA2;
-        
-        /* Enable the press circuit */
-        ADC_PulseIn_RESET_CR3_REG = ADC_PulseIn_EN_PRESA;
-    #elif (CY_PSOC5_ES1 || CY_PSOC3_ES2)
+    #elif (CY_PSOC5A)
         ADC_PulseIn_RESET_CR1_REG &= ~ADC_PulseIn_DIS_PRES1;
         ADC_PulseIn_RESET_CR3_REG &= ~ADC_PulseIn_DIS_PRES2;
-    #endif /* CY_PSOC5_ES1 || CY_PSOC3_ES2 */
+    #endif /* CY_PSOC5A */
     
-    /* If PSoC5 ES1 then don't disable the power instead put the block to  
+    /* If PSoC5A then don't disable the power instead put the block to  
        low power mode. Also, save current state of all the power configuration 
        registers before putting block to low power mode */
-    #if (CY_PSOC5_ES1)
+    #if (CY_PSOC5A)
         
         /* set the flag */
         ADC_PulseIn_restoreReg = 1u;
@@ -434,16 +407,16 @@ void ADC_PulseIn_Stop(void)
     #else    
         /* Disable power to the ADC */
         ADC_PulseIn_PWRMGR_DSM_REG &= ~ADC_PulseIn_ACT_PWR_DSM_EN;
-    #endif /* CY_PSOC5_ES1 */
+    #endif /* CY_PSOC5A */
     
     /* Disable power to Decimator block */
     ADC_PulseIn_PWRMGR_DEC_REG &= ~ADC_PulseIn_ACT_PWR_DEC_EN;
     
     /* Disable alternative active power to the ADC */
     ADC_PulseIn_STBY_PWRMGR_DEC_REG &= ~ADC_PulseIn_STBY_PWR_DEC_EN;
-    #if (CY_PSOC3_ES3 || CY_PSOC5_ES2)
+    #if (CY_PSOC3 || CY_PSOC5LP)
     ADC_PulseIn_STBY_PWRMGR_DSM_REG &= ~ADC_PulseIn_STBY_PWR_DSM_EN;
-    #endif /* CY_PSOC3_ES3 || CY_PSOC5_ES2 */
+    #endif /* CY_PSOC3 || CY_PSOC5LP */
 
    /* Disable negative pumps for DSM  */
     ADC_PulseIn_PUMP_CR1_REG &= ~(ADC_PulseIn_PUMP_CR1_CLKSEL | ADC_PulseIn_PUMP_CR1_FORCE );
@@ -452,17 +425,11 @@ void ADC_PulseIn_Stop(void)
     #if(ADC_PulseIn_DEFAULT_INTERNAL_CLK)
         ADC_PulseIn_PWRMGR_CLK_REG &= ~ADC_PulseIn_ACT_PWR_CLK_EN;
         ADC_PulseIn_STBY_PWRMGR_CLK_REG &= ~ADC_PulseIn_STBY_PWR_CLK_EN;
-        
-        ADC_PulseIn_theACLK_Disable();
     #endif /* ADC_PulseIn_DEFAULT_INTERNAL_CLK */
     
-    /* This is only valid if there is an external charge pump clock */
-    #if(ADC_PulseIn_DEFAULT_CHARGE_PUMP_CLOCK)
-        ADC_PulseIn_PWRMGR_CHARGE_PUMP_CLK_REG &= ~ADC_PulseIn_ACT_PWR_CHARGE_PUMP_CLK_EN;
-        ADC_PulseIn_STBY_PWRMGR_CHARGE_PUMP_CLK_REG &= ~ADC_PulseIn_STBY_PWR_CHARGE_PUMP_CLK_EN;
-        
-        ADC_PulseIn_Ext_CP_Clk_Disable();
-    #endif /* ADC_PulseIn_DEFAULT_CHARGE_PUMP_CLOCK */    
+    /* Disable power to charge pump clock */
+    ADC_PulseIn_PWRMGR_CHARGE_PUMP_CLK_REG &= ~ADC_PulseIn_ACT_PWR_CHARGE_PUMP_CLK_EN;
+    ADC_PulseIn_STBY_PWRMGR_CHARGE_PUMP_CLK_REG &= ~ADC_PulseIn_STBY_PWR_CHARGE_PUMP_CLK_EN;
 }
 
 
@@ -478,9 +445,6 @@ void ADC_PulseIn_Stop(void)
 *
 * Return: 
 *  void
-*
-* Reentrance: 
-*  Yes
 *
 *******************************************************************************/
 void ADC_PulseIn_SetBufferGain(uint8 gain) 
@@ -510,11 +474,8 @@ void ADC_PulseIn_SetBufferGain(uint8 gain)
 *  void
 *
 * Side Effects:  If the coherency is changed, for any reason, it should be 
-*                changed back to the LSB when the provided “GetResult” API 
+*                changed back to the LSB when the provided "GetResult" API 
 *                is used.
-*
-* Reentrance: 
-*  Yes
 *
 *******************************************************************************/
 void ADC_PulseIn_SetCoherency(uint8 coherency) 
@@ -545,9 +506,6 @@ void ADC_PulseIn_SetCoherency(uint8 coherency)
 *                of the GCOR registers will be valid. If for example GVAL is 
 *                11 (0x0B) only 12 bits will be valid. The least 4 bits will
 *                be lost when the GCOR value is shifted 4 places to the right.
-*
-* Reentrance: 
-*  Yes
 *
 ******************************************************************************/
 uint8 ADC_PulseIn_SetGCOR(float gainAdjust) 
@@ -593,9 +551,6 @@ uint8 ADC_PulseIn_SetGCOR(float gainAdjust)
 *
 * Side Effects:  If the GVAL register is set to a value greater than 0x0F, then
                  it gives unexpected value.
-*
-* Reentrance: 
-*  Yes
 *
 *******************************************************************************/
 uint16 ADC_PulseIn_ReadGCOR(void) 
@@ -655,9 +610,6 @@ uint16 ADC_PulseIn_ReadGCOR(void)
 * Return: 
 *  void
 *
-* Reentrance: 
-*  Yes
-*
 *******************************************************************************/
 void ADC_PulseIn_SetBufferChop(uint8 chopen, uint8 chopFreq) 
 {
@@ -686,9 +638,6 @@ void ADC_PulseIn_SetBufferChop(uint8 chopen, uint8 chopFreq)
 * Return: 
 *  void 
 *
-* Reentrance: 
-*  Yes
-*
 *******************************************************************************/
 void ADC_PulseIn_StartConvert(void) 
 {
@@ -714,11 +663,8 @@ void ADC_PulseIn_StartConvert(void)
 *  ADC_PulseIn_convDone:  Modified when conversion is complete for single
 *   sample mode with resolution is above 16.
 *
-* Reentrance: 
-*  No
-*
 *******************************************************************************/
-void ADC_PulseIn_StopConvert(void)
+void ADC_PulseIn_StopConvert(void) 
 {
     /* Stop all conversions */
     ADC_PulseIn_DEC_CR_REG &= ~ADC_PulseIn_DEC_START_CONV; 
@@ -747,9 +693,6 @@ void ADC_PulseIn_StopConvert(void)
 * Global variables:
 *  ADC_PulseIn_convDone:  Used to check whether conversion is complete
 *  or not for single sample mode with resolution is above 16
-*
-* Reentrance: 
-*  Yes
 *
 *******************************************************************************/
 uint8 ADC_PulseIn_IsEndConversion(uint8 wMode) 
@@ -789,9 +732,6 @@ uint8 ADC_PulseIn_IsEndConversion(uint8 wMode)
 * Return: 
 *  int8:  ADC result.
 *
-* Reentrance: 
-*  Yes
-*
 *******************************************************************************/
 int8 ADC_PulseIn_GetResult8( void ) 
 {
@@ -811,9 +751,6 @@ int8 ADC_PulseIn_GetResult8( void )
 *
 * Return: 
 *  int16:  ADC result.
-*
-* Reentrance: 
-*  Yes
 *
 *******************************************************************************/
 int16 ADC_PulseIn_GetResult16(void) 
@@ -843,9 +780,6 @@ int16 ADC_PulseIn_GetResult16(void)
 *
 * Return: 
 *  int32:  ADC result.
-*
-* Reentrance: 
-*  Yes
 *
 *******************************************************************************/
 int32 ADC_PulseIn_GetResult32(void) 
@@ -886,11 +820,8 @@ int32 ADC_PulseIn_GetResult32(void)
 *  ADC_PulseIn_CountsTo_mVolts, ADC_PulseIn_CountsTo_uVolts functions 
 *  by subtracting the given offset. 
 *
-* Reentrance: 
-*  No
-*
 *******************************************************************************/
-void ADC_PulseIn_SetOffset(int32 offset)
+void ADC_PulseIn_SetOffset(int32 offset) 
 {
  
     ADC_PulseIn_Offset = offset;
@@ -914,11 +845,8 @@ void ADC_PulseIn_SetOffset(int32 offset)
 *  ADC_PulseIn_CountsPerVolt:  modified to set the ADC gain in counts 
 *   per volt.
 *
-* Reentrance: 
-*  No
-*
 *******************************************************************************/
-void ADC_PulseIn_SetGain(int32 adcGain)
+void ADC_PulseIn_SetGain(int32 adcGain) 
 {
  
     ADC_PulseIn_CountsPerVolt = adcGain;
@@ -943,20 +871,36 @@ void ADC_PulseIn_SetGain(int32 adcGain)
 *  ADC_PulseIn_Offset:  Used as the offset while converting ADC counts 
 *   to mVolts.
 *
-* Reentrance: 
-*  Yes
-*
 *******************************************************************************/
 int16 ADC_PulseIn_CountsTo_mVolts( int32 adcCounts) 
 {
 
     int32 mVolts = 0;
     int32 A, B;
+	uint8 resolution = 16;
 
     /* Subtract ADC offset */
     adcCounts -= ADC_PulseIn_Offset;
-
-    if(ADC_PulseIn_CFG1_RESOLUTION < 17)
+	
+	/* Set the resolution based on the configuration */
+	if (ADC_PulseIn_Config == ADC_PulseIn_CFG1)
+	{
+        resolution = ADC_PulseIn_CFG1_RESOLUTION;
+	}	
+	else if (ADC_PulseIn_Config == ADC_PulseIn_CFG2)
+	{
+	    resolution = ADC_PulseIn_CFG2_RESOLUTION;
+	}
+	else if (ADC_PulseIn_Config == ADC_PulseIn_CFG3)
+	{
+	    resolution = ADC_PulseIn_CFG3_RESOLUTION;
+	}
+	else
+	{
+	    resolution = ADC_PulseIn_CFG4_RESOLUTION;
+	}
+	
+    if(resolution < 17)
     {
         A = 1000;
         B = 1;
@@ -990,9 +934,6 @@ int16 ADC_PulseIn_CountsTo_mVolts( int32 adcCounts)
 *  ADC_PulseIn_CountsPerVolt:  used to convert to Volts.
 *  ADC_PulseIn_Offset:  Used as the offset while converting ADC counts 
 *   to Volts.
-*
-* Reentrance: 
-*  Yes
 *
 *******************************************************************************/
 float ADC_PulseIn_CountsTo_Volts( int32 adcCounts) 
@@ -1040,27 +981,43 @@ float ADC_PulseIn_CountsTo_Volts( int32 adcCounts)
 *  15 - 17         10,000       100
 *  18 - 20           1000      1000
 *
-* Reentrance:
-*  Yes
-*
 *******************************************************************************/
 int32 ADC_PulseIn_CountsTo_uVolts( int32 adcCounts) 
 {
 
     int32 uVolts = 0;
     int32 A, B;
+	uint8 resolution = 16;
+	
+	/* Set the resolution based on the configuration */
+	if (ADC_PulseIn_Config == ADC_PulseIn_CFG1)
+	{
+        resolution = ADC_PulseIn_CFG1_RESOLUTION;
+	}	
+	else if (ADC_PulseIn_Config == ADC_PulseIn_CFG2)
+	{
+	    resolution = ADC_PulseIn_CFG2_RESOLUTION;
+	}
+	else if (ADC_PulseIn_Config == ADC_PulseIn_CFG3)
+	{
+	    resolution = ADC_PulseIn_CFG3_RESOLUTION;
+	}
+	else
+	{
+	    resolution = ADC_PulseIn_CFG4_RESOLUTION;
+	}
     
-    if(ADC_PulseIn_CFG1_RESOLUTION < 12)
+    if(resolution < 12)
     {
         A = 1000000;
         B = 1;
     }
-    else if(ADC_PulseIn_CFG1_RESOLUTION < 15)
+    else if(resolution < 15)
     {
         A = 100000;
         B = 10;
     }
-    else if(ADC_PulseIn_CFG1_RESOLUTION < 18)
+    else if(resolution < 18)
     {
         A = 10000;
         B = 100;
@@ -1094,9 +1051,6 @@ int32 ADC_PulseIn_CountsTo_uVolts( int32 adcCounts)
 *
 * Return:
 *   void.
-*
-* Reentrance:
-*  No
 *
 *******************************************************************************/
 void ADC_PulseIn_IRQ_Start(void) 
@@ -1132,11 +1086,8 @@ void ADC_PulseIn_IRQ_Start(void)
 *  ADC_PulseIn_initVar:  used to set the common registers in the beginning.
 *  ADC_PulseIn_CountsPerVolt:  Used to set the default counts per volt.
 *
-* Reentrance: 
-*  No
-*
 *******************************************************************************/
-void ADC_PulseIn_InitConfig(uint8 config)
+void ADC_PulseIn_InitConfig(uint8 config) 
 {
     ADC_PulseIn_stopConversion = 0u;
     
@@ -1186,8 +1137,9 @@ void ADC_PulseIn_InitConfig(uint8 config)
         ADC_PulseIn_DSM_CR14_REG    = ADC_PulseIn_CFG1_DSM_CR14;    
         ADC_PulseIn_DSM_CR15_REG    = ADC_PulseIn_CFG1_DSM_CR15;    
         ADC_PulseIn_DSM_CR16_REG    = ADC_PulseIn_CFG1_DSM_CR16;    
-        ADC_PulseIn_DSM_CR17_REG    = ADC_PulseIn_CFG1_DSM_CR17;    
-        ADC_PulseIn_DSM_REF0_REG    = ADC_PulseIn_CFG1_DSM_REF0;    
+        ADC_PulseIn_DSM_CR17_REG    = ADC_PulseIn_CFG1_DSM_CR17;
+		/* Set DSM_REF0_REG by disabling and enabling the PRESS cirucit */
+		ADC_PulseIn_SetDSMRef0Reg(ADC_PulseIn_CFG1_DSM_REF0);
         ADC_PulseIn_DSM_REF2_REG    = ADC_PulseIn_CFG1_DSM_REF2;    
         ADC_PulseIn_DSM_REF3_REG    = ADC_PulseIn_CFG1_DSM_REF3;    
         
@@ -1195,24 +1147,24 @@ void ADC_PulseIn_InitConfig(uint8 config)
         ADC_PulseIn_DSM_BUF1_REG    = ADC_PulseIn_CFG1_DSM_BUF1;    
         ADC_PulseIn_DSM_BUF2_REG    = ADC_PulseIn_CFG1_DSM_BUF2;   
         ADC_PulseIn_DSM_BUF3_REG    = ADC_PulseIn_CFG1_DSM_BUF3;
-        #if (CY_PSOC5_ES1)
+        #if (CY_PSOC5A)
             ADC_PulseIn_DSM_CLK_REG    |= ADC_PulseIn_CFG1_DSM_CLK; 
-        #endif /* CY_PSOC5_ES1 */
+        #endif /* CY_PSOC5A */
         
         /* To select either Vssa or Vref to -ve input of DSM depending on 
           the input  range selected.
         */
         
         #if(ADC_PulseIn_DEFAULT_INPUT_MODE)
-            #if (CY_PSOC3_ES3 || CY_PSOC5_ES2)
+            #if (CY_PSOC3 || CY_PSOC5LP)
                 #if (ADC_PulseIn_CFG1_RANGE == ADC_PulseIn_IR_VSSA_TO_2VREF)
                     ADC_PulseIn_AMux_Select(1);
                 #else
                     ADC_PulseIn_AMux_Select(0);
                 #endif /* ADC_PulseIn_IR_VSSA_TO_2VREF) */
-            #elif (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+            #elif (CY_PSOC5A)
                 ADC_PulseIn_AMux_Select(0);
-            #endif /* CY_PSOC3_ES3 || CY_PSOC5_ES2 */
+            #endif /* CY_PSOC3 || CY_PSOC5LP */
         #endif /* ADC_PulseIn_DEFAULT_INPUT_MODE */
         
         /* Set the Conversion stop if resolution is above 16 bit and conversion 
@@ -1256,7 +1208,8 @@ void ADC_PulseIn_InitConfig(uint8 config)
             ADC_PulseIn_DSM_CR15_REG    = ADC_PulseIn_CFG2_DSM_CR15;    
             ADC_PulseIn_DSM_CR16_REG    = ADC_PulseIn_CFG2_DSM_CR16;    
             ADC_PulseIn_DSM_CR17_REG    = ADC_PulseIn_CFG2_DSM_CR17;    
-            ADC_PulseIn_DSM_REF0_REG    = ADC_PulseIn_CFG2_DSM_REF0;    
+			/* Set DSM_REF0_REG by disabling and enabling the PRESS cirucit */
+			ADC_PulseIn_SetDSMRef0Reg(ADC_PulseIn_CFG2_DSM_REF0);
             ADC_PulseIn_DSM_REF2_REG    = ADC_PulseIn_CFG2_DSM_REF2;    
             ADC_PulseIn_DSM_REF3_REG    = ADC_PulseIn_CFG2_DSM_REF3;    
         
@@ -1264,24 +1217,24 @@ void ADC_PulseIn_InitConfig(uint8 config)
             ADC_PulseIn_DSM_BUF1_REG    = ADC_PulseIn_CFG2_DSM_BUF1;    
             ADC_PulseIn_DSM_BUF2_REG    = ADC_PulseIn_CFG2_DSM_BUF2;    
             ADC_PulseIn_DSM_BUF3_REG    = ADC_PulseIn_CFG2_DSM_BUF3; 
-            #if (CY_PSOC5_ES1)
+            #if (CY_PSOC5A)
                 ADC_PulseIn_DSM_CLK_REG    |= ADC_PulseIn_CFG1_DSM_CLK; 
-            #endif /* CY_PSOC5_ES1 */
+            #endif /* CY_PSOC5A */
             
             /* To select either Vssa or Vref to -ve input of DSM depending on 
                the input range selected.
             */
             
             #if(ADC_PulseIn_DEFAULT_INPUT_MODE)
-                #if (CY_PSOC3_ES3 || CY_PSOC5_ES2)
+                #if (CY_PSOC3 || CY_PSOC5LP)
                     #if (ADC_PulseIn_CFG2_INPUT_RANGE == ADC_PulseIn_IR_VSSA_TO_2VREF)
                         ADC_PulseIn_AMux_Select(1);
                     #else
                         ADC_PulseIn_AMux_Select(0);
                     #endif /* ADC_PulseIn_IR_VSSA_TO_2VREF) */
-                #elif (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+                #elif (CY_PSOC5A)
                     ADC_PulseIn_AMux_Select(0);
-                #endif /* CY_PSOC3_ES3 || CY_PSOC5_ES2 */
+                #endif /* CY_PSOC3 || CY_PSOC5LP */
             #endif /* ADC_PulseIn_DEFAULT_INPUT_MODE */
             
             /* Set the Conversion stop if resolution is above 16 bit and 
@@ -1327,7 +1280,8 @@ void ADC_PulseIn_InitConfig(uint8 config)
             ADC_PulseIn_DSM_CR15_REG    = ADC_PulseIn_CFG3_DSM_CR15;    
             ADC_PulseIn_DSM_CR16_REG    = ADC_PulseIn_CFG3_DSM_CR16;    
             ADC_PulseIn_DSM_CR17_REG    = ADC_PulseIn_CFG3_DSM_CR17;    
-            ADC_PulseIn_DSM_REF0_REG    = ADC_PulseIn_CFG3_DSM_REF0;    
+			/* Set DSM_REF0_REG by disabling and enabling the PRESS cirucit */
+			ADC_PulseIn_SetDSMRef0Reg(ADC_PulseIn_CFG3_DSM_REF0);
             ADC_PulseIn_DSM_REF2_REG    = ADC_PulseIn_CFG3_DSM_REF2;    
             ADC_PulseIn_DSM_REF3_REG    = ADC_PulseIn_CFG3_DSM_REF3;    
         
@@ -1335,24 +1289,24 @@ void ADC_PulseIn_InitConfig(uint8 config)
             ADC_PulseIn_DSM_BUF1_REG    = ADC_PulseIn_CFG3_DSM_BUF1;    
             ADC_PulseIn_DSM_BUF2_REG    = ADC_PulseIn_CFG3_DSM_BUF2;
             ADC_PulseIn_DSM_BUF3_REG    = ADC_PulseIn_CFG3_DSM_BUF3;
-            #if (CY_PSOC5_ES1)
+            #if (CY_PSOC5A)
                 ADC_PulseIn_DSM_CLK_REG    |= ADC_PulseIn_CFG1_DSM_CLK; 
-            #endif /* CY_PSOC5_ES1 */
+            #endif /* CY_PSOC5A */
             
             /* To select either Vssa or Vref to -ve input of DSM depending on 
                the input range selected.
             */
             
             #if(ADC_PulseIn_DEFAULT_INPUT_MODE)
-                #if (CY_PSOC3_ES3 || CY_PSOC5_ES2)
+                #if (CY_PSOC3 || CY_PSOC5LP)
                     #if (ADC_PulseIn_CFG3_INPUT_RANGE == ADC_PulseIn_IR_VSSA_TO_2VREF)
                         ADC_PulseIn_AMux_Select(1);
                     #else
                         ADC_PulseIn_AMux_Select(0);
                     #endif /* ADC_PulseIn_IR_VSSA_TO_2VREF) */
-                #elif (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+                #elif (CY_PSOC5A)
                     ADC_PulseIn_AMux_Select(0);
-                #endif /* CY_PSOC3_ES3 || CY_PSOC5_ES2 */
+                #endif /* CY_PSOC3 || CY_PSOC5LP */
             #endif /* ADC_PulseIn_DEFAULT_INPUT_MODE */
                        
             /* Set the Conversion stop if resolution is above 16 bit and 
@@ -1397,8 +1351,9 @@ void ADC_PulseIn_InitConfig(uint8 config)
             ADC_PulseIn_DSM_CR14_REG    = ADC_PulseIn_CFG4_DSM_CR14;    
             ADC_PulseIn_DSM_CR15_REG    = ADC_PulseIn_CFG4_DSM_CR15;    
             ADC_PulseIn_DSM_CR16_REG    = ADC_PulseIn_CFG4_DSM_CR16;    
-            ADC_PulseIn_DSM_CR17_REG    = ADC_PulseIn_CFG4_DSM_CR17;    
-            ADC_PulseIn_DSM_REF0_REG    = ADC_PulseIn_CFG4_DSM_REF0;    
+            ADC_PulseIn_DSM_CR17_REG    = ADC_PulseIn_CFG4_DSM_CR17;
+			/* Set DSM_REF0_REG by disabling and enabling the PRESS cirucit */
+			ADC_PulseIn_SetDSMRef0Reg(ADC_PulseIn_CFG4_DSM_REF0);
             ADC_PulseIn_DSM_REF2_REG    = ADC_PulseIn_CFG4_DSM_REF2;    
             ADC_PulseIn_DSM_REF3_REG    = ADC_PulseIn_CFG4_DSM_REF3;    
         
@@ -1406,24 +1361,24 @@ void ADC_PulseIn_InitConfig(uint8 config)
             ADC_PulseIn_DSM_BUF1_REG    = ADC_PulseIn_CFG4_DSM_BUF1;    
             ADC_PulseIn_DSM_BUF2_REG    = ADC_PulseIn_CFG4_DSM_BUF2;
             ADC_PulseIn_DSM_BUF3_REG    = ADC_PulseIn_CFG4_DSM_BUF3;
-            #if (CY_PSOC5_ES1)
+            #if (CY_PSOC5A)
                 ADC_PulseIn_DSM_CLK_REG    |= ADC_PulseIn_CFG1_DSM_CLK; 
-            #endif /* CY_PSOC5_ES1 */
+            #endif /* CY_PSOC5A */
             
             /* To select either Vssa or Vref to -ve input of DSM depending on 
                the input range selected.
             */
             
             #if(ADC_PulseIn_DEFAULT_INPUT_MODE)
-                #if (CY_PSOC3_ES3 || CY_PSOC5_ES2)
+                #if (CY_PSOC3 || CY_PSOC5LP)
                     #if (ADC_PulseIn_CFG4_INPUT_RANGE == ADC_PulseIn_IR_VSSA_TO_2VREF)
                         ADC_PulseIn_AMux_Select(1);
                     #else
                         ADC_PulseIn_AMux_Select(0);
                     #endif /* ADC_PulseIn_IR_VSSA_TO_2VREF) */
-                #elif (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+                #elif (CY_PSOC5A)
                     ADC_PulseIn_AMux_Select(0);
-                #endif /* CY_PSOC3_ES3 || CY_PSOC5_ES2 */
+                #endif /* CY_PSOC3 || CY_PSOC5LP */
             #endif /* ADC_PulseIn_DEFAULT_INPUT_MODE */
                        
             /* Set the Conversion stop if resolution is above 16 bit and 
@@ -1459,9 +1414,6 @@ void ADC_PulseIn_InitConfig(uint8 config)
 * Return: 
 *  uint16: rounded integer value.
 *
-* Reentrance: 
-*  Yes
-*
 *******************************************************************************/
 uint16 ADC_PulseIn_RoundValue(uint32 busClockFreq, uint32 clockFreq) \
                                   
@@ -1495,15 +1447,13 @@ uint16 ADC_PulseIn_RoundValue(uint32 busClockFreq, uint32 clockFreq) \
 * Return: 
 *  void
 *
-* Reentrance: 
-*  Yes
-*
 *******************************************************************************/
 void ADC_PulseIn_SelectConfiguration(uint8 config, uint8 restart) \
                                               
 {
     uint8 inputRange = 0, resolution = 16;
-    uint16 idealGain = 0, clockDivider = 1;    
+    uint16 idealGain = 0, adcClockDivider = 1;    
+    uint16 cpClockDivider = 1;
     uint16 idealOddGain = 0;
     
     /* Check whether the config is valid or not */
@@ -1515,15 +1465,18 @@ void ADC_PulseIn_SelectConfiguration(uint8 config, uint8 restart) \
         {
             ADC_PulseIn_started = 1u;
         }
+		
+		/* Update the config flag */
+		ADC_PulseIn_Config = config;
        
         /* Stop the ADC  */
         ADC_PulseIn_Stop();
         
-        #if (CY_PSOC5_ES1)
+        #if (CY_PSOC5A)
             /* Set the structure field which checks whether or not to
                restore the power registers */
             ADC_PulseIn_powerModeBackup.bypassRestore = ADC_PulseIn_BYPASS_ENABLED;
-        #endif /* CY_PSOC5_ES1 */
+        #endif /* CY_PSOC5A */
         
         /* Set the  ADC registers based on the configuration */
         ADC_PulseIn_InitConfig(config);
@@ -1535,8 +1488,10 @@ void ADC_PulseIn_SelectConfiguration(uint8 config, uint8 restart) \
             resolution = ADC_PulseIn_CFG1_RESOLUTION;
             idealGain = ADC_PulseIn_CFG1_IDEAL_DEC_GAIN;
             idealOddGain = ADC_PulseIn_CFG1_IDEAL_ODDDEC_GAIN;
-            clockDivider = ADC_PulseIn_RoundValue((uint32)BCLK__BUS_CLK__HZ,
+            adcClockDivider = ADC_PulseIn_RoundValue((uint32)BCLK__BUS_CLK__HZ,
                                                        (uint32)ADC_PulseIn_CFG1_CLOCK_FREQ);
+            cpClockDivider = ADC_PulseIn_RoundValue((uint32)BCLK__BUS_CLK__HZ,
+                                                       (uint32)ADC_PulseIn_CFG1_CP_CLOCK_FREQ);
         }
 
         #if (ADC_PulseIn_DEFAULT_NUM_CONFIGS > 1)
@@ -1546,8 +1501,10 @@ void ADC_PulseIn_SelectConfiguration(uint8 config, uint8 restart) \
                 resolution = ADC_PulseIn_CFG2_RESOLUTION;
                 idealGain = ADC_PulseIn_CFG2_IDEAL_DEC_GAIN;
                 idealOddGain = ADC_PulseIn_CFG2_IDEAL_ODDDEC_GAIN;
-                clockDivider = ADC_PulseIn_RoundValue((uint32)BCLK__BUS_CLK__HZ,
+                adcClockDivider = ADC_PulseIn_RoundValue((uint32)BCLK__BUS_CLK__HZ,
                                                             (uint32)ADC_PulseIn_CFG2_CLOCK_FREQ);
+                cpClockDivider = ADC_PulseIn_RoundValue((uint32)BCLK__BUS_CLK__HZ,
+                                                       (uint32)ADC_PulseIn_CFG2_CP_CLOCK_FREQ);
             }
         #endif /* ADC_PulseIn_DEFAULT_NUM_CONFIGS > 1 */
 
@@ -1558,8 +1515,10 @@ void ADC_PulseIn_SelectConfiguration(uint8 config, uint8 restart) \
                 resolution = ADC_PulseIn_CFG3_RESOLUTION;
                 idealGain = ADC_PulseIn_CFG3_IDEAL_DEC_GAIN;
                 idealOddGain = ADC_PulseIn_CFG3_IDEAL_ODDDEC_GAIN;
-                clockDivider = ADC_PulseIn_RoundValue((uint32)BCLK__BUS_CLK__HZ,
+                adcClockDivider = ADC_PulseIn_RoundValue((uint32)BCLK__BUS_CLK__HZ,
                                                             (uint32)ADC_PulseIn_CFG3_CLOCK_FREQ);
+                cpClockDivider = ADC_PulseIn_RoundValue((uint32)BCLK__BUS_CLK__HZ,
+                                                       (uint32)ADC_PulseIn_CFG3_CP_CLOCK_FREQ);
             }
         #endif /* ADC_PulseIn_DEFAULT_NUM_CONFIGS > 2 */
 
@@ -1570,16 +1529,22 @@ void ADC_PulseIn_SelectConfiguration(uint8 config, uint8 restart) \
                 resolution = ADC_PulseIn_CFG4_RESOLUTION;
                 idealGain = ADC_PulseIn_CFG4_IDEAL_DEC_GAIN;
                 idealOddGain = ADC_PulseIn_CFG4_IDEAL_ODDDEC_GAIN;
-                clockDivider = ADC_PulseIn_RoundValue((uint32)BCLK__BUS_CLK__HZ,  
+                adcClockDivider = ADC_PulseIn_RoundValue((uint32)BCLK__BUS_CLK__HZ,  
                                                             (uint32)ADC_PulseIn_CFG4_CLOCK_FREQ);
+                cpClockDivider = ADC_PulseIn_RoundValue((uint32)BCLK__BUS_CLK__HZ,
+                                                       (uint32)ADC_PulseIn_CFG4_CP_CLOCK_FREQ);
             }
         #endif /* ADC_PulseIn_DEFAULT_NUM_CONFIGS > 3 */
         
-        clockDivider = clockDivider - 1;
+        adcClockDivider = adcClockDivider - 1;
         /* Set the proper divider for the internal clock */
         #if(ADC_PulseIn_DEFAULT_INTERNAL_CLK)
-            ADC_PulseIn_theACLK_SetDividerRegister(clockDivider, 1);
+            ADC_PulseIn_theACLK_SetDividerRegister(adcClockDivider, 1);
         #endif /* ADC_PulseIn_DEFAULT_INTERNAL_CLK */
+        
+        cpClockDivider = cpClockDivider - 1;
+        /* Set the proper divider for the Charge pump clock */
+        ADC_PulseIn_Ext_CP_Clk_SetDividerRegister(cpClockDivider, 1);
         
         /* Compensate the gain */
         ADC_PulseIn_GainCompensation(inputRange, idealGain, idealOddGain, resolution);
@@ -1608,33 +1573,31 @@ void ADC_PulseIn_SelectConfiguration(uint8 config, uint8 restart) \
                 {
                     /* Disable PRES, Enable power to VCMBUF0, REFBUF0 and 
                        REFBUF1, enable PRES */
-                    #if (CY_PSOC3_ES3 || CY_PSOC5_ES2)
+                    #if (CY_PSOC3 || CY_PSOC5LP)
                         ADC_PulseIn_RESET_CR4_REG |= ADC_PulseIn_IGNORE_PRESA1;
                         ADC_PulseIn_RESET_CR5_REG |= ADC_PulseIn_IGNORE_PRESA2;
-                    #elif (CY_PSOC5_ES1 || CY_PSOC3_ES2)
+                    #elif (CY_PSOC5A)
                         ADC_PulseIn_RESET_CR1_REG |= ADC_PulseIn_DIS_PRES1;
                         ADC_PulseIn_RESET_CR3_REG |= ADC_PulseIn_DIS_PRES2;
-                    #endif /* CY_PSOC5_ES1 || CY_PSOC3_ES2 */
+                    #endif /* CY_PSOC5A */
         
                     /* Disable the REFBUF0 */
                     ADC_PulseIn_DSM_CR17_REG &= ~ADC_PulseIn_DSM_EN_BUF_VREF;
                     
                     /* Wait for 3 microseconds */
                     CyDelayUs(3);
-        
-                    #if (CY_PSOC3_ES3 || CY_PSOC5_ES2)
+                    /* Enable the press circuit */
+                    #if (CY_PSOC3 || CY_PSOC5LP)
                         ADC_PulseIn_RESET_CR4_REG &= ~ADC_PulseIn_IGNORE_PRESA1;
                         ADC_PulseIn_RESET_CR5_REG &= ~ADC_PulseIn_IGNORE_PRESA2;
-            
-                        ADC_PulseIn_RESET_CR3_REG = ADC_PulseIn_EN_PRESA;
-                    #elif (CY_PSOC5_ES1 || CY_PSOC3_ES2)
+                    #elif (CY_PSOC5A)
                         ADC_PulseIn_RESET_CR1_REG &= ~ADC_PulseIn_DIS_PRES1;
                         ADC_PulseIn_RESET_CR3_REG &= ~ADC_PulseIn_DIS_PRES2;
-                    #endif /* CY_PSOC5_ES1 || CY_PSOC3_ES2 */
+                    #endif /* CY_PSOC5A */
                 }
             #endif /* */
             
-            #if ((CY_PSOC3_ES3 || CY_PSOC5_ES2) && \
+            #if ((CY_PSOC3 || CY_PSOC5LP) && \
                  ((ADC_PulseIn_CFG2_INPUT_RANGE == ADC_PulseIn_IR_VSSA_TO_2VREF) || \
                   (ADC_PulseIn_CFG3_INPUT_RANGE == ADC_PulseIn_IR_VSSA_TO_2VREF) || \
                   (ADC_PulseIn_CFG4_INPUT_RANGE == ADC_PulseIn_IR_VSSA_TO_2VREF)))
@@ -1653,31 +1616,29 @@ void ADC_PulseIn_SelectConfiguration(uint8 config, uint8 restart) \
                 {
                     /* Disable PRES, Enable power to VCMBUF0, REFBUF0 and 
                        REFBUF1, enable PRES */
-                    #if (CY_PSOC3_ES3 || CY_PSOC5_ES2)
+                    #if (CY_PSOC3 || CY_PSOC5LP)
                         ADC_PulseIn_RESET_CR4_REG |= ADC_PulseIn_IGNORE_PRESA1;
                         ADC_PulseIn_RESET_CR5_REG |= ADC_PulseIn_IGNORE_PRESA2;
-                    #elif (CY_PSOC5_ES1 || CY_PSOC3_ES2)
+                    #elif (CY_PSOC5A)
                         ADC_PulseIn_RESET_CR1_REG |= ADC_PulseIn_DIS_PRES1;
                         ADC_PulseIn_RESET_CR3_REG |= ADC_PulseIn_DIS_PRES2;
-                    #endif /* CY_PSOC5_ES1 || CY_PSOC3_ES2 */
+                    #endif /* CY_PSOC5A */
         
                     /* Enable the REFBUF1 */
                     ADC_PulseIn_DSM_REF0_REG |= ADC_PulseIn_DSM_EN_BUF_VREF_INN;
                     
                     /* Wait for 3 microseconds */
                     CyDelayUs(3);
-        
-                    #if (CY_PSOC3_ES3 || CY_PSOC5_ES2)
+                    /* Enable the press circuit */
+                    #if (CY_PSOC3 || CY_PSOC5LP)
                         ADC_PulseIn_RESET_CR4_REG &= ~ADC_PulseIn_IGNORE_PRESA1;
                         ADC_PulseIn_RESET_CR5_REG &= ~ADC_PulseIn_IGNORE_PRESA2;
-            
-                        ADC_PulseIn_RESET_CR3_REG = ADC_PulseIn_EN_PRESA;
-                    #elif (CY_PSOC5_ES1 || CY_PSOC3_ES2)
+                    #elif (CY_PSOC5A)
                         ADC_PulseIn_RESET_CR1_REG &= ~ADC_PulseIn_DIS_PRES1;
                         ADC_PulseIn_RESET_CR3_REG &= ~ADC_PulseIn_DIS_PRES2;
-                    #endif /* CY_PSOC5_ES1 || CY_PSOC3_ES2 */
+                    #endif /* CY_PSOC5A */
                 }
-            #endif /* (CY_PSOC3_ES3 || CY_PSOC5_ES2) */
+            #endif /* (CY_PSOC3 || CY_PSOC5LP) */
         
             /* Restart the ADC conversion */
             ADC_PulseIn_StartConvert();
@@ -1703,9 +1664,6 @@ void ADC_PulseIn_SelectConfiguration(uint8 config, uint8 restart) \
 *
 * Return: 
 *  void
-*
-* Reentrance: 
-*  Yes
 *
 *******************************************************************************/
 void ADC_PulseIn_GainCompensation(uint8 inputRange, uint16 IdealDecGain, uint16 IdealOddDecGain,  \
@@ -1806,17 +1764,56 @@ void ADC_PulseIn_GainCompensation(uint8 inputRange, uint16 IdealDecGain, uint16 
     ADC_PulseIn_DEC_GCOR_REG  = (uint8)GcorValue;
     ADC_PulseIn_DEC_GCORH_REG = (uint8)(GcorValue >> 8);    
     
-    /* Workaround for 0 to 2*Vref mode with PSoC3 ES2 and PSoC5 ES1 siliocn */
-    #if( CY_PSOC3_ES2 || CY_PSOC5_ES1) 
+    /* Workaround for 0 to 2*Vref mode with PSoC5A siliocn */
+    #if( CY_PSOC5A) 
         if( inputRange == ADC_PulseIn_IR_VSSA_TO_2VREF)
         {
             ADC_PulseIn_DEC_GCOR_REG = 0x00u;
             ADC_PulseIn_DEC_GCORH_REG = 0x00u;
             ADC_PulseIn_DEC_GVAL_REG = 0x00u;
         }
-    #endif /* CY_PSOC3_ES2 || CY_PSOC5_ES1 */
-    
-}        
+    #endif /* CY_PSOC5A */
+}
+
+
+/******************************************************************************
+* Function Name: ADC_PulseIn_SetDSMRef0Reg(uint8)
+******************************************************************************
+*
+* Summary:
+*  This API sets the DSM_REF0 register. This is written for internal use.
+*
+* Parameters:  
+*  value:  Value to be written to DSM_REF0 register.
+*
+* Return: 
+*  void
+*
+******************************************************************************/
+void ADC_PulseIn_SetDSMRef0Reg(uint8 value) 
+{
+    /* Disable PRES, Enable power to VCMBUF0, REFBUF0 and REFBUF1, enable 
+       PRES */
+    #if (CY_PSOC3 || CY_PSOC5LP)
+        ADC_PulseIn_RESET_CR4_REG |= (ADC_PulseIn_IGNORE_PRESA1 | ADC_PulseIn_IGNORE_PRESD1);
+        ADC_PulseIn_RESET_CR5_REG |= (ADC_PulseIn_IGNORE_PRESA2 | ADC_PulseIn_IGNORE_PRESD2);
+    #elif (CY_PSOC5A)
+        ADC_PulseIn_RESET_CR1_REG |= ADC_PulseIn_DIS_PRES1;
+        ADC_PulseIn_RESET_CR3_REG |= ADC_PulseIn_DIS_PRES2;
+    #endif /* CY_PSOC5A */
+        ADC_PulseIn_DSM_REF0_REG = value;   
+		
+	/* Wait for 3 microseconds */
+    CyDelayUs(3);
+    /* Enable the press circuit */
+    #if (CY_PSOC3 || CY_PSOC5LP)
+        ADC_PulseIn_RESET_CR4_REG &= ~(ADC_PulseIn_IGNORE_PRESA1 | ADC_PulseIn_IGNORE_PRESD1);
+        ADC_PulseIn_RESET_CR5_REG &= ~(ADC_PulseIn_IGNORE_PRESA2 | ADC_PulseIn_IGNORE_PRESD2);
+    #elif (CY_PSOC5A)
+        ADC_PulseIn_RESET_CR1_REG &= ~ADC_PulseIn_DIS_PRES1;
+        ADC_PulseIn_RESET_CR3_REG &= ~ADC_PulseIn_DIS_PRES2;
+    #endif /* CY_PSOC5A */
+}
 
 
 /* [] END OF FILE */

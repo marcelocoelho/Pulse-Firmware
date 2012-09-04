@@ -22,7 +22,7 @@ GROUP(-lgcc -lc -lcs3 -lcs3unhosted -lcs3micro)
 
 MEMORY
 {
-  rom (rx) : ORIGIN = 0x00000000, LENGTH = (262144 - 0x00000000)
+  rom (rx) : ORIGIN = 0, LENGTH = (262144 - 0)
   ram (rwx) : ORIGIN = 0x20000000 - (65536 / 2), LENGTH = (65536 - 16384 - 4096)
 }
 
@@ -62,7 +62,7 @@ SECTIONS
 
 	/* Place the DMA initialization before text to ensure it gets placed in first 64K of flash */
     *(.dma_init)
-    ASSERT(0x00000000 + . <= 0x10000 || !1, "DMA Init must be within the first 64k of flash");
+    ASSERT(0 + . <= 0x10000 || !1, "DMA Init must be within the first 64k of flash");
 		
     *(.text.cs3.init)
     *(.text .text.* .gnu.linkonce.t.*)

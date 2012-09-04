@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: USBUART_1_episr.c
-* Version 2.12
+* Version 2.30
 *
 * Description:
 *  Data endpoint Interrupt Service Routines
@@ -97,11 +97,6 @@ extern volatile uint8 USBUART_1_device;
         /* `#START EP1_END_USER_CODE` Place your code here */
 
         /* `#END` */
-
-        /* PSoC3 ES1, ES2 RTC ISR PATCH  */
-        #if(CY_PSOC3_ES2 && (USBUART_1_ep_1__ES2_PATCH))
-            USBUART_1_ISR_PATCH();
-        #endif /* End CY_PSOC3_ES2*/
     }
 
 #endif   /* End USBUART_1_EP1_ISR_REMOVE */
@@ -151,11 +146,6 @@ extern volatile uint8 USBUART_1_device;
         /* `#START EP2_END_USER_CODE` Place your code here */
 
         /* `#END` */
-
-        /* PSoC3 ES1, ES2 RTC ISR PATCH  */
-        #if(CY_PSOC3_ES2 && (USBUART_1_ep_2__ES2_PATCH))
-            USBUART_1_ISR_PATCH();
-        #endif /* End CY_PSOC3_ES2*/
     }
 
 #endif   /* End USBUART_1_EP2_ISR_REMOVE */
@@ -205,11 +195,6 @@ extern volatile uint8 USBUART_1_device;
         /* `#START EP3_END_USER_CODE` Place your code here */
 
         /* `#END` */
-
-        /* PSoC3 ES1, ES2 RTC ISR PATCH  */
-        #if(CY_PSOC3_ES2 && (USBUART_1_ep_3__ES2_PATCH))
-            USBUART_1_ISR_PATCH();
-        #endif /* End CY_PSOC3_ES2*/
     }
 
 #endif   /* End USBUART_1_EP3_ISR_REMOVE */
@@ -259,11 +244,6 @@ extern volatile uint8 USBUART_1_device;
         /* `#START EP4_END_USER_CODE` Place your code here */
 
         /* `#END` */
-
-        /* PSoC3 ES1, ES2 RTC ISR PATCH  */
-        #if(CY_PSOC3_ES2 && (USBUART_1_ep_4__ES2_PATCH))
-            USBUART_1_ISR_PATCH();
-        #endif /* End CY_PSOC3_ES2*/
     }
 
 #endif   /* End USBUART_1_EP4_ISR_REMOVE */
@@ -313,11 +293,6 @@ extern volatile uint8 USBUART_1_device;
         /* `#START EP5_END_USER_CODE` Place your code here */
 
         /* `#END` */
-
-        /* PSoC3 ES1, ES2 RTC ISR PATCH  */
-        #if(CY_PSOC3_ES2 && (USBUART_1_ep_5__ES2_PATCH))
-            USBUART_1_ISR_PATCH();
-        #endif /* End CY_PSOC3_ES2*/
     }
 #endif   /* End USBUART_1_EP5_ISR_REMOVE */
 
@@ -366,11 +341,6 @@ extern volatile uint8 USBUART_1_device;
         /* `#START EP6_END_USER_CODE` Place your code here */
 
         /* `#END` */
-
-        /* PSoC3 ES1, ES2 RTC ISR PATCH  */
-        #if(CY_PSOC3_ES2 && (USBUART_1_ep_6__ES2_PATCH))
-            USBUART_1_ISR_PATCH();
-        #endif /* End CY_PSOC3_ES2*/
     }
 
 #endif   /* End USBUART_1_EP6_ISR_REMOVE */
@@ -420,11 +390,6 @@ extern volatile uint8 USBUART_1_device;
         /* `#START EP7_END_USER_CODE` Place your code here */
 
         /* `#END` */
-
-        /* PSoC3 ES1, ES2 RTC ISR PATCH  */
-        #if(CY_PSOC3_ES2 && (USBUART_1_ep_7__ES2_PATCH))
-            USBUART_1_ISR_PATCH();
-        #endif /* End CY_PSOC3_ES2*/
     }
 
 #endif   /* End USBUART_1_EP7_ISR_REMOVE */
@@ -474,11 +439,6 @@ extern volatile uint8 USBUART_1_device;
         /* `#START EP8_END_USER_CODE` Place your code here */
 
         /* `#END` */
-
-        /* PSoC3 ES1, ES2 RTC ISR PATCH  */
-        #if(CY_PSOC3_ES2 && (USBUART_1_ep_8__ES2_PATCH))
-            USBUART_1_ISR_PATCH();
-        #endif /* End CY_PSOC3_ES2*/
     }
 
 #endif   /* End USBUART_1_EP8_ISR_REMOVE */
@@ -503,11 +463,6 @@ CY_ISR(USBUART_1_SOF_ISR)
     /* `#START SOF_USER_CODE` Place your code here */
 
     /* `#END` */
-
-    /* PSoC3 ES1, ES2 RTC ISR PATCH  */
-    #if(CY_PSOC3_ES2 && (USBUART_1_sof_int__ES2_PATCH))
-        USBUART_1_ISR_PATCH();
-    #endif /* End CY_PSOC3_ES2*/
 }
 
 
@@ -533,11 +488,6 @@ CY_ISR(USBUART_1_BUS_RESET_ISR)
     /* `#END` */
 
     USBUART_1_ReInitComponent();
-
-    /* PSoC3 ES1, ES2 RTC ISR PATCH  */
-    #if(CY_PSOC3_ES2 && (USBUART_1_bus_reset__ES2_PATCH))
-        USBUART_1_ISR_PATCH();
-    #endif /* End CY_PSOC3_ES2*/
 }
 
 
@@ -594,33 +544,23 @@ CY_ISR(USBUART_1_BUS_RESET_ISR)
                 {
                     if(USBUART_1_EP[ep].addr & USBUART_1_DIR_IN)
                     {
-//                        if((USBUART_1_SIE_EP1_CR0_PTR[ptr] & USBUART_1_MODE_MASK)
-//                                                                 != USBUART_1_EP[ep].epMode)
-//                        { /* Error condition, IN_BUF_FULL ISR is missed */
-//                          /* Set Data ready status, This will generate new DMA request */
-//                            USBUART_1_ARB_EP1_CFG_PTR[ptr] &= ~USBUART_1_ARB_EPX_CFG_IN_DATA_RDY;
-//                            USBUART_1_ARB_EP1_CFG_PTR[ptr] |= USBUART_1_ARB_EPX_CFG_IN_DATA_RDY;
-//                        }
-//                        else
-//                        {
-                            if(USBUART_1_ARB_EP1_CFG_PTR[ptr] & USBUART_1_ARB_EPX_CFG_IN_DATA_RDY)
-                            {
-                                USBUART_1_ARB_EP1_CFG_PTR[ptr] &= ~USBUART_1_ARB_EPX_CFG_IN_DATA_RDY;
+                        if(USBUART_1_ARB_EP1_CFG_PTR[ptr] & USBUART_1_ARB_EPX_CFG_IN_DATA_RDY)
+                        {
+                            USBUART_1_ARB_EP1_CFG_PTR[ptr] &= ~USBUART_1_ARB_EPX_CFG_IN_DATA_RDY;
+                        }
+                        #if defined(USBUART_1_ENABLE_MIDI_STREAMING) && \
+                                   (USBUART_1_ENABLE_MIDI_API != 0u)
+                            if(ep == USBUART_1_midi_in_ep)
+                            {   /* Clear MIDI input pointer*/
+                                USBUART_1_midiInPointer = 0u;
                             }
-                            #if defined(USBUART_1_ENABLE_MIDI_STREAMING) && \
-                                       (USBUART_1_ENABLE_MIDI_API != 0u)
-                                if(ep == USBUART_1_midi_in_ep)
-                                {   /* Clear MIDI input pointer*/
-                                    USBUART_1_midiInPointer = 0u;
-                                }
-                            #endif /* End USBUART_1_ENABLE_MIDI_STREAMING*/
-//                        }
+                        #endif /* End USBUART_1_ENABLE_MIDI_STREAMING*/
                     }
                     else
                     {
                         /* (re)arm Out EP only for mode2 */
-                        USBUART_1_EP[ep].apiEpState = USBUART_1_NO_EVENT_PENDING;
                         #if(USBUART_1_EP_MM != USBUART_1__EP_DMAAUTO)
+                            USBUART_1_EP[ep].apiEpState = USBUART_1_NO_EVENT_PENDING;
                             /* Write the Mode register */
                             USBUART_1_SIE_EP1_CR0_PTR[ptr] = USBUART_1_EP[ep].epMode;
                         #endif /* End USBUART_1_EP_MM */
@@ -641,11 +581,6 @@ CY_ISR(USBUART_1_BUS_RESET_ISR)
         /* `#START ARB_END_USER_CODE` Place your code here */
 
         /* `#END` */
-
-        /* PSoC3 ES1, ES2 RTC ISR PATCH  */
-        #if(CY_PSOC3_ES2 && (USBUART_1_arb_int__ES2_PATCH))
-            USBUART_1_ISR_PATCH();
-        #endif /* End CY_PSOC3_ES2*/
     }
 
 #endif /* End USBUART_1_EP_MM */

@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: USBUART_1_pm.c
-* Version 2.12
+* Version 2.30
 *
 * Description:
 *  This file provides Suspend/Resume APIs functionality.
@@ -34,44 +34,50 @@ static USBUART_1_BACKUP_STRUCT  USBUART_1_backup;
 
 
 /***************************************
+* External data references
+***************************************/
+
+extern volatile uint8 USBUART_1_configuration;
+
+
+/***************************************
 * External function references
 ***************************************/
 
+extern void USBUART_1_ConfigReg(void) ;
 #if(USBUART_1_EP_MM != USBUART_1__EP_MANUAL)
     extern void USBUART_1_Stop_DMA(uint8 epNumber) ;
 #endif   /* End USBUART_1_EP_MM != USBUART_1__EP_MANUAL */
 
+#if((USBUART_1_DP_ISR_REMOVE == 0u) && (!CY_PSOC5A))
 
 
-/*******************************************************************************
-* Function Name: USBUART_1_DP_Interrupt
-********************************************************************************
-*
-* Summary:
-*  This Interrupt Service Routine handles DP pin changes for wake-up from
-*  the sleep mode.
-*
-* Parameters:
-*  None.
-*
-* Return:
-*  None.
-*
-*******************************************************************************/
-CY_ISR(USBUART_1_DP_ISR)
-{
-    /* `#START DP_USER_CODE` Place your code here */
+    /*******************************************************************************
+    * Function Name: USBUART_1_DP_Interrupt
+    ********************************************************************************
+    *
+    * Summary:
+    *  This Interrupt Service Routine handles DP pin changes for wake-up from
+    *  the sleep mode.
+    *
+    * Parameters:
+    *  None.
+    *
+    * Return:
+    *  None.
+    *
+    *******************************************************************************/
+    CY_ISR(USBUART_1_DP_ISR)
+    {
+        /* `#START DP_USER_CODE` Place your code here */
 
-    /* `#END` */
+        /* `#END` */
 
-    /* Clears active interrupt */
-    CY_GET_REG8(USBUART_1_DP_INTSTAT_PTR);
+        /* Clears active interrupt */
+        CY_GET_REG8(USBUART_1_DP_INTSTAT_PTR);
+    }
 
-    /* PSoC3 ES1, ES2 RTC ISR PATCH  */
-    #if(CY_PSOC3_ES2 && (USBUART_1_dp_int__ES2_PATCH))
-        USBUART_1_ISR_PATCH();
-    #endif /* End CY_PSOC3_ES2*/
-}
+#endif /* (USBUART_1_DP_ISR_REMOVE == 0u) && (!CY_PSOC5A) */
 
 
 /*******************************************************************************
@@ -93,7 +99,7 @@ CY_ISR(USBUART_1_DP_ISR)
 *******************************************************************************/
 void USBUART_1_SaveConfig(void) 
 {
-    /* All congiguration registers are marked as [reset_all_retention] */
+
 }
 
 
@@ -116,7 +122,10 @@ void USBUART_1_SaveConfig(void)
 *******************************************************************************/
 void USBUART_1_RestoreConfig(void) 
 {
-    /* All congiguration registers are marked as [reset_all_retention] */
+    if(USBUART_1_configuration != 0)
+    {
+        USBUART_1_ConfigReg();    
+    }
 }
 
 
@@ -145,7 +154,6 @@ void USBUART_1_Suspend(void)
     uint8 enableInterrupts;
     enableInterrupts = CyEnterCriticalSection();
 
-
     if((CY_GET_REG8(USBUART_1_CR0_PTR) & USBUART_1_CR0_ENABLE) != 0u)
     {   /* USB block is enabled */
         USBUART_1_backup.enableState = 1u;
@@ -154,13 +162,13 @@ void USBUART_1_Suspend(void)
             USBUART_1_Stop_DMA(USBUART_1_MAX_EP);     /* Stop all DMAs */
         #endif   /* End USBUART_1_EP_MM != USBUART_1__EP_MANUAL */
 
-        #if(CY_PSOC3_ES2 || CY_PSOC5_ES1)
-            /* Disable USBIO for TO3 */
+        #if(CY_PSOC5A)
+            /* Disable USBIO block */
             USBUART_1_PM_AVAIL_CR_REG &= ~USBUART_1_PM_AVAIL_EN_FSUSBIO;
-        #endif /* End CY_PSOC3_ES2 || CY_PSOC5_ES1 */
+        #endif /* End CY_PSOC5A */
 
         /* Power Down Sequencing for USBIO for TO4*/
-        #if(CY_PSOC3_ES3 || CY_PSOC5_ES2)
+        #if(!CY_PSOC5A)
             /* Ensure USB transmit enable is low (USB_USBIO_CR0.ten). - Manual Transmission - Disabled */
             USBUART_1_USBIO_CR0_REG &= ~USBUART_1_USBIO_CR0_TEN;
             CyDelayUs(0);  /*~50ns delay */
@@ -168,12 +176,12 @@ void USBUART_1_Suspend(void)
             /* Disable the USBIO by asserting PM.USB_CR0.fsusbio_pd_n(Inverted) and pd_pullup_hv(Inverted) high. */
             USBUART_1_PM_USB_CR0_REG &= \
                                     ~(USBUART_1_PM_USB_CR0_PD_N | USBUART_1_PM_USB_CR0_PD_PULLUP_N);
-         #endif /* End CY_PSOC3_ES3 || CY_PSOC5_ES2 */
+         #endif /* End !CY_PSOC5A */
 
         /* Disable the SIE */
         USBUART_1_CR0_REG &= ~USBUART_1_CR0_ENABLE;
 
-        #if(CY_PSOC3_ES3 || CY_PSOC5_ES2)
+        #if(!CY_PSOC5A)
             CyDelayUs(0);  /*~50ns delay */
             /* Store mode and Disable VRegulator*/
             USBUART_1_backup.mode = USBUART_1_CR1_REG & USBUART_1_CR1_REG_ENABLE;
@@ -186,7 +194,7 @@ void USBUART_1_Suspend(void)
             /* Switch DP and DM terminals to GPIO mode and disconnect 1.5k pullup*/
             USBUART_1_USBIO_CR1_REG |= USBUART_1_USBIO_CR1_IOMODE;
 
-        #endif /* End CY_PSOC3_ES3 || CY_PSOC5_ES2*/
+        #endif /* End !CY_PSOC5A*/
 
         /* Disable USB in ACT PM */
         USBUART_1_PM_ACT_CFG_REG &= ~USBUART_1_PM_ACT_EN_FSUSB;
@@ -202,12 +210,12 @@ void USBUART_1_Suspend(void)
     CyExitCriticalSection(enableInterrupts);
 
     /* Set the DP Interrupt for wake-up from sleep mode. */
-    #if(USBUART_1_DP_ISR_REMOVE == 0u)
+    #if((USBUART_1_DP_ISR_REMOVE == 0u) && (!CY_PSOC5A))
         CyIntSetVector(USBUART_1_DP_INTC_VECT_NUM,   USBUART_1_DP_ISR);
         CyIntSetPriority(USBUART_1_DP_INTC_VECT_NUM, USBUART_1_DP_INTC_PRIOR);
         CyIntClearPending(USBUART_1_DP_INTC_VECT_NUM);
         CyIntEnable(USBUART_1_DP_INTC_VECT_NUM);
-    #endif /* End USBUART_1_DP_ISR_REMOVE */
+    #endif /* (USBUART_1_DP_ISR_REMOVE == 0u) && (!CY_PSOC5A) */
 
 }
 
@@ -239,17 +247,17 @@ void USBUART_1_Resume(void)
 
     if(USBUART_1_backup.enableState != 0u)
     {
-        #if(USBUART_1_DP_ISR_REMOVE == 0u)
+        #if((USBUART_1_DP_ISR_REMOVE == 0u) && (!CY_PSOC5A))
             CyIntDisable(USBUART_1_DP_INTC_VECT_NUM);
         #endif /* End USBUART_1_DP_ISR_REMOVE */
 
-        #if(CY_PSOC3_ES2 || CY_PSOC5_ES1)
-            /* Enable USBIO for TO3 */
+        #if(CY_PSOC5A)
+            /* Enable USBIO block */
             USBUART_1_PM_AVAIL_CR_REG |= USBUART_1_PM_AVAIL_EN_FSUSBIO;
 
             /* Bus Reset Length, It has correct default value in ES3 */
             USBUART_1_BUS_RST_CNT_REG = USBUART_1_BUS_RST_COUNT;
-        #endif /* End CY_PSOC3_ES2 || CY_PSOC5_ES1 */
+        #endif /* End CY_PSOC5A */
 
         /* Enable USB block */
         USBUART_1_PM_ACT_CFG_REG |= USBUART_1_PM_ACT_EN_FSUSB;
@@ -259,7 +267,7 @@ void USBUART_1_Resume(void)
         USBUART_1_USB_CLK_EN_REG |= USBUART_1_USB_CLK_ENABLE;
 
         /* USBIO Wakeup Sequencing for TO4 */
-        #if (CY_PSOC3_ES3 || CY_PSOC5_ES2)
+        #if (!CY_PSOC5A)
             /* Enable the USBIO reference by setting PM.USB_CR0.fsusbio_ref_en.*/
             USBUART_1_PM_USB_CR0_REG |= USBUART_1_PM_USB_CR0_REF_EN;
             /* The reference will be available ~40us after power restored */
@@ -272,7 +280,7 @@ void USBUART_1_Resume(void)
             CyDelayUs(2);
             /* Set the USBIO pull-up enable */
             USBUART_1_PM_USB_CR0_REG |= USBUART_1_PM_USB_CR0_PD_PULLUP_N;
-        #endif /* End CY_PSOC3_ES3 || CY_PSOC5_ES2 */
+        #endif /* End !CY_PSOC5A */
 
         /* Reinit Arbiter congiguration for DMA transfers */
         #if(USBUART_1_EP_MM != USBUART_1__EP_MANUAL)
@@ -294,20 +302,23 @@ void USBUART_1_Resume(void)
         /* Finally, Enable d+ pullup and select iomode to USB mode*/
         CY_SET_REG8(USBUART_1_USBIO_CR1_PTR, USBUART_1_USBIO_CR1_USBPUEN);
 
+        /* Restore USB register settings */
+        USBUART_1_RestoreConfig();
+    
     }
     CyExitCriticalSection(enableInterrupts);
 }
 
-#if(CY_PSOC5_ES1)
+#if(CY_PSOC5A)
 
 
 /*******************************************************************************
 * Function Name: USBUART_1_Resume_Condition
 ********************************************************************************
 * Summary:
-*  This function enables the USBFS block after power down mode, reads the 
-*  current state of the DP pin trough the USBIO block and disables the USBFS 
-*  block backward when DP pin is not in low state.
+*  This function enables the USBIO block after power down mode, reads the 
+*  current state of the DP pin and disables the USBIO block backward when DP 
+*  pin is not in low state.
  
 *
 * Parameters:  
@@ -324,24 +335,22 @@ uint8 USBUART_1_Resume_Condition(void)
 {
     uint8 pinVal;
     
-    CyIMO_SetFreq(CY_IMO_FREQ_USB);
-    USBUART_1_Resume();
+    /* Enable USBIO block */
+    USBUART_1_PM_AVAIL_CR_REG &= ~USBUART_1_PM_AVAIL_EN_FSUSBIO;
     
     /* Check DP pin for low level */
     pinVal = USBUART_1_USBIO_CR1_REG & USBUART_1_USBIO_CR1_DP0;
     
-    /* disables the USBFS block if */
     if( pinVal != 0u)
     {
-    
-        USBUART_1_Suspend();
-        CyIMO_SetFreq(CY_IMO_FREQ_3MHZ);
+        /* Disable USBIO block */
+        USBUART_1_PM_AVAIL_CR_REG &= ~USBUART_1_PM_AVAIL_EN_FSUSBIO;
     }    
     
     return (pinVal);
 }
 
-#endif /* End CY_PSOC5_ES1 */
+#endif /* End CY_PSOC5A */
 
 
 /* [] END OF FILE */

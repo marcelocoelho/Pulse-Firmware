@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: ADC_SAR_ProxIR_INT.c
-* Version 1.71
+* Version 1.80
 *
 *  Description:
 *    This file contains the code that operates during the ADC_SAR interrupt
@@ -8,7 +8,7 @@
 *
 *   Note:
 *
-*******************************************************************************
+********************************************************************************
 * Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions,
 * disclaimers, and limitations in the end user license agreement accompanying
@@ -47,10 +47,10 @@
 ******************************************************************************/
 CY_ISR( ADC_SAR_ProxIR_ISR )
 {
-    /**************************************************************************
-      *  Custom Code
-     *  - add user ISR code between the following #START and #END tags
-     *************************************************************************/
+    /************************************************************************
+    *  Custom Code
+    *  - add user ISR code between the following #START and #END tags
+    *************************************************************************/
       /* `#START MAIN_ADC_ISR`  */
 
       /* `#END`  */

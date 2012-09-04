@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: Filter_PulseInBand.h
-* Version 2.0
+* Version 2.10
 *
 * Description:
 *  This header file contains definitions associated with the FILT component.
@@ -39,7 +39,7 @@ typedef struct _Filter_PulseInBand_backupStruct
 * FILT component function prototypes.
 ****************************************/
 
-void   Filter_PulseInBand_Start(void);
+void   Filter_PulseInBand_Start(void) ;
 void   Filter_PulseInBand_Stop(void) ;
 uint8 Filter_PulseInBand_Read8(uint8 channel) ;
 uint16 Filter_PulseInBand_Read16(uint8 channel) ;
@@ -47,9 +47,9 @@ uint32 Filter_PulseInBand_Read24(uint8 channel) ;
 void Filter_PulseInBand_Write8(uint8 channel, uint8 sample) ;
 void Filter_PulseInBand_Write16(uint8 channel, uint16 sample) ;
 void Filter_PulseInBand_Write24(uint8 channel, uint32 sample) ;
-void Filter_PulseInBand_Sleep(void);
+void Filter_PulseInBand_Sleep(void) ;
 void Filter_PulseInBand_Wakeup(void) ;
-void Filter_PulseInBand_SaveConfig(void);
+void Filter_PulseInBand_SaveConfig(void) ;
 void Filter_PulseInBand_RestoreConfig(void) ;
 void Filter_PulseInBand_Init(void) ;
 void Filter_PulseInBand_Enable(void) ;

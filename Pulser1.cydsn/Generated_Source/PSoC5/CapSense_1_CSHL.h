@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: CapSense_1_CSHL.h
-* Version 3.10
+* Version 3.20
 *
 * Description:
 *  This file provides constants and parameter values for the High Level APIs
@@ -9,7 +9,7 @@
 * Note:
 *
 ********************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions,
 * disclaimers, and limitations in the end user license agreement accompanying
 * the software package with which this file was provided.
@@ -126,34 +126,40 @@
 #define CapSense_1_NEGATIVE_NOISE_THRESHOLD        (20u)
 #define CapSense_1_LOW_BASELINE_RESET              (5u)
 
+
 /***************************************
 *        Function Prototypes
 ***************************************/
 
-void CapSense_1_InitializeSensorBaseline(uint8 sensor);
-void CapSense_1_InitializeAllBaselines(void);
-void CapSense_1_InitializeEnabledBaselines(void);
-void CapSense_1_UpdateSensorBaseline(uint8 sensor);
-void CapSense_1_UpdateEnabledBaselines(void);
-uint8 CapSense_1_CheckIsSensorActive(uint8 sensor);
-uint8 CapSense_1_CheckIsWidgetActive(uint8 widget);
-uint8 CapSense_1_CheckIsAnyWidgetActive(void);
-void CapSense_1_EnableWidget(uint8 widget);
-void CapSense_1_DisableWidget(uint8 widget);
+void CapSense_1_InitializeSensorBaseline(uint8 sensor) \
+                                               ;
+void CapSense_1_InitializeAllBaselines(void) ;
+void CapSense_1_InitializeEnabledBaselines(void) \
+                                                 ;
+void CapSense_1_UpdateSensorBaseline(uint8 sensor) ;
+void CapSense_1_UpdateEnabledBaselines(void) ;
+uint8 CapSense_1_CheckIsSensorActive(uint8 sensor) ;
+uint8 CapSense_1_CheckIsWidgetActive(uint8 widget) ;
+uint8 CapSense_1_CheckIsAnyWidgetActive(void) ;
+void CapSense_1_EnableWidget(uint8 widget) ;
+void CapSense_1_DisableWidget(uint8 widget) ;
 #if (CapSense_1_TOTAL_MATRIX_BUTTONS_COUNT)
-    uint8 CapSense_1_GetMatrixButtonPos(uint8 widget, uint8* pos);
-#endif
+    uint8 CapSense_1_GetMatrixButtonPos(uint8 widget, uint8* pos) \
+	                                          ;
+#endif /* (CapSense_1_TOTAL_MATRIX_BUTTONS_COUNT) */
 
 #if (CapSense_1_TOTAL_LINEAR_SLIDERS_COUNT)
-    uint16 CapSense_1_GetCentroidPos(uint8 widget);
-#endif /* End (CapSense_1_TOTAL_LINEAR_SLIDERS_COUNT) */
+    uint16 CapSense_1_GetCentroidPos(uint8 widget) ;
+#endif /* (CapSense_1_TOTAL_LINEAR_SLIDERS_COUNT) */
 #if (CapSense_1_TOTAL_RADIAL_SLIDERS_COUNT)
-    uint16 CapSense_1_GetRadialCentroidPos(uint8 widget);
-#endif /* End (CapSense_1_TOTAL_RADIAL_SLIDERS_COUNT) */
-#if (CapSense_1_TOTAL_TOUCH_PADS_COUNT)				
-    uint8 CapSense_1_GetTouchCentroidPos(uint8 widget, uint16* pos);
-#endif /* End (CapSense_1_TOTAL_TOUCH_PADS_COUNT) */
+    uint16 CapSense_1_GetRadialCentroidPos(uint8 widget) \
+                                                 ;
+#endif /* (CapSense_1_TOTAL_RADIAL_SLIDERS_COUNT) */
+#if (CapSense_1_TOTAL_TOUCH_PADS_COUNT)
+    uint8 CapSense_1_GetTouchCentroidPos(uint8 widget, uint16* pos) \
+	                                           ;
+#endif /* (CapSense_1_TOTAL_TOUCH_PADS_COUNT) */
 
-#endif /* End CY_CAPSENSE_CSD_CSHL_CapSense_1_H */
+#endif /* CY_CAPSENSE_CSD_CSHL_CapSense_1_H */
 
 /* [] END OF FILE */

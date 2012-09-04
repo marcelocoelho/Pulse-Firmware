@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: CapSense_1_IntClock.h
-* Version 1.60
+* Version 1.70
 *
 *  Description:
 *   Provides the function and constant definitions for the clock component.
@@ -20,6 +20,15 @@
 #include <cytypes.h>
 #include <cyfitter.h>
 
+/***************************************
+* Conditional Compilation Parameters
+***************************************/
+
+/* Check to see if required defines such as CY_PSOC5LP are available */
+/* They are defined starting with cy_boot v3.0 */
+#if !defined (CY_PSOC5LP)
+    #error Component cy_clock_v1_70 requires cy_boot v3.0 or later
+#endif /* (CY_PSOC5LP) */
 
 /***************************************
 *        Function Prototypes
@@ -28,10 +37,7 @@
 void CapSense_1_IntClock_Start(void) ;
 void CapSense_1_IntClock_Stop(void) ;
 
-#if(!(CYDEV_CHIP_FAMILY_USED == CYDEV_CHIP_FAMILY_PSOC3 && \
-    CYDEV_CHIP_REVISION_USED == CYDEV_CHIP_REVISION_3A_ES2) && \
-	!(CYDEV_CHIP_FAMILY_USED == CYDEV_CHIP_FAMILY_PSOC5 && \
-	CYDEV_CHIP_REVISION_USED == CYDEV_CHIP_REVISION_5A_ES1))
+#if(CY_PSOC3 || CY_PSOC5LP)
 void CapSense_1_IntClock_StopBlock(void) ;
 #endif
 
@@ -57,28 +63,6 @@ uint8 CapSense_1_IntClock_GetPhaseRegister(void) ;
 #if defined(CapSense_1_IntClock__CFG3)
 #define CapSense_1_IntClock_SetPhase(clkPhase)             CapSense_1_IntClock_SetPhaseRegister(clkPhase)
 #define CapSense_1_IntClock_SetPhaseValue(clkPhase)        CapSense_1_IntClock_SetPhaseRegister((clkPhase) + 1)
-#endif
-
-
-/***************************************
-*           API Constants
-***************************************/
-
-/* Constants SetPhase(), clkPhase parameter. Only valid for PSoC 3 ES2 and earlier. See datasheet for details. */
-#if CYDEV_CHIP_FAMILY_USED == CYDEV_CHIP_FAMILY_PSOC3 && \
-   (CYDEV_CHIP_REVISION_USED == CYDEV_CHIP_REVISION_3A_ES1 || \
-    CYDEV_CHIP_REVISION_USED == CYDEV_CHIP_REVISION_3A_ES2)
-#define CYCLK_2_5NS             0x01 /* 2.5 ns delay. */
-#define CYCLK_3_5NS             0x02 /* 3.5 ns delay. */
-#define CYCLK_4_5NS             0x03 /* 4.5 ns delay. */
-#define CYCLK_5_5NS             0x04 /* 5.5 ns delay. */
-#define CYCLK_6_5NS             0x05 /* 6.5 ns delay. */
-#define CYCLK_7_5NS             0x06 /* 7.5 ns delay. */
-#define CYCLK_8_5NS             0x07 /* 8.5 ns delay. */
-#define CYCLK_9_5NS             0x08 /* 9.5 ns delay. */
-#define CYCLK_10_5NS            0x09 /* 10.5 ns delay. */
-#define CYCLK_11_5NS            0x0A /* 11.5 ns delay. */
-#define CYCLK_12_5NS            0x0B /* 12.5 ns delay. */
 #endif
 
 

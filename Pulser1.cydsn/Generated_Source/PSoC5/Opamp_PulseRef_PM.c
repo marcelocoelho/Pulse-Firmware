@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: Opamp_PulseRef_PM.c
-* Version 1.70
+* Version 1.80
 *
 * Description:
 *  This file provides the power management source code to the API for the 
@@ -8,8 +8,8 @@
 *
 * Note:
 *
-*******************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
+********************************************************************************
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions, 
 * disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
@@ -33,11 +33,8 @@ static Opamp_PulseRef_BACKUP_STRUCT  Opamp_PulseRef_backup;
 * Return:
 *  void
 *
-* Reentrant:
-*  No
-*
 *******************************************************************************/
-void Opamp_PulseRef_SaveConfig(void)
+void Opamp_PulseRef_SaveConfig(void) 
 {
     /* Nothing to save as registers are System reset on retention flops */
 }
@@ -49,18 +46,15 @@ void Opamp_PulseRef_SaveConfig(void)
 *
 * Summary:
 *  Restores the current user configuration registers.
-* 
+*
 * Parameters:
 *  void
-* 
+*
 * Return:
 *  void
 *
-* Reentrant:
-*  No
-*
 *******************************************************************************/
-void Opamp_PulseRef_RestoreConfig(void)
+void Opamp_PulseRef_RestoreConfig(void) 
 {
     /* Nothing to restore */
 }
@@ -81,14 +75,11 @@ void Opamp_PulseRef_RestoreConfig(void)
 *  void
 *
 * Global variables:
-*  Opamp_PulseRef_backup:  The structure field 'enableState' is modified 
+*  Opamp_PulseRef_backup: The structure field 'enableState' is modified 
 *  depending on the enable state of the block before entering to sleep mode.
 *
-* Reentrant:
-*  No
-*
 *******************************************************************************/
-void Opamp_PulseRef_Sleep(void)
+void Opamp_PulseRef_Sleep(void) 
 {
     /* Save OpAmp enable state */
     if(Opamp_PulseRef_ACT_PWR_EN == (Opamp_PulseRef_PM_ACT_CFG_REG & Opamp_PulseRef_ACT_PWR_EN))
@@ -124,11 +115,8 @@ void Opamp_PulseRef_Sleep(void)
 *  void
 *
 * Global variables:
-*  Opamp_PulseRef_backup:  The structure field 'enableState' is used to 
+*  Opamp_PulseRef_backup: The structure field 'enableState' is used to 
 *  restore the enable state of block after wakeup from sleep mode.
-* 
-* Reentrant:
-*  No
 *
 *******************************************************************************/
 void Opamp_PulseRef_Wakeup(void) 
@@ -136,7 +124,7 @@ void Opamp_PulseRef_Wakeup(void)
     /* Restore the user configuration */
     Opamp_PulseRef_RestoreConfig();
 
-    /* Enable's the component operation */
+    /* Enables the component operation */
     if(Opamp_PulseRef_backup.enableState == 1u)
     {
         Opamp_PulseRef_Enable();

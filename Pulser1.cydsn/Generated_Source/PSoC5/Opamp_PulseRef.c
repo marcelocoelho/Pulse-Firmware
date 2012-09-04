@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: Opamp_PulseRef.c
-* Version 1.70
+* Version 1.80
 *
 * Description:
 *  This file provides the source code to the API for OpAmp (Analog Buffer) 
@@ -8,8 +8,8 @@
 *
 * Note:
 *
-*******************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
+********************************************************************************
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions, 
 * disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
@@ -19,12 +19,6 @@
 #include <CyLib.h>
 
 uint8 Opamp_PulseRef_initVar = 0u;
-
-/* Check to see if required defines such as CY_PSOC3 and CY_PSOC5 are available */
-/* They are defined starting with cy_boot v2.30 */
-#ifndef CY_PSOC3
-#error Component OpAmp_v1_70 requires cy_boot v2.30 or later
-#endif
 
 
 /*******************************************************************************   
@@ -42,9 +36,6 @@ uint8 Opamp_PulseRef_initVar = 0u;
 * Return:
 *  void
 *
-* Reentrant:
-*  Yes
-* 
 *******************************************************************************/
 void Opamp_PulseRef_Init(void) 
 {
@@ -65,18 +56,15 @@ void Opamp_PulseRef_Init(void)
 * Return:
 *  void
 *
-* Reentrant:
-*  Yes
-* 
 *******************************************************************************/
 void Opamp_PulseRef_Enable(void) 
 {
     /* Enable negative charge pumps in ANIF */
     Opamp_PulseRef_PUMP_CR1_REG  |= (Opamp_PulseRef_PUMP_CR1_CLKSEL | Opamp_PulseRef_PUMP_CR1_FORCE);
-    
+
     /* Enable power to buffer in active mode */
     Opamp_PulseRef_PM_ACT_CFG_REG |= Opamp_PulseRef_ACT_PWR_EN;
-    
+
     /* Enable power to buffer in alternative active mode */
     Opamp_PulseRef_PM_STBY_CFG_REG |= Opamp_PulseRef_STBY_PWR_EN;
 }
@@ -87,22 +75,19 @@ void Opamp_PulseRef_Enable(void)
 ********************************************************************************
 *
 * Summary:
-*  The start function initializes the Analog Buffer with the default values, and 
-*  sets the power to the given level.  A power level of 0, is the same as 
+*  The start function initializes the Analog Buffer with the default values and 
+*  sets the power to the given level. A power level of 0, is same as 
 *  executing the stop function.
 *
 * Parameters:
 *  void
 *
-* Return:  
+* Return:
 *  void
 *
 * Global variables:
-*  Opamp_PulseRef_initVar:  Used to check the initial configuration, modified 
+*  Opamp_PulseRef_initVar: Used to check the initial configuration, modified 
 *  when this function is called for the first time.
-*
-* Reentrant:
-*  No
 *
 *******************************************************************************/
 void Opamp_PulseRef_Start(void) 
@@ -112,7 +97,7 @@ void Opamp_PulseRef_Start(void)
         Opamp_PulseRef_initVar = 1u;
         Opamp_PulseRef_Init();
     }
-    
+
     Opamp_PulseRef_Enable();
 }
 
@@ -124,19 +109,16 @@ void Opamp_PulseRef_Start(void)
 * Summary:
 *  Powers down amplifier to lowest power state.
 *
-* Parameters:  
+* Parameters:
 *  void
 *
-* Return:  
+* Return:
 *  void
-*
-* Reentrant: 
-*  Yes
 *
 *******************************************************************************/
 void Opamp_PulseRef_Stop(void) 
 {
-    /* Disable negative charge pumps for ANIF only if the one ABuf is turned ON */
+    /* Disable negative charge pumps for ANIF only if one ABuf is turned ON */
     if(Opamp_PulseRef_PM_ACT_CFG_REG == Opamp_PulseRef_ACT_PWR_EN)
     {
         Opamp_PulseRef_PUMP_CR1_REG &= ~(Opamp_PulseRef_PUMP_CR1_CLKSEL | Opamp_PulseRef_PUMP_CR1_FORCE);
@@ -151,30 +133,27 @@ void Opamp_PulseRef_Stop(void)
 
 
 /*******************************************************************************
-* Funciton Name:   Opamp_PulseRef_SetPower
+* Function Name: Opamp_PulseRef_SetPower
 ********************************************************************************
 *
 * Summary:
 *  Sets power level of Analog buffer.
 *
 * Parameters: 
-*  power:  PSoC3: Sets power level between low (1) and high power (3).
-*          PSoC5: Sets power level High (0)
+*  power: PSoC3: Sets power level between low (1) and high power (3).
+*         PSoC5: Sets power level High (0)
 *
-* Return:  
+* Return:
 *  void
-*
-* Reentrant:
-*  Yes
 *
 **********************************************************************************/
 void Opamp_PulseRef_SetPower(uint8 power) 
 {
     /* Only High power can be used in PSoC5 */
-    #if CY_PSOC5
+    #if CY_PSOC5A
         CYASSERT(power == Opamp_PulseRef_HIGHPOWER);
-    #endif
-    
+    #endif   /* (CY_PSOC5A) */
+
     Opamp_PulseRef_CR_REG = ((Opamp_PulseRef_CR_REG & ~Opamp_PulseRef_PWR_MASK) | 
                                ( power & Opamp_PulseRef_PWR_MASK));   /* Set device power */
 }

@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: Filter_PulseInBand_PM.c
-* Version 2.0
+* Version 2.10
 *
 * Description:
 *  This file provides the power managaer API source code for the FILT component.
@@ -42,11 +42,8 @@ static Filter_PulseInBand_BACKUP_STRUCT  Filter_PulseInBand_backup =
 *  configuration registers which are non retention whenever user wants to go 
 *  sleep mode by calling Sleep() API.
 *
-* Reentrance:
-*  No
-*
 *******************************************************************************/
-void Filter_PulseInBand_SaveConfig(void)
+void Filter_PulseInBand_SaveConfig(void) 
 {
     Filter_PulseInBand_backup.cr = Filter_PulseInBand_CR_REG;
     Filter_PulseInBand_backup.sr = Filter_PulseInBand_SR_REG;
@@ -135,11 +132,8 @@ void Filter_PulseInBand_RestoreACURam()
 *  Filter_PulseInBand_backup:  The structure field 'enableState' is modified 
 *  depending on the enable state of the block before entering to sleep mode.
 *
-* Reentrance:
-*  No
-*
 *******************************************************************************/
-void Filter_PulseInBand_Sleep(void)
+void Filter_PulseInBand_Sleep(void) 
 {
     /* Save Filter enable state */
     if(Filter_PulseInBand_PM_ACT_MSK == (Filter_PulseInBand_PM_ACT_CFG_REG & Filter_PulseInBand_PM_ACT_MSK))

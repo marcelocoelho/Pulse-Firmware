@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: ADC_SAR_ProxIR.c
-* Version 1.71
+* Version 1.80
 *
 * Description:
 *  This file provides the source code to the API for the Successive
@@ -8,7 +8,7 @@
 *
 * Note:
 *
-*******************************************************************************
+********************************************************************************
 * Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions,
 * disclaimers, and limitations in the end user license agreement accompanying
@@ -37,9 +37,9 @@ uint8 ADC_SAR_ProxIR_initVar = 0u;
 volatile int16 ADC_SAR_ProxIR_offset;
 volatile int16 ADC_SAR_ProxIR_countsPerVolt;   /* Gain compensation */
 volatile int16 ADC_SAR_ProxIR_shift;
-#if(CY_PSOC5_ES1)
+#if(CY_PSOC5A)
     uint8 ADC_SAR_ProxIR_resolution;
-#endif /* End CY_PSOC5_ES1 */
+#endif /* End CY_PSOC5A */
 
 
 /*******************************************************************************
@@ -191,12 +191,14 @@ void ADC_SAR_ProxIR_Enable(void)
     /* Enable clock for SAR ADC*/
     ADC_SAR_ProxIR_SAR_CLK_REG |= ADC_SAR_ProxIR_SAR_MX_CLK_EN;
    
-    #if(CY_PSOC5_ES1)
+    #if(CY_PSOC5A)
         /* Software Reset */
         ADC_SAR_ProxIR_SAR_CSR0_REG |= ADC_SAR_ProxIR_SAR_RESET_SOFT_ACTIVE;
         CyDelayUs(2); /* 2us delay is required for the lowest 1Mhz clock connected to SAR */
         ADC_SAR_ProxIR_SAR_CSR0_REG &= ~ADC_SAR_ProxIR_SAR_RESET_SOFT_ACTIVE;
-    #endif /* End CY_PSOC5_ES1 */
+    #else
+        CyDelayUs(10); /* The block is ready to use 10 us after the enable signal is set high. */
+    #endif /* End CY_PSOC5A */
 
     /* Clear a pending interrupt */
     CyIntClearPending(ADC_SAR_ProxIR_INTC_NUMBER);
@@ -251,7 +253,6 @@ void ADC_SAR_ProxIR_SetRef(int8 refMode)
         #endif /*  End ADC_SAR_ProxIR_DEFAULT_REFERENCE */
     }
     ADC_SAR_ProxIR_SAR_CSR6_REG = tmpReg;
-    ADC_SAR_ProxIR_SAR_CSR7_REG = ADC_SAR_ProxIR_SAR_REF_S_MSB_DIS;
 }
 
 
@@ -277,7 +278,7 @@ void ADC_SAR_ProxIR_Stop(void)
     /* Stop all conversions */
     ADC_SAR_ProxIR_SAR_CSR0_REG &= ~ADC_SAR_ProxIR_SAR_SOF_START_CONV;
     
-    #if(CY_PSOC5_ES1)
+    #if(CY_PSOC5A)
         /* Leave the SAR block powered and reduce the power to the minimum */
         ADC_SAR_ProxIR_SAR_CSR0_REG |= ADC_SAR_ProxIR_ICONT_LV_3;
         /* Disable reference buffer and reduce the reference power to the minimum */
@@ -289,7 +290,7 @@ void ADC_SAR_ProxIR_Stop(void)
         ADC_SAR_ProxIR_STBY_PWRMGR_SAR_REG &= ~ADC_SAR_ProxIR_STBY_PWR_SAR_EN;
         /* Disable power for reference buffer and charge pump*/
         ADC_SAR_ProxIR_SAR_CSR3_REG = ADC_SAR_ProxIR_SAR_EN_BUF_VREF_DIS;    
-    #endif /* End CY_PSOC5_ES1 */
+    #endif /* End CY_PSOC5A */
     
 
     /* This is only valid if there is an internal clock */
@@ -394,20 +395,23 @@ void ADC_SAR_ProxIR_SetPower(uint8 power)
 *  None.
 *
 * Side Effects:
-*  The ADC resolution cannot be changed during a conversion cycle. The recommended
-*  best practice is to stop conversions with ADC_StopConvert(), change the 
-*  resolution, then restart the conversions with ADC_StartConvert().
-*  If you decide not to stop conversions before calling this API, you should use 
-*  ADC_IsEndConversion() to wait until conversion is complete before changing the 
-*  resolution.
-*  If you call ADC_SetResolution() during a conversion, the resolution will not 
-*  be changed until the current conversion is complete. Data will not be available 
-*  in the new resolution for another 6 + “New Resolution(in bits)” clock cycles. 
-*  You may need add a delay of this number of clock cycles after ADC_SetResolution()
-*  is called before data is valid again.
-*  Affects ADC_CountsTo_Volts(), ADC_CountsTo_mVolts(), and ADC_CountsTo_uVolts() 
-*  by calculating the correct conversion between ADC counts and the applied input 
-*  voltage. Calculation depends on resolution, input range, and voltage reference.
+*  The ADC resolution cannot be changed during a conversion cycle. The 
+*  recommended best practice is to stop conversions with 
+*  ADC_StopConvert(), change the resolution, then restart the 
+*  conversions with ADC_StartConvert().
+*  If you decide not to stop conversions before calling this API, you 
+*  should use ADC_IsEndConversion() to wait until conversion is complete 
+*  before changing the resolution.
+*  If you call ADC_SetResolution() during a conversion, the resolution will 
+*  not be changed until the current conversion is complete. Data will not be
+*  available in the new resolution for another 6 + "New Resolution(in bits)"
+*  clock cycles. 
+*  You may need add a delay of this number of clock cycles after 
+*  ADC_SetResolution() is called before data is valid again.
+*  Affects ADC_CountsTo_Volts(), ADC_CountsTo_mVolts(), and 
+*  ADC_CountsTo_uVolts() by calculating the correct conversion between ADC 
+*  counts and the applied input voltage. Calculation depends on resolution,
+*  input range, and voltage reference.
 *
 *******************************************************************************/
 void ADC_SAR_ProxIR_SetResolution(uint8 resolution)
@@ -415,9 +419,9 @@ void ADC_SAR_ProxIR_SetResolution(uint8 resolution)
     uint8 tmpReg;
 
     /* remember resolution for the GetResult APIs */
-    #if(CY_PSOC5_ES1)
+    #if(CY_PSOC5A)
         ADC_SAR_ProxIR_resolution = resolution;
-    #endif /* End CY_PSOC5_ES1 */
+    #endif /* End CY_PSOC5A */
     
     /* Set SAR ADC resolution */
     switch (resolution)
@@ -429,18 +433,18 @@ void ADC_SAR_ProxIR_SetResolution(uint8 resolution)
             /* Use 12bits for PSoC5 production silicon and shift the 
             *  results for lower resolution in GetResult16() API 
             */
-            #if(CY_PSOC5_ES1)
+            #if(CY_PSOC5A)
                 tmpReg = ADC_SAR_ProxIR_SAR_RESOLUTION_12BIT;
             #else    
                 tmpReg = ADC_SAR_ProxIR_SAR_RESOLUTION_10BIT;
-            #endif /* End CY_PSOC5_ES1 */
+            #endif /* End CY_PSOC5A */
             break;
         case ADC_SAR_ProxIR__BITS_8:
-            #if(CY_PSOC5_ES1)
+            #if(CY_PSOC5A)
                 tmpReg = ADC_SAR_ProxIR_SAR_RESOLUTION_12BIT;
             #else    
                 tmpReg = ADC_SAR_ProxIR_SAR_RESOLUTION_8BIT;
-            #endif /* End CY_PSOC5_ES1 */
+            #endif /* End CY_PSOC5A */
             break;
         default:
             tmpReg = ADC_SAR_ProxIR_SAR_RESOLUTION_12BIT;
@@ -508,8 +512,8 @@ void ADC_SAR_ProxIR_StartConvert(void)
 *  This writes into the SOC bit in SAR_CTRL reg.
 *
 * Side Effects:
-*  In a triggered mode the function set a software version of the SOC to low level
-*  and switch SOF source to hardware SOF input.
+*  In a triggered mode the function set a software version of the SOC to low 
+*  level and switch SOF source to hardware SOF input.
 *  
 *******************************************************************************/
 void ADC_SAR_ProxIR_StopConvert(void)
@@ -581,14 +585,14 @@ uint8 ADC_SAR_ProxIR_IsEndConversion(uint8 retMode)
 * Global Variables:
 *  ADC_SAR_ProxIR_shift - used to convert the ADC counts to the 2's 
 *  compliment form.
-*  ADC_SAR_ProxIR_resolution – used to shift the results for lower 
+*  ADC_SAR_ProxIR_resolution - used to shift the results for lower
 *   resolution.
 *
 *******************************************************************************/
 int8 ADC_SAR_ProxIR_GetResult8( void )
 {
     
-    #if(CY_PSOC5_ES1)
+    #if(CY_PSOC5A)
 
         int16 res;
 
@@ -610,7 +614,7 @@ int8 ADC_SAR_ProxIR_GetResult8( void )
         
     #else
         return( ADC_SAR_ProxIR_SAR_WRK0_REG - (int8)ADC_SAR_ProxIR_shift);
-    #endif /* End CY_PSOC5_ES1 */
+    #endif /* End CY_PSOC5A */
 
 }
 
@@ -635,7 +639,7 @@ int8 ADC_SAR_ProxIR_GetResult8( void )
 * Global Variables:
 *  ADC_SAR_ProxIR_shift - used to convert the ADC counts to the 2's 
 *  compliment form.
-*  ADC_SAR_ProxIR_resolution – used to shift the results for lower 
+*  ADC_SAR_ProxIR_resolution - used to shift the results for lower
 *   resolution.
 *
 *******************************************************************************/
@@ -645,7 +649,7 @@ int16 ADC_SAR_ProxIR_GetResult16( void )
     
     res = CY_GET_REG16(ADC_SAR_ProxIR_SAR_WRK0_PTR) - ADC_SAR_ProxIR_shift;
 
-    #if(CY_PSOC5_ES1)
+    #if(CY_PSOC5A)
         /* Use 12bits for PSoC5 production silicon and shift the results for lower resolution in this API */
         if(ADC_SAR_ProxIR_resolution == ADC_SAR_ProxIR__BITS_10)
         {
@@ -658,7 +662,7 @@ int16 ADC_SAR_ProxIR_GetResult16( void )
         else    /* Do not shift for 12 bits */
         {
         }
-    #endif /* End CY_PSOC5_ES1 */
+    #endif /* End CY_PSOC5A */
 
     return( res );
 }
@@ -719,22 +723,22 @@ void ADC_SAR_ProxIR_CalcGain( uint8 resolution )
     if(resolution == ADC_SAR_ProxIR__BITS_10)
     {
         counts >>= 2u;
-        /* Use 12bits for PSoC5 production silicon */
-        #if(CY_PSOC5_ES2)
+        /* Use 12bits for PSoC5 silicon */
+        #if(CY_PSOC5A)
+            diff_zero = diff_zero;  /* To avoid the warning */ 
+        #else   
             diff_zero >>= 2u;
-        #else  /* To avoid the warning */  
-            diff_zero = diff_zero;
-        #endif /* End CY_PSOC5_ES2 */
+        #endif /* End CY_PSOC5A */
     }
     if(resolution == ADC_SAR_ProxIR__BITS_8)
     {
         counts >>= 4u;
-        /* Use 12bits for PSoC5 production silicon */
-        #if(CY_PSOC5_ES2)
+        /* Use 12bits for PSoC5 silicon */
+        #if(CY_PSOC5A)
+            diff_zero = diff_zero;  /* To avoid the warning */  
+        #else  
             diff_zero >>= 4u;
-        #else  /* To avoid the warning */  
-            diff_zero = diff_zero;
-        #endif /* End CY_PSOC5_ES2 */
+        #endif /* End CY_PSOC5A */
     }
     counts *= 1000u; /* To avoid float point arithmetic*/
     ADC_SAR_ProxIR_countsPerVolt = counts / ADC_SAR_ProxIR_DEFAULT_REF_VOLTAGE_MV / 2;

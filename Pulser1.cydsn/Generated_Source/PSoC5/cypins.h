@@ -1,48 +1,46 @@
 /*******************************************************************************
-* File Name: cypins.h  
-* Version 2.40
+* File Name: cypins.h
+* Version 3.10
 *
 *  Description:
-*   This file contains the function prototypes and constants used for port/pin in
-*   access and control.
+*   This file contains the function prototypes and constants used for port/pin
+*   in access and control.
 *
-*  Note: 
+*  Note:
 *   Documentation of the API's in this file is located in the
 *   System Reference Guide provided with PSoC Creator.
 *
 ********************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions, 
-* disclaimers, and limitations in the end user license agreement accompanying 
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
+* You may use this file only in accordance with the license, terms, conditions,
+* disclaimers, and limitations in the end user license agreement accompanying
 * the software package with which this file was provided.
-********************************************************************************/
+*******************************************************************************/
 
-
+#if !defined(CY_BOOT_CYPINS_H)
+#define CY_BOOT_CYPINS_H
 
 #include "cytypes.h"
 #include "cyfitter.h"
 
-#if !defined(CY_CYPINS_H) 
-#define CY_CYPINS_H 
-
 
 /**************************************
-*        API Parameter Constants 
+*        API Parameter Constants
 **************************************/
 
 /*  SetPinDriveMode */
 #define PIN_DM_ALG_HIZ      PC_DRIVE_MODE_0
-#define PIN_DM_DIG_HIZ      PC_DRIVE_MODE_1  
+#define PIN_DM_DIG_HIZ      PC_DRIVE_MODE_1
 #define PIN_DM_RES_UP       PC_DRIVE_MODE_2
 #define PIN_DM_RES_DWN      PC_DRIVE_MODE_3
 #define PIN_DM_OD_LO        PC_DRIVE_MODE_4
 #define PIN_DM_OD_HI        PC_DRIVE_MODE_5
 #define PIN_DM_STRONG       PC_DRIVE_MODE_6
-#define PIN_DM_RES_UPDWN    PC_DRIVE_MODE_7 
+#define PIN_DM_RES_UPDWN    PC_DRIVE_MODE_7
 
 
 /**************************************
-*       Register Constants        
+*       Register Constants
 **************************************/
 
 /* IO.PRT.PC (Port Pin Configuration Register */
@@ -69,7 +67,7 @@
 
 
 /**************************************
-*       Pin API Macros       
+*       Pin API Macros
 **************************************/
 
 /*******************************************************************************
@@ -81,12 +79,12 @@
 * Parameters:
 *   pinPC: Port pin configuration register (uint16).
 *   #defines for each pin on a chip are provided in the cydevice_trm.h file
-*   in the form: 
+*   in the form:
 *       CYREG_PRTx_PCy
-*    
+*
 *   where x is a port number 0 - 15 and y is a pin number 0 - 7
 *
-* Return:  
+* Return:
 *   Pin state
 *    0: Logic low value
 *    Non-0: Logic high value
@@ -96,22 +94,24 @@
 
 
 /*******************************************************************************
-* Macro Name: CyPins_SetPin 
+* Macro Name: CyPins_SetPin
 ********************************************************************************
 * Summary:
-*  Set the output value for the pin (data register, DR) to a logic high.  
-*  Note that this only has an effect for pins configured as software pins that are not driven by hardware.
+*  Set the output value for the pin (data register, DR) to a logic high.
+*
+*  Note that this only has an effect for pins configured as software pins that
+*  are not driven by hardware.
 *
 * Parameters:
 *   pinPC: Port pin configuration register (uint16).
 *   #defines for each pin on a chip are provided in the cydevice_trm.h file
-*   in the form: 
+*   in the form:
 *       CYREG_PRTx_PCy
-*    
+*
 *   where x is a port number 0 - 15 and y is a pin number 0 - 7
 *
-* Return:  
-*   None   
+* Return:
+*   None
 *
 *******************************************************************************/
 #define CyPins_SetPin(pinPC)     ( *(reg8 *)(pinPC) |= PC_DATAOUT)
@@ -126,13 +126,13 @@
 * Parameters:
 *   pinPC: address of a Pin Configuration register.
 *   #defines for each pin on a chip are provided in the cydevice_trm.h file
-*   in the form: 
+*   in the form:
 *       CYREG_PRTx_PCy
-*    
+*
 *   where x is a port number 0 - 15 and y is a pin number 0 - 7
 *
-* Return:  
-*   None   
+* Return:
+*   None
 *
 *******************************************************************************/
 #define CyPins_ClearPin(pinPC)   ( *(reg8 *)(pinPC) &= ~PC_DATAOUT )
@@ -147,28 +147,29 @@
 * Parameters:
 *   pinPC: Port pin configuration register (uint16)
 *   #defines for each pin on a chip are provided in the cydevice_trm.h file
-*   in the form: 
+*   in the form:
 *       CYREG_PRTx_PCy
-*    
+*
 *   where x is a port number 0 - 15 and y is a pin number 0 - 7
 *
 *   mode: Desired drive mode
 *
-*   Define				Source
-*   PIN_DM_ALG_HIZ		Analog HiZ
-*   PIN_DM_DIG_HIZ		Digital HiZ
-*   PIN_DM_RES_UP		Resistive pull up
-*   PIN_DM_RES_DWN		Resistive pull down
-*   PIN_DM_OD_LO		Open drain - drive low
-*   PIN_DM_OD_HI		Open drain - drive high
-*   PIN_DM_STRONG		Strong CMOS Output
-*   PIN_DM_RES_UPDWN	Resistive pull up/down
+*   Define                Source
+*   PIN_DM_ALG_HIZ        Analog HiZ
+*   PIN_DM_DIG_HIZ        Digital HiZ
+*   PIN_DM_RES_UP        Resistive pull up
+*   PIN_DM_RES_DWN        Resistive pull down
+*   PIN_DM_OD_LO        Open drain - drive low
+*   PIN_DM_OD_HI        Open drain - drive high
+*   PIN_DM_STRONG        Strong CMOS Output
+*   PIN_DM_RES_UPDWN    Resistive pull up/down
 *
-* Return:  
-*   None   
+* Return:
+*   None
 *
 *******************************************************************************/
-#define CyPins_SetPinDriveMode(pinPC, mode)     ( *(reg8 *)(pinPC) = (*(reg8 *)(pinPC) & ~PC_DRIVE_MODE_MASK) | ((mode) & PC_DRIVE_MODE_MASK) )
+#define CyPins_SetPinDriveMode(pinPC, mode) \
+        ( *(reg8 *)(pinPC) = (*(reg8 *)(pinPC) & ~PC_DRIVE_MODE_MASK) | ((mode) & PC_DRIVE_MODE_MASK) )
 
 /*******************************************************************************
 * Macro Name: CyPins_ReadPinDriveMode
@@ -179,24 +180,24 @@
 * Parameters:
 *   pinPC: Port pin configuration register (uint16)
 *   #defines for each pin on a chip are provided in the cydevice_trm.h file
-*   in the form: 
+*   in the form:
 *       CYREG_PRTx_PCy
-*    
+*
 *   where x is a port number 0 - 15 and y is a pin number 0 - 7
 *
 *
-* Return:  
+* Return:
 *   mode:  Current drive mode for the pin
 *
-*   Define				Source
-*   PIN_DM_ALG_HIZ		Analog HiZ
-*   PIN_DM_DIG_HIZ		Digital HiZ
-*   PIN_DM_RES_UP		Resistive pull up
-*   PIN_DM_RES_DWN		Resistive pull down
-*   PIN_DM_OD_LO		Open drain - drive low
-*   PIN_DM_OD_HI		Open drain - drive high
-*   PIN_DM_STRONG		Strong CMOS Output
-*   PIN_DM_RES_UPDWN	Resistive pull up/down
+*   Define                Source
+*   PIN_DM_ALG_HIZ        Analog HiZ
+*   PIN_DM_DIG_HIZ        Digital HiZ
+*   PIN_DM_RES_UP        Resistive pull up
+*   PIN_DM_RES_DWN        Resistive pull down
+*   PIN_DM_OD_LO        Open drain - drive low
+*   PIN_DM_OD_HI        Open drain - drive high
+*   PIN_DM_STRONG        Strong CMOS Output
+*   PIN_DM_RES_UPDWN    Resistive pull up/down
 *
 *******************************************************************************/
 #define CyPins_ReadPinDriveMode(pinPC)      (*(reg8 *)(pinPC) & PC_DRIVE_MODE_MASK)
@@ -206,20 +207,20 @@
 * Macro Name: CyPins_FastSlew
 ********************************************************************************
 * Summary:
-*  Set the slew rate for the pin to fast edge rate.  
-*  Note that this only applies for pins in strong output drive modes, 
+*  Set the slew rate for the pin to fast edge rate.
+*  Note that this only applies for pins in strong output drive modes,
 *  not to resistive drive modes.
 *
 * Parameters:
 *   pinPC: address of a Pin Configuration register.
 *   #defines for each pin on a chip are provided in the cydevice_trm.h file
-*   in the form: 
+*   in the form:
 *       CYREG_PRTx_PCy
-*    
+*
 *   where x is a port number 0 - 15 and y is a pin number 0 - 7
 *
 *
-* Return:  
+* Return:
 *   None
 *
 *******************************************************************************/
@@ -230,25 +231,26 @@
 * Macro Name: CyPins_SlowSlew
 ********************************************************************************
 * Summary:
-*  Set the slew rate for the pin to slow edge rate.  
-*  Note that this only applies for pins in strong output drive modes, 
+*  Set the slew rate for the pin to slow edge rate.
+*  Note that this only applies for pins in strong output drive modes,
 *  not to resistive drive modes.
 *
 * Parameters:
 *   pinPC: address of a Pin Configuration register.
 *   #defines for each pin on a chip are provided in the cydevice_trm.h file
-*   in the form: 
+*   in the form:
 *       CYREG_PRTx_PCy
-*    
+*
 *   where x is a port number 0 - 15 and y is a pin number 0 - 7
 *
-*
-* Return:  
+* Return:
 *   None
 *
 *******************************************************************************/
 #define CyPins_SlowSlew(pinPC)      (*(reg8 *)(pinPC) = (*(reg8 *)(pinPC) | PC_PIN_SLOWSLEW))
 
 
-#endif /* CY_COMP_CYPINS_H */
+#endif /* (CY_BOOT_CYPINS_H) */
+
+
 /* [] END OF FILE */

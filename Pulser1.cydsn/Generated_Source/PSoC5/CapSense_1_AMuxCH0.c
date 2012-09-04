@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: CapSense_1_AMuxCH0.c
-* Version 3.10
+* Version 3.20
 *
 *  Description:
 *    This file contains all functions required for the analog multiplexer
@@ -9,7 +9,7 @@
 *   Note:
 *
 *******************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions, 
 * disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.

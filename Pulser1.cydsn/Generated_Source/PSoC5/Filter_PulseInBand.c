@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: Filter_PulseInBand.c
-* Version 2.0
+* Version 2.10
 *
 * Description:
 *  This file provides the API source code for the FILT component.
@@ -129,15 +129,12 @@ void Filter_PulseInBand_Enable(void)
 *  Filter_PulseInBand_initVar:  Used to check the initial configuration,
 *  modified when this function is called for the first time.
 *
-* Reentrant:
-*  No
-*
 * Note: 
 *  Use Filter_PulseInBand_InterruptConfig to control which events trigger 
 *  interrupts in the DFB. 
 *
 *******************************************************************************/
-void Filter_PulseInBand_Start()
+void Filter_PulseInBand_Start() 
 {
      /* If not Initialized then initialize all required hardware and software */
     if(Filter_PulseInBand_initVar == 0u)

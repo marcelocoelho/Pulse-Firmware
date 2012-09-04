@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: PrISM_PulseIndicator_1.h
-* Version 2.0
+* Version 2.10
 *
 * Description:
 *  This file provides constants and parameter values for the PrISM
@@ -9,7 +9,7 @@
 * Note:
 *
 ********************************************************************************
-* Copyright 2008-2010, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions, 
 * disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
@@ -28,20 +28,16 @@
 * Conditional Compilation Parameters
 ***************************************/
 
-/* PSoC3 ES2 or early */
-#define PrISM_PulseIndicator_1_PSOC3_ES2  ((CYDEV_CHIP_MEMBER_USED == CYDEV_CHIP_MEMBER_3A) && \
-                                     (CYDEV_CHIP_REVISION_USED <= CYDEV_CHIP_REVISION_3A_ES2))
+/* Check to see if required defines such as CY_PSOC5LP are available */
+/* They are defined starting with cy_boot v3.0 */
+#if !defined (CY_PSOC5LP)
+    #error Component PrISM_v2_10 requires cy_boot v3.0 or later
+#endif /* (CY_PSOC5LP) */
 
-/* PSoC5 ES1 or early */
-#define PrISM_PulseIndicator_1_PSOC5_ES1  ((CYDEV_CHIP_MEMBER_USED == CYDEV_CHIP_MEMBER_5A) && \
-                                     (CYDEV_CHIP_REVISION_USED <= CYDEV_CHIP_REVISION_5A_ES1))
-/* PSoC3 ES3 or later */
-#define PrISM_PulseIndicator_1_PSOC3_ES3  ((CYDEV_CHIP_MEMBER_USED == CYDEV_CHIP_MEMBER_3A) && \
-                                     (CYDEV_CHIP_REVISION_USED > CYDEV_CHIP_REVISION_3A_ES2))
 
-/* PSoC5 ES2 or later */
-#define PrISM_PulseIndicator_1_PSOC5_ES2  ((CYDEV_CHIP_MEMBER_USED == CYDEV_CHIP_MEMBER_5A) && \
-                                     (CYDEV_CHIP_REVISION_USED > CYDEV_CHIP_REVISION_5A_ES1))
+/***************************************
+*    Initial Parameter Constants
+***************************************/
                                      
 #define PrISM_PulseIndicator_1_RESOLUTION             (8u)
 #define PrISM_PulseIndicator_1_PULSE_TYPE_HARDCODED   (1u)
@@ -57,14 +53,14 @@ typedef struct _PrISM_PulseIndicator_1_backupStruct
     uint8 enableState;
     #if(!PrISM_PulseIndicator_1_PULSE_TYPE_HARDCODED)
         uint8 cr;
-    #endif /*End PrISM_PulseIndicator_1_PULSE_TYPE_HARDCODED*/
+    #endif /* End PrISM_PulseIndicator_1_PULSE_TYPE_HARDCODED */
     uint8 seed;
     uint8 seed_copy;
     uint8 polynom;
-    #if(PrISM_PulseIndicator_1_PSOC3_ES2 || PrISM_PulseIndicator_1_PSOC5_ES1) /* PSoC3 ES2 or early, PSoC5 ES1*/
+    #if(CY_UDB_V0)
         uint8 density0;
         uint8 density1;
-    #endif /*End PrISM_PulseIndicator_1_PSOC3_ES2 || PrISM_PulseIndicator_1_PSOC5_ES1*/
+    #endif /* End CY_UDB_V0 */
 } PrISM_PulseIndicator_1_BACKUP_STRUCT;
 
 
@@ -72,7 +68,7 @@ typedef struct _PrISM_PulseIndicator_1_backupStruct
 *       Function Prototypes
 ***************************************/
 
-void PrISM_PulseIndicator_1_Start(void);
+void PrISM_PulseIndicator_1_Start(void) ;
 void PrISM_PulseIndicator_1_Stop(void) ;
 void PrISM_PulseIndicator_1_SetPulse0Mode(uint8 pulse0Type) ;
 void PrISM_PulseIndicator_1_SetPulse1Mode(uint8 pulse1Type) ;
@@ -87,9 +83,9 @@ void PrISM_PulseIndicator_1_WritePulse0(uint8 pulseDensity0) \
 uint8 PrISM_PulseIndicator_1_ReadPulse1(void) ;
 void PrISM_PulseIndicator_1_WritePulse1(uint8 pulseDensity1) \
                                                                 ;
-void PrISM_PulseIndicator_1_Sleep(void);
+void PrISM_PulseIndicator_1_Sleep(void) ;
 void PrISM_PulseIndicator_1_Wakeup(void) ;
-void PrISM_PulseIndicator_1_SaveConfig(void);
+void PrISM_PulseIndicator_1_SaveConfig(void) ;
 void PrISM_PulseIndicator_1_RestoreConfig(void) ;
 void PrISM_PulseIndicator_1_Enable(void) ;
 void PrISM_PulseIndicator_1_Init(void) ;
@@ -157,7 +153,8 @@ void PrISM_PulseIndicator_1_Init(void) ;
 #endif /* End PrISM_PulseIndicator_1_RESOLUTION */
 
 #define PrISM_PulseIndicator_1_CONTROL_REG   (* (reg8 *) PrISM_PulseIndicator_1_AsyncCtl_ControlReg__CONTROL_REG)
-#define PrISM_PulseIndicator_1_CONTROL_PTR   (  (reg8 *) PrISM_PulseIndicator_1_AsyncCtl_ControlReg__CONTROL_REG) 
+#define PrISM_PulseIndicator_1_CONTROL_PTR   (  (reg8 *) PrISM_PulseIndicator_1_AsyncCtl_ControlReg__CONTROL_REG)
+
 
 /***************************************
 *       Register Constants
@@ -168,6 +165,7 @@ void PrISM_PulseIndicator_1_Init(void) ;
 #define PrISM_PulseIndicator_1_CTRL_COMPARE_TYPE1_GREATER_THAN_OR_EQUAL   (0x04u)
 
 #define PrISM_PulseIndicator_1_FIFO0_CLR                                  (0x01u)
+
 
 /***************************************
 * Renamed global variables or defines 

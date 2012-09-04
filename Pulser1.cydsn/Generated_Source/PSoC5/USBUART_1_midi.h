@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: USBUART_1_midi.h
-* Version 2.12
+* Version 2.30
 *
 * Description:
 *  Header File for the USBFS MIDI module.

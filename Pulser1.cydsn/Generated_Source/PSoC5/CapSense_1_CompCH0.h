@@ -1,20 +1,20 @@
 /*******************************************************************************
-* File Name: CapSense_1_CompCH0.h  
-* Version 1.70
+* File Name: CapSense_1_CompCH0.c
+* Version 1.90
 *
-*  Description:
-*    This file contains the function prototypes and constants used in
-*    the Analog Comparator User Module.
+* Description:
+*  This file contains the function prototypes and constants used in
+*  the Analog Comparator User Module.
 *
-*  Note:
-*     
+* Note:
+*  None
 *
 ********************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions, 
 * disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
-********************************************************************************/
+*******************************************************************************/
 
 #if !defined(CY_COMP_CapSense_1_CompCH0_H) 
 #define CY_COMP_CapSense_1_CompCH0_H
@@ -23,7 +23,14 @@
 #include "CyLib.h"
 #include "cyfitter.h" 
 
+
 #define CapSense_1_CompCH0_RECALMODE 0u
+
+/* Check to see if required defines such as CY_PSOC5LP are available */
+/* They are defined starting with cy_boot v3.0 */
+#if !defined (CY_PSOC5LP)
+    #error Component Comp_v1_90 requires cy_boot v3.0 or later
+#endif /* (CY_PSOC5LP) */
 
 
 /***************************************
@@ -34,31 +41,40 @@
 typedef struct CapSense_1_CompCH0_backupStruct
 {
     uint8 enableState;
-    uint8 compCRReg;
+   /* uint8 compCRReg; */
 }CapSense_1_CompCH0_backupStruct;
+
+#if (CY_PSOC5A)
+    /* Stop API changes for PSoC5A */
+    typedef struct _CapSense_1_CompCH0_lowPowerBackupStruct
+    {
+        uint8 compCRReg;
+    }   CapSense_1_CompCH0_LOWPOWER_BACKUP_STRUCT;
+#endif /* CY_PSOC5A */
 
 
 /**************************************
 *        Function Prototypes 
 **************************************/
 
-void    CapSense_1_CompCH0_Start(void);
-void    CapSense_1_CompCH0_Stop(void)               ;
-void    CapSense_1_CompCH0_SetSpeed(uint8 speed)    ;
-uint8   CapSense_1_CompCH0_GetCompare(void)         ;
-uint16  CapSense_1_CompCH0_ZeroCal(void)            ;
-void    CapSense_1_CompCH0_LoadTrim(uint16 trimVal) ;
-void CapSense_1_CompCH0_Init(void)                  ; 
-void CapSense_1_CompCH0_Enable(void)                ;
-void CapSense_1_CompCH0_SaveConfig(void);
-void CapSense_1_CompCH0_RestoreConfig(void);
-void CapSense_1_CompCH0_Sleep(void);
-void CapSense_1_CompCH0_Wakeup(void)                ;
-/* Below APIs are valid only for PSoC3 silicon.*/
-#if (CY_PSOC3) 
-    void CapSense_1_CompCH0_PwrDwnOverrideEnable(void) ;
+void    CapSense_1_CompCH0_Start(void)                  ;
+void    CapSense_1_CompCH0_Stop(void)                   ;
+void    CapSense_1_CompCH0_SetSpeed(uint8 speed)        ;
+uint8   CapSense_1_CompCH0_GetCompare(void)             ;
+uint16  CapSense_1_CompCH0_ZeroCal(void)                ;
+void    CapSense_1_CompCH0_LoadTrim(uint16 trimVal)     ;
+void CapSense_1_CompCH0_Init(void)                      ; 
+void CapSense_1_CompCH0_Enable(void)                    ;
+void CapSense_1_CompCH0_trimAdjust(uint8 nibble)        ;
+void CapSense_1_CompCH0_SaveConfig(void)                ;
+void CapSense_1_CompCH0_RestoreConfig(void)             ;
+void CapSense_1_CompCH0_Sleep(void)                     ;
+void CapSense_1_CompCH0_Wakeup(void)                    ;
+/* Below APIs are valid only for PSoC3, PSoC5LP silicons.*/
+#if (CY_PSOC3 || CY_PSOC5LP) 
+    void CapSense_1_CompCH0_PwrDwnOverrideEnable(void)  ;
     void CapSense_1_CompCH0_PwrDwnOverrideDisable(void) ;
-#endif /* CY_PSOC3 */
+#endif /* CY_PSOC3 || CY_PSOC5LP */
 
 
 /**************************************
@@ -78,16 +94,16 @@ void CapSense_1_CompCH0_Wakeup(void)                ;
 /* High speed trim values */
 #define CapSense_1_CompCH0_HS_TRIM_TR0        (CY_GET_XTND_REG8(CapSense_1_CompCH0_ctComp__TRIM__TR0_HS))
 
-#if (CY_PSOC3_ES3 || CY_PSOC5_ES2)
+#if (CY_PSOC3 || CY_PSOC5LP)
     #define CapSense_1_CompCH0_HS_TRIM_TR1    (CY_GET_XTND_REG8(CapSense_1_CompCH0_ctComp__TRIM__TR1_HS))
-#endif /* (CY_PSOC3_ES3 || CY_PSOC5_ES2) */
+#endif /* (CY_PSOC3 || CY_PSOC5LP) */
 
 /* Low speed trim values */
 #define CapSense_1_CompCH0_LS_TRIM_TR0        (CY_GET_XTND_REG8(CapSense_1_CompCH0_ctComp__TRIM__TR0 + 1))
 
-#if (CY_PSOC3_ES3 || CY_PSOC5_ES2)
+#if (CY_PSOC3 || CY_PSOC5LP)
     #define CapSense_1_CompCH0_LS_TRIM_TR1    (CY_GET_XTND_REG8(CapSense_1_CompCH0_ctComp__TRIM__TR1 + 1))
-#endif /* CY_PSOC3_ES3 || CY_PSOC5_ES2 */
+#endif /* CY_PSOC3 || CY_PSOC5LP */
 
 
 /**************************************
@@ -121,19 +137,19 @@ void CapSense_1_CompCH0_Wakeup(void)                ;
 #define CapSense_1_CompCH0_SW6_PTR (  (reg8 *) CapSense_1_CompCH0_ctComp__SW6 )
 
 /* Trim registers */
-/* PSoC3 ES2 or early, PSoC5 ES1 or early */
-#if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+/* PSoC5A */
+#if (CY_PSOC5A)
     #define CapSense_1_CompCH0_TR      (* (reg8 *) CapSense_1_CompCH0_ctComp__TR )   /* Trim registers */
     #define CapSense_1_CompCH0_TR_PTR  (  (reg8 *) CapSense_1_CompCH0_ctComp__TR )
-#endif /* CY_PSOC3_ES2 || CY_PSOC5_ES1 */
+#endif /* CY_PSOC5A */
 
-/* PSoC3 ES3 or later, PSoC5 ES2 or later */
-#if (CY_PSOC3_ES3 || CY_PSOC5_ES2) 
+/* PSoC3, PSoC5LP or later */
+#if (CY_PSOC3 || CY_PSOC5LP) 
     #define CapSense_1_CompCH0_TR0         (* (reg8 *) CapSense_1_CompCH0_ctComp__TR0 ) /* Trim register for P-type load */
     #define CapSense_1_CompCH0_TR0_PTR     (  (reg8 *) CapSense_1_CompCH0_ctComp__TR0 ) 
     #define CapSense_1_CompCH0_TR1         (* (reg8 *) CapSense_1_CompCH0_ctComp__TR1 ) /* Trim register for N-type load */
     #define CapSense_1_CompCH0_TR1_PTR     (  (reg8 *) CapSense_1_CompCH0_ctComp__TR1 ) 
-#endif /* CY_PSOC3_ES3 || CY_PSOC5_ES2 */
+#endif /* CY_PSOC3 || CY_PSOC5LP */
 
 #define CapSense_1_CompCH0_WRK             (* (reg8 *) CapSense_1_CompCH0_ctComp__WRK )  /* Working register - output */
 #define CapSense_1_CompCH0_WRK_PTR         (  (reg8 *) CapSense_1_CompCH0_ctComp__WRK )
@@ -172,21 +188,21 @@ void CapSense_1_CompCH0_Wakeup(void)                ;
 /* TR (Comp Trim Register)     */
 #define CapSense_1_CompCH0_DEFAULT_CMP_TRIM  0x00u
 
-/* PSoC3 ES2 or early, PSoC5 ES1 or early */
-#if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+/* PSoC5A */
+#if (CY_PSOC5A)
     #define CapSense_1_CompCH0_CMP_TRIM1_DIR  0x08u   /* Trim direction for N-type load for offset calibration */
     #define CapSense_1_CompCH0_CMP_TRIM1_MASK 0x07u   /* Trim for N-type load for offset calibration */
     #define CapSense_1_CompCH0_CMP_TRIM2_DIR  0x80u   /* Trim direction for P-type load for offset calibration */
     #define CapSense_1_CompCH0_CMP_TRIM2_MASK 0x70u   /* Trim for P-type load for offset calibration */
-#endif /* CY_PSOC3_ES2 || CY_PSOC5_ES1 */
+#endif /* CY_PSOC5A */
 
-/* PSoC3 ES3 or later, PSoC5 ES2 or later */
-#if (CY_PSOC3_ES3 || CY_PSOC5_ES2)
-    #define CapSense_1_CompCH0_CMP_TR0_DIR 0x11u    /* Trim direction for N-type load for offset calibration */
-    #define CapSense_1_CompCH0_CMP_TR0_MASK 0x1Fu   /* Trim for N-type load for offset calibration */
+/* PSoC3, PSoC5LP or later */
+#if (CY_PSOC3 || CY_PSOC5LP)
+    #define CapSense_1_CompCH0_CMP_TR0_DIR 0x10u    /* Trim direction for N-type load for offset calibration */
+    #define CapSense_1_CompCH0_CMP_TR0_MASK 0x0Fu   /* Trim for N-type load for offset calibration */
     #define CapSense_1_CompCH0_CMP_TR1_DIR 0x10u    /* Trim direction for P-type load for offset calibration */
-    #define CapSense_1_CompCH0_CMP_TR1_MASK 0x1Fu   /* Trim for P-type load for offset calibration */ 
-#endif /* CY_PSOC3_ES3 || CY_PSOC5_ES2 */
+    #define CapSense_1_CompCH0_CMP_TR1_MASK 0x07u   /* Trim for P-type load for offset calibration */ 
+#endif /* CY_PSOC3 || CY_PSOC5LP */
 
 
 /* WRK (Comp output working register)     */ 
@@ -198,10 +214,10 @@ void CapSense_1_CompCH0_Wakeup(void)                ;
 /* PM_STBY_CFG7 (Standby Power Mode CFG Register)     */ 
 #define CapSense_1_CompCH0_STBY_PWR_EN     CapSense_1_CompCH0_ctComp__PM_STBY_MSK /* Standby Power enable mask */
 
-#if (CY_PSOC5_ES1)
+#if (CY_PSOC5A)
     /* For stop API changes mask to make the COMP register CR to 0X00  */
     #define CapSense_1_CompCH0_COMP_REG_CLR             (0x00u)
-#endif /* CY_PSOC5_ES1 */
+#endif /* CY_PSOC5A */
 
 #endif /* CY_COMP_CapSense_1_CompCH0_H */
 

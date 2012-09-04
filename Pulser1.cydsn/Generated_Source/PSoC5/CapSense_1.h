@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: CapSense_1.h
-* Version 3.10
+* Version 3.20
 *
 * Description:
 *  This file provides constants and parameter values for the CapSense CSD
@@ -9,7 +9,7 @@
 * Note:
 *
 ********************************************************************************
-* Copyright 2008-2011, Cypress Semicondu)ctor Corporation.  All rights reserved.
+* Copyright 2008-2012, Cypress Semicondu)ctor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions,
 * disclaimers, and limitations in the end u)ser license agreement accompanying
 * the software package with which this file was provided.
@@ -28,6 +28,7 @@
 
 #include "CapSense_1_AMuxCH0.h"
 #include "CapSense_1_CompCH0.h"
+#include "CapSense_1_IdacCH0.h"
 
 
 
@@ -35,6 +36,13 @@
 /***************************************
 *   Condition compilation parameters
 ***************************************/
+
+/* Check to see if required defines such as CY_PSOC5LP are available */
+/* They are defined starting with cy_boot v3.0 */
+#if !defined (CY_PSOC5LP)
+    #error Component CapSense_CSD_v3_20 requires cy_boot v3.0 or later
+#endif /* (CY_PSOC5LP) */
+
 
 #define CapSense_1_DESIGN_TYPE                (1u)
 
@@ -103,9 +111,9 @@
 #define CapSense_1_CIS_SHIELD                 (2u)
 
 /* Method of tunning */
-#define CapSense_1_NO_TUNING                 	(0u)
-#define CapSense_1_MANUAL_TUNING             	(1u)
-#define CapSense_1_AUTO_TUNING               	(2u)
+#define CapSense_1_NO_TUNING                  (0u)
+#define CapSense_1_MANUAL_TUNING              (1u)
+#define CapSense_1_AUTO_TUNING                (2u)
 
 /* Measure Channel implementation */
 #define CapSense_1_MEASURE_IMPLEMENTATION_FF  (0u)
@@ -114,15 +122,6 @@
 /* Guard sensor definition */
 #define CapSense_1_GUARD_SENSOR_DISABLE       (0u)
 #define CapSense_1_GUARD_SENSOR_ENABLE        (1u)
-
-/* Auto Tuning defualt raw counts value */
-#define CapSense_1_DEFUALT_RAW_COUNTS_VALUE    (384u)
-
-/* IDAC_CR0 registers save/restore flags */
-#define CapSense_1_IdacCH0_RESTORE_CFG (1u)
-#define CapSense_1_IdacCH1_RESTORE_CFG (2u)
-/* DAC_CR0 register value when IDAC is stopped*/
-#define CapSense_1_IDAC_STOP_CR0_VAL   (0x1Eu)
 
 
 /***************************************
@@ -135,9 +134,9 @@ typedef struct _CapSense_1_BACKUP_STRUCT
     uint8 enableState;
     
     /* Set ScanSpeed */
-    #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+    #if (CY_PSOC5A)
         uint8 scanspeed;
-    #endif  /* End (CY_PSOC3_ES2 || CY_PSOC5_ES1) */
+    #endif  /* (CY_PSOC5A) */
 
     /* Set CONTROL_REG */
     uint8 ctrlreg;
@@ -150,19 +149,15 @@ typedef struct _CapSense_1_BACKUP_STRUCT
 
 void CapSense_1_Init(void) ;
 void CapSense_1_Enable(void) ;
-void CapSense_1_Start(void);
+void CapSense_1_Start(void) ;
 void CapSense_1_Stop(void) ;
-#if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
-    void CapSense_1_SaveConfig(void);
-#else
-    void CapSense_1_SaveConfig(void) ;
-#endif  /* End (CY_PSOC3_ES2 || CY_PSOC5_ES1) */
-void CapSense_1_Sleep(void);
+void CapSense_1_SaveConfig(void) ;
+void CapSense_1_Sleep(void) ;
 void CapSense_1_RestoreConfig(void) ;
 void CapSense_1_Wakeup(void) ;
 uint8 CapSense_1_IsBusy(void) ;
-void CapSense_1_ScanSensor(uint8 sensor);
-void CapSense_1_ScanEnabledWidgets(void);
+void CapSense_1_ScanSensor(uint8 sensor) ;
+void CapSense_1_ScanEnabledWidgets(void) ;
 void CapSense_1_SetScanSlotSettings(uint8 slot) ;
 uint16 CapSense_1_ReadSensorRaw(uint8 sensor) ;
 void CapSense_1_ClearSensors(void) ;
@@ -172,14 +167,14 @@ void CapSense_1_DisableSensor(uint8 sensor) ;
 void CapSense_1_SetAnalogSwitchesSource(uint8 src) ;
 
 #if (CapSense_1_CURRENT_SOURCE == CapSense_1_EXTERNAL_RB)
-    void CapSense_1_SetRBleed(uint8 rbeed);  
-#endif  /* End CapSense_1_CURRENT_SOURCE */
+    void CapSense_1_SetRBleed(uint8 rbeed) ;
+#endif  /* (CapSense_1_CURRENT_SOURCE == CapSense_1_EXTERNAL_RB) */
 
 /* Interrupt handler */
 CY_ISR_PROTO(CapSense_1_IsrCH0_ISR);
 #if (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN)
     CY_ISR_PROTO(CapSense_1_IsrCH1_ISR);
-#endif  /* End CapSense_1_DESIGN_TYPE */
+#endif  /* (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) */
 
 
 /***************************************
@@ -209,12 +204,6 @@ CY_ISR_PROTO(CapSense_1_IsrCH0_ISR);
 #define CapSense_1_SCAN_SPEED_FAST            (0x03u)
 #define CapSense_1_SCAN_SPEED_NORMAL          (0x07u)
 #define CapSense_1_SCAN_SPEED_SLOW            (0x0Fu)
-
-/* Idac SetRange */
-#define CapSense_1_IDAC_RANGE_MASK            (0x0Cu)
-#define CapSense_1_IDAC_RANGE_32uA            (0x00u)
-#define CapSense_1_IDAC_RANGE_255uA           (0x04u)
-#define CapSense_1_IDAC_RANGE_2mA             (0x08u)
 
 /* PWM Resolution */
 #define CapSense_1_PWM_WINDOW_APPEND          (0xFEu)
@@ -249,6 +238,7 @@ CY_ISR_PROTO(CapSense_1_IsrCH0_ISR);
 #define CapSense_1_ANALOG_SWITCHES_SRC_PRESCALER (0x01u)
 #define CapSense_1_ANALOG_SWITCHES_SRC_PRS       (0x02u)
 
+
 /***************************************
 *             Registers
 ***************************************/
@@ -263,11 +253,11 @@ CY_ISR_PROTO(CapSense_1_IsrCH0_ISR);
 #define CapSense_1_SCANSPEED_AUX_CONTROL_REG (*(reg8 *) CapSense_1_ClockGen_ScanSpeed__CONTROL_AUX_CTL_REG )
 #define CapSense_1_SCANSPEED_AUX_CONTROL_PTR ( (reg8 *) CapSense_1_ClockGen_ScanSpeed__CONTROL_AUX_CTL_REG )
 
-#define CapSense_1_SCANSPEED_PERIOD_REG           (*(reg8 *) CapSense_1_ClockGen_ScanSpeed__PERIOD_REG )
-#define CapSense_1_SCANSPEED_PERIOD_PTR           ( (reg8 *) CapSense_1_ClockGen_ScanSpeed__PERIOD_REG )
+#define CapSense_1_SCANSPEED_PERIOD_REG      (*(reg8 *) CapSense_1_ClockGen_ScanSpeed__PERIOD_REG )
+#define CapSense_1_SCANSPEED_PERIOD_PTR      ( (reg8 *) CapSense_1_ClockGen_ScanSpeed__PERIOD_REG )
 
-#define CapSense_1_SCANSPEED_COUNTER_REG          (*(reg8 *) CapSense_1_ClockGen_ScanSpeed__COUNT_REG )
-#define CapSense_1_SCANSPEED_COUNTER_PTR          ( (reg8 *) CapSense_1_ClockGen_ScanSpeed__COUNT_REG )
+#define CapSense_1_SCANSPEED_COUNTER_REG     (*(reg8 *) CapSense_1_ClockGen_ScanSpeed__COUNT_REG )
+#define CapSense_1_SCANSPEED_COUNTER_PTR     ( (reg8 *) CapSense_1_ClockGen_ScanSpeed__COUNT_REG )
 
 
 /* Clock Gen - Prescaler REGs definitions */
@@ -285,13 +275,13 @@ CY_ISR_PROTO(CapSense_1_IsrCH0_ISR);
     #define CapSense_1_PRESCALER_CONTROL_REG      (*(reg8 *) CapSense_1_ClockGen_FF_Prescaler__CFG0 )
     #define CapSense_1_PRESCALER_CONTROL_PTR      ( (reg8 *) CapSense_1_ClockGen_FF_Prescaler__CFG0 )
     
-    #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+    #if (CY_PSOC5A)
         #define CapSense_1_PRESCALER_CONTROL2_REG     (*(reg8 *) CapSense_1_ClockGen_FF_Prescaler__CFG1 )
         #define CapSense_1_PRESCALER_CONTROL2_PTR     ( (reg8 *) CapSense_1_ClockGen_FF_Prescaler__CFG1 )
     #else
         #define CapSense_1_PRESCALER_CONTROL2_REG     (*(reg8 *) CapSense_1_ClockGen_FF_Prescaler__CFG2 )
         #define CapSense_1_PRESCALER_CONTROL2_PTR     ( (reg8 *) CapSense_1_ClockGen_FF_Prescaler__CFG2 )
-    #endif  /* End (CY_PSOC3_ES2 || CY_PSOC5_ES1) */
+    #endif  /* (CY_PSOC5A) */
     
     #define CapSense_1_PRESCALER_ACT_PWRMGR_REG   (*(reg8 *) CapSense_1_ClockGen_FF_Prescaler__PM_ACT_CFG )
     #define CapSense_1_PRESCALER_ACT_PWRMGR_PTR   ( (reg8 *) CapSense_1_ClockGen_FF_Prescaler__PM_ACT_CFG )
@@ -303,7 +293,7 @@ CY_ISR_PROTO(CapSense_1_IsrCH0_ISR);
 
 #else
     /* No prescaler */
-#endif  /* End (CapSense_1_PRESCALER_OPTIONS == CapSense_1_PRESCALER_UDB) */
+#endif  /* (CapSense_1_PRESCALER_OPTIONS == CapSense_1_PRESCALER_UDB) */
 
 /* PRS */
 #if (CapSense_1_PRS_OPTIONS == CapSense_1_PRS_8BITS)  
@@ -362,7 +352,7 @@ CY_ISR_PROTO(CapSense_1_IsrCH0_ISR);
     
 #else
     /* No PRS */
-#endif  /* End (CapSense_1_PRS_OPTIONS == CapSense_1_PRS_8BITS)  */
+#endif  /* (CapSense_1_PRS_OPTIONS == CapSense_1_PRS_8BITS)  */
 
 /* Measure REGs  definitions */
 #if (CapSense_1_IMPLEMENTATION_CH0 == CapSense_1_MEASURE_IMPLEMENTATION_FF)
@@ -373,13 +363,13 @@ CY_ISR_PROTO(CapSense_1_IsrCH0_ISR);
     #define CapSense_1_PWM_CH0_CONTROL_REG        (*(reg8 *) CapSense_1_MeasureCH0_FF_Window__CFG0 )
     #define CapSense_1_PWM_CH0_CONTROL_PTR        ( (reg8 *) CapSense_1_MeasureCH0_FF_Window__CFG0 )
     
-    #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+    #if (CY_PSOC5A)
         #define CapSense_1_PWM_CH0_CONTROL2_REG   (*(reg8 *) CapSense_1_MeasureCH0_FF_Window__CFG1 )
         #define CapSense_1_PWM_CH0_CONTROL2_PTR   ( (reg8 *) CapSense_1_MeasureCH0_FF_Window__CFG1 )
     #else
         #define CapSense_1_PWM_CH0_CONTROL2_REG   (*(reg8 *) CapSense_1_MeasureCH0_FF_Window__CFG2 )
         #define CapSense_1_PWM_CH0_CONTROL2_PTR   ( (reg8 *) CapSense_1_MeasureCH0_FF_Window__CFG2 )
-    #endif  /* End (CY_PSOC3_ES2 || CY_PSOC5_ES1) */
+    #endif  /* (CY_PSOC5A) */
     
     #define CapSense_1_PWM_CH0_ACT_PWRMGR_REG     (*(reg8 *) CapSense_1_MeasureCH0_FF_Window__PM_ACT_CFG )
     #define CapSense_1_PWM_CH0_ACT_PWRMGR_PTR     ( (reg8 *) CapSense_1_MeasureCH0_FF_Window__PM_ACT_CFG )
@@ -396,13 +386,13 @@ CY_ISR_PROTO(CapSense_1_IsrCH0_ISR);
     #define CapSense_1_RAW_CH0_CONTROL_REG        (*(reg8 *) CapSense_1_MeasureCH0_FF_Counter__CFG0 )
     #define CapSense_1_RAW_CH0_CONTROL_PTR        ( (reg8 *) CapSense_1_MeasureCH0_FF_Counter__CFG0 )
     
-    #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+    #if (CY_PSOC5A)
         #define CapSense_1_RAW_CH0_CONTROL2_REG   (*(reg8 *) CapSense_1_MeasureCH0_FF_Counter__CFG1 )
         #define CapSense_1_RAW_CH0_CONTROL2_PTR   ( (reg8 *) CapSense_1_MeasureCH0_FF_Counter__CFG1 )
     #else
         #define CapSense_1_RAW_CH0_CONTROL2_REG   (*(reg8 *) CapSense_1_MeasureCH0_FF_Counter__CFG2 )
         #define CapSense_1_RAW_CH0_CONTROL2_PTR   ( (reg8 *) CapSense_1_MeasureCH0_FF_Counter__CFG2 )
-    #endif  /* End (CY_PSOC3_ES2 || CY_PSOC5_ES1) */
+    #endif  /* (CY_PSOC5A) */
     
     #define CapSense_1_RAW_CH0_ACT_PWRMGR_REG     (*(reg8 *) CapSense_1_MeasureCH0_FF_Counter__PM_ACT_CFG )
     #define CapSense_1_RAW_CH0_ACT_PWRMGR_PTR     ( (reg8 *) CapSense_1_MeasureCH0_FF_Counter__PM_ACT_CFG )
@@ -465,13 +455,13 @@ CY_ISR_PROTO(CapSense_1_IsrCH0_ISR);
         #define CapSense_1_PWM_CH1_CONTROL_REG        (*(reg8 *) CapSense_1_MeasureCH1_FF_Window__CFG0 )
         #define CapSense_1_PWM_CH1_CONTROL_PTR        ( (reg8 *) CapSense_1_MeasureCH1_FF_Window__CFG0 )
         
-        #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+        #if (CY_PSOC5A)
             #define CapSense_1_PWM_CH1_CONTROL2_REG   (*(reg8 *) CapSense_1_MeasureCH1_FF_Window__CFG1 )
             #define CapSense_1_PWM_CH1_CONTROL2_PTR   ( (reg8 *) CapSense_1_MeasureCH1_FF_Window__CFG1 )
         #else
             #define CapSense_1_PWM_CH1_CONTROL2_REG   (*(reg8 *) CapSense_1_MeasureCH1_FF_Window__CFG2 )
             #define CapSense_1_PWM_CH1_CONTROL2_PTR   ( (reg8 *) CapSense_1_MeasureCH1_FF_Window__CFG2 )
-        #endif  /* End (CY_PSOC3_ES2 || CY_PSOC5_ES1) */
+        #endif  /* (CY_PSOC5A) */
         
         #define CapSense_1_PWM_CH1_ACT_PWRMGR_REG   (*(reg8 *) CapSense_1_MeasureCH1_FF_Window__PM_ACT_CFG )
         #define CapSense_1_PWM_CH1_ACT_PWRMGR_PTR   ( (reg8 *) CapSense_1_MeasureCH1_FF_Window__PM_ACT_CFG )
@@ -488,13 +478,13 @@ CY_ISR_PROTO(CapSense_1_IsrCH0_ISR);
         #define CapSense_1_RAW_CH1_CONTROL_REG      (*(reg8 *) CapSense_1_MeasureCH1_FF_Counter__CFG0 )
         #define CapSense_1_RAW_CH1_CONTROL_PTR      ( (reg8 *) CapSense_1_MeasureCH1_FF_Counter__CFG0 )
         
-        #if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+        #if (CY_PSOC5A)
             #define CapSense_1_RAW_CH1_CONTROL2_REG   (*(reg8 *) CapSense_1_MeasureCH1_FF_Counter__CFG1 )
             #define CapSense_1_RAW_CH1_CONTROL2_PTR   ( (reg8 *) CapSense_1_MeasureCH1_FF_Counter__CFG1 )
         #else
             #define CapSense_1_RAW_CH1_CONTROL2_REG   (*(reg8 *) CapSense_1_MeasureCH1_FF_Counter__CFG2 )
             #define CapSense_1_RAW_CH1_CONTROL2_PTR   ( (reg8 *) CapSense_1_MeasureCH1_FF_Counter__CFG2 )
-        #endif  /* End (CY_PSOC3_ES2 || CY_PSOC5_ES1) */
+        #endif  /* (CY_PSOC5A) */
         
         #define CapSense_1_RAW_CH1_ACT_PWRMGR_REG  (*(reg8 *) CapSense_1_MeasureCH1_FF_Counter__PM_ACT_CFG )
         #define CapSense_1_RAW_CH1_ACT_PWRMGR_PTR  ( (reg8 *) CapSense_1_MeasureCH1_FF_Counter__PM_ACT_CFG )
@@ -547,9 +537,9 @@ CY_ISR_PROTO(CapSense_1_IsrCH0_ISR);
         #define CapSense_1_RAW_CH1_AUX_CONTROL_PTR  ( (reg8 *) \
                                                             CapSense_1_MeasureCH1_UDB_Counter_u0__DP_AUX_CTL_REG )
         
-    #endif  /* End CapSense_1_DESIGN_TYPE */
+    #endif  /* CapSense_1_DESIGN_TYPE */
     
-#endif  /* End CapSense_1_DESIGN_TYPE */
+#endif  /* CapSense_1_DESIGN_TYPE */
 
 
 /* CapSense Buffer REGs definitions */
@@ -581,88 +571,16 @@ CY_ISR_PROTO(CapSense_1_IsrCH0_ISR);
     #define CapSense_1_BufCH1_STBY_PWRMGR_REG     (*(reg8 *) CapSense_1_BufCH1__PM_STBY_CFG )
     #define CapSense_1_BufCH1_STBY_PWRMGR_PTR     ( (reg8 *) CapSense_1_BufCH1__PM_STBY_CFG )
     #define CapSense_1_BufCH1_STBY_PWR_EN                   (CapSense_1_BufCH1__PM_STBY_MSK )
-#endif  /* End CapSense_1_DESIGN_TYPE */
+#endif  /* CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN */
 
 /* ISR Number and Priority to work with CyLib functions */
 #define CapSense_1_IsrCH0_ISR_NUMBER        (CapSense_1_IsrCH0__INTC_NUMBER)
 #define CapSense_1_IsrCH0_ISR_PRIORITY      (CapSense_1_IsrCH0__INTC_PRIOR_NUM)
 
-#if (CY_PSOC3_ES2 && (CapSense_1_IsrCH0__ES2_PATCH))
-    #include <intrins.h>
-    #define CapSense_1_ISR_PATCH() _nop_(); _nop_(); _nop_(); _nop_(); _nop_(); _nop_(); _nop_(); _nop_();
-#endif  /* End (CY_PSOC3_ES2 && (CapSense_1_IsrCH0__ES2_PATCH)) */
-
 #if (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN)
     #define CapSense_1_IsrCH1_ISR_NUMBER        (CapSense_1_IsrCH1__INTC_NUMBER)
     #define CapSense_1_IsrCH1_ISR_PRIORITY      (CapSense_1_IsrCH1__INTC_PRIOR_NUM)
-
-    #if (CY_PSOC3_ES2 && (CapSense_1_IsrCH1__ES2_PATCH))
-        #include <intrins.h>
-        #define CapSense_1_ISR_PATCH() _nop_(); _nop_(); _nop_(); _nop_(); _nop_(); _nop_(); _nop_(); _nop_();
-    #endif  /* End (CY_PSOC3_ES2 && (CapSense_1_IsrCH1__ES2_PATCH)) */
-
-#endif /* End CapSense_1_DESIGN_TYPE */
-
-/* Idac REGs definitions */
-#if (CapSense_1_CURRENT_SOURCE)
-    /* Idac REGs Channel 0*/
-    #define CapSense_1_IdacCH0_CR0_REG            (*(reg8 *) CapSense_1_IdacCH0__CR0 )
-    #define CapSense_1_IdacCH0_CR0_PTR            ( (reg8 *) CapSense_1_IdacCH0__CR0 )
-    
-    #define CapSense_1_IdacCH0_CR1_REG            (*(reg8 *) CapSense_1_IdacCH0__CR1 )
-    #define CapSense_1_IdacCH0_CR1_PTR            ( (reg8 *) CapSense_1_IdacCH0__CR1 )
-    
-    #define CapSense_1_IdacCH0_DATA_REG           (*(reg8 *) CapSense_1_IdacCH0__D )
-    #define CapSense_1_IdacCH0_DATA_PTR           ( (reg8 *) CapSense_1_IdacCH0__D )
-    
-    #define CapSense_1_IdacCH0_STROBE_REG         (*(reg8 *) CapSense_1_IdacCH0__STROBE )
-    #define CapSense_1_IdacCH0_STROBE_PTR         ( (reg8 *) CapSense_1_IdacCH0__STROBE )
-    
-    #define CapSense_1_IdacCH0_TR_REG             (*(reg8 *) CapSense_1_IdacCH0__TR )
-    #define CapSense_1_IdacCH0_TR_PTR             ( (reg8 *) CapSense_1_IdacCH0__TR )
-    
-    #define CapSense_1_IdacCH0_ACT_PWRMGR_REG     (*(reg8 *) CapSense_1_IdacCH0__PM_ACT_CFG )
-    #define CapSense_1_IdacCH0_ACT_PWRMGR_PTR     ( (reg8 *) CapSense_1_IdacCH0__PM_ACT_CFG )
-    #define CapSense_1_IdacCH0_ACT_PWR_EN                   (CapSense_1_IdacCH0__PM_ACT_MSK )
-    
-    #define CapSense_1_IdacCH0_STBY_PWRMGR_REG    (*(reg8 *) CapSense_1_IdacCH0__PM_STBY_CFG )
-    #define CapSense_1_IdacCH0_STBY_PWRMGR_PTR    ( (reg8 *) CapSense_1_IdacCH0__PM_STBY_CFG )
-    #define CapSense_1_IdacCH0_STBY_PWR_EN                  (CapSense_1_IdacCH0__PM_STBY_MSK )
-    
-    /* Define DAC Trim base */
-    #define CapSense_1_IdacCH0_DAC_TRIM_BASE      (CapSense_1_IdacCH0__TRIM__M1)
-
-    #if (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN)
-        /* Idac REGs Channel 1 */
-        #define CapSense_1_IdacCH1_CR0_REG            (*(reg8 *) CapSense_1_IdacCH1__CR0 )
-        #define CapSense_1_IdacCH1_CR0_PTR            ( (reg8 *) CapSense_1_IdacCH1__CR0 )
-        
-        #define CapSense_1_IdacCH1_CR1_REG            (*(reg8 *) CapSense_1_IdacCH1__CR1 )
-        #define CapSense_1_IdacCH1_CR1_PTR            ( (reg8 *) CapSense_1_IdacCH1__CR1 )
-        
-        #define CapSense_1_IdacCH1_DATA_REG           (*(reg8 *) CapSense_1_IdacCH1__D )
-        #define CapSense_1_IdacCH1_DATA_PTR           ( (reg8 *) CapSense_1_IdacCH1__D )
-        
-        #define CapSense_1_IdacCH1_STROBE_REG         (*(reg8 *) CapSense_1_IdacCH1__STROBE )
-        #define CapSense_1_IdacCH1_STROBE_PTR         ( (reg8 *) CapSense_1_IdacCH1__STROBE )
-        
-        #define CapSense_1_IdacCH1_TR_REG             (*(reg8 *) CapSense_1_IdacCH1__TR )
-        #define CapSense_1_IdacCH1_TR_PTR             ( (reg8 *) CapSense_1_IdacCH1__TR )
-        
-        #define CapSense_1_IdacCH1_ACT_PWRMGR_REG     (*(reg8 *) CapSense_1_IdacCH1__PM_ACT_CFG )
-        #define CapSense_1_IdacCH1_ACT_PWRMGR_PTR     ( (reg8 *) CapSense_1_IdacCH1__PM_ACT_CFG )
-        #define CapSense_1_IdacCH1_ACT_PWR_EN                   (CapSense_1_IdacCH1__PM_ACT_MSK )
-        
-        #define CapSense_1_IdacCH1_STBY_PWRMGR_REG    (*(reg8 *) CapSense_1_IdacCH1__PM_STBY_CFG )
-        #define CapSense_1_IdacCH1_STBY_PWRMGR_PTR    ( (reg8 *) CapSense_1_IdacCH1__PM_STBY_CFG )
-        #define CapSense_1_IdacCH1_STBY_PWR_EN                  (CapSense_1_IdacCH1__PM_STBY_MSK )
-        
-        /* Define DAC Trim base */
-        #define CapSense_1_IdacCH1_DAC_TRIM_BASE      (CapSense_1_IdacCH1__TRIM__M1)
-        
-    #endif /* End CapSense_1_DESIGN_TYPE */
-    
-#endif  /* End (CapSense_1_CURRENT_SOURCE) */
+#endif /* CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN */
 
 
 /***************************************
@@ -683,11 +601,11 @@ CY_ISR_PROTO(CapSense_1_IsrCH0_ISR);
 /* Prescaler */
 #define CapSense_1_PRESCALER_CTRL_ENABLE          (0x01u)
 #define CapSense_1_PRESCALER_CTRL_MODE_CMP        (0x02u) 
-#if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+#if (CY_PSOC5A)
     #define CapSense_1_PRESCALER_CTRL_CMP_MODE_SHIFT  (0x01u)
 #else
     #define CapSense_1_PRESCALER_CTRL_CMP_MODE_SHIFT  (0x04u)
-#endif /* End (CY_PSOC3_ES2 || CY_PSOC5_ES1) */
+#endif /* (CY_PSOC5A) */
 #define CapSense_1_PRESCALER_CTRL_CMP_LESS_EQ         (0x02u << CapSense_1_PRESCALER_CTRL_CMP_MODE_SHIFT)
 
 /* Set PRS polynomial */
@@ -703,11 +621,11 @@ CY_ISR_PROTO(CapSense_1_IsrCH0_ISR);
 #define CapSense_1_MEASURE_FULL_RANGE_LOW         (0xFFu)
 #define CapSense_1_MEASURE_CTRL_ENABLE            (0x01u)
 
-#if (CY_PSOC3_ES2 || CY_PSOC5_ES1)
+#if (CY_PSOC5A)
     #define CapSense_1_MEASURE_CTRL_MODE_SHIFT        (0x01u)
 #else
     #define CapSense_1_MEASURE_CTRL_MODE_SHIFT        (0x00u)
-#endif /* End (CY_PSOC3_ES2 || CY_PSOC5_ES1) */
+#endif /* (CY_PSOC5A) */
 
 #define CapSense_1_MEASURE_CTRL_PULSEWIDTH        (0x01u << CapSense_1_MEASURE_CTRL_MODE_SHIFT)
 
@@ -732,33 +650,16 @@ CY_ISR_PROTO(CapSense_1_IsrCH0_ISR);
 
 /* Define direction of Current - Souce as Sink */
 #if (CapSense_1_CURRENT_SOURCE == CapSense_1_IDAC_SOURCE)
-    #define CapSense_1_IdacCH0_IDIR      (CapSense_1_IDAC_IDIR_SRC)
-    #define CapSense_1_IdacCH1_IDIR      (CapSense_1_IDAC_IDIR_SRC)
+    #define CapSense_1_IdacCH0_IDIR      (CapSense_1_IdacCH0_SOURCE)
+    #define CapSense_1_IdacCH1_IDIR      (CapSense_1_IdacCH1_SOURCE)
 #elif (CapSense_1_CURRENT_SOURCE == CapSense_1_IDAC_SINK)
-    #define CapSense_1_IdacCH0_IDIR      (CapSense_1_IDAC_IDIR_SINK)
-    #define CapSense_1_IdacCH1_IDIR      (CapSense_1_IDAC_IDIR_SINK)
+    #define CapSense_1_IdacCH0_IDIR      (CapSense_1_IdacCH0_SINK)
+    #define CapSense_1_IdacCH1_IDIR      (CapSense_1_IdacCH1_SINK)
 #else
     /* No Idac - Rb selected */
-#endif  /* End (CapSense_1_CURRENT_SOURCE == CapSense_1_IDAC_SOURCE) */
+#endif  /* (CapSense_1_CURRENT_SOURCE == CapSense_1_IDAC_SOURCE) */
 
-/* CR0 IDAC Control Register 0 definitions */
-/* Bit Field DAC_MODE */
-#define CapSense_1_IDAC_MODE_MASK         (0x10u)
-#define CapSense_1_IDAC_MODE_V            (0x00u)
-#define CapSense_1_IDAC_MODE_I            (0x10u)
-
-/* CR1 Idac Control Register 1 definitions */
-/* Bit Field  DAC_I_DIR */
-#define CapSense_1_IDAC_IDIR_MASK         (0x04u)
-#define CapSense_1_IDAC_IDIR_SINK         (0x04u)
-#define CapSense_1_IDAC_IDIR_SRC          (0x00u)
-
-/* Bit Field  DAC_MX_IOFF_SRC */
-#define CapSense_1_IDAC_IDIR_CTL_MASK     (0x02u)
-#define CapSense_1_IDAC_IDIR_CTL_REG      (0x00u)
-#define CapSense_1_IDAC_IDIR_CTL_UDB      (0x02u)
-
-#endif /* End CY_CAPSENSE_CSD_CapSense_1_H */
+#endif /* CY_CAPSENSE_CSD_CapSense_1_H */
 
 
  /* [] END OF FILE */

@@ -1,20 +1,20 @@
 /*******************************************************************************
-* File Name: IDAC8_PulseRed_PM.c  
-* Version 1.80
+* File Name: IDAC8_PulseRed.c
+* Version 1.90
 *
-*  Description:
-*     This file provides the power management source code to API for the
-*     IDAC8.  
+* Description:
+*  This file provides the power management source code to API for the
+*  IDAC8.
 *
-*   Note:
-*     None
+* Note:
+*  None
 *
-*******************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
+********************************************************************************
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions, 
 * disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
-********************************************************************************/
+*******************************************************************************/
 
 
 #include "IDAC8_PulseRed.h"
@@ -28,16 +28,19 @@ static IDAC8_PulseRed_backupStruct IDAC8_PulseRed_backup;
 * Summary:
 *  Save the current user configuration
 *
-* Parameters:  
-*  void  
+* Parameters:
+*  void
 *
-* Return: 
+* Return:
 *  void
 *
 *******************************************************************************/
-void IDAC8_PulseRed_SaveConfig(void)
+void IDAC8_PulseRed_SaveConfig(void) 
 {
-    IDAC8_PulseRed_backup.data_value = IDAC8_PulseRed_Data;
+    if (!((IDAC8_PulseRed_CR1 & IDAC8_PulseRed_SRC_MASK) == IDAC8_PulseRed_SRC_UDB))
+    {
+        IDAC8_PulseRed_backup.data_value = IDAC8_PulseRed_Data;
+    }
 }
 
 
@@ -48,16 +51,28 @@ void IDAC8_PulseRed_SaveConfig(void)
 * Summary:
 *  Restores the current user configuration.
 *
-* Parameters:  
+* Parameters:
 *  void
 *
-* Return: 
+* Return:
 *  void
 *
 *******************************************************************************/
-void IDAC8_PulseRed_RestoreConfig(void)
+void IDAC8_PulseRed_RestoreConfig(void) 
 {
-    IDAC8_PulseRed_Data = IDAC8_PulseRed_backup.data_value;
+    if (!((IDAC8_PulseRed_CR1 & IDAC8_PulseRed_SRC_MASK) == IDAC8_PulseRed_SRC_UDB))
+    {
+        if((IDAC8_PulseRed_Strobe & IDAC8_PulseRed_STRB_MASK) == IDAC8_PulseRed_STRB_EN)
+        {
+            IDAC8_PulseRed_Strobe &= ~IDAC8_PulseRed_STRB_MASK;
+            IDAC8_PulseRed_Data = IDAC8_PulseRed_backup.data_value;
+            IDAC8_PulseRed_Strobe |= IDAC8_PulseRed_STRB_EN;
+        }
+        else
+        {
+            IDAC8_PulseRed_Data = IDAC8_PulseRed_backup.data_value;
+        }
+    }
 }
 
 
@@ -65,20 +80,20 @@ void IDAC8_PulseRed_RestoreConfig(void)
 * Function Name: IDAC8_PulseRed_Sleep
 ********************************************************************************
 * Summary:
-*     Stop and Save the user configuration
+*  Stop and Save the user configuration
 *
-* Parameters:  
-*  void:  
+* Parameters:
+*  void:
 *
-* Return: 
+* Return:
 *  void
 *
 * Global variables:
-*  IDAC8_PulseRed_backup.enableState:  Is modified depending on the enable 
-*   state of the block before entering sleep mode.
+*  IDAC8_PulseRed_backup.enableState: Is modified depending on the enable 
+*  state of the block before entering sleep mode.
 *
 *******************************************************************************/
-void IDAC8_PulseRed_Sleep(void)
+void IDAC8_PulseRed_Sleep(void) 
 {
     if(IDAC8_PulseRed_ACT_PWR_EN == (IDAC8_PulseRed_PWRMGR & IDAC8_PulseRed_ACT_PWR_EN))
     {
@@ -90,7 +105,7 @@ void IDAC8_PulseRed_Sleep(void)
         /* IDAC8 is disabled */
         IDAC8_PulseRed_backup.enableState = 0u;
     }
-    
+
     IDAC8_PulseRed_Stop();
     IDAC8_PulseRed_SaveConfig();
 }
@@ -103,18 +118,18 @@ void IDAC8_PulseRed_Sleep(void)
 * Summary:
 *  Restores and enables the user configuration
 *  
-* Parameters:  
+* Parameters:
 *  void
 *
-* Return: 
+* Return:
 *  void
 *
 * Global variables:
-*  IDAC8_PulseRed_backup.enableState:  Is used to restore the enable state of 
+*  IDAC8_PulseRed_backup.enableState: Is used to restore the enable state of 
 *  block on wakeup from sleep mode.
 *
 *******************************************************************************/
-void IDAC8_PulseRed_Wakeup(void)
+void IDAC8_PulseRed_Wakeup(void) 
 {
     IDAC8_PulseRed_RestoreConfig();
     
@@ -122,7 +137,7 @@ void IDAC8_PulseRed_Wakeup(void)
     {
         /* Enable IDAC8's operation */
         IDAC8_PulseRed_Enable();
-       
+        
         /* Set the data register */
         IDAC8_PulseRed_SetValue(IDAC8_PulseRed_Data);
     } /* Do nothing if IDAC8 was disabled before */    

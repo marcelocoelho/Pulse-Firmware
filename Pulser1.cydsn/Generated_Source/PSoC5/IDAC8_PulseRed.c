@@ -1,39 +1,42 @@
 /*******************************************************************************
-* File Name: IDAC8_PulseRed.c  
-* Version 1.80
+* File Name: IDAC8_PulseRed.c
+* Version 1.90
 *
-*  Description:
-*    This file provides the source code to the API for the 8-bit Current 
-*    DAC (IDAC8) User Module.
+* Description:
+*  This file provides the source code to the API for the 8-bit Current 
+*  DAC (IDAC8) User Module.
 *
-*   Note:
-*     
+* Note:
+*  None
 *
-*******************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
+********************************************************************************
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions, 
 * disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
-********************************************************************************/
+*******************************************************************************/
 
 #include "cytypes.h"
 #include "IDAC8_PulseRed.h"   
 
-#if (CY_PSOC5_ES1)
-#include <CyLib.h>
-#endif /* CY_PSOC5_ES1 */
+#if (CY_PSOC5A)
+    #include <CyLib.h>
+#endif /* CY_PSOC5A */
+
 
 uint8 IDAC8_PulseRed_initVar = 0u;
 
 
-static IDAC8_PulseRed_backupStruct  IDAC8_PulseRed_backup;
+#if (CY_PSOC5A)
+    static IDAC8_PulseRed_LOWPOWER_BACKUP_STRUCT  IDAC8_PulseRed_lowPowerBackup;
+#endif /* CY_PSOC5A */
 
 /* Variable to decide whether or not to restore control register in Enable()
-   API. This valid only for PSoC5 ES1 */
-#if (CY_PSOC5_ES1)
-uint8 IDAC8_PulseRed_restoreReg = 0u;
-uint8 IDAC8_PulseRed_intrStatus = 0u;
-#endif /* CY_PSOC5_ES1 */
+   API. This valid only for PSoC5A */
+#if (CY_PSOC5A)
+    uint8 IDAC8_PulseRed_restoreReg = 0u;
+    uint8 IDAC8_PulseRed_intrStatus = 0u;
+#endif /* CY_PSOC5A */
 
 
 /*******************************************************************************
@@ -42,35 +45,35 @@ uint8 IDAC8_PulseRed_intrStatus = 0u;
 * Summary:
 *  Initialize to the schematic state.
 * 
-* Parameters:  
-*  void:  
+* Parameters:
+*  void:
 *
-* Return: 
+* Return:
 *  (void)
 *
-* Theory: 
+* Theory:
 *
-* Side Effects: 
+* Side Effects:
 *
 *******************************************************************************/
 void IDAC8_PulseRed_Init(void) 
 {
-    IDAC8_PulseRed_CR0 = (IDAC8_PulseRed_MODE_I | IDAC8_PulseRed_DEFAULT_RANGE )  ;    
+    IDAC8_PulseRed_CR0 = (IDAC8_PulseRed_MODE_I | IDAC8_PulseRed_DEFAULT_RANGE );
 
     /* Set default data source */
     if(IDAC8_PulseRed_DEFAULT_DATA_SRC != 0u )    
     {
-        IDAC8_PulseRed_CR1 = (IDAC8_PulseRed_DEFAULT_CNTL | IDAC8_PulseRed_DACBUS_ENABLE) ;   
+        IDAC8_PulseRed_CR1 = (IDAC8_PulseRed_DEFAULT_CNTL | IDAC8_PulseRed_DACBUS_ENABLE);
     }
     else
     {
-        IDAC8_PulseRed_CR1 = (IDAC8_PulseRed_DEFAULT_CNTL | IDAC8_PulseRed_DACBUS_DISABLE) ;   
-    } 
+        IDAC8_PulseRed_CR1 = (IDAC8_PulseRed_DEFAULT_CNTL | IDAC8_PulseRed_DACBUS_DISABLE);
+    }
     
     /*Controls polarity from UDB Control*/
     if(IDAC8_PulseRed_DEFAULT_POLARITY == IDAC8_PulseRed_HARDWARE_CONTROLLED)
     {
-         IDAC8_PulseRed_CR1 |= IDAC8_PulseRed_IDIR_SRC_UDB;
+        IDAC8_PulseRed_CR1 |= IDAC8_PulseRed_IDIR_SRC_UDB;
     }
     else
     {
@@ -85,14 +88,14 @@ void IDAC8_PulseRed_Init(void)
     /* Set default strobe mode */
     if(IDAC8_PulseRed_DEFAULT_STRB != 0u)
     {
-        IDAC8_PulseRed_Strobe |= IDAC8_PulseRed_STRB_EN ;
+        IDAC8_PulseRed_Strobe |= IDAC8_PulseRed_STRB_EN;
     }
     
     /* Set default speed */
-    IDAC8_PulseRed_SetSpeed(IDAC8_PulseRed_DEFAULT_SPEED); 
+    IDAC8_PulseRed_SetSpeed(IDAC8_PulseRed_DEFAULT_SPEED);
     
     /* Set proper DAC trim */
-    IDAC8_PulseRed_DacTrim();  
+    IDAC8_PulseRed_DacTrim();
     
 }
 
@@ -101,17 +104,17 @@ void IDAC8_PulseRed_Init(void)
 * Function Name: IDAC8_PulseRed_Enable
 ********************************************************************************
 * Summary:
-*     Enable the IDAC8
+*  Enable the IDAC8
 * 
-* Parameters:  
-*  void:  
+* Parameters:
+*  void:
 *
-* Return: 
+* Return:
 *  (void)
 *
-* Theory: 
+* Theory:
 *
-* Side Effects: 
+* Side Effects:
 *
 *******************************************************************************/
 void IDAC8_PulseRed_Enable(void) 
@@ -121,15 +124,15 @@ void IDAC8_PulseRed_Enable(void)
 
     /* This is to restore the value of register CR0 which is saved 
       in prior to the modification in stop() API */
-    #if (CY_PSOC5_ES1)
-    if(IDAC8_PulseRed_restoreReg == 1u)
-    {
-        IDAC8_PulseRed_CR0 = IDAC8_PulseRed_backup.DACCR0Reg;
+    #if (CY_PSOC5A)
+        if(IDAC8_PulseRed_restoreReg == 1u)
+        {
+            IDAC8_PulseRed_CR0 = IDAC8_PulseRed_lowPowerBackup.DACCR0Reg;
 
-        /* Clear the flag */
-        IDAC8_PulseRed_restoreReg = 0u;
-    }
-    #endif /* CY_PSOC5_ES1 */
+            /* Clear the flag */
+            IDAC8_PulseRed_restoreReg = 0u;
+        }
+    #endif /* CY_PSOC5A */
 }
 
 
@@ -140,10 +143,10 @@ void IDAC8_PulseRed_Enable(void)
 *  Set power level then turn on IDAC8.
 *
 * Parameters:  
-*  power:   Sets power level between off (0) and (3) high power
+*  power: Sets power level between off (0) and (3) high power
 *
-* Return: 
-*  (void) 
+* Return:
+*  (void)
 *
 * Global variables:
 *  IDAC8_PulseRed_initVar: Is modified when this function is called for 
@@ -154,11 +157,11 @@ void IDAC8_PulseRed_Start(void)
 {
     /* Hardware initiazation only needs to occur the first time */
     if ( IDAC8_PulseRed_initVar == 0u)  
-    {     
+    {
         IDAC8_PulseRed_Init();
-       
+        
         IDAC8_PulseRed_initVar = 1;
-    }  
+    }
    
     /* Enable power to DAC */
     IDAC8_PulseRed_Enable();
@@ -175,32 +178,32 @@ void IDAC8_PulseRed_Start(void)
 * Summary:
 *  Powers down IDAC8 to lowest power state.
 *
-* Parameters:  
-*   (void)
-*
-* Return: 
+* Parameters:
 *  (void)
 *
-* Theory: 
+* Return:
+*  (void)
+*
+* Theory:
 *
 * Side Effects:
 *
 *******************************************************************************/
 void IDAC8_PulseRed_Stop(void) 
 {
-   /* Disble power to DAC */
-   IDAC8_PulseRed_PWRMGR &= ~IDAC8_PulseRed_ACT_PWR_EN;
-   IDAC8_PulseRed_STBY_PWRMGR &= ~IDAC8_PulseRed_STBY_PWR_EN;
-   
-   #if (CY_PSOC5_ES1)
-   
+    /* Disble power to DAC */
+    IDAC8_PulseRed_PWRMGR &= ~IDAC8_PulseRed_ACT_PWR_EN;
+    IDAC8_PulseRed_STBY_PWRMGR &= ~IDAC8_PulseRed_STBY_PWR_EN;
+    
+    #if (CY_PSOC5A)
+    
         /* Set the global variable  */
         IDAC8_PulseRed_restoreReg = 1u;
 
         /* Save the control register and then Clear it. */
-        IDAC8_PulseRed_backup.DACCR0Reg = IDAC8_PulseRed_CR0;
+        IDAC8_PulseRed_lowPowerBackup.DACCR0Reg = IDAC8_PulseRed_CR0;
         IDAC8_PulseRed_CR0 = (IDAC8_PulseRed_MODE_I | IDAC8_PulseRed_RANGE_3 | IDAC8_PulseRed_HS_HIGHSPEED);
-    #endif /* CY_PSOC5_ES1 */
+    #endif /* CY_PSOC5A */
 }
 
 
@@ -210,22 +213,22 @@ void IDAC8_PulseRed_Stop(void)
 * Summary:
 *  Set DAC speed
 *
-* Parameters:  
-*  power:   Sets speed value
+* Parameters:
+*  power: Sets speed value
 *
-* Return: 
-*  (void) 
+* Return:
+*  (void)
 *
-* Theory: 
+* Theory:
 *
 * Side Effects:
 *
 *******************************************************************************/
 void IDAC8_PulseRed_SetSpeed(uint8 speed) 
 {
-   /* Clear power mask then write in new value */
-   IDAC8_PulseRed_CR0 &= ~IDAC8_PulseRed_HS_MASK ;    
-   IDAC8_PulseRed_CR0 |=  ( speed & IDAC8_PulseRed_HS_MASK) ;    
+    /* Clear power mask then write in new value */
+    IDAC8_PulseRed_CR0 &= ~IDAC8_PulseRed_HS_MASK;
+    IDAC8_PulseRed_CR0 |=  ( speed & IDAC8_PulseRed_HS_MASK);
 }
 
 
@@ -235,28 +238,29 @@ void IDAC8_PulseRed_SetSpeed(uint8 speed)
 * Summary:
 *  Sets IDAC to Sink or Source current.
 *  
-* Parameters:  
+* Parameters:
 *  Polarity: Sets the IDAC to Sink or Source 
-*   0x00 - Source
-*   0x04 - Sink
+*  0x00 - Source
+*  0x04 - Sink
 *
-* Return: 
-*  (void) 
+* Return:
+*  (void)
 *
-* Theory: 
+* Theory:
 *
 * Side Effects:
 *
 *******************************************************************************/
 #if(IDAC8_PulseRed_DEFAULT_POLARITY != IDAC8_PulseRed_HARDWARE_CONTROLLED)
-void IDAC8_PulseRed_SetPolarity(uint8 polarity) 
-{
-    IDAC8_PulseRed_CR1 &= ~IDAC8_PulseRed_IDIR_MASK;                /* clear polarity bit */
-    IDAC8_PulseRed_CR1 |= (polarity & IDAC8_PulseRed_IDIR_MASK);    /* set new value */
+    void IDAC8_PulseRed_SetPolarity(uint8 polarity) 
+    {
+        IDAC8_PulseRed_CR1 &= ~IDAC8_PulseRed_IDIR_MASK;                /* clear polarity bit */
+        IDAC8_PulseRed_CR1 |= (polarity & IDAC8_PulseRed_IDIR_MASK);    /* set new value */
     
-    IDAC8_PulseRed_DacTrim();
-}
-#endif
+        IDAC8_PulseRed_DacTrim();
+    }
+#endif/*(IDAC8_PulseRed_DEFAULT_POLARITY != IDAC8_PulseRed_HARDWARE_CONTROLLED)*/
+
 
 /*******************************************************************************
 * Function Name: IDAC8_PulseRed_SetRange
@@ -264,22 +268,22 @@ void IDAC8_PulseRed_SetPolarity(uint8 polarity)
 * Summary:
 *  Set current range
 *
-* Parameters:  
-*  Range:  Sets on of four valid ranges.
+* Parameters:
+*  Range: Sets on of four valid ranges.
 *
-* Return: 
-*  (void) 
+* Return:
+*  (void)
 *
-* Theory: 
+* Theory:
 *
 * Side Effects:
 *
 *******************************************************************************/
 void IDAC8_PulseRed_SetRange(uint8 range) 
 {
-   IDAC8_PulseRed_CR0 &= ~IDAC8_PulseRed_RANGE_MASK ;       /* Clear existing mode */
-   IDAC8_PulseRed_CR0 |= ( range & IDAC8_PulseRed_RANGE_MASK );  /*  Set Range  */
-   IDAC8_PulseRed_DacTrim();
+    IDAC8_PulseRed_CR0 &= ~IDAC8_PulseRed_RANGE_MASK ;       /* Clear existing mode */
+    IDAC8_PulseRed_CR0 |= ( range & IDAC8_PulseRed_RANGE_MASK );  /*  Set Range  */
+    IDAC8_PulseRed_DacTrim();
 }
 
 
@@ -289,13 +293,13 @@ void IDAC8_PulseRed_SetRange(uint8 range)
 * Summary:
 *  Set DAC value
 *
-* Parameters:  
-*  value:  Sets DAC value between 0 and 255.
+* Parameters:
+*  value: Sets DAC value between 0 and 255.
 *
-* Return: 
-*  (void) 
+* Return:
+*  (void)
 *
-* Theory: 
+* Theory:
 *
 * Side Effects:
 *
@@ -303,20 +307,17 @@ void IDAC8_PulseRed_SetRange(uint8 range)
 void IDAC8_PulseRed_SetValue(uint8 value) 
 {
 
-   #if (CY_PSOC5_ES1)
-       IDAC8_PulseRed_intrStatus = CyEnterCriticalSection();
-   #endif /* CY_PSOC5_ES1 */
+    #if (CY_PSOC5A)
+        IDAC8_PulseRed_intrStatus = CyEnterCriticalSection();
+    #endif /* CY_PSOC5A */
 
-   IDAC8_PulseRed_Data = value;         /*  Set Value  */
-   
-   /* PSOC3 silicons earlier to ES3 require a double write */
-   #if (CY_PSOC3_ES2 ||CY_PSOC5_ES1 )
-       IDAC8_PulseRed_Data = value;
-   #endif /* CY_PSOC3_ES2 ||CY_PSOC5_ES1  */
-   
-   #if (CY_PSOC5_ES1)
-       CyExitCriticalSection(IDAC8_PulseRed_intrStatus);
-   #endif /* CY_PSOC5_ES1 */
+    IDAC8_PulseRed_Data = value;         /*  Set Value  */
+    
+    /* PSOC5A silicons require a double write */
+    #if (CY_PSOC5A)
+        IDAC8_PulseRed_Data = value;
+        CyExitCriticalSection(IDAC8_PulseRed_intrStatus);
+    #endif /* CY_PSOC5A */
 }
 
 
@@ -326,13 +327,13 @@ void IDAC8_PulseRed_SetValue(uint8 value)
 * Summary:
 *  Set the trim value for the given range.
 *
-* Parameters:  
+* Parameters:
 *  None
 *
-* Return: 
+* Return:
 *  (void) 
 *
-* Theory: 
+* Theory:
 *  Trim values for the IDAC blocks are stored in the "Customer Table" area in 
 *  Row 1 of the Hidden Flash.  There are 8 bytes of trim data for each 
 *  IDAC block.

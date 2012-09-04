@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: USBUART_1_cls.c
-* Version 2.12
+* Version 2.30
 *
 * Description:
 *  USB Class request handler.

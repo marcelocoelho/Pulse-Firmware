@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: USBUART_1_hid.c
-* Version 2.12
+* Version 2.30
 *
 * Description:
 *  USB HID Class request handler.

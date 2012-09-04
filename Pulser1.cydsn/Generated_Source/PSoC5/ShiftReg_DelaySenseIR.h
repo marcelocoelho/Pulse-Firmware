@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: ShiftReg_DelaySenseIR.h
-* Version 2.0
+* Version 2.10
 *
 * Description:
 *  This header file contains definitions associated with the Shift Register
@@ -9,7 +9,7 @@
 * Note: none
 *
 ********************************************************************************
-* Copyright 2008-2010, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions,
 * disclaimers, and limitations in the end user license agreement accompanying
 * the software package with which this file was provided.
@@ -20,8 +20,12 @@
 #define CY_SHIFTREG_ShiftReg_DelaySenseIR_H
 
 #include "cytypes.h"
-#include "cyfitter.h"
 
+/* Check to see if required defines such as CY_PSOC5A are available */
+/* They are defined starting with cy_boot v3.0 */
+#if !defined (CY_PSOC5A)
+    #error Component ShiftReg_v2_10 requires cy_boot v3.0 or later
+#endif /* (CY_PSOC5A) */
 
 /***************************************
 *   Conditional Compilation Parameters
@@ -46,9 +50,9 @@ typedef struct _ShiftReg_DelaySenseIR_backupStruct
     uint32 saveSrA0Reg;
     uint32 saveSrA1Reg;
 
-    #if(CY_PSOC3_ES2 || CY_PSOC5_ES1) /* PSoC3 ES2 or early, PSoC5 ES1*/
+    #if(CY_UDB_V0) /* CY_UDB_V0 */
         uint32 saveSrIntMask;
-    #endif /*(CY_PSOC3_ES2 || CY_PSOC5_ES1)*/
+    #endif /* CY_UDB_V0 */
 
 } ShiftReg_DelaySenseIR_BACKUP_STRUCT;
 
@@ -57,13 +61,13 @@ typedef struct _ShiftReg_DelaySenseIR_backupStruct
 *        Function Prototypes
 ***************************************/
 
-void  ShiftReg_DelaySenseIR_Start(void);
+void  ShiftReg_DelaySenseIR_Start(void) ;
 void  ShiftReg_DelaySenseIR_Stop(void) ; 
 void  ShiftReg_DelaySenseIR_Init(void) ;
 void  ShiftReg_DelaySenseIR_Enable(void) ; 
 void  ShiftReg_DelaySenseIR_RestoreConfig(void) ;
-void  ShiftReg_DelaySenseIR_SaveConfig(void);
-void  ShiftReg_DelaySenseIR_Sleep(void);
+void  ShiftReg_DelaySenseIR_SaveConfig(void) ;
+void  ShiftReg_DelaySenseIR_Sleep(void) ;
 void  ShiftReg_DelaySenseIR_Wakeup(void) ; 
 void  ShiftReg_DelaySenseIR_EnableInt(void) ;
 void  ShiftReg_DelaySenseIR_DisableInt(void) ;

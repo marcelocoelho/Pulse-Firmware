@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: ADC_PulseIn_INT.c  
-* Version 2.20
+* Version 2.30
 *
 * Description:
 *  This file contains the code that operates during the ADC_DelSig interrupt 
@@ -9,7 +9,7 @@
 * Note:
 *
 *******************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions, 
 * disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
@@ -62,14 +62,7 @@ CY_ISR( ADC_PulseIn_ISR1)
         ADC_PulseIn_CFG1_CONV_MODE == ADC_PulseIn_MODE_SINGLE_SAMPLE) 
         ADC_PulseIn_StopConvert(); 
     #endif /* Single sample conversion mode with resolution above 16 bits */         
-    
-    /* PSoC3 ES1, ES2 RTC ISR PATCH  */ 
-    #if(CYDEV_CHIP_MEMBER_USED == CYDEV_CHIP_MEMBER_3A)
-        #if((CYDEV_CHIP_REVISION_USED <= CYDEV_CHIP_REVISION_3A_ES2) && (ADC_PulseIn_IRQ__ES2_PATCH ))      
-            ADC_PulseIn_ISR_PATCH();
-        #endif /* Silicon revision check */
-    #endif /* Chip member check */   
-    
+        
 }
 
 
@@ -108,13 +101,6 @@ CY_ISR( ADC_PulseIn_ISR2)
         ADC_PulseIn_StopConvert(); 
     #endif /* Single sample conversion mode with resolution above 16 bits */
     
-    /* PSoC3 ES1, ES2 RTC ISR PATCH  */ 
-    #if(CYDEV_CHIP_MEMBER_USED == CYDEV_CHIP_MEMBER_3A)
-        #if((CYDEV_CHIP_REVISION_USED <= CYDEV_CHIP_REVISION_3A_ES2) && (ADC_PulseIn_IRQ__ES2_PATCH ))      
-            ADC_PulseIn_ISR_PATCH();
-        #endif /* Silicon revision check */
-    #endif /* Chip member check */   
-    
 }
 
 
@@ -152,13 +138,6 @@ CY_ISR( ADC_PulseIn_ISR3)
         ADC_PulseIn_CFG3_CONVMODE == ADC_PulseIn_MODE_SINGLE_SAMPLE) 
         ADC_PulseIn_StopConvert(); 
     #endif /* Single sample conversion mode with resolution above 16 bits */  
-    
-    /* PSoC3 ES1, ES2 RTC ISR PATCH  */ 
-    #if(CYDEV_CHIP_MEMBER_USED == CYDEV_CHIP_MEMBER_3A)
-        #if((CYDEV_CHIP_REVISION_USED <= CYDEV_CHIP_REVISION_3A_ES2) && (ADC_PulseIn_IRQ__ES2_PATCH ))      
-            ADC_PulseIn_ISR_PATCH();
-        #endif /* Silicon revision check */
-    #endif /* Chip member check */       
 }
 
 
@@ -196,13 +175,6 @@ CY_ISR( ADC_PulseIn_ISR4)
         ADC_PulseIn_CFG4_CONVMODE == ADC_PulseIn_MODE_SINGLE_SAMPLE) 
         ADC_PulseIn_StopConvert(); 
     #endif /* Single sample conversion mode with resolution above 16 bits */
-    
-    /* PSoC3 ES1, ES2 RTC ISR PATCH  */ 
-    #if(CYDEV_CHIP_MEMBER_USED == CYDEV_CHIP_MEMBER_3A)
-        #if((CYDEV_CHIP_REVISION_USED <= CYDEV_CHIP_REVISION_3A_ES2) && (ADC_PulseIn_IRQ__ES2_PATCH ))      
-            ADC_PulseIn_ISR_PATCH();
-        #endif /* Silicon revision check */
-    #endif /* Chip member check */            
 }
 
 

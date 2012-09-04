@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: CapSense_1_SMS_Wrapper.c
-* Version 3.10
+* Version 3.20
 *
 * Description:
 *  This file provides the source code of wrapper between CapSense CSD component 
@@ -9,7 +9,7 @@
 * Note:
 *
 ********************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions,
 * disclaimers, and limitations in the end user license agreement accompanying
 * the software package with which this file was provided.
@@ -83,7 +83,7 @@ uint8 SMS_LIB_EndOfWidgInd = CapSense_1_END_OF_WIDGETS_INDEX;
 #else
     uint8 SMS_LIB_TotalSnsCnt_CH0 = 0;
     uint8 SMS_LIB_TotalSnsCnt_CH1 = 0;
-#endif  /* End (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) */
+#endif  /* (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) */
 
 /*******************************************************************************
 * Function Name: SMS_LIB_ScanSensor
@@ -102,7 +102,7 @@ uint8 SMS_LIB_EndOfWidgInd = CapSense_1_END_OF_WIDGETS_INDEX;
 *  No
 *
 *******************************************************************************/
-void SMS_LIB_ScanSensor(uint8 SensorNumber)
+void SMS_LIB_ScanSensor(uint8 SensorNumber) 
 {
     CapSense_1_ScanSensor(SensorNumber);
 }
@@ -121,10 +121,11 @@ void SMS_LIB_ScanSensor(uint8 SensorNumber)
 *  None
 *
 *******************************************************************************/
-uint8 SMS_LIB_IsBusy(void)
+uint8 SMS_LIB_IsBusy(void) 
 {
     return CapSense_1_IsBusy();
 }
+
 
 /*******************************************************************************
 * Function Name: CapSense_1_CalculateThresholds
@@ -143,10 +144,11 @@ uint8 SMS_LIB_IsBusy(void)
 *  No
 *
 *******************************************************************************/
-void CapSense_1_CalculateThresholds(uint8 SensorNumber)
+void CapSense_1_CalculateThresholds(uint8 SensorNumber) 
 {
     SMS_LIB_V3_CalculateThresholds(SensorNumber);
 }
+
 
 /*******************************************************************************
 * Function Name: CapSense_1_AutoTune
@@ -165,13 +167,13 @@ void CapSense_1_CalculateThresholds(uint8 SensorNumber)
 *  No
 *
 *******************************************************************************/
-void CapSense_1_AutoTune(void)
+void CapSense_1_AutoTune(void) 
 {
     #if (CapSense_1_DESIGN_TYPE == CapSense_1_ONE_CHANNEL_DESIGN)
         SMS_LIB_V3_AutoTune1Ch();
     #elif (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN)
         SMS_LIB_V3_AutoTune2Ch();
-    #endif /* End (CapSense_1_DESIGN_TYPE == CapSense_1_ONE_CHANNEL_DESIGN) */
+    #endif /* (CapSense_1_DESIGN_TYPE == CapSense_1_ONE_CHANNEL_DESIGN) */
 }
 
 /*******************************************************************************
@@ -188,22 +190,22 @@ void CapSense_1_AutoTune(void)
 *  None
 *
 *******************************************************************************/
-void SMS_LIB_SetPrescaler(uint8 prescaler)
+void SMS_LIB_SetPrescaler(uint8 prescaler) 
 {
     prescaler = prescaler;
 }
 
-void SMS_LIB_V3_SetAnalogSwitchesSrc_PRS(void)
+void SMS_LIB_V3_SetAnalogSwitchesSrc_PRS(void) 
 {
 	CapSense_1_SetAnalogSwitchesSource(CapSense_1_ANALOG_SWITCHES_SRC_PRS);
 }
 
-void SMS_LIB_V3_SetAnalogSwitchesSrc_Prescaler(void)
+void SMS_LIB_V3_SetAnalogSwitchesSrc_Prescaler(void) 
 {
 	CapSense_1_SetAnalogSwitchesSource(CapSense_1_ANALOG_SWITCHES_SRC_PRESCALER);
 }
 
-#endif  /* End (CapSense_1_TUNING_METHOD == CapSense_1_AUTO_TUNING) */
+#endif  /* (CapSense_1_TUNING_METHOD == CapSense_1_AUTO_TUNING) */
 
 
 /* [] END OF FILE */

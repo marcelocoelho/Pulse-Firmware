@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: AMux_ProxIR.c
-* Version 1.50
+* Version 1.60
 *
 *  Description:
 *    This file contains all functions required for the analog multiplexer
@@ -17,7 +17,6 @@
 
 #include "AMux_ProxIR.h"
 
-uint8 AMux_ProxIR_initVar = 0u;
 uint8 AMux_ProxIR_lastChannel = AMux_ProxIR_NULL_CHANNEL;
 
 
@@ -36,49 +35,23 @@ uint8 AMux_ProxIR_lastChannel = AMux_ProxIR_NULL_CHANNEL;
 *******************************************************************************/
 void AMux_ProxIR_Start(void)
 {
-    AMux_ProxIR_DisconnectAll();
-    AMux_ProxIR_initVar = 1u;
+    uint8 chan;
+
+    for(chan = 0; chan < AMux_ProxIR_CHANNELS ; chan++)
+    {
+#if(AMux_ProxIR_MUXTYPE == AMux_ProxIR_MUX_SINGLE)
+        AMux_ProxIR_Unset(chan);
+#else
+        AMux_ProxIR_CYAMUXSIDE_A_Unset(chan);
+        AMux_ProxIR_CYAMUXSIDE_B_Unset(chan);
+#endif
+    }
+
+	AMux_ProxIR_lastChannel = AMux_ProxIR_NULL_CHANNEL;
 }
 
 
-/*******************************************************************************
-* Function Name: AMux_ProxIR_Init
-********************************************************************************
-* Summary:
-*  Disconnect all channels.
-*
-* Parameters:
-*  void
-*
-* Return:
-*  void
-*
-*******************************************************************************/
-void AMux_ProxIR_Init(void)
-{
-    AMux_ProxIR_DisconnectAll();
-}
-
-
-/*******************************************************************************
-* Function Name: AMux_ProxIR_Stop
-********************************************************************************
-* Summary:
-*  Disconnect all channels.
-*
-* Parameters:
-*  void
-*
-* Return:
-*  void
-*
-*******************************************************************************/
-void AMux_ProxIR_Stop(void)
-{
-    AMux_ProxIR_DisconnectAll();
-}
-
-
+#if(!AMux_ProxIR_ATMOSTONE)
 /*******************************************************************************
 * Function Name: AMux_ProxIR_Select
 ********************************************************************************
@@ -99,6 +72,7 @@ void AMux_ProxIR_Select(uint8 channel)
     AMux_ProxIR_Connect(channel);       /* Make the given selection */
     AMux_ProxIR_lastChannel = channel;  /* Update last channel */
 }
+#endif
 
 
 /*******************************************************************************
@@ -120,18 +94,26 @@ void AMux_ProxIR_Select(uint8 channel)
 void AMux_ProxIR_FastSelect(uint8 channel) 
 {
     /* Disconnect the last valid channel */
-    if( AMux_ProxIR_lastChannel != AMux_ProxIR_NULL_CHANNEL)   /* Update last channel */
+    if( AMux_ProxIR_lastChannel != AMux_ProxIR_NULL_CHANNEL)
     {
         AMux_ProxIR_Disconnect(AMux_ProxIR_lastChannel);
     }
 
     /* Make the new channel connection */
-    AMux_ProxIR_Connect(channel);
-    AMux_ProxIR_lastChannel = channel;   /* Update last channel */
+#if(AMux_ProxIR_MUXTYPE == AMux_ProxIR_MUX_SINGLE)
+    AMux_ProxIR_Set(channel);
+#else
+    AMux_ProxIR_CYAMUXSIDE_A_Set(channel);
+    AMux_ProxIR_CYAMUXSIDE_B_Set(channel);
+#endif
+
+
+	AMux_ProxIR_lastChannel = channel;   /* Update last channel */
 }
 
 
 #if(AMux_ProxIR_MUXTYPE == AMux_ProxIR_MUX_DIFF)
+#if(!AMux_ProxIR_ATMOSTONE)
 /*******************************************************************************
 * Function Name: AMux_ProxIR_Connect
 ********************************************************************************
@@ -150,7 +132,7 @@ void AMux_ProxIR_Connect(uint8 channel)
     AMux_ProxIR_CYAMUXSIDE_A_Set(channel);
     AMux_ProxIR_CYAMUXSIDE_B_Set(channel);
 }
-
+#endif
 
 /*******************************************************************************
 * Function Name: AMux_ProxIR_Disconnect
@@ -173,7 +155,7 @@ void AMux_ProxIR_Disconnect(uint8 channel)
 }
 #endif
 
-
+#if(AMux_ProxIR_ATMOSTONE)
 /*******************************************************************************
 * Function Name: AMux_ProxIR_DisconnectAll
 ********************************************************************************
@@ -189,21 +171,12 @@ void AMux_ProxIR_Disconnect(uint8 channel)
 *******************************************************************************/
 void AMux_ProxIR_DisconnectAll(void) 
 {
-    uint8 chan;
-
-#if(AMux_ProxIR_MUXTYPE == AMux_ProxIR_MUX_SINGLE)
-    for(chan = 0; chan < AMux_ProxIR_CHANNELS ; chan++)
+    if(AMux_ProxIR_lastChannel != AMux_ProxIR_NULL_CHANNEL) 
     {
-        AMux_ProxIR_Unset(chan);
+        AMux_ProxIR_Disconnect(AMux_ProxIR_lastChannel);
+		AMux_ProxIR_lastChannel = AMux_ProxIR_NULL_CHANNEL;
     }
-#else
-    for(chan = 0; chan < AMux_ProxIR_CHANNELS ; chan++)
-    {
-        AMux_ProxIR_CYAMUXSIDE_A_Unset(chan);
-        AMux_ProxIR_CYAMUXSIDE_B_Unset(chan);
-    }
-#endif
 }
-
+#endif
 
 /* [] END OF FILE */

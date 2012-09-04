@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: ShiftReg_DelaySenseIR.c
-* Version 2.0
+* Version 2.10
 *
 * Description:
 *  This file provides the API source code for the Shift Register component.
@@ -8,7 +8,7 @@
 * Note: none
 *
 ********************************************************************************
-* Copyright 2008-2010, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions,
 * disclaimers, and limitations in the end user license agreement accompanying
 * the software package with which this file was provided.
@@ -43,7 +43,7 @@ uint8 ShiftReg_DelaySenseIR_initVar = 0u;
 *  No.
 *
 *******************************************************************************/
-void ShiftReg_DelaySenseIR_Start(void)
+void ShiftReg_DelaySenseIR_Start(void) 
 {
     if (ShiftReg_DelaySenseIR_initVar == 0u)
     {

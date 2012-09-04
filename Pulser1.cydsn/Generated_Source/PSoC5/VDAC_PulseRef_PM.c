@@ -1,16 +1,16 @@
 /*******************************************************************************
 * File Name: VDAC_PulseRef_PM.c  
-* Version 1.70
+* Version 1.80
 *
-*  Description:
-*     This file provides the power management source code to API for the
-*     VDAC8.  
+* Description:
+*  This file provides the power management source code to API for the
+*  VDAC8.  
 *
-*   Note:
-*     None
+* Note:
+*  None
 *
-*******************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
+********************************************************************************
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions, 
 * disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
@@ -25,7 +25,7 @@ static VDAC_PulseRef_backupStruct VDAC_PulseRef_backup;
 * Function Name: VDAC_PulseRef_SaveConfig
 ********************************************************************************
 * Summary:
-*     Save the current user configuration
+*  Save the current user configuration
 *
 * Parameters:  
 *  void  
@@ -33,13 +33,13 @@ static VDAC_PulseRef_backupStruct VDAC_PulseRef_backup;
 * Return: 
 *  void
 *
-* Reenrancy: 
-*  No
-*
 *******************************************************************************/
-void VDAC_PulseRef_SaveConfig(void)
+void VDAC_PulseRef_SaveConfig(void) 
 {
-    VDAC_PulseRef_backup.data_value = VDAC_PulseRef_Data;
+    if (!((VDAC_PulseRef_CR1 & VDAC_PulseRef_SRC_MASK) == VDAC_PulseRef_SRC_UDB))
+    {
+        VDAC_PulseRef_backup.data_value = VDAC_PulseRef_Data;
+    }
 }
 
 
@@ -56,13 +56,22 @@ void VDAC_PulseRef_SaveConfig(void)
 * Return: 
 *  void
 *
-* Reenrancy: 
-*  No
-*
 *******************************************************************************/
-void VDAC_PulseRef_RestoreConfig(void)
+void VDAC_PulseRef_RestoreConfig(void) 
 {
-    VDAC_PulseRef_Data = VDAC_PulseRef_backup.data_value;
+    if (!((VDAC_PulseRef_CR1 & VDAC_PulseRef_SRC_MASK) == VDAC_PulseRef_SRC_UDB))
+    {
+        if((VDAC_PulseRef_Strobe & VDAC_PulseRef_STRB_MASK) == VDAC_PulseRef_STRB_EN)
+        {
+            VDAC_PulseRef_Strobe &= ~VDAC_PulseRef_STRB_MASK;
+            VDAC_PulseRef_Data = VDAC_PulseRef_backup.data_value;
+            VDAC_PulseRef_Strobe |= VDAC_PulseRef_STRB_EN;
+        }
+        else
+        {
+            VDAC_PulseRef_Data = VDAC_PulseRef_backup.data_value;
+        }
+    }
 }
 
 
@@ -70,7 +79,7 @@ void VDAC_PulseRef_RestoreConfig(void)
 * Function Name: VDAC_PulseRef_Sleep
 ********************************************************************************
 * Summary:
-*     Stop and Save the user configuration
+*  Stop and Save the user configuration
 *
 * Parameters:  
 *  void:  
@@ -80,13 +89,10 @@ void VDAC_PulseRef_RestoreConfig(void)
 *
 * Global variables:
 *  VDAC_PulseRef_backup.enableState:  Is modified depending on the enable 
-* state  of the block before entering sleep mode.
-*
-* Reenrancy: 
-*  No
+*  state  of the block before entering sleep mode.
 *
 *******************************************************************************/
-void VDAC_PulseRef_Sleep(void)
+void VDAC_PulseRef_Sleep(void) 
 {
     /* Save VDAC8's enable state */    
     if(VDAC_PulseRef_ACT_PWR_EN == (VDAC_PulseRef_PWRMGR & VDAC_PulseRef_ACT_PWR_EN))
@@ -121,9 +127,6 @@ void VDAC_PulseRef_Sleep(void)
 * Global variables:
 *  VDAC_PulseRef_backup.enableState:  Is used to restore the enable state of 
 *  block on wakeup from sleep mode.
-*
-* Reenrancy: 
-*  Yes
 *
 *******************************************************************************/
 void VDAC_PulseRef_Wakeup(void) 

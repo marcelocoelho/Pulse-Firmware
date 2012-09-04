@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: ADC_PulseIn_AMux.h
-* Version 1.50
+* Version 1.60
 *
 *  Description:
 *    This file contains the constants and function prototypes for the Analog
@@ -28,14 +28,14 @@
 ***************************************/
 
 void ADC_PulseIn_AMux_Start(void);
-void ADC_PulseIn_AMux_Init(void);
-void ADC_PulseIn_AMux_Stop(void);
-void ADC_PulseIn_AMux_Select(uint8 channel) ;
+# define ADC_PulseIn_AMux_Init() ADC_PulseIn_AMux_Start()
 void ADC_PulseIn_AMux_FastSelect(uint8 channel) ;
-void ADC_PulseIn_AMux_DisconnectAll(void) ;
-/* The Connect and Disconnect functions are declared elsewhere */
+/* The Stop, Select, Connect, Disconnect and DisconnectAll functions are declared elsewhere */
+/* void ADC_PulseIn_AMux_Stop(void); */
+/* void ADC_PulseIn_AMux_Select(uint8 channel); */
 /* void ADC_PulseIn_AMux_Connect(uint8 channel); */
 /* void ADC_PulseIn_AMux_Disconnect(uint8 channel); */
+/* void ADC_PulseIn_AMux_DisconnectAll(void) */
 
 
 /***************************************
@@ -44,7 +44,7 @@ void ADC_PulseIn_AMux_DisconnectAll(void) ;
 
 #define ADC_PulseIn_AMux_CHANNELS  2
 #define ADC_PulseIn_AMux_MUXTYPE   1
-
+#define ADC_PulseIn_AMux_ATMOSTONE 0
 
 /***************************************
 *             API Constants
@@ -60,11 +60,25 @@ void ADC_PulseIn_AMux_DisconnectAll(void) ;
 ***************************************/
 
 #if ADC_PulseIn_AMux_MUXTYPE == ADC_PulseIn_AMux_MUX_SINGLE
+#if !ADC_PulseIn_AMux_ATMOSTONE
 # define ADC_PulseIn_AMux_Connect(channel) ADC_PulseIn_AMux_Set(channel)
+#endif
 # define ADC_PulseIn_AMux_Disconnect(channel) ADC_PulseIn_AMux_Unset(channel)
 #else
+#if !ADC_PulseIn_AMux_ATMOSTONE
 void ADC_PulseIn_AMux_Connect(uint8 channel) ;
+#endif
 void ADC_PulseIn_AMux_Disconnect(uint8 channel) ;
+#endif
+
+#if ADC_PulseIn_AMux_ATMOSTONE
+# define ADC_PulseIn_AMux_Stop() ADC_PulseIn_AMux_DisconnectAll()
+# define ADC_PulseIn_AMux_Select(channel) ADC_PulseIn_AMux_FastSelect(channel)
+void ADC_PulseIn_AMux_DisconnectAll(void) ;
+#else
+# define ADC_PulseIn_AMux_Stop() ADC_PulseIn_AMux_Start()
+void ADC_PulseIn_AMux_Select(uint8 channel) ;
+# define ADC_PulseIn_AMux_DisconnectAll() ADC_PulseIn_AMux_Start()
 #endif
 
 #endif /* CY_AMUX_ADC_PulseIn_AMux_H */

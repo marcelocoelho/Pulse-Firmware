@@ -1,16 +1,16 @@
-/******************************************************************************
+/*******************************************************************************
 * File Name: CyBootAsmGnu.s
-* Version 2.40
+* Version 3.10
 *
 *  Description:
 *   Assembly routines for GNU as.
 *
 ********************************************************************************
-* Copyright 2010-2011, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2010-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions, 
 * disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
-********************************************************************************/
+*******************************************************************************/
 
 .syntax unified
 .text
@@ -20,14 +20,15 @@
 /*******************************************************************************
 * Function Name: CyDelayCycles
 ********************************************************************************
+*
 * Summary:
-*   Delays for the specified number of cycles.
+*  Delays for the specified number of cycles.
 *
 * Parameters:
-*   cycles: number of cycles to delay.
+*  uint32 cycles: number of cycles to delay.
 *
 * Return:
-*   void.
+*  None
 *
 *******************************************************************************/
 /* void CyDelayCycles(uint32 cycles) */
@@ -53,21 +54,25 @@ CyDelayCycles_done:
 /*******************************************************************************
 * Function Name: CyEnterCriticalSection
 ********************************************************************************
+*
 * Summary:
-*   Enters a critical section and disables interrupts.
-*   Implementation of CyEnterCriticalSection manipulates the IRQ enable bit with 
-*   interrupts still enabled. The test and set of the interrupt bits is not atomic; 
-*   this is true for both PSoC3 and PSoC5. 
-*   Therefore, to avoid corrupting processor state, 
-*   it must be the policy that all interrupt routines restore the 
-*   interrupt enable bits as they were found on entry.
+*  CyEnterCriticalSection disables interrupts and returns a value indicating
+*  whether interrupts were previously enabled (the actual value depends on
+*  whether the device is PSoC 3 or PSoC 5).
+*
+*  Note Implementation of CyEnterCriticalSection manipulates the IRQ enable bit
+*  with interrupts still enabled. The test and set of the interrupt bits is not
+*  atomic; this is true for both PSoC 3 and PSoC 5. Therefore, to avoid
+*  corrupting processor state, it must be the policy that all interrupt routines
+*  restore the interrupt enable bits as they were found on entry.
 *
 * Parameters:
-*   void.
+*  None
 *
 * Return:
-*   Returns 1 if interrupts were previously enabled or 0 if interrupts were
-*     previously disabled.
+*  uint8
+*   Returns 0 if interrupts were previously enabled or 1 if interrupts
+*   were previously disabled.
 *
 *******************************************************************************/
 /* uint8 CyEnterCriticalSection(void) */
@@ -85,23 +90,18 @@ CyEnterCriticalSection:
 /*******************************************************************************
 * Function Name: CyExitCriticalSection
 ********************************************************************************
-* Summary:
-*   Ends a critical section, re-enabling interrupts if they were enabled before
-*   entering the critical section.
-*   Implementation of CyEnterCriticalSection manipulates the IRQ enable bit with 
-*   interrupts still enabled. The test and set of the interrupt bits is not atomic; 
-*   this is true for both PSoC3 and PSoC5. 
-*   Therefore, to avoid corrupting processor state, 
-*   it must be the policy that all interrupt routines restore the 
-*   interrupt enable bits as they were found on entry.
 *
+* Summary:
+*  CyExitCriticalSection re-enables interrupts if they were enabled before
+*  CyEnterCriticalSection was called. The argument should be the value returned
+*  from CyEnterCriticalSection.
 *
 * Parameters:
-*   savedIntrStatus: Nonzero to enable interrupts. Should be the value that was
-*     returned from CyEnterCriticalSection.
+*  uint8 savedIntrStatus:
+*   Saved interrupt status returned by the CyEnterCriticalSection function.
 *
 * Return:
-*   void.
+*  None
 *
 *******************************************************************************/
 /* void CyExitCriticalSection(uint8 savedIntrStatus) */

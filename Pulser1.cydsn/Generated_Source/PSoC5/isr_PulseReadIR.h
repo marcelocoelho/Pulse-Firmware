@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: isr_PulseReadIR.h
-* Version 1.50
+* Version 1.60
 *
 *  Description:
 *   Provides the function definitions for the Interrupt Controller.

@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: USBUART_1_std.c
-* Version 2.12
+* Version 2.30
 *
 * Description:
 *  USB Standard request handler.
@@ -295,7 +295,9 @@ uint8 USBUART_1_HandleStandardRqst(void)
                     #else
                         USBUART_1_ConfigAltChanged();
                     #endif /* End (USBUART_1_EP_MA == USBUART_1__MA_DYNAMIC) */
-
+                    /* Update handled Alt setting changes status */
+                    USBUART_1_interfaceSetting_last[CY_GET_REG8(USBUART_1_wIndexLo)] = 
+                         USBUART_1_interfaceSetting[CY_GET_REG8(USBUART_1_wIndexLo)];
                     requestHandled = USBUART_1_InitNoDataControlTransfer();
                 }
                 break;
@@ -410,6 +412,93 @@ uint8 USBUART_1_HandleStandardRqst(void)
 
 
 /*******************************************************************************
+* Function Name: USBUART_1_ConfigReg
+********************************************************************************
+*
+* Summary:
+*  This routine configures hardware registers from the variables.
+*  It is called from USBUART_1_Config() function and from RestoreConfig
+*  after Wakeup.
+*
+* Parameters:
+*  None.
+*
+* Return:
+*  None.
+*
+*******************************************************************************/
+void USBUART_1_ConfigReg(void) 
+{
+    uint8 ep;
+    uint8 i;
+    #if(USBUART_1_EP_MM == USBUART_1__EP_DMAAUTO)
+        uint8 ep_type = 0u;
+    #endif /* End USBUART_1_EP_MM == USBUART_1__EP_DMAAUTO */
+
+    /* Set the endpoint buffer addresses */
+    ep = USBUART_1_EP1;
+    for (i = 0u; i < 0x80u; i+= 0x10u)
+    {
+        CY_SET_REG8(&USBUART_1_ARB_EP1_CFG_PTR[i], USBUART_1_ARB_EPX_CFG_CRC_BYPASS |
+                                                          USBUART_1_ARB_EPX_CFG_RESET);
+
+        #if(USBUART_1_EP_MM != USBUART_1__EP_MANUAL)
+            /* Enable all Arbiter EP Interrupts : err, buf under, buf over, dma gnt, in buf full */
+            USBUART_1_ARB_EP1_INT_EN_PTR[i] = USBUART_1_ARB_EPX_INT_MASK;
+        #endif   /* End USBUART_1_EP_MM != USBUART_1__EP_MANUAL */
+
+        if(USBUART_1_EP[ep].epMode != USBUART_1_MODE_DISABLE)
+        {
+            if((USBUART_1_EP[ep].addr & USBUART_1_DIR_IN) != 0u )
+            {
+                CY_SET_REG8(&USBUART_1_SIE_EP1_CR0_PTR[i], USBUART_1_MODE_NAK_IN);
+            }
+            else
+            {
+                CY_SET_REG8(&USBUART_1_SIE_EP1_CR0_PTR[i], USBUART_1_MODE_NAK_OUT);
+                /* Prepare EP type mask for automatic memory allocation */
+                #if(USBUART_1_EP_MM == USBUART_1__EP_DMAAUTO)
+                    ep_type |= 0x01u << (ep - USBUART_1_EP1);
+                #endif /* End USBUART_1_EP_MM == USBUART_1__EP_DMAAUTO */
+            }
+        }
+        else
+        {
+            CY_SET_REG8(&USBUART_1_SIE_EP1_CR0_PTR[i], USBUART_1_MODE_STALL_DATA_EP);
+        }
+
+        #if(USBUART_1_EP_MM != USBUART_1__EP_DMAAUTO)
+            CY_SET_REG8(&USBUART_1_SIE_EP1_CNT0_PTR[i],   USBUART_1_EP[ep].bufferSize >> 8u);
+            CY_SET_REG8(&USBUART_1_SIE_EP1_CNT1_PTR[i],   USBUART_1_EP[ep].bufferSize & 0xFFu);
+
+            CY_SET_REG8(&USBUART_1_ARB_RW1_RA_PTR[i],     USBUART_1_EP[ep].buffOffset & 0xFFu);
+            CY_SET_REG8(&USBUART_1_ARB_RW1_RA_MSB_PTR[i], USBUART_1_EP[ep].buffOffset >> 8u);
+            CY_SET_REG8(&USBUART_1_ARB_RW1_WA_PTR[i],     USBUART_1_EP[ep].buffOffset & 0xFFu);
+            CY_SET_REG8(&USBUART_1_ARB_RW1_WA_MSB_PTR[i], USBUART_1_EP[ep].buffOffset >> 8u);
+        #endif /* End USBUART_1_EP_MM != USBUART_1__EP_DMAAUTO */
+
+        ep++;
+    }
+
+    #if(USBUART_1_EP_MM == USBUART_1__EP_DMAAUTO)
+         /* BUF_SIZE depend on DMA_THRESS value: 55-32 bytes  44-16 bytes 33-8 bytes 22-4 bytes 11-2 bytes */
+        USBUART_1_BUF_SIZE_REG = USBUART_1_DMA_BUF_SIZE;
+        USBUART_1_DMA_THRES_REG = USBUART_1_DMA_BYTES_PER_BURST;   /* DMA burst threshold */
+        USBUART_1_DMA_THRES_MSB_REG = 0u;
+        USBUART_1_EP_ACTIVE_REG = USBUART_1_ARB_INT_MASK;
+        USBUART_1_EP_TYPE_REG = ep_type;
+        /* Cfg_cmp bit set to 1 once configuration is complete. */
+        USBUART_1_ARB_CFG_REG = USBUART_1_ARB_CFG_AUTO_DMA | USBUART_1_ARB_CFG_AUTO_MEM |
+                                       USBUART_1_ARB_CFG_CFG_CPM;
+        /* Cfg_cmp bit set to 0 during configuration of PFSUSB Registers. */
+        USBUART_1_ARB_CFG_REG = USBUART_1_ARB_CFG_AUTO_DMA | USBUART_1_ARB_CFG_AUTO_MEM;
+    #endif /* End USBUART_1_EP_MM == USBUART_1__EP_DMAAUTO */
+
+    CY_SET_REG8(USBUART_1_SIE_EP_INT_EN_PTR, 0xFFu);
+}
+
+
+/*******************************************************************************
 * Function Name: USBUART_1_Config
 ********************************************************************************
 *
@@ -433,10 +522,15 @@ uint8 USBUART_1_HandleStandardRqst(void)
 *******************************************************************************/
 void USBUART_1_Config(uint8 clearAltSetting) 
 {
-    uint8 ep,cur_ep,i;
+    uint8 ep;
+    uint8 cur_ep;
+    uint8 i;
     uint8 iso;
-    uint16 count;
     uint8 *pDescr;
+    #if(USBUART_1_EP_MM != USBUART_1__EP_DMAAUTO)
+        uint16 count = 0u;
+    #endif /* End USBUART_1_EP_MM != USBUART_1__EP_DMAAUTO */
+    
     T_USBUART_1_LUT *pTmp;
     T_USBUART_1_EP_SETTINGS_BLOCK *pEP;
 
@@ -546,7 +640,7 @@ void USBUART_1_Config(uint8 clearAltSetting)
             {
                 /* and p_list points the endpoint setting table. */
                 pEP = (T_USBUART_1_EP_SETTINGS_BLOCK *) pTmp->p_list;
-                /* find max length for each EP and select it (length could be different in different Alt settings)*/
+                /* find max length for each EP and select it (length could be different in different Alt settings) */
                 /* but other settings should be correct with regards to Interface alt Setting */
                 for (cur_ep = 0u; cur_ep < ep; cur_ep++, pEP++)
                 {
@@ -637,71 +731,18 @@ void USBUART_1_Config(uint8 clearAltSetting)
         /* init pointer on interface class table*/
         USBUART_1_interfaceClass = USBUART_1_GetInterfaceClassTablePtr();
         /* Set the endpoint buffer addresses */
-        count = 0u;
-        ep = USBUART_1_EP1;
-        cur_ep = 0u;
-        for (i = 0u; i < 0x80u; i+= 0x10u)
-        {
-            CY_SET_REG8(&USBUART_1_ARB_EP1_CFG_PTR[i], USBUART_1_ARB_EPX_CFG_CRC_BYPASS |
-                                                              USBUART_1_ARB_EPX_CFG_RESET);
-
-            #if(USBUART_1_EP_MM != USBUART_1__EP_MANUAL)
-                /* Enable all Arbiter EP Interrupts : err, buf under, buf over, dma gnt, in buf full */
-                USBUART_1_ARB_EP1_INT_EN_PTR[i] = USBUART_1_ARB_EPX_INT_MASK;
-            #endif   /* End USBUART_1_EP_MM != USBUART_1__EP_MANUAL */
-
-            if(USBUART_1_EP[ep].epMode != USBUART_1_MODE_DISABLE)
+        
+        #if(USBUART_1_EP_MM != USBUART_1__EP_DMAAUTO)
+            for (ep = USBUART_1_EP1; ep < USBUART_1_MAX_EP; ep++)
             {
-                if((USBUART_1_EP[ep].addr & USBUART_1_DIR_IN) != 0u )
-                {
-                    CY_SET_REG8(&USBUART_1_SIE_EP1_CR0_PTR[i], USBUART_1_MODE_NAK_IN);
-                }
-                else
-                {
-                    CY_SET_REG8(&USBUART_1_SIE_EP1_CR0_PTR[i], USBUART_1_MODE_NAK_OUT);
-                    /* Prepare EP type mask for automatic memory allocation */
-                    #if(USBUART_1_EP_MM == USBUART_1__EP_DMAAUTO)
-                        cur_ep |= 0x01u << (ep - USBUART_1_EP1);
-                    #endif /* End USBUART_1_EP_MM == USBUART_1__EP_DMAAUTO */
-
-                }
-            }
-            else
-            {
-                CY_SET_REG8(&USBUART_1_SIE_EP1_CR0_PTR[i], USBUART_1_MODE_STALL_DATA_EP);
-            }
-
-            #if(USBUART_1_EP_MM != USBUART_1__EP_DMAAUTO)
                 USBUART_1_EP[ep].buffOffset = count;
-                count += USBUART_1_EP[ep].bufferSize;
-                CY_SET_REG8(&USBUART_1_SIE_EP1_CNT0_PTR[i],   USBUART_1_EP[ep].bufferSize >> 8u);
-                CY_SET_REG8(&USBUART_1_SIE_EP1_CNT1_PTR[i],   USBUART_1_EP[ep].bufferSize & 0xFFu);
+                 count += USBUART_1_EP[ep].bufferSize;
+            }
+        #endif /* End USBUART_1_EP_MM != USBUART_1__EP_DMAAUTO */
 
-                CY_SET_REG8(&USBUART_1_ARB_RW1_RA_PTR[i],     USBUART_1_EP[ep].buffOffset & 0xFFu);
-                CY_SET_REG8(&USBUART_1_ARB_RW1_RA_MSB_PTR[i], USBUART_1_EP[ep].buffOffset >> 8u);
-                CY_SET_REG8(&USBUART_1_ARB_RW1_WA_PTR[i],     USBUART_1_EP[ep].buffOffset & 0xFFu);
-                CY_SET_REG8(&USBUART_1_ARB_RW1_WA_MSB_PTR[i], USBUART_1_EP[ep].buffOffset >> 8u);
-            #endif /* End USBUART_1_EP_MM != USBUART_1__EP_DMAAUTO */
-
-            ep++;
-        }
-
-        #if(USBUART_1_EP_MM == USBUART_1__EP_DMAAUTO)
-             /* BUF_SIZE depend on DMA_THRESS value: 55-32 bytes  44-16 bytes 33-8 bytes 22-4 bytes 11-2 bytes */
-            USBUART_1_BUF_SIZE_REG = USBUART_1_DMA_BUF_SIZE;
-            USBUART_1_DMA_THRES_REG = USBUART_1_DMA_BYTES_PER_BURST;   /* DMA burst threshold */
-            USBUART_1_DMA_THRES_MSB_REG = 0u;
-            USBUART_1_EP_ACTIVE_REG = USBUART_1_ARB_INT_MASK;
-            USBUART_1_EP_TYPE_REG = cur_ep;
-            /* Cfg_cmp bit set to 1 once configuration is complete. */
-            USBUART_1_ARB_CFG_REG = USBUART_1_ARB_CFG_AUTO_DMA | USBUART_1_ARB_CFG_AUTO_MEM |
-                                           USBUART_1_ARB_CFG_CFG_CPM;
-            /* Cfg_cmp bit set to 0 during configuration of PFSUSB Registers. */
-            USBUART_1_ARB_CFG_REG = USBUART_1_ARB_CFG_AUTO_DMA | USBUART_1_ARB_CFG_AUTO_MEM;
-        #endif /* End USBUART_1_EP_MM == USBUART_1__EP_DMAAUTO */
-
+        /* Congigure hardware registers */
+        USBUART_1_ConfigReg();
     } /* USBUART_1_configuration > 0 */
-    CY_SET_REG8(USBUART_1_SIE_EP_INT_EN_PTR, 0xFFu);
 }
 
 
@@ -749,7 +790,8 @@ void USBUART_1_ConfigAltChanged()
             /*If Alt setting changed and new is same with EP Alt */
             if((USBUART_1_interfaceSetting[pEP->interface] !=
                 USBUART_1_interfaceSetting_last[pEP->interface] ) &&
-               (USBUART_1_interfaceSetting[pEP->interface] == pEP->altSetting) )
+               (USBUART_1_interfaceSetting[pEP->interface] == pEP->altSetting) &&
+                pEP->interface == CY_GET_REG8(USBUART_1_wIndexLo))
             {
                 cur_ep = pEP->addr & USBUART_1_DIR_UNUSED;
                 ri = ((cur_ep - USBUART_1_EP1) << USBUART_1_EPX_CNTX_ADDR_SHIFT);
@@ -778,7 +820,7 @@ void USBUART_1_ConfigAltChanged()
                 USBUART_1_EP[cur_ep].epToggle = 0u;
 
                 /* Dynamic reconfiguration for mode 3 transfer */
-                #if((USBUART_1_EP_MM == USBUART_1__EP_DMAAUTO) && (CY_PSOC3_ES3 || CY_PSOC5_ES2) )
+                #if((USBUART_1_EP_MM == USBUART_1__EP_DMAAUTO) && (!CY_PSOC5A) )
                     /* In_data_rdy for selected EP should be set to 0 */
                     USBUART_1_ARB_EP1_CFG_PTR[ri] &= ~USBUART_1_ARB_EPX_CFG_IN_DATA_RDY;
 

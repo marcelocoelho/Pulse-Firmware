@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: USBUART_1_audio.c
-* Version 2.12
+* Version 2.30
 *
 * Description:
 *  USB AUDIO Class request handler.
@@ -154,6 +154,10 @@ uint8 USBUART_1_DispatchAUDIOClassRqst()
                     }
                     else if(CY_GET_REG8(USBUART_1_wValueHi) == USBUART_1_VOLUME_CONTROL)
                     {
+                        /* `#START VOLUME_CONTROL_GET_REQUEST` Place multi-channel handler here */
+
+                        /* `#END` */
+
                          /* Entity ID Control Selector is VOLUME, */
                         USBUART_1_currentTD.wCount = USBUART_1_VOLUME_LEN;
                         USBUART_1_currentTD.pData  = USBUART_1_currentVolume;
@@ -259,6 +263,10 @@ uint8 USBUART_1_DispatchAUDIOClassRqst()
                     }
                     else if(CY_GET_REG8(USBUART_1_wValueHi) == USBUART_1_VOLUME_CONTROL)
                     {
+                        /* `#START VOLUME_CONTROL_SET_REQUEST` Place multi-channel handler here */
+
+                        /* `#END` */
+                    
                          /* Entity ID Control Selector is VOLUME */
                         USBUART_1_currentTD.wCount = USBUART_1_VOLUME_LEN;
                         USBUART_1_currentTD.pData  = USBUART_1_currentVolume;

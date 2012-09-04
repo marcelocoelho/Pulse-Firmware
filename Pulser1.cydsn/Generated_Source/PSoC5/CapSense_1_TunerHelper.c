@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: CapSense_1_TunerHelper.c
-* Version 3.10
+* Version 3.20
 *
 * Description:
 *  This file provides the source code of Tuner helper APIs for the CapSense CSD 
@@ -9,7 +9,7 @@
 * Note:
 *
 ********************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions,
 * disclaimers, and limitations in the end user license agreement accompanying
 * the software package with which this file was provided.
@@ -18,12 +18,13 @@
 #include "CapSense_1_TunerHelper.h"
 
 #if (CapSense_1_TUNER_API_GENERATE)
-    void CapSense_1_ProcessAllWidgets(volatile CapSense_1_OUTBOX *outbox);
+    void CapSense_1_ProcessAllWidgets(volatile CapSense_1_OUTBOX *outbox)
+	                                        ;
     
     volatile CapSense_1_MAILBOXES CapSense_1_mailboxesComm;
 
     extern uint8 CapSense_1_SensorOnMask[(((CapSense_1_TOTAL_SENSOR_COUNT - 1u) / 8u) + 1u)];
-#endif  /* End (CapSense_1_TUNER_API_GENERATE) */
+#endif  /* (CapSense_1_TUNER_API_GENERATE) */
 
 
 /*******************************************************************************
@@ -45,7 +46,7 @@
 *  No
 *
 *******************************************************************************/
-void CapSense_1_TunerStart(void)
+void CapSense_1_TunerStart(void) 
 {
     #if (CapSense_1_TUNER_API_GENERATE)
         
@@ -70,7 +71,7 @@ void CapSense_1_TunerStart(void)
         /* Starts scan all enabled sensors */
         CapSense_1_ScanEnabledWidgets();
     
-    #endif  /* End (CapSense_1_TUNER_API_GENERATE) */
+    #endif  /* (CapSense_1_TUNER_API_GENERATE) */
 }
 
 
@@ -95,7 +96,7 @@ void CapSense_1_TunerStart(void)
 *  No
 *
 *******************************************************************************/
-void CapSense_1_TunerComm(void)
+void CapSense_1_TunerComm(void) 
 {
     #if (CapSense_1_TUNER_API_GENERATE)
         if (0u == CapSense_1_IsBusy())
@@ -103,7 +104,7 @@ void CapSense_1_TunerComm(void)
             /* Apply new settings */
             #if (CapSense_1_TUNING_METHOD == CapSense_1_MANUAL_TUNING)
                 CapSense_1_ReadMessage(&CapSense_1_mailboxesComm.csdMailbox);
-            #endif  /* End (CapSense_1_TUNING_METHOD == CapSense_1_MANUAL_TUNING) */
+            #endif  /* (CapSense_1_TUNING_METHOD == CapSense_1_MANUAL_TUNING) */
 
             /* Update all baselines and process all widgets */
             CapSense_1_UpdateEnabledBaselines();
@@ -122,7 +123,7 @@ void CapSense_1_TunerComm(void)
             /* Start scan all sensors */
             CapSense_1_ScanEnabledWidgets();
         }
-    #endif  /* End (CapSense_1_TUNER_API_GENERATE) */
+    #endif /* (CapSense_1_TUNER_API_GENERATE) */
 }
 
 
@@ -160,19 +161,20 @@ void CapSense_1_TunerComm(void)
     *
     *******************************************************************************/
     void CapSense_1_ProcessAllWidgets(volatile CapSense_1_OUTBOX *outbox)
+	                                        
     {
         uint8 i = 0u;
 
         #if (CapSense_1_TOTAL_TOUCH_PADS_COUNT)
             uint16 pos[2];
-        #endif  /* End (CapSense_1_TOTAL_TOUCH_PADS_COUNT) */
+        #endif  /* (CapSense_1_TOTAL_TOUCH_PADS_COUNT) */
         
-        #if ( (CapSense_1_TOTAL_RADIAL_SLIDERS_COUNT) || \
-              (CapSense_1_TOTAL_TOUCH_PADS_COUNT) || \
+        #if ( (CapSense_1_TOTAL_RADIAL_SLIDERS_COUNT) || (CapSense_1_TOTAL_TOUCH_PADS_COUNT) || \
               (CapSense_1_TOTAL_MATRIX_BUTTONS_COUNT) )
             uint8 widgetCnt = 0u;
-        #endif  /* End ((CapSense_1_TOTAL_RADIAL_SLIDERS_COUNT) || (CapSense_1_TOTAL_TOUCH_PADS_COUNT)) || 
-                        (CapSense_1_TOTAL_MATRIX_BUTTONS_COUNT) */
+        #endif  /* ((CapSense_1_TOTAL_RADIAL_SLIDERS_COUNT) || (CapSense_1_TOTAL_TOUCH_PADS_COUNT)) || 
+                *   (CapSense_1_TOTAL_MATRIX_BUTTONS_COUNT)
+                */
         
         /* Calculate widget with centroids */
         #if (CapSense_1_TOTAL_LINEAR_SLIDERS_COUNT)
@@ -180,7 +182,7 @@ void CapSense_1_TunerComm(void)
             {
                 outbox->position[i] = CapSense_1_SWAP_ENDIAN16(CapSense_1_GetCentroidPos(i));
             }
-        #endif   /* End (CapSense_1_TOTAL_LINEAR_SLIDERS_COUNT) */
+        #endif /* (CapSense_1_TOTAL_LINEAR_SLIDERS_COUNT) */
         
         #if (CapSense_1_TOTAL_RADIAL_SLIDERS_COUNT)
             widgetCnt = i;
@@ -188,7 +190,7 @@ void CapSense_1_TunerComm(void)
             {
                 outbox->position[i] = CapSense_1_SWAP_ENDIAN16(CapSense_1_GetRadialCentroidPos(i));
             }
-        #endif  /* End (CapSense_1_TOTAL_RADIAL_SLIDERS_COUNT) */
+        #endif /* (CapSense_1_TOTAL_RADIAL_SLIDERS_COUNT) */
         
         #if (CapSense_1_TOTAL_TOUCH_PADS_COUNT)
             widgetCnt = i;
@@ -205,7 +207,7 @@ void CapSense_1_TunerComm(void)
                     outbox->position[i+1] = CapSense_1_SWAP_ENDIAN16( (uint16) pos[1u]);
                 }
             }
-        #endif  /* End (CapSense_1_TOTAL_TOUCH_PADS_COUNT) */
+        #endif /* (CapSense_1_TOTAL_TOUCH_PADS_COUNT) */
 
         #if (CapSense_1_TOTAL_MATRIX_BUTTONS_COUNT)
             i += CapSense_1_TOTAL_BUTTONS_COUNT;
@@ -219,7 +221,7 @@ void CapSense_1_TunerComm(void)
                 }
                 widgetCnt += 2;
             }
-        #endif /* End (CapSense_1_TOTAL_MATRIX_BUTTONS_COUNT)*/
+        #endif /* (CapSense_1_TOTAL_MATRIX_BUTTONS_COUNT) */
 
         /* Update On/Off State */
         CapSense_1_CheckIsAnyWidgetActive();
@@ -230,7 +232,7 @@ void CapSense_1_TunerComm(void)
             outbox->onMask[i]  = CapSense_1_SensorOnMask[i];
         }
     }
-#endif /* End (CapSense_1_TUNER_API_GENERATE) */
+#endif /* (CapSense_1_TUNER_API_GENERATE) */
 
 
 /* [] END OF FILE */

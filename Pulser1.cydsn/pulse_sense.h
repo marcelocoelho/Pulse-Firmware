@@ -28,10 +28,10 @@ enum
 {
 	PulserChan0=0, 
 	PulserMaxIR256=240*256, PulserMinIR256=5*256, PulserIRTargetLow=14000, PulserIRTargetHigh=17000,
-	PulserPulseMinOuter=-800, // -1999,
-	PulserPulseMinInner=-400, // -99,
+	PulserPulseMinOuter=-800, // -800, // -1999,
+	PulserPulseMinInner=-40, // -99,
 	PulserPulseMaxInner=400, // 99,
-	PulserPulseMaxOuter=800, // 1999,
+	PulserPulseMaxOuter=800, // 800, // 1999,
 	PulseRescalTimeout=200   // 2 seconds at 100 Hz
 };
 

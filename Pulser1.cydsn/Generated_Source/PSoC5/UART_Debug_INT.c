@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: UART_Debug_INT.c
-* Version 2.10
+* Version 2.20
 *
 * Description:
 *  This file provides all Interrupt Service functionality of the UART component
@@ -9,12 +9,12 @@
 *  Any unusual or non-standard behavior should be noted here. Other-
 *  wise, this section should remain blank.
 *
-*******************************************************************************
-* Copyright 2008-2011, Cypress Semiconductor Corporation.  All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions,
-* disclaimers, and limitations in the end user license agreement accompanying
+********************************************************************************
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
+* You may use this file only in accordance with the license, terms, conditions, 
+* disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
-********************************************************************************/
+*******************************************************************************/
 
 #include "UART_Debug.h"
 #include "CyLib.h"
@@ -75,7 +75,7 @@
     CY_ISR(UART_Debug_RXISR)
     {
         uint8 readData;
-        uint8 increment_pointer = 0;
+        uint8 increment_pointer = 0u;
 
         /* User code required at start of ISR */
         /* `#START UART_Debug_RXISR_START` */
@@ -85,7 +85,7 @@
         readData = UART_Debug_RXSTATUS_REG;
 
         if((readData & (UART_Debug_RX_STS_BREAK | UART_Debug_RX_STS_PAR_ERROR |
-                        UART_Debug_RX_STS_STOP_ERROR | UART_Debug_RX_STS_OVERRUN)) != 0)
+                        UART_Debug_RX_STS_STOP_ERROR | UART_Debug_RX_STS_OVERRUN)) != 0u)
         {
             /* ERROR handling. */
             /* `#START UART_Debug_RXISR_ERROR` */
@@ -99,9 +99,9 @@
             #if (UART_Debug_RXHW_ADDRESS_ENABLED)
                 if(UART_Debug_rxAddressMode == UART_Debug__B_UART__AM_SW_DETECT_TO_BUFFER) 
                 {
-                    if((readData & UART_Debug_RX_STS_MRKSPC) != 0u )
+                    if((readData & UART_Debug_RX_STS_MRKSPC) != 0u)
                     {  
-                        if ((readData & UART_Debug_RX_STS_ADDR_MATCH) != 0)
+                        if ((readData & UART_Debug_RX_STS_ADDR_MATCH) != 0u)
                         {
                             UART_Debug_rxAddressDetected = 1u;
                         }
@@ -166,10 +166,6 @@
 
         /* `#END` */
 
-        /* PSoC3 ES1, ES2 RTC ISR PATCH  */
-        #if(CY_PSOC3_ES2 && (UART_Debug_RXInternalInterrupt__ES2_PATCH))
-            UART_Debug_ISR_PATCH();
-        #endif /* End CY_PSOC3_ES2*/
     }
 
 #endif /* End UART_Debug_RX_ENABLED && (UART_Debug_RXBUFFERSIZE > UART_Debug_FIFO_LENGTH) */
@@ -231,10 +227,6 @@
 
         /* `#END` */
         
-        /* PSoC3 ES1, ES2 RTC ISR PATCH  */
-        #if(CY_PSOC3_ES2 && (UART_Debug_TXInternalInterrupt__ES2_PATCH))
-            UART_Debug_ISR_PATCH();
-        #endif /* End CY_PSOC3_ES2*/
     }
 
 #endif /* End UART_Debug_TX_ENABLED && (UART_Debug_TXBUFFERSIZE > UART_Debug_FIFO_LENGTH) */
