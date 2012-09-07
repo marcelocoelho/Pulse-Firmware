@@ -105,7 +105,7 @@ void main()
 	CyPins_SetPin(Pin_DebugLED_0);
 	pulserInit(&g_Pulser);
 	UART_Debug_Start();
-	UART_Debug_PutString("\r\nPulser 1.27\r\n");
+	UART_Debug_PutString("\r\nPulser 1.28\r\n");
 	AMux_ProxIR_Start();
 	ShiftReg_DelaySenseIR_Start();
     ADC_PulseIn_Start();     
@@ -206,9 +206,11 @@ static char buff[200];
 //	        LCD_PrintString("    ");
 //	        LCD_Position(ROW_1, 7); 
 //	        LCD_PrintNumber(g_Pulser.scaledPulseMax);
-			sprintf(buff, "Pulse: Filtered=%5ld, scaled=%5ld\r", g_Pulser.curFilteredPulseVal,
-			//sprintf(buff, "Pulse: raw=%5ld, scaled=%5ld, min=%5ld, max=%5ld ", g_Pulser.curRawPulseVal,
-			g_Pulser.scaledPulseVal); // , (-g_Pulser.scaledPulseMin),g_Pulser.scaledPulseMax );
+			sprintf(buff, "Pulse: Raw=%5ld, Filtered=%5ld\r", g_Pulser.curRawPulseVal, g_Pulser.curFilteredPulseVal);
+			
+			//sprintf(buff, "Pulse: raw=%5ld, bright=%5d, Filtered=%5ld, scaled=%5ld, min=%5ld, max=%5ld\r",
+			// g_Pulser.curRawPulseVal,
+			//g_Pulser.brightnessIR256, g_Pulser.curFilteredPulseVal, g_Pulser.scaledPulseVal, g_Pulser.scaledPulseMin, g_Pulser.scaledPulseMax );
 			UART_Debug_PutString(buff);
 			
 	            /* Clear last characters */
