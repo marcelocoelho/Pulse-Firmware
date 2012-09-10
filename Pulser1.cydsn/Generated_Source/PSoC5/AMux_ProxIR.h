@@ -44,7 +44,7 @@ void AMux_ProxIR_FastSelect(uint8 channel) ;
 
 #define AMux_ProxIR_CHANNELS  3
 #define AMux_ProxIR_MUXTYPE   1
-#define AMux_ProxIR_ATMOSTONE 0
+#define AMux_ProxIR_ATMOSTONE 1
 
 /***************************************
 *             API Constants

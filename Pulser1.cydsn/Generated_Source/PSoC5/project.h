@@ -60,12 +60,12 @@
 #include <isr_PulseReadIR.h>
 #include <Pin_BrightLEDCool_aliases.h>
 #include <Pin_BrightLEDCool.h>
-#include <PrISM_PulseIndicator.h>
-#include <Clock_1.h>
+#include <PrISM_LEDCool.h>
+#include <Prism_LED_Clock.h>
 #include <ShiftReg_DelaySenseIR.h>
 #include <Pin_BrightLEDWarm_aliases.h>
 #include <Pin_BrightLEDWarm.h>
-#include <PrISM_PulseIndicator_1.h>
+#include <PrISM_LEDWarm.h>
 #include <Pin_BrightLEDRed_aliases.h>
 #include <Pin_BrightLEDRed.h>
 #include <USBUART_1.h>
@@ -73,7 +73,7 @@
 #include <USBUART_1_cdc.h>
 #include <USBUART_1_hid.h>
 #include <USBUART_1_midi.h>
-#include <PrISM_PulseIndicator_2.h>
+#include <PrISM_LEDRed.h>
 #include <Status_Reg_DevID.h>
 #include <Pin_DevId_1_aliases.h>
 #include <Pin_DevId_1.h>

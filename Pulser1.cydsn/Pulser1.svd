@@ -7,7 +7,7 @@
   <width>32</width>
   <peripherals>
     <peripheral>
-      <name>PrISM_PulseIndicator_1</name>
+      <name>PrISM_LEDWarm</name>
       <description>PrISM</description>
       <baseAddress>0x0</baseAddress>
       <addressBlock>
@@ -19,7 +19,7 @@
         <register>
           <name>PrISM_SEED</name>
           <description>Current seed value</description>
-          <addressOffset>0x40006403</addressOffset>
+          <addressOffset>0x40006505</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -28,7 +28,7 @@
         <register>
           <name>PrISM_POLYNOM</name>
           <description>Polynomial</description>
-          <addressOffset>0x40006413</addressOffset>
+          <addressOffset>0x40006515</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -37,7 +37,7 @@
         <register>
           <name>PrISM_DENSITY0</name>
           <description>Pulse Density 0</description>
-          <addressOffset>0x40006423</addressOffset>
+          <addressOffset>0x40006525</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -46,7 +46,7 @@
         <register>
           <name>PrISM_DENSITY1</name>
           <description>Pulse Density 1</description>
-          <addressOffset>0x40006433</addressOffset>
+          <addressOffset>0x40006535</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -55,7 +55,7 @@
         <register>
           <name>PrISM_SEED_COPY</name>
           <description>Start seed value</description>
-          <addressOffset>0x40006443</addressOffset>
+          <addressOffset>0x40006545</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -73,74 +73,6 @@
         <usage>registers</usage>
       </addressBlock>
       <registers>
-        <register>
-          <name>PWM_PulseLEDs_DeadBand_Counter</name>
-          <description>UDB DeadBand - DeadBand Counter Value</description>
-          <addressOffset>0x40006406</addressOffset>
-          <size>8</size>
-          <access>read-write</access>
-          <resetValue>0</resetValue>
-          <resetMask>0</resetMask>
-        </register>
-        <register>
-          <name>PWM_PulseLEDs_DeadBand_Count</name>
-          <description>UDB DeadBand - Assigned DeadBand Count Value</description>
-          <addressOffset>0x40006426</addressOffset>
-          <size>8</size>
-          <access>read-write</access>
-          <resetValue>0</resetValue>
-          <resetMask>0</resetMask>
-        </register>
-        <register>
-          <name>PWM_PulseLEDs__COMPARE1</name>
-          <description>UDB.D0 - Assigned Compare1 Value</description>
-          <addressOffset>0x40006427</addressOffset>
-          <size>8</size>
-          <access>read-write</access>
-          <resetValue>0</resetValue>
-          <resetMask>0</resetMask>
-        </register>
-        <register>
-          <name>PWM_PulseLEDs__COMPARE2</name>
-          <description>UDB.D1 - Assigned Compare2 Value</description>
-          <addressOffset>0x40006437</addressOffset>
-          <size>8</size>
-          <access>read-write</access>
-          <resetValue>0</resetValue>
-          <resetMask>0</resetMask>
-        </register>
-        <register>
-          <name>PWM_PulseLEDs_Control_Reg</name>
-          <description>UDB Control Register - Assigned Control Register Value</description>
-          <addressOffset>0x40006474</addressOffset>
-          <size>8</size>
-          <access>read-write</access>
-          <resetValue>0</resetValue>
-          <resetMask>0</resetMask>
-          <fields>
-            <field>
-              <name>CTRL_ENABLE</name>
-              <description>Enable the PWM</description>
-              <lsb>7</lsb>
-              <msb>7</msb>
-              <access>read-write</access>
-            </field>
-            <field>
-              <name>CTRL_CMPMODE2</name>
-              <description>Compare mode 2</description>
-              <lsb>3</lsb>
-              <msb>5</msb>
-              <access>read-write</access>
-            </field>
-            <field>
-              <name>CTRL_CMPMODE1</name>
-              <description>Compare mode 1</description>
-              <lsb>0</lsb>
-              <msb>2</msb>
-              <access>read-write</access>
-            </field>
-          </fields>
-        </register>
         <register>
           <name>PWM_PulseLEDs_STATUS_MASK</name>
           <description>UDB Status bits Interrupt Mask Enable Register</description>
@@ -188,9 +120,77 @@
           </fields>
         </register>
         <register>
+          <name>PWM_PulseLEDs_DeadBand_Counter</name>
+          <description>UDB DeadBand - DeadBand Counter Value</description>
+          <addressOffset>0x40006507</addressOffset>
+          <size>8</size>
+          <access>read-write</access>
+          <resetValue>0</resetValue>
+          <resetMask>0</resetMask>
+        </register>
+        <register>
+          <name>PWM_PulseLEDs__COMPARE1</name>
+          <description>UDB.D0 - Assigned Compare1 Value</description>
+          <addressOffset>0x40006524</addressOffset>
+          <size>8</size>
+          <access>read-write</access>
+          <resetValue>0</resetValue>
+          <resetMask>0</resetMask>
+        </register>
+        <register>
+          <name>PWM_PulseLEDs_DeadBand_Count</name>
+          <description>UDB DeadBand - Assigned DeadBand Count Value</description>
+          <addressOffset>0x40006527</addressOffset>
+          <size>8</size>
+          <access>read-write</access>
+          <resetValue>0</resetValue>
+          <resetMask>0</resetMask>
+        </register>
+        <register>
+          <name>PWM_PulseLEDs__COMPARE2</name>
+          <description>UDB.D1 - Assigned Compare2 Value</description>
+          <addressOffset>0x40006534</addressOffset>
+          <size>8</size>
+          <access>read-write</access>
+          <resetValue>0</resetValue>
+          <resetMask>0</resetMask>
+        </register>
+        <register>
+          <name>PWM_PulseLEDs_Control_Reg</name>
+          <description>UDB Control Register - Assigned Control Register Value</description>
+          <addressOffset>0x40006577</addressOffset>
+          <size>8</size>
+          <access>read-write</access>
+          <resetValue>0</resetValue>
+          <resetMask>0</resetMask>
+          <fields>
+            <field>
+              <name>CTRL_ENABLE</name>
+              <description>Enable the PWM</description>
+              <lsb>7</lsb>
+              <msb>7</msb>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>CTRL_CMPMODE2</name>
+              <description>Compare mode 2</description>
+              <lsb>3</lsb>
+              <msb>5</msb>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>CTRL_CMPMODE1</name>
+              <description>Compare mode 1</description>
+              <lsb>0</lsb>
+              <msb>2</msb>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
           <name>PWM_PulseLEDs_STATUS_AUX_CTRL</name>
           <description>UDB Auxilliary Control Register</description>
-          <addressOffset>0x40006497</addressOffset>
+          <addressOffset>0x40006594</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -315,7 +315,7 @@
       </registers>
     </peripheral>
     <peripheral>
-      <name>PrISM_PulseIndicator</name>
+      <name>PrISM_LEDCool</name>
       <description>PrISM</description>
       <baseAddress>0x0</baseAddress>
       <addressBlock>
@@ -327,7 +327,7 @@
         <register>
           <name>PrISM_SEED</name>
           <description>Current seed value</description>
-          <addressOffset>0x40006404</addressOffset>
+          <addressOffset>0x40006400</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -336,7 +336,7 @@
         <register>
           <name>PrISM_POLYNOM</name>
           <description>Polynomial</description>
-          <addressOffset>0x40006414</addressOffset>
+          <addressOffset>0x40006410</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -345,7 +345,7 @@
         <register>
           <name>PrISM_DENSITY0</name>
           <description>Pulse Density 0</description>
-          <addressOffset>0x40006424</addressOffset>
+          <addressOffset>0x40006420</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -354,7 +354,7 @@
         <register>
           <name>PrISM_DENSITY1</name>
           <description>Pulse Density 1</description>
-          <addressOffset>0x40006434</addressOffset>
+          <addressOffset>0x40006430</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -363,7 +363,7 @@
         <register>
           <name>PrISM_SEED_COPY</name>
           <description>Start seed value</description>
-          <addressOffset>0x40006444</addressOffset>
+          <addressOffset>0x40006440</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -372,7 +372,7 @@
       </registers>
     </peripheral>
     <peripheral>
-      <name>PrISM_PulseIndicator_2</name>
+      <name>PrISM_LEDRed</name>
       <description>PrISM</description>
       <baseAddress>0x0</baseAddress>
       <addressBlock>
@@ -384,7 +384,7 @@
         <register>
           <name>PrISM_SEED</name>
           <description>Current seed value</description>
-          <addressOffset>0x40006402</addressOffset>
+          <addressOffset>0x40006506</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -393,7 +393,7 @@
         <register>
           <name>PrISM_POLYNOM</name>
           <description>Polynomial</description>
-          <addressOffset>0x40006412</addressOffset>
+          <addressOffset>0x40006516</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -402,7 +402,7 @@
         <register>
           <name>PrISM_DENSITY0</name>
           <description>Pulse Density 0</description>
-          <addressOffset>0x40006422</addressOffset>
+          <addressOffset>0x40006526</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -411,7 +411,7 @@
         <register>
           <name>PrISM_DENSITY1</name>
           <description>Pulse Density 1</description>
-          <addressOffset>0x40006432</addressOffset>
+          <addressOffset>0x40006536</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -420,7 +420,7 @@
         <register>
           <name>PrISM_SEED_COPY</name>
           <description>Start seed value</description>
-          <addressOffset>0x40006442</addressOffset>
+          <addressOffset>0x40006546</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -642,7 +642,7 @@
         <register>
           <name>Status_Reg_DevID_STATUS_REG</name>
           <description>No description available</description>
-          <addressOffset>0x40006465</addressOffset>
+          <addressOffset>0x40006566</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -651,7 +651,7 @@
         <register>
           <name>Status_Reg_DevID_MASK_REG</name>
           <description>No description available</description>
-          <addressOffset>0x40006485</addressOffset>
+          <addressOffset>0x40006586</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -660,7 +660,7 @@
         <register>
           <name>Status_Reg_DevID_STATUS_AUX_CTL_REG</name>
           <description>No description available</description>
-          <addressOffset>0x40006495</addressOffset>
+          <addressOffset>0x40006596</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -5894,7 +5894,7 @@
         <register>
           <name>ScanSpeed_PERIOD_REG</name>
           <description>No description available</description>
-          <addressOffset>0x40006489</addressOffset>
+          <addressOffset>0x40006589</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -5903,7 +5903,7 @@
         <register>
           <name>ScanSpeed_CTL_REG</name>
           <description>No description available</description>
-          <addressOffset>0x40006499</addressOffset>
+          <addressOffset>0x40006599</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>

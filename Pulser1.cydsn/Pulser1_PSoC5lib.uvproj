@@ -873,31 +873,6 @@
               <FilePath>.\Generated_Source\PSoC5\Filter_PulseInBand_Coefficients.c</FilePath>
             </File>
             <File>
-              <FileName>PrISM_PulseIndicator.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\PrISM_PulseIndicator.c</FilePath>
-            </File>
-            <File>
-              <FileName>PrISM_PulseIndicator.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\PrISM_PulseIndicator.h</FilePath>
-            </File>
-            <File>
-              <FileName>PrISM_PulseIndicator_PM.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\PrISM_PulseIndicator_PM.c</FilePath>
-            </File>
-            <File>
-              <FileName>Clock_1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Clock_1.c</FilePath>
-            </File>
-            <File>
-              <FileName>Clock_1.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Clock_1.h</FilePath>
-            </File>
-            <File>
               <FileName>ShiftReg_DelaySenseIR.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Generated_Source\PSoC5\ShiftReg_DelaySenseIR.c</FilePath>
@@ -926,36 +901,6 @@
               <FileName>Pin_DevId_0.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Generated_Source\PSoC5\Pin_DevId_0.h</FilePath>
-            </File>
-            <File>
-              <FileName>PrISM_PulseIndicator_1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\PrISM_PulseIndicator_1.c</FilePath>
-            </File>
-            <File>
-              <FileName>PrISM_PulseIndicator_1.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\PrISM_PulseIndicator_1.h</FilePath>
-            </File>
-            <File>
-              <FileName>PrISM_PulseIndicator_1_PM.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\PrISM_PulseIndicator_1_PM.c</FilePath>
-            </File>
-            <File>
-              <FileName>PrISM_PulseIndicator_2.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\PrISM_PulseIndicator_2.c</FilePath>
-            </File>
-            <File>
-              <FileName>PrISM_PulseIndicator_2.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\PrISM_PulseIndicator_2.h</FilePath>
-            </File>
-            <File>
-              <FileName>PrISM_PulseIndicator_2_PM.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\PrISM_PulseIndicator_2_PM.c</FilePath>
             </File>
             <File>
               <FileName>Status_Reg_DevID.c</FileName>
@@ -1351,6 +1296,61 @@
               <FileName>USBUART_1_Dp_1_aliases.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Generated_Source\PSoC5\USBUART_1_Dp_1_aliases.h</FilePath>
+            </File>
+            <File>
+              <FileName>PrISM_LEDCool.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Generated_Source\PSoC5\PrISM_LEDCool.c</FilePath>
+            </File>
+            <File>
+              <FileName>PrISM_LEDCool.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Generated_Source\PSoC5\PrISM_LEDCool.h</FilePath>
+            </File>
+            <File>
+              <FileName>PrISM_LEDCool_PM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Generated_Source\PSoC5\PrISM_LEDCool_PM.c</FilePath>
+            </File>
+            <File>
+              <FileName>Prism_LED_Clock.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Generated_Source\PSoC5\Prism_LED_Clock.c</FilePath>
+            </File>
+            <File>
+              <FileName>Prism_LED_Clock.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Generated_Source\PSoC5\Prism_LED_Clock.h</FilePath>
+            </File>
+            <File>
+              <FileName>PrISM_LEDWarm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Generated_Source\PSoC5\PrISM_LEDWarm.c</FilePath>
+            </File>
+            <File>
+              <FileName>PrISM_LEDWarm.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Generated_Source\PSoC5\PrISM_LEDWarm.h</FilePath>
+            </File>
+            <File>
+              <FileName>PrISM_LEDWarm_PM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Generated_Source\PSoC5\PrISM_LEDWarm_PM.c</FilePath>
+            </File>
+            <File>
+              <FileName>PrISM_LEDRed.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Generated_Source\PSoC5\PrISM_LEDRed.c</FilePath>
+            </File>
+            <File>
+              <FileName>PrISM_LEDRed.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Generated_Source\PSoC5\PrISM_LEDRed.h</FilePath>
+            </File>
+            <File>
+              <FileName>PrISM_LEDRed_PM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Generated_Source\PSoC5\PrISM_LEDRed_PM.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2227,31 +2227,6 @@
               <FilePath>.\Generated_Source\PSoC5\Filter_PulseInBand_Coefficients.c</FilePath>
             </File>
             <File>
-              <FileName>PrISM_PulseIndicator.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\PrISM_PulseIndicator.c</FilePath>
-            </File>
-            <File>
-              <FileName>PrISM_PulseIndicator.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\PrISM_PulseIndicator.h</FilePath>
-            </File>
-            <File>
-              <FileName>PrISM_PulseIndicator_PM.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\PrISM_PulseIndicator_PM.c</FilePath>
-            </File>
-            <File>
-              <FileName>Clock_1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Clock_1.c</FilePath>
-            </File>
-            <File>
-              <FileName>Clock_1.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Clock_1.h</FilePath>
-            </File>
-            <File>
               <FileName>ShiftReg_DelaySenseIR.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Generated_Source\PSoC5\ShiftReg_DelaySenseIR.c</FilePath>
@@ -2280,36 +2255,6 @@
               <FileName>Pin_DevId_0.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Generated_Source\PSoC5\Pin_DevId_0.h</FilePath>
-            </File>
-            <File>
-              <FileName>PrISM_PulseIndicator_1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\PrISM_PulseIndicator_1.c</FilePath>
-            </File>
-            <File>
-              <FileName>PrISM_PulseIndicator_1.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\PrISM_PulseIndicator_1.h</FilePath>
-            </File>
-            <File>
-              <FileName>PrISM_PulseIndicator_1_PM.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\PrISM_PulseIndicator_1_PM.c</FilePath>
-            </File>
-            <File>
-              <FileName>PrISM_PulseIndicator_2.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\PrISM_PulseIndicator_2.c</FilePath>
-            </File>
-            <File>
-              <FileName>PrISM_PulseIndicator_2.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\PrISM_PulseIndicator_2.h</FilePath>
-            </File>
-            <File>
-              <FileName>PrISM_PulseIndicator_2_PM.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\PrISM_PulseIndicator_2_PM.c</FilePath>
             </File>
             <File>
               <FileName>Status_Reg_DevID.c</FileName>
@@ -2705,6 +2650,61 @@
               <FileName>USBUART_1_Dp_1_aliases.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Generated_Source\PSoC5\USBUART_1_Dp_1_aliases.h</FilePath>
+            </File>
+            <File>
+              <FileName>PrISM_LEDCool.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Generated_Source\PSoC5\PrISM_LEDCool.c</FilePath>
+            </File>
+            <File>
+              <FileName>PrISM_LEDCool.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Generated_Source\PSoC5\PrISM_LEDCool.h</FilePath>
+            </File>
+            <File>
+              <FileName>PrISM_LEDCool_PM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Generated_Source\PSoC5\PrISM_LEDCool_PM.c</FilePath>
+            </File>
+            <File>
+              <FileName>Prism_LED_Clock.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Generated_Source\PSoC5\Prism_LED_Clock.c</FilePath>
+            </File>
+            <File>
+              <FileName>Prism_LED_Clock.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Generated_Source\PSoC5\Prism_LED_Clock.h</FilePath>
+            </File>
+            <File>
+              <FileName>PrISM_LEDWarm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Generated_Source\PSoC5\PrISM_LEDWarm.c</FilePath>
+            </File>
+            <File>
+              <FileName>PrISM_LEDWarm.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Generated_Source\PSoC5\PrISM_LEDWarm.h</FilePath>
+            </File>
+            <File>
+              <FileName>PrISM_LEDWarm_PM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Generated_Source\PSoC5\PrISM_LEDWarm_PM.c</FilePath>
+            </File>
+            <File>
+              <FileName>PrISM_LEDRed.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Generated_Source\PSoC5\PrISM_LEDRed.c</FilePath>
+            </File>
+            <File>
+              <FileName>PrISM_LEDRed.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Generated_Source\PSoC5\PrISM_LEDRed.h</FilePath>
+            </File>
+            <File>
+              <FileName>PrISM_LEDRed_PM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Generated_Source\PSoC5\PrISM_LEDRed_PM.c</FilePath>
             </File>
           </Files>
         </Group>
