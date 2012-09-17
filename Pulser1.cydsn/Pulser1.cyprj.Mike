@@ -338,125 +338,6 @@
 <dep name=".\pulse_sense.h" />
 </file>
 <file name=".\pulse_sense.c" />
-<file name=".\ARM_GCC_441\Debug\AMux_ProxIR.o">
-<dep name=".\Generated_Source\PSoC5\AMux_ProxIR.h" />
-<dep name=".\Generated_Source\PSoC5\cydevice.h" />
-<dep name=".\Generated_Source\PSoC5\cydevice_trm.h" />
-<dep name=".\Generated_Source\PSoC5\cyfitter.h" />
-<dep name=".\Generated_Source\PSoC5\cyfitter_cfg.h" />
-<dep name=".\Generated_Source\PSoC5\cytypes.h" />
-<dep name=".\Generated_Source\PSoC5\AMux_ProxIR.c" />
-</file>
-<file name=".\Generated_Source\PSoC5\AMux_ProxIR.c" />
-<file name=".\ARM_GCC_441\Debug\USBUART_1_pm.o">
-<dep name=".\Generated_Source\PSoC5\ADC_PulseIn.h" />
-<dep name=".\Generated_Source\PSoC5\ADC_PulseIn_AMux.h" />
-<dep name=".\Generated_Source\PSoC5\ADC_PulseIn_Ext_CP_Clk.h" />
-<dep name=".\Generated_Source\PSoC5\ADC_PulseIn_theACLK.h" />
-<dep name=".\Generated_Source\PSoC5\ADC_SAR_ProxIR.h" />
-<dep name=".\Generated_Source\PSoC5\ADC_SAR_ProxIR_theACLK.h" />
-<dep name=".\Generated_Source\PSoC5\AMux_ProxIR.h" />
-<dep name=".\Generated_Source\PSoC5\CapSense_1.h" />
-<dep name=".\Generated_Source\PSoC5\CapSense_1_AMuxCH0.h" />
-<dep name=".\Generated_Source\PSoC5\CapSense_1_CSHL.h" />
-<dep name=".\Generated_Source\PSoC5\CapSense_1_CompCH0.h" />
-<dep name=".\Generated_Source\PSoC5\CapSense_1_IdacCH0.h" />
-<dep name=".\Generated_Source\PSoC5\CapSense_1_IntClock.h" />
-<dep name=".\Generated_Source\PSoC5\CapSense_1_Pins.h" />
-<dep name=".\Generated_Source\PSoC5\CapSense_1_TunerHelper.h" />
-<dep name=".\Generated_Source\PSoC5\Clock_PWM_PulseLEDs.h" />
-<dep name=".\Generated_Source\PSoC5\CyDmac.h" />
-<dep name=".\Generated_Source\PSoC5\CyFlash.h" />
-<dep name=".\Generated_Source\PSoC5\CyLib.h" />
-<dep name=".\Generated_Source\PSoC5\CySpc.h" />
-<dep name=".\Generated_Source\PSoC5\Filter_PulseInBand.H" />
-<dep name=".\Generated_Source\PSoC5\Filter_PulseInBand.h" />
-<dep name=".\Generated_Source\PSoC5\Filter_PulseInBand_PVT.h" />
-<dep name=".\Generated_Source\PSoC5\IDAC8_PulseIR.h" />
-<dep name=".\Generated_Source\PSoC5\IDAC8_PulseRed.h" />
-<dep name=".\Generated_Source\PSoC5\Opamp_PulseRef.h" />
-<dep name=".\Generated_Source\PSoC5\PWM_PulseLEDs.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_BrightLEDCool.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_BrightLEDCool_aliases.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_BrightLEDRed.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_BrightLEDRed_aliases.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_BrightLEDWarm.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_BrightLEDWarm_aliases.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_DebugButton.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_DebugButton_aliases.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_DebugLED_aliases.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_DevId_0.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_DevId_0_aliases.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_DevId_1.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_DevId_1_aliases.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_DevId_2.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_DevId_2_aliases.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_DevId_3.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_DevId_3_aliases.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_DevId_4.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_DevId_4_aliases.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_DevId_5.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_DevId_5_aliases.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_DevId_6.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_DevId_6_aliases.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_DevId_7.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_DevId_7_aliases.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_LightsOn.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_LightsOn_aliases.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_ProxIR_1_aliases.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_ProxIR_2_aliases.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_ProxIR_3_aliases.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_PulseIR_Intensity_aliases.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_PulseIR_on.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_PulseIR_on_aliases.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_PulseIn_minus_aliases.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_PulseIn_plus_aliases.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_PulseRed_Intensity_aliases.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_PulseRed_on.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_PulseRed_on_aliases.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_PulseRef_aliases.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_PylonType0.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_PylonType0_aliases.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_PylonType1.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_PylonType1_aliases.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_Rx_Net_Enable.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_Rx_Net_Enable_aliases.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_Tx_Net_Enable.h" />
-<dep name=".\Generated_Source\PSoC5\Pin_Tx_Net_Enable_aliases.h" />
-<dep name=".\Generated_Source\PSoC5\PrISM_LEDCool.h" />
-<dep name=".\Generated_Source\PSoC5\PrISM_LEDRed.h" />
-<dep name=".\Generated_Source\PSoC5\PrISM_LEDWarm.h" />
-<dep name=".\Generated_Source\PSoC5\Prism_LED_Clock.h" />
-<dep name=".\Generated_Source\PSoC5\ShiftReg_DelaySenseIR.h" />
-<dep name=".\Generated_Source\PSoC5\Status_Reg_DevID.h" />
-<dep name=".\Generated_Source\PSoC5\TIA_PulseIn.h" />
-<dep name=".\Generated_Source\PSoC5\UART_Debug.h" />
-<dep name=".\Generated_Source\PSoC5\UART_Net.h" />
-<dep name=".\Generated_Source\PSoC5\USBUART_1.h" />
-<dep name=".\Generated_Source\PSoC5\USBUART_1_Dm_aliases.h" />
-<dep name=".\Generated_Source\PSoC5\USBUART_1_Dp_1_aliases.h" />
-<dep name=".\Generated_Source\PSoC5\USBUART_1_audio.h" />
-<dep name=".\Generated_Source\PSoC5\USBUART_1_cdc.h" />
-<dep name=".\Generated_Source\PSoC5\USBUART_1_hid.h" />
-<dep name=".\Generated_Source\PSoC5\USBUART_1_midi.h" />
-<dep name=".\Generated_Source\PSoC5\VDAC_PulseRef.h" />
-<dep name=".\Generated_Source\PSoC5\core_cm3.h" />
-<dep name=".\Generated_Source\PSoC5\core_cm3_psoc5.h" />
-<dep name=".\Generated_Source\PSoC5\cyPm.h" />
-<dep name=".\Generated_Source\PSoC5\cydevice.h" />
-<dep name=".\Generated_Source\PSoC5\cydevice_trm.h" />
-<dep name=".\Generated_Source\PSoC5\cyfitter.h" />
-<dep name=".\Generated_Source\PSoC5\cyfitter_cfg.h" />
-<dep name=".\Generated_Source\PSoC5\cylib.h" />
-<dep name=".\Generated_Source\PSoC5\cypins.h" />
-<dep name=".\Generated_Source\PSoC5\cytypes.h" />
-<dep name=".\Generated_Source\PSoC5\isr_PulseReadAmbient.h" />
-<dep name=".\Generated_Source\PSoC5\isr_PulseReadIR.h" />
-<dep name=".\Generated_Source\PSoC5\project.h" />
-<dep name=".\Generated_Source\PSoC5\USBUART_1_pm.c" />
-<dep name=".\device.h" />
-</file>
-<file name=".\Generated_Source\PSoC5\USBUART_1_pm.c" />
 <file name=".\ARM_GCC_441\Debug\ADC_PulseIn.o">
 <dep name=".\Generated_Source\PSoC5\ADC_PulseIn.h" />
 <dep name=".\Generated_Source\PSoC5\ADC_PulseIn_AMux.h" />
@@ -572,6 +453,16 @@
 <dep name=".\Generated_Source\PSoC5\ADC_SAR_ProxIR_theACLK.c" />
 </file>
 <file name=".\Generated_Source\PSoC5\ADC_SAR_ProxIR_theACLK.c" />
+<file name=".\ARM_GCC_441\Debug\AMux_ProxIR.o">
+<dep name=".\Generated_Source\PSoC5\AMux_ProxIR.h" />
+<dep name=".\Generated_Source\PSoC5\cydevice.h" />
+<dep name=".\Generated_Source\PSoC5\cydevice_trm.h" />
+<dep name=".\Generated_Source\PSoC5\cyfitter.h" />
+<dep name=".\Generated_Source\PSoC5\cyfitter_cfg.h" />
+<dep name=".\Generated_Source\PSoC5\cytypes.h" />
+<dep name=".\Generated_Source\PSoC5\AMux_ProxIR.c" />
+</file>
+<file name=".\Generated_Source\PSoC5\AMux_ProxIR.c" />
 <file name=".\ARM_GCC_441\Debug\CapSense_1.o">
 <dep name=".\Generated_Source\PSoC5\CapSense_1.h" />
 <dep name=".\Generated_Source\PSoC5\CapSense_1_AMuxCH0.h" />
@@ -1565,6 +1456,115 @@
 </file>
 <file name=".\Generated_Source\PSoC5\CYDMAC.H" />
 <file name=".\Generated_Source\PSoC5\USBUART_1_midi.c" />
+<file name=".\ARM_GCC_441\Debug\USBUART_1_pm.o">
+<dep name=".\Generated_Source\PSoC5\ADC_PulseIn.h" />
+<dep name=".\Generated_Source\PSoC5\ADC_PulseIn_AMux.h" />
+<dep name=".\Generated_Source\PSoC5\ADC_PulseIn_Ext_CP_Clk.h" />
+<dep name=".\Generated_Source\PSoC5\ADC_PulseIn_theACLK.h" />
+<dep name=".\Generated_Source\PSoC5\ADC_SAR_ProxIR.h" />
+<dep name=".\Generated_Source\PSoC5\ADC_SAR_ProxIR_theACLK.h" />
+<dep name=".\Generated_Source\PSoC5\AMux_ProxIR.h" />
+<dep name=".\Generated_Source\PSoC5\CapSense_1.h" />
+<dep name=".\Generated_Source\PSoC5\CapSense_1_AMuxCH0.h" />
+<dep name=".\Generated_Source\PSoC5\CapSense_1_CSHL.h" />
+<dep name=".\Generated_Source\PSoC5\CapSense_1_CompCH0.h" />
+<dep name=".\Generated_Source\PSoC5\CapSense_1_IdacCH0.h" />
+<dep name=".\Generated_Source\PSoC5\CapSense_1_IntClock.h" />
+<dep name=".\Generated_Source\PSoC5\CapSense_1_Pins.h" />
+<dep name=".\Generated_Source\PSoC5\CapSense_1_TunerHelper.h" />
+<dep name=".\Generated_Source\PSoC5\Clock_PWM_PulseLEDs.h" />
+<dep name=".\Generated_Source\PSoC5\CyDmac.h" />
+<dep name=".\Generated_Source\PSoC5\CyFlash.h" />
+<dep name=".\Generated_Source\PSoC5\CyLib.h" />
+<dep name=".\Generated_Source\PSoC5\CySpc.h" />
+<dep name=".\Generated_Source\PSoC5\Filter_PulseInBand.H" />
+<dep name=".\Generated_Source\PSoC5\Filter_PulseInBand.h" />
+<dep name=".\Generated_Source\PSoC5\Filter_PulseInBand_PVT.h" />
+<dep name=".\Generated_Source\PSoC5\IDAC8_PulseIR.h" />
+<dep name=".\Generated_Source\PSoC5\IDAC8_PulseRed.h" />
+<dep name=".\Generated_Source\PSoC5\Opamp_PulseRef.h" />
+<dep name=".\Generated_Source\PSoC5\PWM_PulseLEDs.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_BrightLEDCool.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_BrightLEDCool_aliases.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_BrightLEDRed.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_BrightLEDRed_aliases.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_BrightLEDWarm.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_BrightLEDWarm_aliases.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_DebugButton.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_DebugButton_aliases.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_DebugLED_aliases.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_DevId_0.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_DevId_0_aliases.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_DevId_1.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_DevId_1_aliases.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_DevId_2.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_DevId_2_aliases.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_DevId_3.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_DevId_3_aliases.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_DevId_4.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_DevId_4_aliases.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_DevId_5.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_DevId_5_aliases.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_DevId_6.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_DevId_6_aliases.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_DevId_7.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_DevId_7_aliases.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_LightsOn.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_LightsOn_aliases.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_ProxIR_1_aliases.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_ProxIR_2_aliases.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_ProxIR_3_aliases.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_PulseIR_Intensity_aliases.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_PulseIR_on.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_PulseIR_on_aliases.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_PulseIn_minus_aliases.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_PulseIn_plus_aliases.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_PulseRed_Intensity_aliases.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_PulseRed_on.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_PulseRed_on_aliases.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_PulseRef_aliases.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_PylonType0.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_PylonType0_aliases.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_PylonType1.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_PylonType1_aliases.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_Rx_Net_Enable.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_Rx_Net_Enable_aliases.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_Tx_Net_Enable.h" />
+<dep name=".\Generated_Source\PSoC5\Pin_Tx_Net_Enable_aliases.h" />
+<dep name=".\Generated_Source\PSoC5\PrISM_LEDCool.h" />
+<dep name=".\Generated_Source\PSoC5\PrISM_LEDRed.h" />
+<dep name=".\Generated_Source\PSoC5\PrISM_LEDWarm.h" />
+<dep name=".\Generated_Source\PSoC5\Prism_LED_Clock.h" />
+<dep name=".\Generated_Source\PSoC5\ShiftReg_DelaySenseIR.h" />
+<dep name=".\Generated_Source\PSoC5\Status_Reg_DevID.h" />
+<dep name=".\Generated_Source\PSoC5\TIA_PulseIn.h" />
+<dep name=".\Generated_Source\PSoC5\UART_Debug.h" />
+<dep name=".\Generated_Source\PSoC5\UART_Net.h" />
+<dep name=".\Generated_Source\PSoC5\USBUART_1.h" />
+<dep name=".\Generated_Source\PSoC5\USBUART_1_Dm_aliases.h" />
+<dep name=".\Generated_Source\PSoC5\USBUART_1_Dp_1_aliases.h" />
+<dep name=".\Generated_Source\PSoC5\USBUART_1_audio.h" />
+<dep name=".\Generated_Source\PSoC5\USBUART_1_cdc.h" />
+<dep name=".\Generated_Source\PSoC5\USBUART_1_hid.h" />
+<dep name=".\Generated_Source\PSoC5\USBUART_1_midi.h" />
+<dep name=".\Generated_Source\PSoC5\VDAC_PulseRef.h" />
+<dep name=".\Generated_Source\PSoC5\core_cm3.h" />
+<dep name=".\Generated_Source\PSoC5\core_cm3_psoc5.h" />
+<dep name=".\Generated_Source\PSoC5\cyPm.h" />
+<dep name=".\Generated_Source\PSoC5\cydevice.h" />
+<dep name=".\Generated_Source\PSoC5\cydevice_trm.h" />
+<dep name=".\Generated_Source\PSoC5\cyfitter.h" />
+<dep name=".\Generated_Source\PSoC5\cyfitter_cfg.h" />
+<dep name=".\Generated_Source\PSoC5\cylib.h" />
+<dep name=".\Generated_Source\PSoC5\cypins.h" />
+<dep name=".\Generated_Source\PSoC5\cytypes.h" />
+<dep name=".\Generated_Source\PSoC5\isr_PulseReadAmbient.h" />
+<dep name=".\Generated_Source\PSoC5\isr_PulseReadIR.h" />
+<dep name=".\Generated_Source\PSoC5\project.h" />
+<dep name=".\Generated_Source\PSoC5\USBUART_1_pm.c" />
+<dep name=".\device.h" />
+</file>
+<file name=".\Generated_Source\PSoC5\USBUART_1_pm.c" />
 <file name=".\ARM_GCC_441\Debug\USBUART_1_std.o">
 <dep name=".\Generated_Source\PSoC5\CyFlash.h" />
 <dep name=".\Generated_Source\PSoC5\CyLib.h" />
@@ -1613,6 +1613,10 @@
 <dep name=".\Generated_Source\PSoC5\VDAC_PulseRef_PM.c" />
 </file>
 <file name=".\Generated_Source\PSoC5\VDAC_PulseRef_PM.c" />
+<file name=".\ARM_GCC_441\Debug\core_cm3.o">
+<dep name=".\Generated_Source\PSoC5\core_cm3.c" />
+</file>
+<file name=".\Generated_Source\PSoC5\core_cm3.c" />
 <file name=".\ARM_GCC_441\Debug\cyPm.o">
 <dep name=".\Generated_Source\PSoC5\CyFlash.h" />
 <dep name=".\Generated_Source\PSoC5\CyLib.h" />
@@ -1684,6 +1688,10 @@
 </file>
 <file name=".\Generated_Source\PSoC5\isr_PulseReadIR.H" />
 <file name=".\Generated_Source\PSoC5\isr_PulseReadIR.c" />
+<file name=".\ARM_GCC_441\Debug\CyBootAsmGnu.o">
+<dep name=".\Generated_Source\PSoC5\CyBootAsmGnu.s" />
+</file>
+<file name=".\Generated_Source\PSoC5\CyBootAsmGnu.s" />
 <file name=".\Generated_Source\PSoC5\Clock_1.h" />
 <file name=".\Generated_Source\PSoC5\PrISM_PulseIndicator.h" />
 <file name=".\Generated_Source\PSoC5\PrISM_PulseIndicator_1.h" />
@@ -1775,10 +1783,6 @@
 <dep name=".\Generated_Source\PSoC5\PrISM_PulseIndicator_PM.c" />
 </file>
 <file name=".\Generated_Source\PSoC5\PrISM_PulseIndicator_PM.c" />
-<file name=".\ARM_GCC_441\Debug\CyBootAsmGnu.o">
-<dep name=".\Generated_Source\PSoC5\CyBootAsmGnu.s" />
-</file>
-<file name=".\Generated_Source\PSoC5\CyBootAsmGnu.s" />
 <file name=".\Generated_Source\PSoC5\CYFITTER.H" />
 <file name=".\Generated_Source\PSoC5\CYSPC.H" />
 <file name=".\Generated_Source\PSoC5\CYTYPES.H" />
@@ -1985,10 +1989,6 @@
 </file>
 <file name=".\Generated_Source\PSoC5\ShiftReg_1_PM.c" />
 <file name=".\Generated_Source\PSoC5\Led_aliases.h" />
-<file name=".\ARM_GCC_441\Debug\core_cm3.o">
-<dep name=".\Generated_Source\PSoC5\core_cm3.c" />
-</file>
-<file name=".\Generated_Source\PSoC5\core_cm3.c" />
 <file name=".\Generated_Source\PSoC5\Filter_PulseInLow.H" />
 <file name=".\Generated_Source\PSoC5\Filter_PulseInLow.h" />
 <file name=".\Generated_Source\PSoC5\Filter_PulseInLow_PVT.h" />
@@ -2523,6 +2523,18 @@
 </genericCmdLineData>
 <codeGenCmdLineTag v="&quot;-.appdatapath&quot; &quot;C:\Users\Mike\AppData\Local\Cypress Semiconductor\PSoC Creator\2.1&quot; &quot;-.fdsnotice&quot; &quot;-.fdswarpdepfile=warp_dependencies.txt&quot; &quot;-.fdselabdepfile=elab_dependencies.txt&quot; &quot;-.fdsbldfile=generated_files.txt&quot; &quot;-p&quot; &quot;C:\Users\Mike\Documents\PulseSensor\Pulser1.cydsn\Pulser1.cyprj&quot; &quot;-d&quot; &quot;CY8C5568AXI-060&quot; &quot;-s&quot; &quot;C:\Users\Mike\Documents\PulseSensor\Pulser1.cydsn\Generated_Source\PSoC5&quot; &quot;--&quot; &quot;-yv2&quot; &quot;-v3&quot; &quot;-ygs&quot; &quot;-q10&quot; &quot;-o2&quot; &quot;-.fftcfgtype=LE&quot; " />
 </CyGuid_b0374e30-ce3a-47f2-ad85-821643292c68>
+</dataGuid>
+<dataGuid v="504337dd-7d07-4bc7-9057-90e60cf6c469">
+<CyGuid_504337dd-7d07-4bc7-9057-90e60cf6c469 type_name="CyDesigner.Common.Debugger.CyBreakpointList" version="1">
+<debugger_breakpoint_list>
+<CyGuid_76464711-0ae1-4583-b869-f07a0403fc6e type_name="CyDesigner.Common.Debugger.CyFileLineBreakpoint" version="1" hitcount="0" condition="" enabled="True" hardware="True" temparary="False" filename=".\main.c" linenumber="192" />
+</debugger_breakpoint_list>
+</CyGuid_504337dd-7d07-4bc7-9057-90e60cf6c469>
+</dataGuid>
+<dataGuid v="bf610382-39c6-441f-80b8-b04622ea7845">
+<CyGuid_bf610382-39c6-441f-80b8-b04622ea7845 type_name="CyDesigner.Common.Debugger.CyWatchedVariableList" version="1">
+<debugger_watch_list />
+</CyGuid_bf610382-39c6-441f-80b8-b04622ea7845>
 </dataGuid>
 <dataGuid v="925cc1e1-309e-4e08-b0a1-09a83c35b157">
 <CyGuid_925cc1e1-309e-4e08-b0a1-09a83c35b157 type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtProjectPSoCExe+CyCodeGenDepUserInfo" version="1">
@@ -5132,18 +5144,46 @@
 <v>C:\Program Files\Cypress\PSoC Creator\2.1\PSoC Creator\warp\lib\common\stdlogic\rtlpkg.vif</v>
 <v>C:\Program Files\Cypress\PSoC Creator\2.1\PSoC Creator\warp\lib\common\stdlogic\cy_psoc3.vif</v>
 </warp_dep>
-<deps_time v="129915225306899895" />
+<deps_time v="129923831134779664" />
 </CyGuid_925cc1e1-309e-4e08-b0a1-09a83c35b157>
 </dataGuid>
-<dataGuid v="504337dd-7d07-4bc7-9057-90e60cf6c469">
-<CyGuid_504337dd-7d07-4bc7-9057-90e60cf6c469 type_name="CyDesigner.Common.Debugger.CyBreakpointList" version="1">
-<debugger_breakpoint_list />
-</CyGuid_504337dd-7d07-4bc7-9057-90e60cf6c469>
-</dataGuid>
-<dataGuid v="bf610382-39c6-441f-80b8-b04622ea7845">
-<CyGuid_bf610382-39c6-441f-80b8-b04622ea7845 type_name="CyDesigner.Common.Debugger.CyWatchedVariableList" version="1">
-<debugger_watch_list />
-</CyGuid_bf610382-39c6-441f-80b8-b04622ea7845>
+<dataGuid v="237c8ed1-e161-4c9d-af97-582eda6d6952">
+<CyGuid_d442b0b8-dd66-4eee-b5be-1cb213792b31 type_name="CyDesigner.PSoC.P3Fit.Common.DesignWideResources.DeviceEditor.CyCustomAnalogDevData" version="1" ZoomToPage="True" ZoomScale="0.363341868" ScrollX="-55" ScrollY="4">
+<ComponentStates>
+<CyGuid_50eb6c77-9735-4e57-8808-b714f60fbc0d type_name="CyDesigner.PSoC.P3Fit.Common.DesignWideResources.DeviceEditor.CyItemState" version="1" Name="Net_542" Color="-9580801" />
+<CyGuid_50eb6c77-9735-4e57-8808-b714f60fbc0d type_name="CyDesigner.PSoC.P3Fit.Common.DesignWideResources.DeviceEditor.CyItemState" version="1" Name="AmuxNet::AMux_ProxIR" Color="-8213505" />
+<CyGuid_50eb6c77-9735-4e57-8808-b714f60fbc0d type_name="CyDesigner.PSoC.P3Fit.Common.DesignWideResources.DeviceEditor.CyItemState" version="1" Name="Net_101" Color="-8289793" />
+<CyGuid_50eb6c77-9735-4e57-8808-b714f60fbc0d type_name="CyDesigner.PSoC.P3Fit.Common.DesignWideResources.DeviceEditor.CyItemState" version="1" Name="Net_535" Color="-4160769" />
+<CyGuid_50eb6c77-9735-4e57-8808-b714f60fbc0d type_name="CyDesigner.PSoC.P3Fit.Common.DesignWideResources.DeviceEditor.CyItemState" version="1" Name="Net_103" Color="-37377" />
+<CyGuid_50eb6c77-9735-4e57-8808-b714f60fbc0d type_name="CyDesigner.PSoC.P3Fit.Common.DesignWideResources.DeviceEditor.CyItemState" version="1" Name="\ADC_PulseIn:Net_520\" Color="-32064" />
+<CyGuid_50eb6c77-9735-4e57-8808-b714f60fbc0d type_name="CyDesigner.PSoC.P3Fit.Common.DesignWideResources.DeviceEditor.CyItemState" version="1" Name="AmuxNet::\ADC_PulseIn:AMux\" Color="-32383" />
+<CyGuid_50eb6c77-9735-4e57-8808-b714f60fbc0d type_name="CyDesigner.PSoC.P3Fit.Common.DesignWideResources.DeviceEditor.CyItemState" version="1" Name="\ADC_PulseIn:Net_690\" Color="-24190" />
+<CyGuid_50eb6c77-9735-4e57-8808-b714f60fbc0d type_name="CyDesigner.PSoC.P3Fit.Common.DesignWideResources.DeviceEditor.CyItemState" version="1" Name="\CapSense_1:Net_2072\" Color="-16255" />
+<CyGuid_50eb6c77-9735-4e57-8808-b714f60fbc0d type_name="CyDesigner.PSoC.P3Fit.Common.DesignWideResources.DeviceEditor.CyItemState" version="1" Name="AmuxNet::\CapSense_1:AMuxCH0\" Color="-8575" />
+<CyGuid_50eb6c77-9735-4e57-8808-b714f60fbc0d type_name="CyDesigner.PSoC.P3Fit.Common.DesignWideResources.DeviceEditor.CyItemState" version="1" Name="\CapSense_1:Net_1410_0\" Color="-16740650" />
+<CyGuid_50eb6c77-9735-4e57-8808-b714f60fbc0d type_name="CyDesigner.PSoC.P3Fit.Common.DesignWideResources.DeviceEditor.CyItemState" version="1" Name="\CapSense_1:Net_1410_1\" Color="-16755457" />
+<CyGuid_50eb6c77-9735-4e57-8808-b714f60fbc0d type_name="CyDesigner.PSoC.P3Fit.Common.DesignWideResources.DeviceEditor.CyItemState" version="1" Name="\CapSense_1:Net_2149\" Color="-16776961" />
+<CyGuid_50eb6c77-9735-4e57-8808-b714f60fbc0d type_name="CyDesigner.PSoC.P3Fit.Common.DesignWideResources.DeviceEditor.CyItemState" version="1" Name="\CapSense_1:Net_282\" Color="-8453889" />
+<CyGuid_50eb6c77-9735-4e57-8808-b714f60fbc0d type_name="CyDesigner.PSoC.P3Fit.Common.DesignWideResources.DeviceEditor.CyItemState" version="1" Name="\CapSense_1:Net_1425\" Color="-2817835" />
+<CyGuid_50eb6c77-9735-4e57-8808-b714f60fbc0d type_name="CyDesigner.PSoC.P3Fit.Common.DesignWideResources.DeviceEditor.CyItemState" version="1" Name="Net_139" Color="-65410" />
+<CyGuid_50eb6c77-9735-4e57-8808-b714f60fbc0d type_name="CyDesigner.PSoC.P3Fit.Common.DesignWideResources.DeviceEditor.CyItemState" version="1" Name="Net_184" Color="-65536" />
+<CyGuid_50eb6c77-9735-4e57-8808-b714f60fbc0d type_name="CyDesigner.PSoC.P3Fit.Common.DesignWideResources.DeviceEditor.CyItemState" version="1" Name="Net_148" Color="-49408" />
+<CyGuid_50eb6c77-9735-4e57-8808-b714f60fbc0d type_name="CyDesigner.PSoC.P3Fit.Common.DesignWideResources.DeviceEditor.CyItemState" version="1" Name="Net_140" Color="-33024" />
+<CyGuid_50eb6c77-9735-4e57-8808-b714f60fbc0d type_name="CyDesigner.PSoC.P3Fit.Common.DesignWideResources.DeviceEditor.CyItemState" version="1" Name="\Opamp_PulseRef:Net_29\" Color="-16638" />
+<CyGuid_50eb6c77-9735-4e57-8808-b714f60fbc0d type_name="CyDesigner.PSoC.P3Fit.Common.DesignWideResources.DeviceEditor.CyItemState" version="1" Name="Net_177" Color="-5000448" />
+<CyGuid_50eb6c77-9735-4e57-8808-b714f60fbc0d type_name="CyDesigner.PSoC.P3Fit.Common.DesignWideResources.DeviceEditor.CyItemState" version="1" Name="\ADC_PulseIn:Net_580\" Color="-9644032" />
+<CyGuid_50eb6c77-9735-4e57-8808-b714f60fbc0d type_name="CyDesigner.PSoC.P3Fit.Common.DesignWideResources.DeviceEditor.CyItemState" version="1" Name="\ADC_PulseIn:Net_573\" Color="-16722432" />
+<CyGuid_50eb6c77-9735-4e57-8808-b714f60fbc0d type_name="CyDesigner.PSoC.P3Fit.Common.DesignWideResources.DeviceEditor.CyItemState" version="1" Name="\ADC_SAR_ProxIR:Net_126\" Color="-16723095" />
+<CyGuid_50eb6c77-9735-4e57-8808-b714f60fbc0d type_name="CyDesigner.PSoC.P3Fit.Common.DesignWideResources.DeviceEditor.CyItemState" version="1" Name="\ADC_SAR_ProxIR:Net_215\" Color="-16730729" />
+<CyGuid_50eb6c77-9735-4e57-8808-b714f60fbc0d type_name="CyDesigner.PSoC.P3Fit.Common.DesignWideResources.DeviceEditor.CyItemState" version="1" Name="\ADC_SAR_ProxIR:Net_248\" Color="-183" />
+<CyGuid_50eb6c77-9735-4e57-8808-b714f60fbc0d type_name="CyDesigner.PSoC.P3Fit.Common.DesignWideResources.DeviceEditor.CyItemState" version="1" Name="\CapSense_1:Net_2129\" Color="-4784275" />
+<CyGuid_50eb6c77-9735-4e57-8808-b714f60fbc0d type_name="CyDesigner.PSoC.P3Fit.Common.DesignWideResources.DeviceEditor.CyItemState" version="1" Name="\CapSense_1:IdacCH0:Net_124\" Color="-9568403" />
+<CyGuid_50eb6c77-9735-4e57-8808-b714f60fbc0d type_name="CyDesigner.PSoC.P3Fit.Common.DesignWideResources.DeviceEditor.CyItemState" version="1" Name="\IDAC8_PulseIR:Net_124\" Color="-9568330" />
+<CyGuid_50eb6c77-9735-4e57-8808-b714f60fbc0d type_name="CyDesigner.PSoC.P3Fit.Common.DesignWideResources.DeviceEditor.CyItemState" version="1" Name="\IDAC8_PulseRed:Net_124\" Color="-11993121" />
+<CyGuid_50eb6c77-9735-4e57-8808-b714f60fbc0d type_name="CyDesigner.PSoC.P3Fit.Common.DesignWideResources.DeviceEditor.CyItemState" version="1" Name="Net_158" Color="-9580801" />
+<CyGuid_50eb6c77-9735-4e57-8808-b714f60fbc0d type_name="CyDesigner.PSoC.P3Fit.Common.DesignWideResources.DeviceEditor.CyItemState" version="1" Name="\VDAC_PulseRef:Net_77\" Color="-8213505" />
+</ComponentStates>
+</CyGuid_d442b0b8-dd66-4eee-b5be-1cb213792b31>
 </dataGuid>
 </userData>
 </CyGuid_fdba8dfd-b15b-4469-9bbb-9e40c3e70997>

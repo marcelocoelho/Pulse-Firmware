@@ -54,7 +54,7 @@
 #include <device.h>
 #include <stdio.h>
 #include "pulse_sense.h"   
-   
+
 /* LCD specific */
 #define ROW_0                   0  
 #define ROW_1                   1  
@@ -95,17 +95,34 @@ void pulse_read_IR_handler()
 	CyPins_ClearPin(Pin_DebugLED_0);
 	//Led_test1_Write(0);
 }
+///////////////
 
 
+extern uint8 CapSense_1_SensorEnableMask[];
+
+
+
+#define BUFFER_LEN  64
+uint16 count;
+uint8 buffer[BUFFER_LEN];
+char8 lineStr[20];
+uint8 state;
+
+static char buff[200];
 
 void main()
 {
     uint32 voltageRawCount;
+	int usb_state=0;
     
+	CapSense_1_SensorEnableMask[0]=0xFF;
+
 	CyPins_SetPin(Pin_DebugLED_0);
 	pulserInit(&g_Pulser);
 	UART_Debug_Start();
-	UART_Debug_PutString("\r\nPulser 1.31\r\n");
+	UART_Net_Start();
+	USBUART_1_Start(0, USBUART_1_5V_OPERATION);
+	UART_Debug_PutString("\r\nPulser 1.35\r\n");
 	AMux_ProxIR_Start();
 	ShiftReg_DelaySenseIR_Start();
     ADC_PulseIn_Start();     
@@ -114,6 +131,7 @@ void main()
 	Opamp_PulseRef_Start();
 	VDAC_PulseRef_Start();
 	VDAC_PulseRef_SetValue(20);
+	UART_Debug_PutString("at A\r\n");
 	TIA_PulseIn_Start();
 //    LCD_Start();            
 	Filter_PulseInBand_Start();
@@ -122,6 +140,11 @@ void main()
 	PrISM_LEDWarm_Start();
 	PrISM_LEDRed_Start();
 	
+	UART_Debug_PutString("at B\r\n");
+	//CapSense_1_Start();
+   // CapSense_1_InitializeAllBaselines();
+   // CapSense_1_ScanEnabledWidgets();
+
 	ADC_SAR_ProxIR_Start();
 	ADC_SAR_ProxIR_StartConvert();
 		
@@ -147,7 +170,8 @@ void main()
 //    Clock_Start();
     
     ADC_PulseIn_StartConvert(); 
-	
+	UART_Debug_PutString("at C\r\n");
+
 	CYGlobalIntEnable; 
 
 	isr_PulseReadIR_Start();
@@ -157,8 +181,58 @@ void main()
 	uint16 ProxIR[IR_PROX_NUM];
 
 	AMux_ProxIR_Select(cur_ir_prox);
+	UART_Debug_PutString("about to start main loop\r\n");
     while(1)
     {
+	// do USB Comm stuff
+		if (usb_state==0)
+		{ // USB not enumerated yet
+			//UART_Debug_PutChar('x');
+		    /* Wait for Device to enumerate */
+			if (USBUART_1_GetConfiguration())
+			{
+		    /* Enumeration is done, enable OUT endpoint for receive data from Host */
+				UART_Debug_PutString("Enumerated CDC!\r\n");
+		    	USBUART_1_CDC_Init();
+				UART_Debug_PutString("inited CDC!\r\n");
+				usb_state=1;
+			}
+		}
+		else
+		{  // USB enumerated, check for communication
+		    if(USBUART_1_DataIsReady() != 0u)               /* Check for input data from PC */
+        	{   
+	            count = USBUART_1_GetAll(buffer);           /* Read received data and re-enable OUT endpoint */
+				int ii;
+				for (ii=0; ii < count; ii++)
+				{
+					UART_Debug_PutChar(buffer[ii]);
+				}
+	            if(0) // count != 0u)
+	            {
+	                while(USBUART_1_CDCIsReady() == 0u);    /* Wait till component is ready to send more data to the PC */ 
+	                USBUART_1_PutData(buffer, count);       /* Send data back to PC */
+	            }
+	        }  
+
+		
+		}
+	// end of USB Comm stuff
+	// do Cap Prox Sensing
+	    if(!CapSense_1_IsBusy())
+        {
+			int prox_val1;
+			int prox_val2;
+            /* Update baseline for all the sensors */
+           // CapSense_UpdateEnabledBaselines();
+            CapSense_1_ScanEnabledWidgets();
+			prox_val1 = CapSense_1_ReadSensorRaw(0); // CapSense_PROXIMITYSENSOR0__PROX);
+			prox_val2 = CapSense_1_ReadSensorRaw(1); // CapSense_PROXIMITYSENSOR0__PROX);
+			sprintf(buff, "Cap Prox 1: %5d,  2: %5d\r", prox_val1, prox_val2);
+			UART_Debug_PutString(buff);
+		}	
+	
+	// end of Cap Prox Sensing
         /* Wait for end of conversion */
         //ADC_PulseIn_IsEndConversion(ADC_PulseIn_WAIT_FOR_RESULT); 
         //voltageRawCount = ADC_PulseIn_GetResult16(); 
@@ -174,7 +248,6 @@ void main()
 ///	        LCD_PrintString("   ");
 //	        LCD_Position(ROW_1, 13); 
 //	        LCD_PrintNumber(g_Pulser.scaledPulseVal);
-static char buff[200];
 
 			//PrISM_PulseIndicator_WritePulse0(g_Pulser.scaledPulseVal);
 			PWM_PulseLEDs_WriteCompare2(g_Pulser.scaledPulseVal>>1);
@@ -191,7 +264,9 @@ static char buff[200];
 			ADC_SAR_ProxIR_IsEndConversion(ADC_SAR_ProxIR_WAIT_FOR_RESULT);
 			voltageRawCount=g_Pulser.curRawPulseVal;
 
-			sprintf(buff, "Prox 1: %5d,  2: %5d,  3: %5d, pulse raw=%5lu\r", ProxIR[0], ProxIR[1], ProxIR[2], voltageRawCount);
+			//sprintf(buff, "Prox 1: %5d,  2: %5d,  3: %5d, pulse raw=%5lu\r", ProxIR[0], ProxIR[1], ProxIR[2], voltageRawCount);
+			//UART_Debug_PutString(buff);
+
 			PrISM_LEDCool_WritePulse0(ProxIR[0] >> 4);
 			PrISM_LEDWarm_WritePulse0(ProxIR[1] >> 4);
 			PrISM_LEDRed_WritePulse0(ProxIR[2] >> 4);
@@ -217,15 +292,14 @@ static char buff[200];
 			//sprintf(buff, "Pulse: raw=%5ld, bright=%5d, Filtered=%5ld, scaled=%5ld, min=%5ld, max=%5ld\r",
 			// g_Pulser.curRawPulseVal,
 			//g_Pulser.brightnessIR256, g_Pulser.curFilteredPulseVal, g_Pulser.scaledPulseVal, g_Pulser.scaledPulseMin, g_Pulser.scaledPulseMax );
-			UART_Debug_PutString(buff);
 			
 	            /* Clear last characters */
 //	        LCD_Position(ROW_0, COLUMN_11); 
 //	        LCD_PrintString("     "); 
   //          LCD_Position(ROW_0,COLUMN_11); 
 	//        LCD_PrintNumber(voltageRawCount);
-			//UART_Debug_PutString("\r");
 		}
+		//UART_Debug_PutString("\r");
     }
 }
 
