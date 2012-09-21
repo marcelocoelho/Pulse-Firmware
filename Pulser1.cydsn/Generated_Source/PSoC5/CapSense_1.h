@@ -52,7 +52,7 @@
 #define CapSense_1_CLOCK_SOURCE               (0u)
 
 #define CapSense_1_CURRENT_SOURCE             (1u)
-#define CapSense_1_IDAC_RANGE_VALUE           (4u)
+#define CapSense_1_IDAC_RANGE_VALUE           (0u)
 
 #define CapSense_1_PRESCALER_OPTIONS          (1u)
 #define CapSense_1_MULTIPLE_PRESCALER_ENABLED (0u)

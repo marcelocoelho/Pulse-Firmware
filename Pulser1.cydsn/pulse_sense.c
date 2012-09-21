@@ -70,8 +70,8 @@ void pulserProcessPulseSample(Pulser *pPulse)
 	/////
 	if (pPulse->scaledPulseMin > PulserPulseMinOuter && pPulse->scaledPulseMin > curFP )
 	{
-		pPulse->scaledPulseMin-=10; // =curFP;
-		pPulse->lastMinRescaleTimer=PulseRescalTimeout;
+		pPulse->scaledPulseMin-=100; // =curFP;
+		pPulse->lastMinRescaleTimer=PulseRescaleTimeout;
 	}
 	
 	if (pPulse->lastMinRescaleTimer > 0)
@@ -82,14 +82,15 @@ void pulserProcessPulseSample(Pulser *pPulse)
 	{
 		if (pPulse->scaledPulseMin < PulserPulseMinInner)
 		{
-			pPulse->scaledPulseMin++;
+			pPulse->scaledPulseMin+=10;
+	//		pPulse->lastMinRescaleTimer=PulseRescaleTimeout;
 		}
 	}
 	////
 	if (pPulse->scaledPulseMax < PulserPulseMaxOuter && pPulse->scaledPulseMax < curFP )
 	{
-		pPulse->scaledPulseMax+=10; // =curFP;
-		pPulse->lastMaxRescaleTimer=PulseRescalTimeout;
+		pPulse->scaledPulseMax+=100; // =curFP;
+		pPulse->lastMaxRescaleTimer=PulseRescaleTimeout;
 	}
 	
 	if (pPulse->lastMaxRescaleTimer > 0)
@@ -101,6 +102,7 @@ void pulserProcessPulseSample(Pulser *pPulse)
 		if (pPulse->scaledPulseMax > PulserPulseMaxInner)
 		{
 			pPulse->scaledPulseMax--;
+	//		pPulse->lastMaxRescaleTimer=PulseRescaleTimeout;
 		}
 	}
 	//

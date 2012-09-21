@@ -27,12 +27,12 @@ typedef struct
 enum 
 {
 	PulserChan0=0, 
-	PulserMaxIR256=240*256, PulserMinIR256=5*256, PulserIRTargetLow=14000, PulserIRTargetHigh=17000,
-	PulserPulseMinOuter=-800, // -800, // -1999,
+	PulserMaxIR256=240*256, PulserMinIR256=5*256, PulserIRTargetLow=27000, PulserIRTargetHigh=35000,
+	PulserPulseMinOuter=-8000, // -800, // -1999,
 	PulserPulseMinInner=-40, // -99,
 	PulserPulseMaxInner=100, // 99,
-	PulserPulseMaxOuter=800, // 800, // 1999,
-	PulseRescalTimeout=200   // 2 seconds at 100 Hz
+	PulserPulseMaxOuter=8000, // 800, // 1999,
+	PulseRescaleTimeout=400   // 4 seconds at 100 Hz
 };
 
 void pulserInit(Pulser *pPulse);

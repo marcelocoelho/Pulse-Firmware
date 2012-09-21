@@ -119,7 +119,7 @@ const uint8 CYCODE CapSense_1_idacSettings[] = {
 
 const uint8 CYCODE CapSense_1_widgetResolution[] = {
     CapSense_1_PWM_RESOLUTION_16_BITS,
-    CapSense_1_PWM_RESOLUTION_10_BITS,
+    CapSense_1_PWM_RESOLUTION_16_BITS,
 };
 
 uint8 CapSense_1_AnalogSwitchDivider = 11u;
