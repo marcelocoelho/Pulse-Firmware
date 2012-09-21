@@ -117,12 +117,15 @@ void main()
     
 	CapSense_1_SensorEnableMask[0]=0xFF;
 
+	CyPins_SetPin(Pin_Tx_Net_Enable_0);
+	CyPins_SetPin(Pin_Rx_Net_Enable_0);
+
 	CyPins_SetPin(Pin_DebugLED_0);
 	pulserInit(&g_Pulser);
 	UART_Debug_Start();
 	UART_Net_Start();
 	USBUART_1_Start(0, USBUART_1_5V_OPERATION);
-	UART_Debug_PutString("\r\nPulser 1.35\r\n");
+	UART_Debug_PutString("\r\nPulser 1.42\r\n");
 	AMux_ProxIR_Start();
 	ShiftReg_DelaySenseIR_Start();
     ADC_PulseIn_Start();     
@@ -184,6 +187,32 @@ void main()
 	UART_Debug_PutString("about to start main loop\r\n");
     while(1)
     {
+		// do Serial NET communication
+		{
+			uint8 net_stat=UART_Net_ReadRxStatus();
+			if (net_stat & UART_Net_RX_STS_FIFO_NOTEMPTY)
+			{
+				uint8 net_char=UART_Net_ReadRxData();
+				UART_Debug_PutString("NET: ");
+				UART_Debug_PutChar(net_char);
+				UART_Debug_PutString("\r\n");
+				if (usb_state!=0)
+				{
+					while(USBUART_1_CDCIsReady() == 0u);    /* Wait till component is ready to send more data to the PC */ 
+	                USBUART_1_PutData(&net_char, 1);       /* Send data back to PC */
+				}
+			}
+			net_stat=UART_Debug_ReadRxStatus();
+			if (net_stat & UART_Debug_RX_STS_FIFO_NOTEMPTY)
+			{
+				uint8 net_char=UART_Debug_ReadRxData();
+				UART_Debug_PutString("Debug: ");
+				UART_Debug_PutChar(net_char);
+				UART_Debug_PutString("\r\n");
+				UART_Net_PutChar(net_char);
+			}
+		}
+		
 	// do USB Comm stuff
 		if (usb_state==0)
 		{ // USB not enumerated yet
@@ -207,15 +236,9 @@ void main()
 				for (ii=0; ii < count; ii++)
 				{
 					UART_Debug_PutChar(buffer[ii]);
+					UART_Net_PutChar(buffer[ii]);
 				}
-	            if(0) // count != 0u)
-	            {
-	                while(USBUART_1_CDCIsReady() == 0u);    /* Wait till component is ready to send more data to the PC */ 
-	                USBUART_1_PutData(buffer, count);       /* Send data back to PC */
-	            }
 	        }  
-
-		
 		}
 	// end of USB Comm stuff
 	// do Cap Prox Sensing
@@ -228,8 +251,8 @@ void main()
             CapSense_1_ScanEnabledWidgets();
 			prox_val1 = CapSense_1_ReadSensorRaw(0); // CapSense_PROXIMITYSENSOR0__PROX);
 			prox_val2 = CapSense_1_ReadSensorRaw(1); // CapSense_PROXIMITYSENSOR0__PROX);
-			sprintf(buff, "Cap Prox 1: %5d,  2: %5d\r", prox_val1, prox_val2);
-			UART_Debug_PutString(buff);
+			//sprintf(buff, "Cap Prox 1: %5d,  2: %5d\r", prox_val1, prox_val2);
+			//UART_Debug_PutString(buff);
 		}	
 	
 	// end of Cap Prox Sensing

@@ -18,13 +18,15 @@
 <v>Output</v>
 </TreeKeys>
 <TreeStates>
-<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="PulseSensor\Pulser1">
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="PulseSensor\Pulser1\Source Files\main.c">
 <ExpandedNodeIds>
 <v>PulseSensor</v>
+<v>PulseSensor\Pulser1</v>
 <v>PulseSensor\Pulser1\TopDesign.cysch</v>
 <v>PulseSensor\Pulser1\Pulser1.cydwr</v>
 <v>PulseSensor\Pulser1\Header Files\device.h</v>
 <v>PulseSensor\Pulser1\Header Files\pulse_sense.h</v>
+<v>PulseSensor\Pulser1\Source Files</v>
 <v>PulseSensor\Pulser1\Source Files\main.c</v>
 <v>PulseSensor\Pulser1\Source Files\pulse_sense.c</v>
 <v>PulseSensor\Pulser1\Generated_Source</v>
@@ -307,6 +309,42 @@
 <VisibleNodeIds>
 <v>PulseSensor</v>
 <v>PulseSensor\Pulser1</v>
+<v>PulseSensor\Pulser1\TopDesign.cysch</v>
+<v>PulseSensor\Pulser1\Pulser1.cydwr</v>
+<v>PulseSensor\Pulser1\Header Files</v>
+<v>PulseSensor\Pulser1\Source Files</v>
+<v>PulseSensor\Pulser1\Source Files\main.c</v>
+<v>PulseSensor\Pulser1\Source Files\pulse_sense.c</v>
+<v>PulseSensor\Pulser1\Generated_Source</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_PulseIn</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_PulseIn_AMux</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_PulseIn_AMux\ADC_PulseIn_AMux.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_PulseIn_AMux\ADC_PulseIn_AMux.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_PulseIn_Ext_CP_Clk</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_PulseIn_theACLK</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_PulseIn_theACLK\ADC_PulseIn_theACLK.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_PulseIn_theACLK\ADC_PulseIn_theACLK.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_SAR_ProxIR</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_SAR_ProxIR\ADC_SAR_ProxIR.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_SAR_ProxIR\ADC_SAR_ProxIR.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_SAR_ProxIR\ADC_SAR_ProxIR_INT.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_SAR_ProxIR\ADC_SAR_ProxIR_PM.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_SAR_ProxIR_theACLK</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_SAR_ProxIR_theACLK\ADC_SAR_ProxIR_theACLK.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\ADC_SAR_ProxIR_theACLK\ADC_SAR_ProxIR_theACLK.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\AMux_ProxIR</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\AMux_ProxIR\AMux_ProxIR.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\AMux_ProxIR\AMux_ProxIR.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\CapSense_1</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\CapSense_1\CapSense_1.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\CapSense_1\CapSense_1.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\CapSense_1\CapSense_1_CSHL.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\CapSense_1\CapSense_1_CSHL.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\CapSense_1\CapSense_1_INT.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\CapSense_1\CapSense_1_Pins.c</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\CapSense_1\CapSense_1_Pins.h</v>
+<v>PulseSensor\Pulser1\Generated_Source\PSoC5\CapSense_1\CapSense_1_PM.c</v>
 </VisibleNodeIds>
 </CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
 <CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="PulseSensor">
