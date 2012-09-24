@@ -12,6 +12,47 @@
 <CyGuid_f44455c5-3770-4452-b988-0a7a7ff46256 type_name="CyDesigner.Common.ProjMgmt.Model.CyConfigDependencies" version="1">
 <dependency_info name="c9323d49-d323-40b8-9b59-cc008d68a989@Debug@CortexM3" xml_contents_version="2">
 <CyGuid_1173175f-1b9b-4ad4-a065-754a48a27021 type_name="CyDesigner.Common.Base.CyFileDeps" version="1">
+<file name=".\ARM_GCC_441\Debug\Filter_PulseInBand_Coefficients.o">
+<dep name=".\Generated_Source\PSoC5\CyFlash.h" />
+<dep name=".\Generated_Source\PSoC5\CyLib.h" />
+<dep name=".\Generated_Source\PSoC5\CySpc.h" />
+<dep name=".\Generated_Source\PSoC5\Filter_PulseInBand.H" />
+<dep name=".\Generated_Source\PSoC5\Filter_PulseInBand.h" />
+<dep name=".\Generated_Source\PSoC5\Filter_PulseInBand_PVT.h" />
+<dep name=".\Generated_Source\PSoC5\cyPm.h" />
+<dep name=".\Generated_Source\PSoC5\cydevice.h" />
+<dep name=".\Generated_Source\PSoC5\cydevice_trm.h" />
+<dep name=".\Generated_Source\PSoC5\cyfitter.h" />
+<dep name=".\Generated_Source\PSoC5\cytypes.h" />
+<dep name=".\Generated_Source\PSoC5\Filter_PulseInBand_Coefficients.c" />
+</file>
+<file name=".\Generated_Source\PSoC5\CyFlash.h" />
+<file name=".\Generated_Source\PSoC5\CyLib.h" />
+<file name=".\Generated_Source\PSoC5\CySpc.h" />
+<file name=".\Generated_Source\PSoC5\Filter_PulseInBand.H" />
+<file name=".\Generated_Source\PSoC5\Filter_PulseInBand.h" />
+<file name=".\Generated_Source\PSoC5\Filter_PulseInBand_PVT.h" />
+<file name=".\Generated_Source\PSoC5\cyPm.h" />
+<file name=".\Generated_Source\PSoC5\cydevice.h" />
+<file name=".\Generated_Source\PSoC5\cydevice_trm.h" />
+<file name=".\Generated_Source\PSoC5\cyfitter.h" />
+<file name=".\Generated_Source\PSoC5\cytypes.h" />
+<file name=".\Generated_Source\PSoC5\Filter_PulseInBand_Coefficients.c" />
+<file name=".\ARM_GCC_441\Debug\Filter_PulseInBand_RAM_Data.o">
+<dep name=".\Generated_Source\PSoC5\CyFlash.h" />
+<dep name=".\Generated_Source\PSoC5\CyLib.h" />
+<dep name=".\Generated_Source\PSoC5\CySpc.h" />
+<dep name=".\Generated_Source\PSoC5\Filter_PulseInBand.H" />
+<dep name=".\Generated_Source\PSoC5\Filter_PulseInBand.h" />
+<dep name=".\Generated_Source\PSoC5\Filter_PulseInBand_PVT.h" />
+<dep name=".\Generated_Source\PSoC5\cyPm.h" />
+<dep name=".\Generated_Source\PSoC5\cydevice.h" />
+<dep name=".\Generated_Source\PSoC5\cydevice_trm.h" />
+<dep name=".\Generated_Source\PSoC5\cyfitter.h" />
+<dep name=".\Generated_Source\PSoC5\cytypes.h" />
+<dep name=".\Generated_Source\PSoC5\Filter_PulseInBand_RAM_Data.c" />
+</file>
+<file name=".\Generated_Source\PSoC5\Filter_PulseInBand_RAM_Data.c" />
 <file name=".\ARM_GCC_441\Debug\pulse_sense.o">
 <dep name=".\Generated_Source\PSoC5\ADC_PulseIn.h" />
 <dep name=".\Generated_Source\PSoC5\ADC_PulseIn_AMux.h" />
@@ -138,12 +179,6 @@
 <file name=".\Generated_Source\PSoC5\CapSense_1_TunerHelper.h" />
 <file name=".\Generated_Source\PSoC5\Clock_PWM_PulseLEDs.h" />
 <file name=".\Generated_Source\PSoC5\CyDmac.h" />
-<file name=".\Generated_Source\PSoC5\CyFlash.h" />
-<file name=".\Generated_Source\PSoC5\CyLib.h" />
-<file name=".\Generated_Source\PSoC5\CySpc.h" />
-<file name=".\Generated_Source\PSoC5\Filter_PulseInBand.H" />
-<file name=".\Generated_Source\PSoC5\Filter_PulseInBand.h" />
-<file name=".\Generated_Source\PSoC5\Filter_PulseInBand_PVT.h" />
 <file name=".\Generated_Source\PSoC5\IDAC8_PulseIR.h" />
 <file name=".\Generated_Source\PSoC5\IDAC8_PulseRed.h" />
 <file name=".\Generated_Source\PSoC5\Opamp_PulseRef.h" />
@@ -214,14 +249,9 @@
 <file name=".\Generated_Source\PSoC5\VDAC_PulseRef.h" />
 <file name=".\Generated_Source\PSoC5\core_cm3.h" />
 <file name=".\Generated_Source\PSoC5\core_cm3_psoc5.h" />
-<file name=".\Generated_Source\PSoC5\cyPm.h" />
-<file name=".\Generated_Source\PSoC5\cydevice.h" />
-<file name=".\Generated_Source\PSoC5\cydevice_trm.h" />
-<file name=".\Generated_Source\PSoC5\cyfitter.h" />
 <file name=".\Generated_Source\PSoC5\cyfitter_cfg.h" />
 <file name=".\Generated_Source\PSoC5\cylib.h" />
 <file name=".\Generated_Source\PSoC5\cypins.h" />
-<file name=".\Generated_Source\PSoC5\cytypes.h" />
 <file name=".\Generated_Source\PSoC5\isr_PulseReadAmbient.h" />
 <file name=".\Generated_Source\PSoC5\isr_PulseReadIR.h" />
 <file name=".\Generated_Source\PSoC5\project.h" />
@@ -857,21 +887,6 @@
 <dep name=".\Generated_Source\PSoC5\Filter_PulseInBand.c" />
 </file>
 <file name=".\Generated_Source\PSoC5\Filter_PulseInBand.c" />
-<file name=".\ARM_GCC_441\Debug\Filter_PulseInBand_Coefficients.o">
-<dep name=".\Generated_Source\PSoC5\CyFlash.h" />
-<dep name=".\Generated_Source\PSoC5\CyLib.h" />
-<dep name=".\Generated_Source\PSoC5\CySpc.h" />
-<dep name=".\Generated_Source\PSoC5\Filter_PulseInBand.H" />
-<dep name=".\Generated_Source\PSoC5\Filter_PulseInBand.h" />
-<dep name=".\Generated_Source\PSoC5\Filter_PulseInBand_PVT.h" />
-<dep name=".\Generated_Source\PSoC5\cyPm.h" />
-<dep name=".\Generated_Source\PSoC5\cydevice.h" />
-<dep name=".\Generated_Source\PSoC5\cydevice_trm.h" />
-<dep name=".\Generated_Source\PSoC5\cyfitter.h" />
-<dep name=".\Generated_Source\PSoC5\cytypes.h" />
-<dep name=".\Generated_Source\PSoC5\Filter_PulseInBand_Coefficients.c" />
-</file>
-<file name=".\Generated_Source\PSoC5\Filter_PulseInBand_Coefficients.c" />
 <file name=".\ARM_GCC_441\Debug\Filter_PulseInBand_PM.o">
 <dep name=".\Generated_Source\PSoC5\CyFlash.h" />
 <dep name=".\Generated_Source\PSoC5\CyLib.h" />
@@ -900,21 +915,6 @@
 <dep name=".\Generated_Source\PSoC5\Filter_PulseInBand_PVT.c" />
 </file>
 <file name=".\Generated_Source\PSoC5\Filter_PulseInBand_PVT.c" />
-<file name=".\ARM_GCC_441\Debug\Filter_PulseInBand_RAM_Data.o">
-<dep name=".\Generated_Source\PSoC5\CyFlash.h" />
-<dep name=".\Generated_Source\PSoC5\CyLib.h" />
-<dep name=".\Generated_Source\PSoC5\CySpc.h" />
-<dep name=".\Generated_Source\PSoC5\Filter_PulseInBand.H" />
-<dep name=".\Generated_Source\PSoC5\Filter_PulseInBand.h" />
-<dep name=".\Generated_Source\PSoC5\Filter_PulseInBand_PVT.h" />
-<dep name=".\Generated_Source\PSoC5\cyPm.h" />
-<dep name=".\Generated_Source\PSoC5\cydevice.h" />
-<dep name=".\Generated_Source\PSoC5\cydevice_trm.h" />
-<dep name=".\Generated_Source\PSoC5\cyfitter.h" />
-<dep name=".\Generated_Source\PSoC5\cytypes.h" />
-<dep name=".\Generated_Source\PSoC5\Filter_PulseInBand_RAM_Data.c" />
-</file>
-<file name=".\Generated_Source\PSoC5\Filter_PulseInBand_RAM_Data.c" />
 <file name=".\ARM_GCC_441\Debug\IDAC8_PulseIR.o">
 <dep name=".\Generated_Source\PSoC5\CyFlash.h" />
 <dep name=".\Generated_Source\PSoC5\CyLib.h" />
@@ -5142,7 +5142,7 @@
 <v>C:\Program Files\Cypress\PSoC Creator\2.1\PSoC Creator\warp\lib\common\stdlogic\rtlpkg.vif</v>
 <v>C:\Program Files\Cypress\PSoC Creator\2.1\PSoC Creator\warp\lib\common\stdlogic\cy_psoc3.vif</v>
 </warp_dep>
-<deps_time v="129927251088081175" />
+<deps_time v="129929867400034915" />
 </CyGuid_925cc1e1-309e-4e08-b0a1-09a83c35b157>
 </dataGuid>
 <dataGuid v="237c8ed1-e161-4c9d-af97-582eda6d6952">

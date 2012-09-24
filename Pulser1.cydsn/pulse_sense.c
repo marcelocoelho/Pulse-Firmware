@@ -52,11 +52,14 @@ void pulserProcessPulseSample(Pulser *pPulse)
 			going_down=0;
 	}
 	
-	pPulse->curFilteredPulseVal=Filter_PulseInBand_Read24(PulserChan0);
+	pPulse->curFilteredPulseVal=Filter_PulseInBand_Read24(PulserPulseChan);
 
-	Filter_PulseInBand_Write24(PulserChan0, rawPulse);
+	Filter_PulseInBand_Write24(PulserPulseChan, rawPulse);
 
 	int32 curFP=pPulse->curFilteredPulseVal; // current filtered pulse;
+	
+	pPulse->curPulseAGCLevel=Filter_PulseInBand_Read24(PulserAGCChan) >> 8;
+	Filter_PulseInBand_Write24(PulserAGCChan, abs(curFP) << 8);
 
 	pPulse->scaledPulseVal=(255*(curFP-pPulse->scaledPulseMin))/(pPulse->scaledPulseMax-pPulse->scaledPulseMin);
 	if (pPulse->scaledPulseVal < 0)
@@ -67,6 +70,12 @@ void pulserProcessPulseSample(Pulser *pPulse)
 	{
 		pPulse->scaledPulseVal=255;
 	}
+	
+	pPulse->scaledPulseMax=2*pPulse->curPulseAGCLevel;
+	pPulse->scaledPulseMin=-4*pPulse->curPulseAGCLevel;
+	
+#if 0
+
 	/////
 	if (pPulse->scaledPulseMin > PulserPulseMinOuter && pPulse->scaledPulseMin > curFP )
 	{
@@ -106,7 +115,7 @@ void pulserProcessPulseSample(Pulser *pPulse)
 		}
 	}
 	//
-
+#endif
 	pPulse->updated=1;
 }
 

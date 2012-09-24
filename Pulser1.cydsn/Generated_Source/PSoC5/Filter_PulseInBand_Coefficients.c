@@ -145,13 +145,35 @@ uint8 ChannelAFirCoefficients[] =
 uint8 ChannelABiquadCoefficients[] = 
 {
  /* Coefficients of Section 0 */
- 0xD7, 0xF9, 0x78, 0x00, /* Section(0)_A0, 7.56099605560303 */
+ 0xB7, 0xC9, 0x78, 0x00, /* Section(0)_A0, 7.5492467880249 */
 
- 0x29, 0x06, 0x87, 0x00, /* Section(0)_A1, -7.56099605560303 */
+ 0x49, 0x36, 0x87, 0x00, /* Section(0)_A1, -7.5492467880249 */
 
  0x00, 0x00, 0x00, 0x00, /* Section(0)_A2, 0 */
 
- 0x0B, 0xCE, 0x3E, 0x00, /* Section(0)_B1, -0.98132586479187 */
+ 0x9A, 0x9B, 0x3E, 0x00, /* Section(0)_B1, -0.978247165679932 */
+
+ 0x00, 0x00, 0x00, 0x00, /* Section(0)_B2, 0 */
+};
+
+
+/*******************************************************************************
+* ChannelB filter coefficients.
+* Filter Type is: Biquad
+*******************************************************************************/
+
+/* Number of Biquad sections are: 1 */
+
+uint8 ChannelBBiquadCoefficients[] = 
+{
+ /* Coefficients of Section 0 */
+ 0x73, 0x69, 0x00, 0x00, /* Section(0)_A0, 0.00643610954284668 */
+
+ 0x73, 0x69, 0x00, 0x00, /* Section(0)_A1, 0.00643610954284668 */
+
+ 0x00, 0x00, 0x00, 0x00, /* Section(0)_A2, 0 */
+
+ 0x65, 0x33, 0x3F, 0x00, /* Section(0)_B1, -0.987511873245239 */
 
  0x00, 0x00, 0x00, 0x00, /* Section(0)_B2, 0 */
 };

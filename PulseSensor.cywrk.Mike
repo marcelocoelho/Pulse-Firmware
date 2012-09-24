@@ -18,12 +18,13 @@
 <v>Output</v>
 </TreeKeys>
 <TreeStates>
-<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="PulseSensor\Pulser1\Source Files\pulse_sense.c">
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="PulseSensor\Pulser1\Header Files\pulse_sense.h">
 <ExpandedNodeIds>
 <v>PulseSensor</v>
 <v>PulseSensor\Pulser1</v>
 <v>PulseSensor\Pulser1\TopDesign.cysch</v>
 <v>PulseSensor\Pulser1\Pulser1.cydwr</v>
+<v>PulseSensor\Pulser1\Header Files</v>
 <v>PulseSensor\Pulser1\Header Files\device.h</v>
 <v>PulseSensor\Pulser1\Header Files\pulse_sense.h</v>
 <v>PulseSensor\Pulser1\Source Files</v>
@@ -312,6 +313,8 @@
 <v>PulseSensor\Pulser1\TopDesign.cysch</v>
 <v>PulseSensor\Pulser1\Pulser1.cydwr</v>
 <v>PulseSensor\Pulser1\Header Files</v>
+<v>PulseSensor\Pulser1\Header Files\device.h</v>
+<v>PulseSensor\Pulser1\Header Files\pulse_sense.h</v>
 <v>PulseSensor\Pulser1\Source Files</v>
 <v>PulseSensor\Pulser1\Source Files\main.c</v>
 <v>PulseSensor\Pulser1\Source Files\pulse_sense.c</v>
@@ -343,8 +346,6 @@
 <v>PulseSensor\Pulser1\Generated_Source\PSoC5\CapSense_1\CapSense_1_CSHL.h</v>
 <v>PulseSensor\Pulser1\Generated_Source\PSoC5\CapSense_1\CapSense_1_INT.c</v>
 <v>PulseSensor\Pulser1\Generated_Source\PSoC5\CapSense_1\CapSense_1_Pins.c</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\CapSense_1\CapSense_1_Pins.h</v>
-<v>PulseSensor\Pulser1\Generated_Source\PSoC5\CapSense_1\CapSense_1_PM.c</v>
 </VisibleNodeIds>
 </CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
 <CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="PulseSensor">
@@ -377,6 +378,12 @@
 <VisibleNodeIds>
 <v>PulseSensor</v>
 <v>PulseSensor\Pulser1</v>
+<v>PulseSensor\Pulser1\CortexM3</v>
+<v>PulseSensor\Pulser1\CortexM3\ARM_GCC_441</v>
+<v>PulseSensor\Pulser1\CortexM3\ARM_GCC_441\Debug</v>
+<v>PulseSensor\Pulser1\CortexM3\ARM_GCC_441\Debug\Pulser1.elf</v>
+<v>PulseSensor\Pulser1\CortexM3\ARM_GCC_441\Debug\Pulser1.hex</v>
+<v>PulseSensor\Pulser1\CortexM3\ARM_GCC_441\Debug\Pulser1.map</v>
 <v>PulseSensor\Pulser1\Pulser1.rpt</v>
 <v>PulseSensor\Pulser1\Pulser1_timing.html</v>
 </VisibleNodeIds>
