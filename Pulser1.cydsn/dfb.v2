@@ -135,10 +135,10 @@ dw 16776763
 ChA_Fir_LAST: dw 16776849
 
 
-ChA_Bq_FIRST: dw  7915959
-dw  8861257
+ChA_Bq_FIRST: dw  7840413
+dw  8936803
 dw        0
-dw  4103066
+dw  4023880
 ChA_Bq_LAST: dw        0
 
 ChB_init:
@@ -178,10 +178,10 @@ ChB_FREG: dw 0x0202
 
 
 area data_b
-ChB_FIRST: dw    26995
-dw    26995
+ChB_FIRST: dw    14686
+dw    14686
 dw        0
-dw  4141925
+dw  4168033
 ChB_LAST: dw        0
 
 

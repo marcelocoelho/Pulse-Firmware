@@ -24,6 +24,8 @@ typedef struct
 	uint16 lastMaxRescaleTimer;
 	int32 zeroCrossNextPulseMax;
 	int32 zeroCrossNextPulseMin;
+	uint32 lastMaxFoundTimer;
+	int crossedZero;
 	int updated;
 } Pulser;
 	
@@ -32,10 +34,10 @@ enum
 	PulserPulseChan=0, 
 	PulserAGCChan=1,
 	PulserMaxIR256=240*256, PulserMinIR256=5*256, PulserIRTargetLow=27000, PulserIRTargetHigh=35000,
-	PulserPulseMinOuter=-8000, // -800, // -1999,
+	PulserPulseMinOuter=-300,  // -1000, // -800, // -1999,
 	PulserPulseMinInner=-40, // -99,
 	PulserPulseMaxInner=100, // 99,
-	PulserPulseMaxOuter=8000, // 800, // 1999,
+	PulserPulseMaxOuter=600, //1000, // 800, // 1999,
 	PulseRescaleTimeout=400   // 4 seconds at 100 Hz
 };
 

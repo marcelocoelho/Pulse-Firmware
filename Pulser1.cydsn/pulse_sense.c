@@ -23,6 +23,11 @@ void pulserInit(Pulser *pPulse)
 	pPulse->scaledPulseMax=PulserPulseMaxOuter;
 	pPulse->updated=0;
 	pPulse->brightnessIR256=PulserMinIR256;
+	
+	pPulse->zeroCrossNextPulseMax=0;
+	pPulse->zeroCrossNextPulseMin=0;
+	pPulse->lastMaxFoundTimer=0;
+	pPulse->crossedZero=0;
 }
 
 
@@ -31,7 +36,7 @@ int going_down=0;
 void pulserProcessPulseSample(Pulser *pPulse)
 {
 	uint32 rawPulse=ADC_PulseIn_GetResult32();
-	pPulse->curRawPulseVal= rawPulse >> 2;
+	pPulse->curRawPulseVal= rawPulse >> 2;		
 	
 	if (pPulse->curRawPulseVal < PulserIRTargetLow)
 	{ // too dim, crank it up
@@ -51,13 +56,21 @@ void pulserProcessPulseSample(Pulser *pPulse)
 		else
 			going_down=0;
 	}
-	
-	pPulse->curFilteredPulseVal=Filter_PulseInBand_Read24(PulserPulseChan);
+
+	int32 lastFilteredPulseVal=pPulse->curFilteredPulseVal;
+
+	pPulse->curFilteredPulseVal=-Filter_PulseInBand_Read24(PulserPulseChan); // convention is to have the 'pulsey' part positive
 
 	Filter_PulseInBand_Write24(PulserPulseChan, rawPulse);
 
 	int32 curFP=pPulse->curFilteredPulseVal; // current filtered pulse;
-	
+
+	if (  (lastFilteredPulseVal > 0 && pPulse->curFilteredPulseVal <= 0) ||
+ 	  	  (lastFilteredPulseVal < 0 && pPulse->curFilteredPulseVal >= 0)  )
+	{
+		pPulse->crossedZero=1;
+	}
+
 	pPulse->curPulseAGCLevel=Filter_PulseInBand_Read24(PulserAGCChan) >> 8;
 	Filter_PulseInBand_Write24(PulserAGCChan, abs(curFP) << 8);
 
@@ -71,9 +84,30 @@ void pulserProcessPulseSample(Pulser *pPulse)
 		pPulse->scaledPulseVal=255;
 	}
 	
-	pPulse->scaledPulseMax=2*pPulse->curPulseAGCLevel;
-	pPulse->scaledPulseMin=-4*pPulse->curPulseAGCLevel;
-	
+	//pPulse->scaledPulseMax=2*pPulse->curPulseAGCLevel;
+	//pPulse->scaledPulseMin=-4*pPulse->curPulseAGCLevel;
+	#if 0
+	if ( curFP > pPulse->zeroCrossNextPulseMax )
+	{
+		pPulse->zeroCrossNextPulseMax=(400*curFP) >> 8;  // set to 150% of max
+	}
+	if ( curFP < pPulse->zeroCrossNextPulseMin)
+	{
+		pPulse->zeroCrossNextPulseMin=(400*curFP) >> 8;  // set to 150% of min
+	}
+	pPulse->lastMaxFoundTimer++;
+	if (pPulse->crossedZero && pPulse->lastMaxFoundTimer > 300)
+	{
+		UART_Debug_PutString("\r\n*\r\n");
+		pPulse->scaledPulseMax=pPulse->zeroCrossNextPulseMax;
+		pPulse->scaledPulseMin=pPulse->zeroCrossNextPulseMin;
+		
+		pPulse->zeroCrossNextPulseMax=0;
+		pPulse->zeroCrossNextPulseMin=0;
+		pPulse->lastMaxFoundTimer=0;
+		pPulse->crossedZero=0;
+	}
+	#endif
 #if 0
 
 	/////

@@ -8,6 +8,7 @@
 <files />
 <projects>
 <name_val_pair name="Pulser1" v=".\Pulser1.cydsn\Pulser1.cyprj" />
+<name_val_pair name="Design01" v=".\Design01.cydsn\Design01.cyprj" />
 </projects>
 <workspace_id v="04d6942f-8855-4a12-bd64-67db2a351253" />
 <WriteAppVersionLastSavedWith v="2.1.0.607" />

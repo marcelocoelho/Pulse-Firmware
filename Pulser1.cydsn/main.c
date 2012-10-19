@@ -125,7 +125,7 @@ void main()
 	UART_Debug_Start();
 	UART_Net_Start();
 	USBUART_1_Start(0, USBUART_1_5V_OPERATION);
-	UART_Debug_PutString("\r\nPulser 1.45\r\n");
+	UART_Debug_PutString("\r\nPulser 1.48\r\n");
 	AMux_ProxIR_Start();
 	ShiftReg_DelaySenseIR_Start();
     ADC_PulseIn_Start();     
@@ -180,6 +180,9 @@ void main()
 	enum {IR_PROX_NUM=3};
 	int cur_ir_prox=0;
 	uint16 ProxIR[IR_PROX_NUM];
+	int prox_val1=0;
+	int prox_val2=0;
+
 
 	AMux_ProxIR_Select(cur_ir_prox);
     CapSense_1_InitializeAllBaselines();
@@ -212,7 +215,7 @@ void main()
 			if (net_stat & UART_Debug_RX_STS_FIFO_NOTEMPTY)
 			{
 				uint8 net_char=UART_Debug_ReadRxData();
-				UART_Debug_PutString("Debug: ");
+				UART_Debug_PutString("\r\nDebug: ");
 				UART_Debug_PutChar(net_char);
 				UART_Debug_PutString("\r\n");
 				UART_Net_PutChar(net_char);
@@ -248,8 +251,6 @@ void main()
 		}
 	// end of USB Comm stuff
 	// do Cap Prox Sensing
-			int prox_val1;
-			int prox_val2;
 	    if(!CapSense_1_IsBusy())
         {
             /* Update baseline for all the sensors */
@@ -258,8 +259,8 @@ void main()
 			prox_val1 = CapSense_1_ReadSensorRaw(0); // CapSense_PROXIMITYSENSOR0__PROX);
 			prox_val2 = CapSense_1_ReadSensorRaw(1); // CapSense_PROXIMITYSENSOR0__PROX);
 		}	
-		//sprintf(buff, "Cap Prox 1: %5d,  2: %5d; ", prox_val1, prox_val2);
-		//UART_Debug_PutString(buff);
+		sprintf(buff, "Cap: %5d, ", prox_val1);
+		UART_Debug_PutString(buff);
 	
 	// end of Cap Prox Sensing
         /* Wait for end of conversion */
@@ -293,9 +294,6 @@ void main()
 			ADC_SAR_ProxIR_IsEndConversion(ADC_SAR_ProxIR_WAIT_FOR_RESULT);
 			voltageRawCount=g_Pulser.curRawPulseVal;
 
-			//sprintf(buff, "Prox 1: %5d,  2: %5d,  3: %5d, pulse raw=%5lu\r", ProxIR[0], ProxIR[1], ProxIR[2], voltageRawCount);
-			//UART_Debug_PutString(buff);
-
 			PrISM_LEDCool_WritePulse0(ProxIR[0] >> 4);
 			PrISM_LEDWarm_WritePulse0(ProxIR[1] >> 4);
 			PrISM_LEDRed_WritePulse0(ProxIR[2] >> 4);
@@ -325,12 +323,20 @@ void main()
   //          LCD_Position(ROW_0,COLUMN_11); 
 	//        LCD_PrintNumber(voltageRawCount);
 		}
-		sprintf(buff, "Pulse: raw=%5ld, bright=%5d, Filtered=%5ld, scaled=%5ld, Ave=%5ld, min=%5ld, max=%5ld   ",
-		    g_Pulser.curRawPulseVal,
-		    g_Pulser.brightnessIR256, g_Pulser.curFilteredPulseVal, g_Pulser.scaledPulseVal,
-			g_Pulser.curPulseAGCLevel,
-			g_Pulser.scaledPulseMin, g_Pulser.scaledPulseMax );
+		//sprintf(buff, "IR1=%4d, 2=%4d, 3=%5d,", ProxIR[0], ProxIR[1], ProxIR[2]);
+		//UART_Debug_PutString(buff);
+
+		sprintf(buff, "Pulse: Filt=%5ld        ",
+//		    g_Pulser.curRawPulseVal,
+//		    g_Pulser.brightnessIR256,
+			g_Pulser.curFilteredPulseVal);
 		UART_Debug_PutString(buff);
+		//sprintf(buff, "Pulse: raw=%5ld, bright=%5d, Filtered=%5ld, scaled=%5ld, Ave=%5ld, min=%5ld, max=%5ld   ",
+		//    g_Pulser.curRawPulseVal,
+		 //   g_Pulser.brightnessIR256, g_Pulser.curFilteredPulseVal, g_Pulser.scaledPulseVal,
+		//	g_Pulser.curPulseAGCLevel,
+		//	g_Pulser.scaledPulseMin, g_Pulser.scaledPulseMax );
+		//UART_Debug_PutString(buff);
 		UART_Debug_PutString("\r");
     }
 }
