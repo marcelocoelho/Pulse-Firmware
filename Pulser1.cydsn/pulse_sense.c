@@ -23,6 +23,16 @@ void pulserInit(Pulser *pPulse)
 	pPulse->scaledPulseMax=PulserPulseMaxOuter;
 	pPulse->updated=0;
 	pPulse->brightnessIR256=PulserMinIR256;
+	pPulse->pulse_history_index=0;
+	int ii;
+	for (ii=0; ii < pulse_history_len; ii++)
+	{
+		pPulse->pulse_min_history[ii]=0;
+		pPulse->pulse_max_history[ii]=0;
+	}
+	pPulse->pulse_max_average=0;
+	pPulse->pulse_min_average=0;
+	pPulse->pulse_average_count=0;
 	
 	pPulse->zeroCrossNextPulseMax=0;
 	pPulse->zeroCrossNextPulseMin=0;
@@ -84,9 +94,43 @@ void pulserProcessPulseSample(Pulser *pPulse)
 		pPulse->scaledPulseVal=255;
 	}
 	
+#if 1
+	if (pPulse->pulse_max_average < pPulse->curFilteredPulseVal)
+		pPulse->pulse_max_average=pPulse->curFilteredPulseVal;
+	if (pPulse->pulse_min_average > pPulse->curFilteredPulseVal)
+		pPulse->pulse_min_average=pPulse->curFilteredPulseVal;
+	
+	pPulse->pulse_average_count++;
+	if (pPulse->pulse_average_count >= pulse_averager_ratio)
+	{
+		pPulse->pulse_max_history[pPulse->pulse_history_index]=pPulse->pulse_max_average;
+		pPulse->pulse_min_history[pPulse->pulse_history_index]=pPulse->pulse_min_average;
+		
+		pPulse->pulse_history_index++;
+		if (pPulse->pulse_history_index >= pulse_history_len)
+			pPulse->pulse_history_index=0;
+
+		pPulse->pulse_max_average=0;
+		pPulse->pulse_min_average=0;
+		pPulse->pulse_average_count=0;
+		
+		int mm;
+		int pulse_max=-1000000;
+		int pulse_min=1000000;
+		for (mm=0; mm < pulse_history_len; mm++)
+		{
+			if (pPulse->pulse_max_history[mm] > pulse_max)
+				pulse_max=pPulse->pulse_max_history[mm];
+			if (pPulse->pulse_min_history[mm] < pulse_min)
+				pulse_min=pPulse->pulse_min_history[mm];
+		}
+		pPulse->scaledPulseMin=(pPulse->scaledPulseMin*3 + pulse_min-10)>> 2;
+		pPulse->scaledPulseMax=(pPulse->scaledPulseMax*3 + pulse_max+10)>> 2;
+	}	
+#endif
 	//pPulse->scaledPulseMax=2*pPulse->curPulseAGCLevel;
 	//pPulse->scaledPulseMin=-4*pPulse->curPulseAGCLevel;
-	#if 0
+#if 0
 	if ( curFP > pPulse->zeroCrossNextPulseMax )
 	{
 		pPulse->zeroCrossNextPulseMax=(400*curFP) >> 8;  // set to 150% of max

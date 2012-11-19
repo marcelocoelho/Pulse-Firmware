@@ -22,8 +22,6 @@ extern void cyfitter_cfg(void);
 /* Analog Set/Unset methods */
 extern void AnalogSetDefault(void);
 extern void SetAnalogRoutingPumps(uint8 enabled);
-extern void AMux_ProxIR_Set(uint8 channel);
-extern void AMux_ProxIR_Unset(uint8 channel);
 extern void ADC_PulseIn_AMux_Set(uint8 channel);
 extern void ADC_PulseIn_AMux_Unset(uint8 channel);
 extern void CapSense_1_AMuxCH0_Set(uint8 channel);

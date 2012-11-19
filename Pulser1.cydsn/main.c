@@ -125,8 +125,7 @@ void main()
 	UART_Debug_Start();
 	UART_Net_Start();
 	USBUART_1_Start(0, USBUART_1_5V_OPERATION);
-	UART_Debug_PutString("\r\nPulser 1.48\r\n");
-	AMux_ProxIR_Start();
+	UART_Debug_PutString("\r\nPulser 1.49\r\n");
 	ShiftReg_DelaySenseIR_Start();
     ADC_PulseIn_Start();     
 	IDAC8_PulseIR_Start();
@@ -139,7 +138,7 @@ void main()
 	PWM_PulseLEDs_Start();
 	PrISM_LEDCool_Start();
 	PrISM_LEDWarm_Start();
-	PrISM_LEDRed_Start();
+	PrISM_LEDBlue_Start();
 	
 	UART_Debug_PutString("at B\r\n");
 	CapSense_1_Start();
@@ -184,7 +183,6 @@ void main()
 	int prox_val2=0;
 
 
-	AMux_ProxIR_Select(cur_ir_prox);
     CapSense_1_InitializeAllBaselines();
 
 	UART_Debug_PutString("about to start main loop\r\n");
@@ -290,13 +288,12 @@ void main()
 			{
 				cur_ir_prox=0;
 			}
-			AMux_ProxIR_Select(cur_ir_prox);
 			ADC_SAR_ProxIR_IsEndConversion(ADC_SAR_ProxIR_WAIT_FOR_RESULT);
 			voltageRawCount=g_Pulser.curRawPulseVal;
 
-			PrISM_LEDCool_WritePulse0(ProxIR[0] >> 4);
-			PrISM_LEDWarm_WritePulse0(ProxIR[1] >> 4);
-			PrISM_LEDRed_WritePulse0(ProxIR[2] >> 4);
+			PrISM_LEDCool_WritePulse0(30); // ProxIR[0] >> 4);
+			PrISM_LEDWarm_WritePulse0(40); // ProxIR[1] >> 4);
+			PrISM_LEDBlue_WritePulse0(50); // ProxIR[2] >> 4);
 			
 			
 
@@ -323,13 +320,16 @@ void main()
   //          LCD_Position(ROW_0,COLUMN_11); 
 	//        LCD_PrintNumber(voltageRawCount);
 		}
-		//sprintf(buff, "IR1=%4d, 2=%4d, 3=%5d,", ProxIR[0], ProxIR[1], ProxIR[2]);
-		//UART_Debug_PutString(buff);
+		sprintf(buff, "IR1=%4d, 2=%4d, 3=%4d, ", ProxIR[0], ProxIR[1], ProxIR[2]);
+		UART_Debug_PutString(buff);
 
-		sprintf(buff, "Pulse: Filt=%5ld        ",
+		sprintf(buff, "Pulse: Filt=%5ld, min=%5ld, max=%5ld     ",
 //		    g_Pulser.curRawPulseVal,
 //		    g_Pulser.brightnessIR256,
-			g_Pulser.curFilteredPulseVal);
+			g_Pulser.curFilteredPulseVal,
+			g_Pulser.scaledPulseMin,
+			g_Pulser.scaledPulseMax
+			);
 		UART_Debug_PutString(buff);
 		//sprintf(buff, "Pulse: raw=%5ld, bright=%5d, Filtered=%5ld, scaled=%5ld, Ave=%5ld, min=%5ld, max=%5ld   ",
 		//    g_Pulser.curRawPulseVal,

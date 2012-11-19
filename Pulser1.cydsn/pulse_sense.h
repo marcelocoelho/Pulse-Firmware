@@ -10,6 +10,8 @@
  * ========================================
 */
 
+// update rate is 100 Hz
+enum {pulse_history_len=60, pulse_averager_ratio=5}; // 3.0 seconds, downsampled by 5
 
 typedef struct
 {
@@ -20,6 +22,14 @@ typedef struct
 	int32 scaledPulseMin;
 	int32 scaledPulseMax;
 	uint16 brightnessIR256; // fixed point >> 8 to use
+	
+	int32 pulse_max_history[pulse_history_len];
+	int32 pulse_min_history[pulse_history_len];
+	int pulse_history_index;
+	int32 pulse_average_count;
+	int32 pulse_max_average;
+	int32 pulse_min_average;
+	
 	uint16 lastMinRescaleTimer;
 	uint16 lastMaxRescaleTimer;
 	int32 zeroCrossNextPulseMax;

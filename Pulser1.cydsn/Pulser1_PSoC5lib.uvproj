@@ -463,26 +463,6 @@
               <FilePath>.\Generated_Source\PSoC5\Pin_ProxIR_1_aliases.h</FilePath>
             </File>
             <File>
-              <FileName>Pin_ProxIR_2_aliases.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_ProxIR_2_aliases.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_ProxIR_3_aliases.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_ProxIR_3_aliases.h</FilePath>
-            </File>
-            <File>
-              <FileName>AMux_ProxIR.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\AMux_ProxIR.c</FilePath>
-            </File>
-            <File>
-              <FileName>AMux_ProxIR.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\AMux_ProxIR.h</FilePath>
-            </File>
-            <File>
               <FileName>ADC_SAR_ProxIR.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Generated_Source\PSoC5\ADC_SAR_ProxIR.c</FilePath>
@@ -518,16 +498,6 @@
               <FilePath>.\Generated_Source\PSoC5\TIA_PulseIn_PM.c</FilePath>
             </File>
             <File>
-              <FileName>Pin_PulseIn_minus_aliases.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_PulseIn_minus_aliases.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_PulseRef_aliases.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_PulseRef_aliases.h</FilePath>
-            </File>
-            <File>
               <FileName>Pin_PulseIR_Intensity_aliases.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Generated_Source\PSoC5\Pin_PulseIR_Intensity_aliases.h</FilePath>
@@ -551,11 +521,6 @@
               <FileName>Opamp_PulseRef_PM.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Generated_Source\PSoC5\Opamp_PulseRef_PM.c</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_PulseIn_plus_aliases.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_PulseIn_plus_aliases.h</FilePath>
             </File>
             <File>
               <FileName>Clock_PWM_PulseLEDs.c</FileName>
@@ -888,136 +853,6 @@
               <FilePath>.\Generated_Source\PSoC5\ShiftReg_DelaySenseIR_PM.c</FilePath>
             </File>
             <File>
-              <FileName>Pin_DevId_0_aliases.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_0_aliases.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_0.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_0.c</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_0.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_0.h</FilePath>
-            </File>
-            <File>
-              <FileName>Status_Reg_DevID.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Status_Reg_DevID.c</FilePath>
-            </File>
-            <File>
-              <FileName>Status_Reg_DevID.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Status_Reg_DevID.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_1_aliases.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_1_aliases.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_1.c</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_1.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_1.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_2_aliases.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_2_aliases.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_2.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_2.c</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_2.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_2.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_3_aliases.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_3_aliases.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_3.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_3.c</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_3.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_3.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_4_aliases.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_4_aliases.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_4.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_4.c</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_4.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_4.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_5_aliases.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_5_aliases.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_5.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_5.c</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_5.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_5.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_6_aliases.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_6_aliases.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_6.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_6.c</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_6.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_6.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_7_aliases.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_7_aliases.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_7.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_7.c</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_7.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_7.h</FilePath>
-            </File>
-            <File>
               <FileName>UART_Debug.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Generated_Source\PSoC5\UART_Debug.c</FilePath>
@@ -1168,21 +1003,6 @@
               <FilePath>.\Generated_Source\PSoC5\Pin_BrightLEDWarm.h</FilePath>
             </File>
             <File>
-              <FileName>Pin_BrightLEDRed_aliases.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_BrightLEDRed_aliases.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_BrightLEDRed.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_BrightLEDRed.c</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_BrightLEDRed.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_BrightLEDRed.h</FilePath>
-            </File>
-            <File>
               <FileName>Pin_DebugButton_aliases.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Generated_Source\PSoC5\Pin_DebugButton_aliases.h</FilePath>
@@ -1263,21 +1083,6 @@
               <FilePath>.\Generated_Source\PSoC5\Pin_Tx_Net_Enable.h</FilePath>
             </File>
             <File>
-              <FileName>Pin_LightsOn_aliases.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_LightsOn_aliases.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_LightsOn.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_LightsOn.c</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_LightsOn.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_LightsOn.h</FilePath>
-            </File>
-            <File>
               <FileName>CapSense_1_IdacCH0.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Generated_Source\PSoC5\CapSense_1_IdacCH0.c</FilePath>
@@ -1338,19 +1143,49 @@
               <FilePath>.\Generated_Source\PSoC5\PrISM_LEDWarm_PM.c</FilePath>
             </File>
             <File>
-              <FileName>PrISM_LEDRed.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\PrISM_LEDRed.c</FilePath>
-            </File>
-            <File>
-              <FileName>PrISM_LEDRed.h</FileName>
+              <FileName>Pin_BrightLEDBlue_aliases.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\PrISM_LEDRed.h</FilePath>
+              <FilePath>.\Generated_Source\PSoC5\Pin_BrightLEDBlue_aliases.h</FilePath>
             </File>
             <File>
-              <FileName>PrISM_LEDRed_PM.c</FileName>
+              <FileName>Pin_BrightLEDBlue.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\PrISM_LEDRed_PM.c</FilePath>
+              <FilePath>.\Generated_Source\PSoC5\Pin_BrightLEDBlue.c</FilePath>
+            </File>
+            <File>
+              <FileName>Pin_BrightLEDBlue.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Generated_Source\PSoC5\Pin_BrightLEDBlue.h</FilePath>
+            </File>
+            <File>
+              <FileName>PrISM_LEDBlue.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Generated_Source\PSoC5\PrISM_LEDBlue.c</FilePath>
+            </File>
+            <File>
+              <FileName>PrISM_LEDBlue.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Generated_Source\PSoC5\PrISM_LEDBlue.h</FilePath>
+            </File>
+            <File>
+              <FileName>PrISM_LEDBlue_PM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Generated_Source\PSoC5\PrISM_LEDBlue_PM.c</FilePath>
+            </File>
+            <File>
+              <FileName>Pin_PulseIn_minus_IRD_C_aliases.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Generated_Source\PSoC5\Pin_PulseIn_minus_IRD_C_aliases.h</FilePath>
+            </File>
+            <File>
+              <FileName>Pin_PulseRef_IRD_A_aliases.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Generated_Source\PSoC5\Pin_PulseRef_IRD_A_aliases.h</FilePath>
+            </File>
+            <File>
+              <FileName>Pin_PulseIn_plus_IRD_A_aliases.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Generated_Source\PSoC5\Pin_PulseIn_plus_IRD_A_aliases.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1817,26 +1652,6 @@
               <FilePath>.\Generated_Source\PSoC5\Pin_ProxIR_1_aliases.h</FilePath>
             </File>
             <File>
-              <FileName>Pin_ProxIR_2_aliases.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_ProxIR_2_aliases.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_ProxIR_3_aliases.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_ProxIR_3_aliases.h</FilePath>
-            </File>
-            <File>
-              <FileName>AMux_ProxIR.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\AMux_ProxIR.c</FilePath>
-            </File>
-            <File>
-              <FileName>AMux_ProxIR.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\AMux_ProxIR.h</FilePath>
-            </File>
-            <File>
               <FileName>ADC_SAR_ProxIR.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Generated_Source\PSoC5\ADC_SAR_ProxIR.c</FilePath>
@@ -1872,16 +1687,6 @@
               <FilePath>.\Generated_Source\PSoC5\TIA_PulseIn_PM.c</FilePath>
             </File>
             <File>
-              <FileName>Pin_PulseIn_minus_aliases.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_PulseIn_minus_aliases.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_PulseRef_aliases.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_PulseRef_aliases.h</FilePath>
-            </File>
-            <File>
               <FileName>Pin_PulseIR_Intensity_aliases.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Generated_Source\PSoC5\Pin_PulseIR_Intensity_aliases.h</FilePath>
@@ -1905,11 +1710,6 @@
               <FileName>Opamp_PulseRef_PM.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Generated_Source\PSoC5\Opamp_PulseRef_PM.c</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_PulseIn_plus_aliases.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_PulseIn_plus_aliases.h</FilePath>
             </File>
             <File>
               <FileName>Clock_PWM_PulseLEDs.c</FileName>
@@ -2242,136 +2042,6 @@
               <FilePath>.\Generated_Source\PSoC5\ShiftReg_DelaySenseIR_PM.c</FilePath>
             </File>
             <File>
-              <FileName>Pin_DevId_0_aliases.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_0_aliases.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_0.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_0.c</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_0.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_0.h</FilePath>
-            </File>
-            <File>
-              <FileName>Status_Reg_DevID.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Status_Reg_DevID.c</FilePath>
-            </File>
-            <File>
-              <FileName>Status_Reg_DevID.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Status_Reg_DevID.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_1_aliases.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_1_aliases.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_1.c</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_1.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_1.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_2_aliases.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_2_aliases.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_2.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_2.c</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_2.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_2.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_3_aliases.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_3_aliases.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_3.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_3.c</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_3.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_3.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_4_aliases.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_4_aliases.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_4.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_4.c</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_4.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_4.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_5_aliases.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_5_aliases.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_5.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_5.c</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_5.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_5.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_6_aliases.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_6_aliases.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_6.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_6.c</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_6.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_6.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_7_aliases.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_7_aliases.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_7.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_7.c</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_DevId_7.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_DevId_7.h</FilePath>
-            </File>
-            <File>
               <FileName>UART_Debug.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Generated_Source\PSoC5\UART_Debug.c</FilePath>
@@ -2522,21 +2192,6 @@
               <FilePath>.\Generated_Source\PSoC5\Pin_BrightLEDWarm.h</FilePath>
             </File>
             <File>
-              <FileName>Pin_BrightLEDRed_aliases.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_BrightLEDRed_aliases.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_BrightLEDRed.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_BrightLEDRed.c</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_BrightLEDRed.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_BrightLEDRed.h</FilePath>
-            </File>
-            <File>
               <FileName>Pin_DebugButton_aliases.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Generated_Source\PSoC5\Pin_DebugButton_aliases.h</FilePath>
@@ -2617,21 +2272,6 @@
               <FilePath>.\Generated_Source\PSoC5\Pin_Tx_Net_Enable.h</FilePath>
             </File>
             <File>
-              <FileName>Pin_LightsOn_aliases.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_LightsOn_aliases.h</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_LightsOn.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_LightsOn.c</FilePath>
-            </File>
-            <File>
-              <FileName>Pin_LightsOn.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\Pin_LightsOn.h</FilePath>
-            </File>
-            <File>
               <FileName>CapSense_1_IdacCH0.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Generated_Source\PSoC5\CapSense_1_IdacCH0.c</FilePath>
@@ -2692,19 +2332,49 @@
               <FilePath>.\Generated_Source\PSoC5\PrISM_LEDWarm_PM.c</FilePath>
             </File>
             <File>
-              <FileName>PrISM_LEDRed.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\PrISM_LEDRed.c</FilePath>
-            </File>
-            <File>
-              <FileName>PrISM_LEDRed.h</FileName>
+              <FileName>Pin_BrightLEDBlue_aliases.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\Generated_Source\PSoC5\PrISM_LEDRed.h</FilePath>
+              <FilePath>.\Generated_Source\PSoC5\Pin_BrightLEDBlue_aliases.h</FilePath>
             </File>
             <File>
-              <FileName>PrISM_LEDRed_PM.c</FileName>
+              <FileName>Pin_BrightLEDBlue.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\Generated_Source\PSoC5\PrISM_LEDRed_PM.c</FilePath>
+              <FilePath>.\Generated_Source\PSoC5\Pin_BrightLEDBlue.c</FilePath>
+            </File>
+            <File>
+              <FileName>Pin_BrightLEDBlue.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Generated_Source\PSoC5\Pin_BrightLEDBlue.h</FilePath>
+            </File>
+            <File>
+              <FileName>PrISM_LEDBlue.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Generated_Source\PSoC5\PrISM_LEDBlue.c</FilePath>
+            </File>
+            <File>
+              <FileName>PrISM_LEDBlue.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Generated_Source\PSoC5\PrISM_LEDBlue.h</FilePath>
+            </File>
+            <File>
+              <FileName>PrISM_LEDBlue_PM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Generated_Source\PSoC5\PrISM_LEDBlue_PM.c</FilePath>
+            </File>
+            <File>
+              <FileName>Pin_PulseIn_minus_IRD_C_aliases.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Generated_Source\PSoC5\Pin_PulseIn_minus_IRD_C_aliases.h</FilePath>
+            </File>
+            <File>
+              <FileName>Pin_PulseRef_IRD_A_aliases.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Generated_Source\PSoC5\Pin_PulseRef_IRD_A_aliases.h</FilePath>
+            </File>
+            <File>
+              <FileName>Pin_PulseIn_plus_IRD_A_aliases.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Generated_Source\PSoC5\Pin_PulseIn_plus_IRD_A_aliases.h</FilePath>
             </File>
           </Files>
         </Group>

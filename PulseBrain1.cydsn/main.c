@@ -110,7 +110,7 @@ void main()
 	/* Enable Global interrupts - used for USB communication */
     CyGlobalIntEnable;
 	
-	USBUART_1_Start(0, USBUART_1_5V_OPERATION);
+	USBUART_Central_Start(0, USBUART_Central_5V_OPERATION);
 	Clock_1_Start();
 	PrISM_1_Start();
 	PrISM_2_Start();
@@ -130,18 +130,18 @@ void main()
 	PrISM_14_Start();
 
 	/* Wait for Device to enumerate */
-    while(!USBUART_1_GetConfiguration());
+    while(!USBUART_Central_GetConfiguration());
 
     /* Enumeration is complete, enable OUT endpoint for received data from Host */
-    USBUART_1_CDC_Init();
+    USBUART_Central_CDC_Init();
 	
 	for(;;)
 	{
 		PrintToUSBUART("Please choose the channel (0-7) \n\r");
 		
 		/* Wait for input data from PC */
-		while(USBUART_1_DataIsReady() == 0u);                
-		USBUART_1_GetAll(rdBuffer);
+		while(USBUART_Central_DataIsReady() == 0u);                
+		USBUART_Central_GetAll(rdBuffer);
 		
 		/* Convert ASCII value in rdBuffer to numerical value:
 		 * Note that ASCII 48, 49,...,57 (decimal) corresponds to 0,1,...,9
@@ -170,9 +170,9 @@ void main()
 void PrintToUSBUART(char8 * outText)
 {
 	/* Wait till the CDC device is ready before sending data */
-	while(USBUART_1_CDCIsReady() == 0u);
+	while(USBUART_Central_CDCIsReady() == 0u);
 	/* Send strlen number of characters of wrBuffer to USBUART */
-	USBUART_1_PutData((uint8 *)outText, strlen(outText));
+	USBUART_Central_PutData((uint8 *)outText, strlen(outText));
 }
 
 
