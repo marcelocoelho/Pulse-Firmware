@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: CapSense_1_IdacCH0.c
-* Version 1.90
+* Version 2.0
 *
 * Description:
 *  This file provides the source code to the API for the 8-bit Current 
@@ -34,8 +34,7 @@ uint8 CapSense_1_IdacCH0_initVar = 0u;
 /* Variable to decide whether or not to restore control register in Enable()
    API. This valid only for PSoC5A */
 #if (CY_PSOC5A)
-    uint8 CapSense_1_IdacCH0_restoreReg = 0u;
-    uint8 CapSense_1_IdacCH0_intrStatus = 0u;
+    static uint8 CapSense_1_IdacCH0_restoreReg = 0u;
 #endif /* CY_PSOC5A */
 
 
@@ -61,35 +60,27 @@ void CapSense_1_IdacCH0_Init(void)
     CapSense_1_IdacCH0_CR0 = (CapSense_1_IdacCH0_MODE_I | CapSense_1_IdacCH0_DEFAULT_RANGE );
 
     /* Set default data source */
-    if(CapSense_1_IdacCH0_DEFAULT_DATA_SRC != 0u )    
-    {
+    #if(CapSense_1_IdacCH0_DEFAULT_DATA_SRC != 0u )    
         CapSense_1_IdacCH0_CR1 = (CapSense_1_IdacCH0_DEFAULT_CNTL | CapSense_1_IdacCH0_DACBUS_ENABLE);
-    }
-    else
-    {
+    #else
         CapSense_1_IdacCH0_CR1 = (CapSense_1_IdacCH0_DEFAULT_CNTL | CapSense_1_IdacCH0_DACBUS_DISABLE);
-    }
+    #endif /* (CapSense_1_IdacCH0_DEFAULT_DATA_SRC != 0u ) */
     
     /*Controls polarity from UDB Control*/
-    if(CapSense_1_IdacCH0_DEFAULT_POLARITY == CapSense_1_IdacCH0_HARDWARE_CONTROLLED)
-    {
+    #if(CapSense_1_IdacCH0_DEFAULT_POLARITY == CapSense_1_IdacCH0_HARDWARE_CONTROLLED)
         CapSense_1_IdacCH0_CR1 |= CapSense_1_IdacCH0_IDIR_SRC_UDB;
-    }
-    else
-    {
+    #else
         CapSense_1_IdacCH0_CR1 |= CapSense_1_IdacCH0_DEFAULT_POLARITY;
-    }
+    #endif/* (CapSense_1_IdacCH0_DEFAULT_POLARITY == CapSense_1_IdacCH0_HARDWARE_CONTROLLED) */
     /*Controls Current Source from UDB Control*/
-    if(CapSense_1_IdacCH0_HARDWARE_ENABLE != 0u ) 
-    {
+    #if(CapSense_1_IdacCH0_HARDWARE_ENABLE != 0u ) 
         CapSense_1_IdacCH0_CR1 |= CapSense_1_IdacCH0_IDIR_CTL_UDB;
-    }
+    #endif /* (CapSense_1_IdacCH0_HARDWARE_ENABLE != 0u ) */ 
     
     /* Set default strobe mode */
-    if(CapSense_1_IdacCH0_DEFAULT_STRB != 0u)
-    {
+    #if(CapSense_1_IdacCH0_DEFAULT_STRB != 0u)
         CapSense_1_IdacCH0_Strobe |= CapSense_1_IdacCH0_STRB_EN;
-    }
+    #endif /* (CapSense_1_IdacCH0_DEFAULT_STRB != 0u) */
     
     /* Set default speed */
     CapSense_1_IdacCH0_SetSpeed(CapSense_1_IdacCH0_DEFAULT_SPEED);
@@ -160,7 +151,7 @@ void CapSense_1_IdacCH0_Start(void)
     {
         CapSense_1_IdacCH0_Init();
         
-        CapSense_1_IdacCH0_initVar = 1;
+        CapSense_1_IdacCH0_initVar = 1u;
     }
    
     /* Enable power to DAC */
@@ -192,8 +183,8 @@ void CapSense_1_IdacCH0_Start(void)
 void CapSense_1_IdacCH0_Stop(void) 
 {
     /* Disble power to DAC */
-    CapSense_1_IdacCH0_PWRMGR &= ~CapSense_1_IdacCH0_ACT_PWR_EN;
-    CapSense_1_IdacCH0_STBY_PWRMGR &= ~CapSense_1_IdacCH0_STBY_PWR_EN;
+    CapSense_1_IdacCH0_PWRMGR &= (uint8)(~CapSense_1_IdacCH0_ACT_PWR_EN);
+    CapSense_1_IdacCH0_STBY_PWRMGR &= (uint8)(~CapSense_1_IdacCH0_STBY_PWR_EN);
     
     #if (CY_PSOC5A)
     
@@ -227,7 +218,7 @@ void CapSense_1_IdacCH0_Stop(void)
 void CapSense_1_IdacCH0_SetSpeed(uint8 speed) 
 {
     /* Clear power mask then write in new value */
-    CapSense_1_IdacCH0_CR0 &= ~CapSense_1_IdacCH0_HS_MASK;
+    CapSense_1_IdacCH0_CR0 &= (uint8)(~CapSense_1_IdacCH0_HS_MASK);
     CapSense_1_IdacCH0_CR0 |=  ( speed & CapSense_1_IdacCH0_HS_MASK);
 }
 
@@ -254,8 +245,8 @@ void CapSense_1_IdacCH0_SetSpeed(uint8 speed)
 #if(CapSense_1_IdacCH0_DEFAULT_POLARITY != CapSense_1_IdacCH0_HARDWARE_CONTROLLED)
     void CapSense_1_IdacCH0_SetPolarity(uint8 polarity) 
     {
-        CapSense_1_IdacCH0_CR1 &= ~CapSense_1_IdacCH0_IDIR_MASK;                /* clear polarity bit */
-        CapSense_1_IdacCH0_CR1 |= (polarity & CapSense_1_IdacCH0_IDIR_MASK);    /* set new value */
+        CapSense_1_IdacCH0_CR1 &= (uint8)(~CapSense_1_IdacCH0_IDIR_MASK);                /* clear polarity bit */
+        CapSense_1_IdacCH0_CR1 |= (polarity & CapSense_1_IdacCH0_IDIR_MASK);             /* set new value */
     
         CapSense_1_IdacCH0_DacTrim();
     }
@@ -281,8 +272,8 @@ void CapSense_1_IdacCH0_SetSpeed(uint8 speed)
 *******************************************************************************/
 void CapSense_1_IdacCH0_SetRange(uint8 range) 
 {
-    CapSense_1_IdacCH0_CR0 &= ~CapSense_1_IdacCH0_RANGE_MASK ;       /* Clear existing mode */
-    CapSense_1_IdacCH0_CR0 |= ( range & CapSense_1_IdacCH0_RANGE_MASK );  /*  Set Range  */
+    CapSense_1_IdacCH0_CR0 &= (uint8)(~CapSense_1_IdacCH0_RANGE_MASK);       /* Clear existing mode */
+    CapSense_1_IdacCH0_CR0 |= ( range & CapSense_1_IdacCH0_RANGE_MASK );     /*  Set Range  */
     CapSense_1_IdacCH0_DacTrim();
 }
 
@@ -308,7 +299,7 @@ void CapSense_1_IdacCH0_SetValue(uint8 value)
 {
 
     #if (CY_PSOC5A)
-        CapSense_1_IdacCH0_intrStatus = CyEnterCriticalSection();
+        uint8 CapSense_1_IdacCH0_intrStatus = CyEnterCriticalSection();
     #endif /* CY_PSOC5A */
 
     CapSense_1_IdacCH0_Data = value;         /*  Set Value  */
@@ -354,7 +345,7 @@ void CapSense_1_IdacCH0_DacTrim(void)
 {
     uint8 mode;
 
-    mode = ((CapSense_1_IdacCH0_CR0 & CapSense_1_IdacCH0_RANGE_MASK) >> 1);
+    mode = ((CapSense_1_IdacCH0_CR0 & CapSense_1_IdacCH0_RANGE_MASK) >> 1u);
     
     if((CapSense_1_IdacCH0_IDIR_MASK & CapSense_1_IdacCH0_CR1) == CapSense_1_IdacCH0_IDIR_SINK)
     {

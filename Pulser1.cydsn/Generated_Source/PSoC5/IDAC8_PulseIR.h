@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: IDAC8_PulseIR.c
-* Version 1.90
+* Version 2.0
 *
 * Description:
 *  This file contains the function prototypes and constants used in
@@ -19,13 +19,13 @@
 #if !defined(CY_IDAC8_IDAC8_PulseIR_H)  
 #define CY_IDAC8_IDAC8_PulseIR_H
 
-#include "cytypes.h"
 #include "cyfitter.h"
+#include "cytypes.h"
 
 /* Check to see if required defines such as CY_PSOC5LP are available */
 /* They are defined starting with cy_boot v3.0 */
 #if !defined (CY_PSOC5LP)
-    #error Component IDAC8_v1_90 requires cy_boot v3.0 or later
+    #error Component IDAC8_v2_0 requires cy_boot v3.0 or later
 #endif /* (CY_PSOC5LP) */
 
 
@@ -34,7 +34,7 @@
 ***************************************/
 
 /* Sleep Mode API Support */
-typedef struct IDAC8_PulseIR_backupStruct
+typedef struct
 {
     uint8 enableState;
     uint8 data_value;
@@ -43,11 +43,14 @@ typedef struct IDAC8_PulseIR_backupStruct
 
 #if (CY_PSOC5A)
     /* Stop API changes for PSoC5A */
-    typedef struct _IDAC8_PulseIR_lowPowerBackupStruct
+    typedef struct
     {
         uint8 DACCR0Reg;
     }   IDAC8_PulseIR_LOWPOWER_BACKUP_STRUCT;
 #endif /* CY_PSOC5A */
+
+/* component init state */
+extern uint8 IDAC8_PulseIR_initVar;
 
 
 /***************************************
@@ -75,14 +78,14 @@ void IDAC8_PulseIR_Wakeup(void)                   ;
 *       Paramater Initial Values
 ***************************************/
 
-#define IDAC8_PulseIR_DEFAULT_RANGE     8u      /* Default DAC range */
-#define IDAC8_PulseIR_DEFAULT_SPEED     ((0u ? 1u:0u)*2)  /* Default DAC speed */
-#define IDAC8_PulseIR_DEFAULT_CNTL      0x00u             /* Default Control */
-#define IDAC8_PulseIR_DEFAULT_STRB     0u    /* Default Strobe mode */
-#define IDAC8_PulseIR_DEFAULT_DATA     120u          /* Initial DAC value */
-#define IDAC8_PulseIR_DEFAULT_POLARITY 0u       /* Default Sink or Source */
-#define IDAC8_PulseIR_DEFAULT_DATA_SRC 0u    /* Default Data Source */   
-#define IDAC8_PulseIR_HARDWARE_ENABLE  0u /*Hardware Enable */
+#define IDAC8_PulseIR_DEFAULT_RANGE     8u                                   /* Default DAC range */
+#define IDAC8_PulseIR_DEFAULT_SPEED     ((uint8)(((0u != 0u) ? 1u : 0u) << 1u))   /* Default DAC speed */
+#define IDAC8_PulseIR_DEFAULT_CNTL      0x00u                                            /* Default Control */
+#define IDAC8_PulseIR_DEFAULT_STRB     0u                                   /* Default Strobe mode */
+#define IDAC8_PulseIR_DEFAULT_DATA     120u                                 /* Initial DAC value */
+#define IDAC8_PulseIR_DEFAULT_POLARITY 0u                                      /* Default Sink or Source */
+#define IDAC8_PulseIR_DEFAULT_DATA_SRC 0u                                   /* Default Data Source */   
+#define IDAC8_PulseIR_HARDWARE_ENABLE  0u                               /*Hardware Enable */
 
 
 /***************************************
@@ -108,7 +111,33 @@ void IDAC8_PulseIR_Wakeup(void)                   ;
 /***************************************
 *              Registers        
 ***************************************/
+#define IDAC8_PulseIR_CR0_REG         (* (reg8 *) IDAC8_PulseIR_viDAC8__CR0 )
+#define IDAC8_PulseIR_CR0_PTR         (  (reg8 *) IDAC8_PulseIR_viDAC8__CR0 )
+#define IDAC8_PulseIR_CR1_REG         (* (reg8 *) IDAC8_PulseIR_viDAC8__CR1 )
+#define IDAC8_PulseIR_CR1_PTR         (  (reg8 *) IDAC8_PulseIR_viDAC8__CR1 )
+#define IDAC8_PulseIR_Data_REG        (* (reg8 *) IDAC8_PulseIR_viDAC8__D )
+#define IDAC8_PulseIR_Data_PTR        (  (reg8 *) IDAC8_PulseIR_viDAC8__D )
+#define IDAC8_PulseIR_Strobe_REG      (* (reg8 *) IDAC8_PulseIR_viDAC8__STROBE )
+#define IDAC8_PulseIR_Strobe_PTR      (  (reg8 *) IDAC8_PulseIR_viDAC8__STROBE )
+#define IDAC8_PulseIR_SW0_REG         (* (reg8 *) IDAC8_PulseIR_viDAC8__SW0 )
+#define IDAC8_PulseIR_SW0_PTR         (  (reg8 *) IDAC8_PulseIR_viDAC8__SW0 )
+#define IDAC8_PulseIR_SW2_REG         (* (reg8 *) IDAC8_PulseIR_viDAC8__SW2 )
+#define IDAC8_PulseIR_SW2_PTR         (  (reg8 *) IDAC8_PulseIR_viDAC8__SW2 )
+#define IDAC8_PulseIR_SW3_REG         (* (reg8 *) IDAC8_PulseIR_viDAC8__SW3 )
+#define IDAC8_PulseIR_SW3_PTR         (  (reg8 *) IDAC8_PulseIR_viDAC8__SW3 )
+#define IDAC8_PulseIR_SW4_REG         (* (reg8 *) IDAC8_PulseIR_viDAC8__SW4 )
+#define IDAC8_PulseIR_SW4_PTR         (  (reg8 *) IDAC8_PulseIR_viDAC8__SW4 )
+#define IDAC8_PulseIR_TR_REG          (* (reg8 *) IDAC8_PulseIR_viDAC8__TR )
+#define IDAC8_PulseIR_TR_PTR          (  (reg8 *) IDAC8_PulseIR_viDAC8__TR )
+#define IDAC8_PulseIR_PWRMGR_REG      (* (reg8 *) IDAC8_PulseIR_viDAC8__PM_ACT_CFG )  /* Power manager */
+#define IDAC8_PulseIR_PWRMGR_PTR      (  (reg8 *) IDAC8_PulseIR_viDAC8__PM_ACT_CFG )  /* Power manager */
+#define IDAC8_PulseIR_STBY_PWRMGR_REG (* (reg8 *) IDAC8_PulseIR_viDAC8__PM_STBY_CFG )  /* Standby Power manager */
+#define IDAC8_PulseIR_STBY_PWRMGR_PTR (  (reg8 *) IDAC8_PulseIR_viDAC8__PM_STBY_CFG )  /* Standby Power manager */
 
+/***************************************
+*  Registers definitions
+* for backward capability        
+***************************************/
 #define IDAC8_PulseIR_CR0         (* (reg8 *) IDAC8_PulseIR_viDAC8__CR0 )
 #define IDAC8_PulseIR_CR1         (* (reg8 *) IDAC8_PulseIR_viDAC8__CR1 )
 #define IDAC8_PulseIR_Data        (* (reg8 *) IDAC8_PulseIR_viDAC8__D )

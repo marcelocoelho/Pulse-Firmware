@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: core_cm3_psoc5.h
-* Version 3.10
+* Version 3.30
 *
 *  Description:
 *   Provides important type information for the PSoC5.  This includes types

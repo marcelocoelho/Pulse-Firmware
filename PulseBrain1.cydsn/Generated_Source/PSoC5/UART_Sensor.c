@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: UART_Sensor.c
-* Version 2.20
+* Version 2.30
 *
 * Description:
 *  This file provides all API functionality of the UART component
@@ -9,19 +9,23 @@
 *
 ********************************************************************************
 * Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions, 
-* disclaimers, and limitations in the end user license agreement accompanying 
+* You may use this file only in accordance with the license, terms, conditions,
+* disclaimers, and limitations in the end user license agreement accompanying
 * the software package with which this file was provided.
 *******************************************************************************/
 
 #include "UART_Sensor.h"
 #include "CyLib.h"
+#if(UART_Sensor_INTERNAL_CLOCK_USED)
+    #include "UART_Sensor_IntClock.h"
+#endif /* End UART_Sensor_INTERNAL_CLOCK_USED */
 
 
 /***************************************
 * Global data allocation
 ***************************************/
 
+uint8 UART_Sensor_initVar = 0u;
 #if( UART_Sensor_TX_ENABLED && (UART_Sensor_TXBUFFERSIZE > UART_Sensor_FIFO_LENGTH))
     volatile uint8 UART_Sensor_txBuffer[UART_Sensor_TXBUFFERSIZE];
     volatile uint8 UART_Sensor_txBufferRead = 0u;
@@ -37,15 +41,8 @@
     #if (UART_Sensor_RXHW_ADDRESS_ENABLED)
         volatile uint8 UART_Sensor_rxAddressMode = UART_Sensor_RXADDRESSMODE;
         volatile uint8 UART_Sensor_rxAddressDetected = 0u;
-    #endif /* End EnableHWAddress */    
+    #endif /* End EnableHWAddress */
 #endif /* End UART_Sensor_RX_ENABLED */
-
-
-/***************************************
-* Local data allocation
-***************************************/
-
-uint8 UART_Sensor_initVar = 0u;
 
 
 /*******************************************************************************
@@ -63,11 +60,11 @@ uint8 UART_Sensor_initVar = 0u;
 *  None.
 *
 * Global variables:
-*  The UART_Sensor_intiVar variable is used to indicate initial 
-*  configuration of this component. The variable is initialized to zero (0u) 
-*  and set to one (1u) the first time UART_Start() is called. This allows for 
-*  component initialization without re-initialization in all subsequent calls 
-*  to the UART_Sensor_Start() routine. 
+*  The UART_Sensor_intiVar variable is used to indicate initial
+*  configuration of this component. The variable is initialized to zero (0u)
+*  and set to one (1u) the first time UART_Start() is called. This allows for
+*  component initialization without re-initialization in all subsequent calls
+*  to the UART_Sensor_Start() routine.
 *
 * Reentrant:
 *  No.
@@ -107,7 +104,7 @@ void UART_Sensor_Init(void)
 
         #if(UART_Sensor_RX_INTERRUPT_ENABLED && (UART_Sensor_RXBUFFERSIZE > UART_Sensor_FIFO_LENGTH))
             /* Set the RX Interrupt. */
-            CyIntSetVector(UART_Sensor_RX_VECT_NUM,   UART_Sensor_RXISR);
+            (void)CyIntSetVector(UART_Sensor_RX_VECT_NUM, &UART_Sensor_RXISR);
             CyIntSetPriority(UART_Sensor_RX_VECT_NUM, UART_Sensor_RX_PRIOR_NUM);
         #endif /* End UART_Sensor_RX_INTERRUPT_ENABLED */
 
@@ -117,6 +114,8 @@ void UART_Sensor_Init(void)
             UART_Sensor_SetRxAddress2(UART_Sensor_RXHWADDRESS2);
         #endif /* End UART_Sensor_RXHW_ADDRESS_ENABLED */
 
+        /* Init Count7 period */
+        UART_Sensor_RXBITCTR_PERIOD_REG = UART_Sensor_RXBITCTR_INIT;
         /* Configure the Initial RX interrupt mask */
         UART_Sensor_RXSTATUS_MASK_REG  = UART_Sensor_INIT_RX_INTERRUPTS_MASK;
     #endif /* End UART_Sensor_RX_ENABLED || UART_Sensor_HD_ENABLED*/
@@ -124,20 +123,18 @@ void UART_Sensor_Init(void)
     #if(UART_Sensor_TX_ENABLED)
         #if(UART_Sensor_TX_INTERRUPT_ENABLED && (UART_Sensor_TXBUFFERSIZE > UART_Sensor_FIFO_LENGTH))
             /* Set the TX Interrupt. */
-            CyIntSetVector(UART_Sensor_TX_VECT_NUM,   UART_Sensor_TXISR);
+            (void)CyIntSetVector(UART_Sensor_TX_VECT_NUM, &UART_Sensor_TXISR);
             CyIntSetPriority(UART_Sensor_TX_VECT_NUM, UART_Sensor_TX_PRIOR_NUM);
         #endif /* End UART_Sensor_TX_INTERRUPT_ENABLED */
 
         /* Write Counter Value for TX Bit Clk Generator*/
         #if(UART_Sensor_TXCLKGEN_DP)
             UART_Sensor_TXBITCLKGEN_CTR_REG = UART_Sensor_BIT_CENTER;
-            UART_Sensor_TXBITCLKTX_COMPLETE_REG = (UART_Sensor_NUMBER_OF_DATA_BITS + \
-                                                    UART_Sensor_NUMBER_OF_START_BIT) * \
-                                                    UART_Sensor_OVER_SAMPLE_COUNT;
+            UART_Sensor_TXBITCLKTX_COMPLETE_REG = (UART_Sensor_NUMBER_OF_DATA_BITS +
+                        UART_Sensor_NUMBER_OF_START_BIT) * UART_Sensor_OVER_SAMPLE_COUNT;
         #else
-            UART_Sensor_TXBITCTR_COUNTER_REG = (UART_Sensor_NUMBER_OF_DATA_BITS + \
-                                                    UART_Sensor_NUMBER_OF_START_BIT) * \
-                                                    UART_Sensor_OVER_SAMPLE_8;
+            UART_Sensor_TXBITCTR_PERIOD_REG = ((UART_Sensor_NUMBER_OF_DATA_BITS +
+                        UART_Sensor_NUMBER_OF_START_BIT) * UART_Sensor_OVER_SAMPLE_8) - 1u;
         #endif /* End UART_Sensor_TXCLKGEN_DP */
 
         /* Configure the Initial TX interrupt mask */
@@ -146,13 +143,13 @@ void UART_Sensor_Init(void)
         #else
             UART_Sensor_TXSTATUS_MASK_REG = UART_Sensor_INIT_TX_INTERRUPTS_MASK;
         #endif /*End UART_Sensor_TX_INTERRUPT_ENABLED*/
-        
+
     #endif /* End UART_Sensor_TX_ENABLED */
 
     #if(UART_Sensor_PARITY_TYPE_SW)  /* Write Parity to Control Register */
         UART_Sensor_WriteControlRegister( \
-            (UART_Sensor_ReadControlRegister() & ~UART_Sensor_CTRL_PARITY_TYPE_MASK) | \
-            (UART_Sensor_PARITY_TYPE << UART_Sensor_CTRL_PARITY_TYPE0_SHIFT) );
+            (UART_Sensor_ReadControlRegister() & (uint8)~UART_Sensor_CTRL_PARITY_TYPE_MASK) | \
+            (uint8)(UART_Sensor_PARITY_TYPE << UART_Sensor_CTRL_PARITY_TYPE0_SHIFT) );
     #endif /* End UART_Sensor_PARITY_TYPE_SW */
 }
 
@@ -178,7 +175,7 @@ void UART_Sensor_Enable(void)
 {
     uint8 enableInterrupts;
     enableInterrupts = CyEnterCriticalSection();
-    
+
     #if(UART_Sensor_RX_ENABLED || UART_Sensor_HD_ENABLED)
         /*RX Counter (Count7) Enable */
         UART_Sensor_RXBITCTR_CONTROL_REG |= UART_Sensor_CNTR_ENABLE;
@@ -205,10 +202,10 @@ void UART_Sensor_Enable(void)
      #endif /* End UART_Sensor_TX_ENABLED */
 
     #if(UART_Sensor_INTERNAL_CLOCK_USED)
-        /* Set the bit to enable the clock. */
-        UART_Sensor_INTCLOCK_CLKEN_REG |= UART_Sensor_INTCLOCK_CLKEN_MASK;
+        /* Enable the clock. */
+        UART_Sensor_IntClock_Start();
     #endif /* End UART_Sensor_INTERNAL_CLOCK_USED */
-    
+
     CyExitCriticalSection(enableInterrupts);
 }
 
@@ -232,32 +229,32 @@ void UART_Sensor_Stop(void)
     uint8 enableInterrupts;
     enableInterrupts = CyEnterCriticalSection();
 
-    /*Write Bit Counter Disable */
+    /* Write Bit Counter Disable */
     #if(UART_Sensor_RX_ENABLED || UART_Sensor_HD_ENABLED)
-        UART_Sensor_RXBITCTR_CONTROL_REG &= ~UART_Sensor_CNTR_ENABLE;
+        UART_Sensor_RXBITCTR_CONTROL_REG &= (uint8)~UART_Sensor_CNTR_ENABLE;
     #endif /* End UART_Sensor_RX_ENABLED */
 
     #if(UART_Sensor_TX_ENABLED)
         #if(!UART_Sensor_TXCLKGEN_DP)
-            UART_Sensor_TXBITCTR_CONTROL_REG &= ~UART_Sensor_CNTR_ENABLE;
+            UART_Sensor_TXBITCTR_CONTROL_REG &= (uint8)~UART_Sensor_CNTR_ENABLE;
         #endif /* End UART_Sensor_TXCLKGEN_DP */
     #endif /* UART_Sensor_TX_ENABLED */
 
     #if(UART_Sensor_INTERNAL_CLOCK_USED)
-        /* Clear the bit to enable the clock. */
-        UART_Sensor_INTCLOCK_CLKEN_REG &= ~UART_Sensor_INTCLOCK_CLKEN_MASK;
+        /* Disable the clock. */
+        UART_Sensor_IntClock_Stop();
     #endif /* End UART_Sensor_INTERNAL_CLOCK_USED */
-    
-    /*Disable internal interrupt component*/
+
+    /* Disable internal interrupt component */
     #if(UART_Sensor_RX_ENABLED || UART_Sensor_HD_ENABLED)
-        UART_Sensor_RXSTATUS_ACTL_REG  &= ~UART_Sensor_INT_ENABLE;
+        UART_Sensor_RXSTATUS_ACTL_REG  &= (uint8)~UART_Sensor_INT_ENABLE;
         #if(UART_Sensor_RX_INTERRUPT_ENABLED && (UART_Sensor_RXBUFFERSIZE > UART_Sensor_FIFO_LENGTH))
             UART_Sensor_DisableRxInt();
         #endif /* End UART_Sensor_RX_INTERRUPT_ENABLED */
     #endif /* End UART_Sensor_RX_ENABLED */
-    
+
     #if(UART_Sensor_TX_ENABLED)
-        UART_Sensor_TXSTATUS_ACTL_REG &= ~UART_Sensor_INT_ENABLE;
+        UART_Sensor_TXSTATUS_ACTL_REG &= (uint8)~UART_Sensor_INT_ENABLE;
         #if(UART_Sensor_TX_INTERRUPT_ENABLED && (UART_Sensor_TXBUFFERSIZE > UART_Sensor_FIFO_LENGTH))
             UART_Sensor_DisableTxInt();
         #endif /* End UART_Sensor_TX_INTERRUPT_ENABLED */
@@ -308,7 +305,7 @@ uint8 UART_Sensor_ReadControlRegister(void)
 void  UART_Sensor_WriteControlRegister(uint8 control) 
 {
     #if( UART_Sensor_CONTROL_REG_REMOVED )
-        control = control;      /* Reassigning to release compiler warning */ 
+        if(control != 0u) { }      /* release compiler warning */
     #else
        UART_Sensor_CONTROL_REG = control;
     #endif /* End UART_Sensor_CONTROL_REG_REMOVED */
@@ -396,7 +393,7 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
     ********************************************************************************
     *
     * Summary:
-    *  Returns data in RX Data register without checking status register to 
+    *  Returns data in RX Data register without checking status register to
     *  determine if data is valid
     *
     * Parameters:
@@ -407,12 +404,12 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
     *
     * Global Variables:
     *  UART_Sensor_rxBuffer - RAM buffer pointer for save received data.
-    *  UART_Sensor_rxBufferWrite - cyclic index for write to rxBuffer, 
-    *     checked to identify new data. 
-    *  UART_Sensor_rxBufferRead - cyclic index for read from rxBuffer, 
+    *  UART_Sensor_rxBufferWrite - cyclic index for write to rxBuffer,
+    *     checked to identify new data.
+    *  UART_Sensor_rxBufferRead - cyclic index for read from rxBuffer,
     *     incremented after each byte has been read from buffer.
     *  UART_Sensor_rxBufferLoopDetect - creared if loop condition was detected
-    *     in RX ISR. 
+    *     in RX ISR.
     *
     * Reentrant:
     *  No.
@@ -423,37 +420,39 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
         uint8 rxData;
 
         #if(UART_Sensor_RXBUFFERSIZE > UART_Sensor_FIFO_LENGTH)
-
-            /* Disable Rx interrupt. */
+            uint8 loc_rxBufferRead;
+            uint8 loc_rxBufferWrite;
             /* Protect variables that could change on interrupt. */
+            /* Disable Rx interrupt. */
             #if(UART_Sensor_RX_INTERRUPT_ENABLED)
                 UART_Sensor_DisableRxInt();
-            #endif /* End UART_Sensor_RX_INTERRUPT_ENABLED */
+            #endif /* UART_Sensor_RX_INTERRUPT_ENABLED */
+            loc_rxBufferRead = UART_Sensor_rxBufferRead;
+            loc_rxBufferWrite = UART_Sensor_rxBufferWrite;
 
-            if( (UART_Sensor_rxBufferRead != UART_Sensor_rxBufferWrite) ||
-                (UART_Sensor_rxBufferLoopDetect > 0u) )
+            if( (UART_Sensor_rxBufferLoopDetect != 0u) || (loc_rxBufferRead != loc_rxBufferWrite) )
             {
+                rxData = UART_Sensor_rxBuffer[loc_rxBufferRead];
+                loc_rxBufferRead++;
 
-                rxData = UART_Sensor_rxBuffer[UART_Sensor_rxBufferRead];
-
-                UART_Sensor_rxBufferRead++;
-
-                if(UART_Sensor_rxBufferRead >= UART_Sensor_RXBUFFERSIZE)
+                if(loc_rxBufferRead >= UART_Sensor_RXBUFFERSIZE)
                 {
-                    UART_Sensor_rxBufferRead = 0u;
+                    loc_rxBufferRead = 0u;
                 }
+                /* Update the real pointer */
+                UART_Sensor_rxBufferRead = loc_rxBufferRead;
 
-                if(UART_Sensor_rxBufferLoopDetect > 0u )
+                if(UART_Sensor_rxBufferLoopDetect != 0u )
                 {
                     UART_Sensor_rxBufferLoopDetect = 0u;
                     #if( (UART_Sensor_RX_INTERRUPT_ENABLED) && (UART_Sensor_FLOW_CONTROL != 0u) && \
                          (UART_Sensor_RXBUFFERSIZE > UART_Sensor_FIFO_LENGTH) )
                         /* When Hardware Flow Control selected - return RX mask */
                         #if( UART_Sensor_HD_ENABLED )
-                            if((UART_Sensor_CONTROL_REG & UART_Sensor_CTRL_HD_SEND) == 0)
-                            {   /* In Half duplex mode return RX mask only in RX 
-                                *  configuration set, otherwise 
-                                *  mask will be returned in LoadRxConfig() API. 
+                            if((UART_Sensor_CONTROL_REG & UART_Sensor_CTRL_HD_SEND) == 0u)
+                            {   /* In Half duplex mode return RX mask only in RX
+                                *  configuration set, otherwise
+                                *  mask will be returned in LoadRxConfig() API.
                                 */
                                 UART_Sensor_RXSTATUS_MASK_REG  |= UART_Sensor_RX_STS_FIFO_NOTEMPTY;
                             }
@@ -499,11 +498,11 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
     *  Current state of the status register.
     *
     * Global Variables:
-    *  UART_Sensor_rxBufferOverflow - used to indicate overload condition. 
-    *   It set to one in RX interrupt when there isn?t free space in 
-    *   UART_Sensor_rxBufferRead to write new data. This condition returned 
-    *   and cleared to zero by this API as an 
-    *   UART_Sensor_RX_STS_SOFT_BUFF_OVER bit along with RX Status register 
+    *  UART_Sensor_rxBufferOverflow - used to indicate overload condition.
+    *   It set to one in RX interrupt when there isn?t free space in
+    *   UART_Sensor_rxBufferRead to write new data. This condition returned
+    *   and cleared to zero by this API as an
+    *   UART_Sensor_RX_STS_SOFT_BUFF_OVER bit along with RX Status register
     *   bits.
     *
     *******************************************************************************/
@@ -511,11 +510,10 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
     {
         uint8 status;
 
-        status = UART_Sensor_RXSTATUS_REG;
-        status &= UART_Sensor_RX_HW_MASK;
+        status = UART_Sensor_RXSTATUS_REG & UART_Sensor_RX_HW_MASK;
 
         #if(UART_Sensor_RXBUFFERSIZE > UART_Sensor_FIFO_LENGTH)
-            if( UART_Sensor_rxBufferOverflow )
+            if( UART_Sensor_rxBufferOverflow != 0u )
             {
                 status |= UART_Sensor_RX_STS_SOFT_BUFF_OVER;
                 UART_Sensor_rxBufferOverflow = 0u;
@@ -531,8 +529,8 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
     ********************************************************************************
     *
     * Summary:
-    *  Reads UART RX buffer immediately, if data is not available or an error 
-    *  condition exists, zero is returned; otherwise, character is read and 
+    *  Reads UART RX buffer immediately, if data is not available or an error
+    *  condition exists, zero is returned; otherwise, character is read and
     *  returned.
     *
     * Parameters:
@@ -544,12 +542,12 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
     *
     * Global Variables:
     *  UART_Sensor_rxBuffer - RAM buffer pointer for save received data.
-    *  UART_Sensor_rxBufferWrite - cyclic index for write to rxBuffer, 
-    *     checked to identify new data. 
-    *  UART_Sensor_rxBufferRead - cyclic index for read from rxBuffer, 
+    *  UART_Sensor_rxBufferWrite - cyclic index for write to rxBuffer,
+    *     checked to identify new data.
+    *  UART_Sensor_rxBufferRead - cyclic index for read from rxBuffer,
     *     incremented after each byte has been read from buffer.
     *  UART_Sensor_rxBufferLoopDetect - creared if loop condition was detected
-    *     in RX ISR. 
+    *     in RX ISR.
     *
     * Reentrant:
     *  No.
@@ -561,36 +559,37 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
         uint8 rxStatus;
 
         #if(UART_Sensor_RXBUFFERSIZE > UART_Sensor_FIFO_LENGTH)
-
-            /* Disable Rx interrupt. */
+            uint8 loc_rxBufferRead;
+            uint8 loc_rxBufferWrite;
             /* Protect variables that could change on interrupt. */
+            /* Disable Rx interrupt. */
             #if(UART_Sensor_RX_INTERRUPT_ENABLED)
                 UART_Sensor_DisableRxInt();
             #endif /* UART_Sensor_RX_INTERRUPT_ENABLED */
+            loc_rxBufferRead = UART_Sensor_rxBufferRead;
+            loc_rxBufferWrite = UART_Sensor_rxBufferWrite;
 
-            if( (UART_Sensor_rxBufferRead != UART_Sensor_rxBufferWrite) ||
-                (UART_Sensor_rxBufferLoopDetect > 0u) )
+            if( (UART_Sensor_rxBufferLoopDetect != 0u) || (loc_rxBufferRead != loc_rxBufferWrite) )
             {
-                rxData = UART_Sensor_rxBuffer[UART_Sensor_rxBufferRead];
-
-                UART_Sensor_rxBufferRead++;
-
-                if(UART_Sensor_rxBufferRead >= UART_Sensor_RXBUFFERSIZE)
+                rxData = UART_Sensor_rxBuffer[loc_rxBufferRead];
+                loc_rxBufferRead++;
+                if(loc_rxBufferRead >= UART_Sensor_RXBUFFERSIZE)
                 {
-                    UART_Sensor_rxBufferRead = 0u;
+                    loc_rxBufferRead = 0u;
                 }
+                /* Update the real pointer */
+                UART_Sensor_rxBufferRead = loc_rxBufferRead;
 
-                if(UART_Sensor_rxBufferLoopDetect > 0u ) 
+                if(UART_Sensor_rxBufferLoopDetect > 0u )
                 {
                     UART_Sensor_rxBufferLoopDetect = 0u;
-                    #if( (UART_Sensor_RX_INTERRUPT_ENABLED) && (UART_Sensor_FLOW_CONTROL != 0u) && \
-                         (UART_Sensor_RXBUFFERSIZE > UART_Sensor_FIFO_LENGTH) )
+                    #if( (UART_Sensor_RX_INTERRUPT_ENABLED) && (UART_Sensor_FLOW_CONTROL != 0u) )
                         /* When Hardware Flow Control selected - return RX mask */
                         #if( UART_Sensor_HD_ENABLED )
-                            if((UART_Sensor_CONTROL_REG & UART_Sensor_CTRL_HD_SEND) == 0)
-                            {   /* In Half duplex mode return RX mask only if 
-                                *  RX configuration set, otherwise 
-                                *  mask will be returned in LoadRxConfig() API. 
+                            if((UART_Sensor_CONTROL_REG & UART_Sensor_CTRL_HD_SEND) == 0u)
+                            {   /* In Half duplex mode return RX mask only if
+                                *  RX configuration set, otherwise
+                                *  mask will be returned in LoadRxConfig() API.
                                 */
                                 UART_Sensor_RXSTATUS_MASK_REG  |= UART_Sensor_RX_STS_FIFO_NOTEMPTY;
                             }
@@ -602,16 +601,16 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
 
             }
             else
-            {   rxStatus =UART_Sensor_RXSTATUS_REG;
-                if(rxStatus & UART_Sensor_RX_STS_FIFO_NOTEMPTY)
+            {   rxStatus = UART_Sensor_RXSTATUS_REG;
+                if((rxStatus & UART_Sensor_RX_STS_FIFO_NOTEMPTY) != 0u)
                 {   /* Read received data from FIFO*/
                     rxData = UART_Sensor_RXDATA_REG;
                     /*Check status on error*/
-                    if(rxStatus & (UART_Sensor_RX_STS_BREAK | UART_Sensor_RX_STS_PAR_ERROR |
-                                   UART_Sensor_RX_STS_STOP_ERROR | UART_Sensor_RX_STS_OVERRUN))
+                    if((rxStatus & (UART_Sensor_RX_STS_BREAK | UART_Sensor_RX_STS_PAR_ERROR |
+                                   UART_Sensor_RX_STS_STOP_ERROR | UART_Sensor_RX_STS_OVERRUN)) != 0u)
                     {
                         rxData = 0u;
-                    }    
+                    }
                 }
             }
 
@@ -623,12 +622,12 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
         #else /* UART_Sensor_RXBUFFERSIZE > UART_Sensor_FIFO_LENGTH */
 
             rxStatus =UART_Sensor_RXSTATUS_REG;
-            if(rxStatus & UART_Sensor_RX_STS_FIFO_NOTEMPTY)
+            if((rxStatus & UART_Sensor_RX_STS_FIFO_NOTEMPTY) != 0u)
             {   /* Read received data from FIFO*/
                 rxData = UART_Sensor_RXDATA_REG;
                 /*Check status on error*/
-                if(rxStatus & (UART_Sensor_RX_STS_BREAK | UART_Sensor_RX_STS_PAR_ERROR |
-                               UART_Sensor_RX_STS_STOP_ERROR | UART_Sensor_RX_STS_OVERRUN))
+                if((rxStatus & (UART_Sensor_RX_STS_BREAK | UART_Sensor_RX_STS_PAR_ERROR |
+                               UART_Sensor_RX_STS_STOP_ERROR | UART_Sensor_RX_STS_OVERRUN)) != 0u)
                 {
                     rxData = 0u;
                 }
@@ -674,13 +673,13 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
     *  None.
     *
     * Return:
-    *  uint8: Integer count of the number of bytes left 
+    *  uint8: Integer count of the number of bytes left
     *  in the RX buffer
     *
     * Global Variables:
-    *  UART_Sensor_rxBufferWrite - used to calculate left bytes. 
+    *  UART_Sensor_rxBufferWrite - used to calculate left bytes.
     *  UART_Sensor_rxBufferRead - used to calculate left bytes.
-    *  UART_Sensor_rxBufferLoopDetect - checked to decide left bytes amount. 
+    *  UART_Sensor_rxBufferLoopDetect - checked to decide left bytes amount.
     *
     * Reentrant:
     *  No.
@@ -689,7 +688,7 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
     *  Allows the user to find out how full the RX Buffer is.
     *
     *******************************************************************************/
-    uint8 UART_Sensor_GetRxBufferSize(void) 
+    uint8 UART_Sensor_GetRxBufferSize(void)
                                                             
     {
         uint8 size;
@@ -730,7 +729,7 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
         #else /* UART_Sensor_RXBUFFERSIZE > UART_Sensor_FIFO_LENGTH */
 
             /* We can only know if there is data in the fifo. */
-            size = (UART_Sensor_RXSTATUS_REG & UART_Sensor_RX_STS_FIFO_NOTEMPTY) ? 1u : 0u;
+            size = ((UART_Sensor_RXSTATUS_REG & UART_Sensor_RX_STS_FIFO_NOTEMPTY) != 0u) ? 1u : 0u;
 
         #endif /* End UART_Sensor_RXBUFFERSIZE > UART_Sensor_FIFO_LENGTH */
 
@@ -753,17 +752,17 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
     *  None.
     *
     * Global Variables:
-    *  UART_Sensor_rxBufferWrite - cleared to zero. 
+    *  UART_Sensor_rxBufferWrite - cleared to zero.
     *  UART_Sensor_rxBufferRead - cleared to zero.
-    *  UART_Sensor_rxBufferLoopDetect - cleared to zero. 
-    *  UART_Sensor_rxBufferOverflow - cleared to zero. 
+    *  UART_Sensor_rxBufferLoopDetect - cleared to zero.
+    *  UART_Sensor_rxBufferOverflow - cleared to zero.
     *
     * Reentrant:
     *  No.
     *
     * Theory:
-    *  Setting the pointers to zero makes the system believe there is no data to 
-    *  read and writing will resume at address 0 overwriting any data that may 
+    *  Setting the pointers to zero makes the system believe there is no data to
+    *  read and writing will resume at address 0 overwriting any data that may
     *  have remained in the RAM.
     *
     * Side Effects:
@@ -772,15 +771,15 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
     void UART_Sensor_ClearRxBuffer(void) 
     {
         uint8 enableInterrupts;
-        
+
         /* clear the HW FIFO */
         /* Enter critical section */
-        enableInterrupts = CyEnterCriticalSection();        
+        enableInterrupts = CyEnterCriticalSection();
         UART_Sensor_RXDATA_AUX_CTL_REG |=  UART_Sensor_RX_FIFO_CLR;
-        UART_Sensor_RXDATA_AUX_CTL_REG &= ~UART_Sensor_RX_FIFO_CLR;
+        UART_Sensor_RXDATA_AUX_CTL_REG &= (uint8)~UART_Sensor_RX_FIFO_CLR;
         /* Exit critical section */
         CyExitCriticalSection(enableInterrupts);
-        
+
         #if(UART_Sensor_RXBUFFERSIZE > UART_Sensor_FIFO_LENGTH)
             /* Disable Rx interrupt. */
             /* Protect variables that could change on interrupt. */
@@ -798,7 +797,7 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
                 UART_Sensor_EnableRxInt();
             #endif /* End UART_Sensor_RX_INTERRUPT_ENABLED */
         #endif /* End UART_Sensor_RXBUFFERSIZE > UART_Sensor_FIFO_LENGTH */
-        
+
     }
 
 
@@ -811,13 +810,13 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
     *
     * Parameters:
     *  addressMode: Enumerated value indicating the mode of RX addressing
-    *  UART_Sensor__B_UART__AM_SW_BYTE_BYTE -  Software Byte-by-Byte address 
+    *  UART_Sensor__B_UART__AM_SW_BYTE_BYTE -  Software Byte-by-Byte address
     *                                               detection
-    *  UART_Sensor__B_UART__AM_SW_DETECT_TO_BUFFER - Software Detect to Buffer 
+    *  UART_Sensor__B_UART__AM_SW_DETECT_TO_BUFFER - Software Detect to Buffer
     *                                               address detection
-    *  UART_Sensor__B_UART__AM_HW_BYTE_BY_BYTE - Hardware Byte-by-Byte address 
+    *  UART_Sensor__B_UART__AM_HW_BYTE_BY_BYTE - Hardware Byte-by-Byte address
     *                                               detection
-    *  UART_Sensor__B_UART__AM_HW_DETECT_TO_BUFFER - Hardware Detect to Buffer 
+    *  UART_Sensor__B_UART__AM_HW_DETECT_TO_BUFFER - Hardware Detect to Buffer
     *                                               address detection
     *  UART_Sensor__B_UART__AM_NONE - No address detection
     *
@@ -825,31 +824,30 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
     *  None.
     *
     * Global Variables:
-    *  UART_Sensor_rxAddressMode - the parameter stored in this variable for 
+    *  UART_Sensor_rxAddressMode - the parameter stored in this variable for
     *   the farther usage in RX ISR.
     *  UART_Sensor_rxAddressDetected - set to initial state (0).
     *
     *******************************************************************************/
-    void UART_Sensor_SetRxAddressMode(uint8 addressMode)  
+    void UART_Sensor_SetRxAddressMode(uint8 addressMode)
                                                         
     {
         #if(UART_Sensor_RXHW_ADDRESS_ENABLED)
             #if(UART_Sensor_CONTROL_REG_REMOVED)
-                addressMode = addressMode;
+                if(addressMode != 0u) { }     /* release compiler warning */
             #else /* UART_Sensor_CONTROL_REG_REMOVED */
-                uint8 tmpCtrl = 0u;
-                tmpCtrl = UART_Sensor_CONTROL_REG & ~UART_Sensor_CTRL_RXADDR_MODE_MASK;
-                tmpCtrl |= ((addressMode << UART_Sensor_CTRL_RXADDR_MODE0_SHIFT) & 
-                           UART_Sensor_CTRL_RXADDR_MODE_MASK);
+                uint8 tmpCtrl;
+                tmpCtrl = UART_Sensor_CONTROL_REG & (uint8)~UART_Sensor_CTRL_RXADDR_MODE_MASK;
+                tmpCtrl |= (uint8)(addressMode << UART_Sensor_CTRL_RXADDR_MODE0_SHIFT);
                 UART_Sensor_CONTROL_REG = tmpCtrl;
                 #if(UART_Sensor_RX_INTERRUPT_ENABLED && \
                    (UART_Sensor_RXBUFFERSIZE > UART_Sensor_FIFO_LENGTH) )
                     UART_Sensor_rxAddressMode = addressMode;
                     UART_Sensor_rxAddressDetected = 0u;
-                #endif /* End UART_Sensor_RXBUFFERSIZE > UART_Sensor_FIFO_LENGTH*/   
+                #endif /* End UART_Sensor_RXBUFFERSIZE > UART_Sensor_FIFO_LENGTH*/
             #endif /* End UART_Sensor_CONTROL_REG_REMOVED */
         #else /* UART_Sensor_RXHW_ADDRESS_ENABLED */
-            addressMode = addressMode;
+            if(addressMode != 0u) { }     /* release compiler warning */
         #endif /* End UART_Sensor_RXHW_ADDRESS_ENABLED */
     }
 
@@ -893,7 +891,7 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
     {
         UART_Sensor_RXADDRESS2_REG = address;
     }
-        
+
 #endif  /* UART_Sensor_RX_ENABLED || UART_Sensor_HD_ENABLED*/
 
 
@@ -978,9 +976,9 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
     ********************************************************************************
     *
     * Summary:
-    *  Write a byte of data to the Transmit FIFO or TX buffer to be sent when the 
-    *  bus is available. WriteTxData sends a byte without checking for buffer room 
-    *  or status. It is up to the user to separately check status.    
+    *  Write a byte of data to the Transmit FIFO or TX buffer to be sent when the
+    *  bus is available. WriteTxData sends a byte without checking for buffer room
+    *  or status. It is up to the user to separately check status.
     *
     * Parameters:
     *  TXDataByte: byte of data to place in the transmit FIFO
@@ -990,11 +988,11 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
     *
     * Global Variables:
     *  UART_Sensor_txBuffer - RAM buffer pointer for save data for transmission
-    *  UART_Sensor_txBufferWrite - cyclic index for write to txBuffer, 
+    *  UART_Sensor_txBufferWrite - cyclic index for write to txBuffer,
     *    incremented after each byte saved to buffer.
-    *  UART_Sensor_txBufferRead - cyclic index for read from txBuffer, 
+    *  UART_Sensor_txBufferRead - cyclic index for read from txBuffer,
     *    checked to identify the condition to write to FIFO directly or to TX buffer
-    *  UART_Sensor_initVar - checked to identify that the component has been  
+    *  UART_Sensor_initVar - checked to identify that the component has been
     *    initialized.
     *
     * Reentrant:
@@ -1015,7 +1013,7 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
                 #endif /* End UART_Sensor_TX_INTERRUPT_ENABLED */
 
                 if( (UART_Sensor_txBufferRead == UART_Sensor_txBufferWrite) &&
-                   !(UART_Sensor_TXSTATUS_REG & UART_Sensor_TX_STS_FIFO_FULL) )
+                    ((UART_Sensor_TXSTATUS_REG & UART_Sensor_TX_STS_FIFO_FULL) == 0u) )
                 {
                     /* Add directly to the FIFO. */
                     UART_Sensor_TXDATA_REG = txDataByte;
@@ -1024,7 +1022,7 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
                 {
                     if(UART_Sensor_txBufferWrite >= UART_Sensor_TXBUFFERSIZE)
                     {
-                        UART_Sensor_txBufferWrite = 0;
+                        UART_Sensor_txBufferWrite = 0u;
                     }
 
                     UART_Sensor_txBuffer[UART_Sensor_txBufferWrite] = txDataByte;
@@ -1063,10 +1061,10 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
     *  Contents of the status register
     *
     * Theory:
-    *  This function reads the status register which is clear on read. It is up to 
-    *  the user to handle all bits in this return value accordingly, even if the bit 
+    *  This function reads the status register which is clear on read. It is up to
+    *  the user to handle all bits in this return value accordingly, even if the bit
     *  was not enabled as an interrupt source the event happened and must be handled
-    *  accordingly.    
+    *  accordingly.
     *
     *******************************************************************************/
     uint8 UART_Sensor_ReadTxStatus(void) 
@@ -1090,12 +1088,12 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
     *
     * Global Variables:
     *  UART_Sensor_txBuffer - RAM buffer pointer for save data for transmission
-    *  UART_Sensor_txBufferWrite - cyclic index for write to txBuffer, 
-    *     checked to identify free space in txBuffer and incremented after each byte 
+    *  UART_Sensor_txBufferWrite - cyclic index for write to txBuffer,
+    *     checked to identify free space in txBuffer and incremented after each byte
     *     saved to buffer.
-    *  UART_Sensor_txBufferRead - cyclic index for read from txBuffer, 
+    *  UART_Sensor_txBufferRead - cyclic index for read from txBuffer,
     *     checked to identify free space in txBuffer.
-    *  UART_Sensor_initVar - checked to identify that the component has been  
+    *  UART_Sensor_initVar - checked to identify that the component has been
     *     initialized.
     *
     * Reentrant:
@@ -1108,49 +1106,61 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
     void UART_Sensor_PutChar(uint8 txDataByte) 
     {
             #if(UART_Sensor_TXBUFFERSIZE > UART_Sensor_FIFO_LENGTH)
+                /* The temporary output pointer is used since it takes two instructions
+                *  to increment with a wrap, and we can't risk doing that with the real
+                *  pointer and getting an interrupt in between instructions.
+                */
+                uint8 loc_txBufferWrite;
+                uint8 loc_txBufferRead;
 
-                /* Block if buffer is full, so we dont overwrite. */
-                while( UART_Sensor_txBufferWrite == (UART_Sensor_txBufferRead - 1u) ||
-                    (uint8)(UART_Sensor_txBufferWrite - UART_Sensor_txBufferRead) ==
-                    (uint8)(UART_Sensor_TXBUFFERSIZE - 1u) )
-                {
-                    /* Software buffer is full. */
-                }
-                /* Disable Tx interrupt. */
-                /* Protect variables that could change on interrupt. */
-                #if(UART_Sensor_TX_INTERRUPT_ENABLED)
-                    UART_Sensor_DisableTxInt();
-                #endif /* End UART_Sensor_TX_INTERRUPT_ENABLED */
+                do{
+                    /* Block if software buffer is full, so we don't overwrite. */
+                    #if ((UART_Sensor_TXBUFFERSIZE > UART_Sensor_MAX_BYTE_VALUE) && (CY_PSOC3))
+                        /* Disable TX interrupt to protect variables that could change on interrupt */
+                        CyIntDisable(UART_Sensor_TX_VECT_NUM);
+                    #endif /* End TXBUFFERSIZE > 255 */
+                    loc_txBufferWrite = UART_Sensor_txBufferWrite;
+                    loc_txBufferRead = UART_Sensor_txBufferRead;
+                    #if ((UART_Sensor_TXBUFFERSIZE > UART_Sensor_MAX_BYTE_VALUE) && (CY_PSOC3))
+                        /* Enable interrupt to continue transmission */
+                        CyIntEnable(UART_Sensor_TX_VECT_NUM);
+                    #endif /* End TXBUFFERSIZE > 255 */
+                }while( (loc_txBufferWrite < loc_txBufferRead) ? (loc_txBufferWrite == (loc_txBufferRead - 1u)) :
+                                        ((loc_txBufferWrite - loc_txBufferRead) ==
+                                        (uint8)(UART_Sensor_TXBUFFERSIZE - 1u)) );
 
-                if( (UART_Sensor_txBufferRead == UART_Sensor_txBufferWrite) &&
-                   !(UART_Sensor_TXSTATUS_REG & UART_Sensor_TX_STS_FIFO_FULL) )
+                if( (loc_txBufferRead == loc_txBufferWrite) &&
+                    ((UART_Sensor_TXSTATUS_REG & UART_Sensor_TX_STS_FIFO_FULL) == 0u) )
                 {
                     /* Add directly to the FIFO. */
                     UART_Sensor_TXDATA_REG = txDataByte;
                 }
                 else
                 {
-                    if(UART_Sensor_txBufferWrite >= UART_Sensor_TXBUFFERSIZE)
+                    if(loc_txBufferWrite >= UART_Sensor_TXBUFFERSIZE)
                     {
-                        UART_Sensor_txBufferWrite = 0;
+                        loc_txBufferWrite = 0u;
                     }
-
-                    UART_Sensor_txBuffer[UART_Sensor_txBufferWrite] = txDataByte;
-
                     /* Add to the software buffer. */
-                    UART_Sensor_txBufferWrite++;
+                    UART_Sensor_txBuffer[loc_txBufferWrite] = txDataByte;
+                    loc_txBufferWrite++;
 
+                    /* Finally, update the real output pointer */
+                    #if ((UART_Sensor_TXBUFFERSIZE > UART_Sensor_MAX_BYTE_VALUE) && (CY_PSOC3))
+                        CyIntDisable(UART_Sensor_TX_VECT_NUM);
+                    #endif /* End TXBUFFERSIZE > 255 */
+                    UART_Sensor_txBufferWrite = loc_txBufferWrite;
+                    #if ((UART_Sensor_TXBUFFERSIZE > UART_Sensor_MAX_BYTE_VALUE) && (CY_PSOC3))
+                        CyIntEnable(UART_Sensor_TX_VECT_NUM);
+                    #endif /* End TXBUFFERSIZE > 255 */
                 }
-
-                /* Enable Rx interrupt. */
-                #if(UART_Sensor_TX_INTERRUPT_ENABLED)
-                    UART_Sensor_EnableTxInt();
-                #endif /* End UART_Sensor_TX_INTERRUPT_ENABLED */
 
             #else /* UART_Sensor_TXBUFFERSIZE > UART_Sensor_FIFO_LENGTH */
 
-                /* Block if there isnt room. */
-                while(UART_Sensor_TXSTATUS_REG & UART_Sensor_TX_STS_FIFO_FULL);
+                while((UART_Sensor_TXSTATUS_REG & UART_Sensor_TX_STS_FIFO_FULL) != 0u)
+                {
+                    ; /* Wait for room in the FIFO. */
+                }
 
                 /* Add directly to the FIFO. */
                 UART_Sensor_TXDATA_REG = txDataByte;
@@ -1173,27 +1183,29 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
     *  None.
     *
     * Global Variables:
-    *  UART_Sensor_initVar - checked to identify that the component has been  
+    *  UART_Sensor_initVar - checked to identify that the component has been
     *     initialized.
     *
     * Reentrant:
     *  No.
     *
     * Theory:
-    *  This function will block if there is not enough memory to place the whole 
-    *  string, it will block until the entire string has been written to the 
+    *  This function will block if there is not enough memory to place the whole
+    *  string, it will block until the entire string has been written to the
     *  transmit buffer.
     *
     *******************************************************************************/
-    void UART_Sensor_PutString(char* string) 
+    void UART_Sensor_PutString(const char8 string[]) 
     {
+        uint16 buf_index = 0u;
         /* If not Initialized then skip this function*/
         if(UART_Sensor_initVar != 0u)
         {
             /* This is a blocking function, it will not exit until all data is sent*/
-            while(*string != 0u)
+            while(string[buf_index] != (char8)0)
             {
-                UART_Sensor_PutChar(*string++);
+                UART_Sensor_PutChar((uint8)string[buf_index]);
+                buf_index++;
             }
         }
     }
@@ -1214,24 +1226,25 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
     *  None.
     *
     * Global Variables:
-    *  UART_Sensor_initVar - checked to identify that the component has been  
+    *  UART_Sensor_initVar - checked to identify that the component has been
     *     initialized.
     *
     * Reentrant:
     *  No.
     *
     *******************************************************************************/
-    void UART_Sensor_PutArray(uint8* string, uint8 byteCount) 
+    void UART_Sensor_PutArray(const uint8 string[], uint8 byteCount)
                                                                     
     {
+        uint8 buf_index = 0u;
         /* If not Initialized then skip this function*/
         if(UART_Sensor_initVar != 0u)
         {
-            while(byteCount > 0u)
+            do
             {
-                UART_Sensor_PutChar(*string++);
-                byteCount--;
-            }
+                UART_Sensor_PutChar(string[buf_index]);
+                buf_index++;
+            }while(buf_index < byteCount);
         }
     }
 
@@ -1250,7 +1263,7 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
     *  None.
     *
     * Global Variables:
-    *  UART_Sensor_initVar - checked to identify that the component has been  
+    *  UART_Sensor_initVar - checked to identify that the component has been
     *     initialized.
     *
     * Reentrant:
@@ -1284,7 +1297,7 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
     *  Integer count of the number of bytes left in the TX buffer
     *
     * Global Variables:
-    *  UART_Sensor_txBufferWrite - used to calculate left space. 
+    *  UART_Sensor_txBufferWrite - used to calculate left space.
     *  UART_Sensor_txBufferRead - used to calculate left space.
     *
     * Reentrant:
@@ -1294,7 +1307,7 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
     *  Allows the user to find out how full the TX Buffer is.
     *
     *******************************************************************************/
-    uint8 UART_Sensor_GetTxBufferSize(void) 
+    uint8 UART_Sensor_GetTxBufferSize(void)
                                                             
     {
         uint8 size;
@@ -1330,11 +1343,11 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
             size = UART_Sensor_TXSTATUS_REG;
 
             /* Is the fifo is full. */
-            if(size & UART_Sensor_TX_STS_FIFO_FULL)
+            if((size & UART_Sensor_TX_STS_FIFO_FULL) != 0u)
             {
                 size = UART_Sensor_FIFO_LENGTH;
             }
-            else if(size & UART_Sensor_TX_STS_FIFO_EMPTY)
+            else if((size & UART_Sensor_TX_STS_FIFO_EMPTY) != 0u)
             {
                 size = 0u;
             }
@@ -1365,14 +1378,14 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
     *  None.
     *
     * Global Variables:
-    *  UART_Sensor_txBufferWrite - cleared to zero. 
+    *  UART_Sensor_txBufferWrite - cleared to zero.
     *  UART_Sensor_txBufferRead - cleared to zero.
     *
     * Reentrant:
     *  No.
     *
     * Theory:
-    *  Setting the pointers to zero makes the system believe there is no data to 
+    *  Setting the pointers to zero makes the system believe there is no data to
     *  read and writing will resume at address 0 overwriting any data that may have
     *  remained in the RAM.
     *
@@ -1383,12 +1396,12 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
     void UART_Sensor_ClearTxBuffer(void) 
     {
         uint8 enableInterrupts;
-        
+
         /* Enter critical section */
-        enableInterrupts = CyEnterCriticalSection();        
+        enableInterrupts = CyEnterCriticalSection();
         /* clear the HW FIFO */
         UART_Sensor_TXDATA_AUX_CTL_REG |=  UART_Sensor_TX_FIFO_CLR;
-        UART_Sensor_TXDATA_AUX_CTL_REG &= ~UART_Sensor_TX_FIFO_CLR;
+        UART_Sensor_TXDATA_AUX_CTL_REG &= (uint8)~UART_Sensor_TX_FIFO_CLR;
         /* Exit critical section */
         CyExitCriticalSection(enableInterrupts);
 
@@ -1421,7 +1434,7 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
     *
     * Parameters:
     *  uint8 retMode:  Wait mode,
-    *   0 - Initialize registers for Break, sends the Break signal and return 
+    *   0 - Initialize registers for Break, sends the Break signal and return
     *       imediately.
     *   1 - Wait until Break sending is complete, reinitialize registers to normal
     *       transmission mode then return.
@@ -1435,7 +1448,7 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
     *  None.
     *
     * Global Variables:
-    *  UART_Sensor_initVar - checked to identify that the component has been  
+    *  UART_Sensor_initVar - checked to identify that the component has been
     *     initialized.
     *  tx_period - static variable, used for keeping TX period configuration.
     *
@@ -1448,15 +1461,15 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
     *  operation.
     *  Trere are 3 variants for this API usage:
     *  1) SendBreak(3) - function will send the Break signal and take care on the
-    *     configuration returning. Funcition will block CPU untill transmition 
+    *     configuration returning. Funcition will block CPU untill transmition
     *     complete.
-    *  2) User may want to use bloking time if UART configured to the low speed 
+    *  2) User may want to use bloking time if UART configured to the low speed
     *     operation
     *     Emample for this case:
     *     SendBreak(0);     - init Break signal transmition
     *         Add your code here to use CPU time
     *     SendBreak(1);     - complete Break operation
-    *  3) Same to 2) but user may want to init and use the interrupt for complete 
+    *  3) Same to 2) but user may want to init and use the interrupt for complete
     *     break operation.
     *     Example for this case:
     *     Init TX interrupt whith "TX - On TX Complete" parameter
@@ -1493,7 +1506,7 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
                     do /*wait until transmit starts*/
                     {
                         tmpStat = UART_Sensor_TXSTATUS_REG;
-                    }while(tmpStat & UART_Sensor_TX_STS_FIFO_EMPTY);
+                    }while((tmpStat & UART_Sensor_TX_STS_FIFO_EMPTY) != 0u);
                 }
 
                 if( (retMode == UART_Sensor_WAIT_FOR_COMPLETE_REINIT) ||
@@ -1502,7 +1515,7 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
                     do /*wait until transmit complete*/
                     {
                         tmpStat = UART_Sensor_TXSTATUS_REG;
-                    }while(~tmpStat & UART_Sensor_TX_STS_COMPLETE);
+                    }while(((uint8)~tmpStat & UART_Sensor_TX_STS_COMPLETE) != 0u);
                 }
 
                 if( (retMode == UART_Sensor_WAIT_FOR_COMPLETE_REINIT) ||
@@ -1510,23 +1523,22 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
                     (retMode == UART_Sensor_SEND_WAIT_REINIT) )
                 {
                     UART_Sensor_WriteControlRegister(UART_Sensor_ReadControlRegister() &
-                                                         ~UART_Sensor_CTRL_HD_SEND_BREAK);
+                                                  (uint8)~UART_Sensor_CTRL_HD_SEND_BREAK);
                 }
 
             #else /* UART_Sensor_HD_ENABLED Full Duplex mode */
 
-                static uint8 tx_period; 
-                
+                static uint8 tx_period;
+
                 if( (retMode == UART_Sensor_SEND_BREAK) ||
                     (retMode == UART_Sensor_SEND_WAIT_REINIT) )
                 {
-                    /* CTRL_HD_SEND_BREAK - skip to send parity bit @ Break signal in Full Duplex mode*/
-                    if( (UART_Sensor_PARITY_TYPE != UART_Sensor__B_UART__NONE_REVB) ||
-                         UART_Sensor_PARITY_TYPE_SW )
-                    {
+                    /* CTRL_HD_SEND_BREAK - skip to send parity bit at Break signal in Full Duplex mode*/
+                    #if( (UART_Sensor_PARITY_TYPE != UART_Sensor__B_UART__NONE_REVB) || \
+                                        (UART_Sensor_PARITY_TYPE_SW != 0u) )
                         UART_Sensor_WriteControlRegister(UART_Sensor_ReadControlRegister() |
                                                               UART_Sensor_CTRL_HD_SEND_BREAK);
-                    }                                                          
+                    #endif /* End UART_Sensor_PARITY_TYPE != UART_Sensor__B_UART__NONE_REVB  */
 
                     #if(UART_Sensor_TXCLKGEN_DP)
                         tx_period = UART_Sensor_TXBITCLKTX_COMPLETE_REG;
@@ -1539,10 +1551,10 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
                     /* Send zeros*/
                     UART_Sensor_TXDATA_REG = 0u;
 
-                    do /*wait until transmit starts*/
+                    do /* wait until transmit starts */
                     {
                         tmpStat = UART_Sensor_TXSTATUS_REG;
-                    }while(tmpStat & UART_Sensor_TX_STS_FIFO_EMPTY);
+                    }while((tmpStat & UART_Sensor_TX_STS_FIFO_EMPTY) != 0u);
                 }
 
                 if( (retMode == UART_Sensor_WAIT_FOR_COMPLETE_REINIT) ||
@@ -1551,7 +1563,7 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
                     do /*wait until transmit complete*/
                     {
                         tmpStat = UART_Sensor_TXSTATUS_REG;
-                    }while(~tmpStat & UART_Sensor_TX_STS_COMPLETE);
+                    }while(((uint8)~tmpStat & UART_Sensor_TX_STS_COMPLETE) != 0u);
                 }
 
                 if( (retMode == UART_Sensor_WAIT_FOR_COMPLETE_REINIT) ||
@@ -1565,12 +1577,11 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
                         UART_Sensor_TXBITCTR_PERIOD_REG = tx_period;
                     #endif /* End UART_Sensor_TXCLKGEN_DP */
 
-                    if( (UART_Sensor_PARITY_TYPE != UART_Sensor__B_UART__NONE_REVB) || 
-                         UART_Sensor_PARITY_TYPE_SW )
-                    {
+                    #if( (UART_Sensor_PARITY_TYPE != UART_Sensor__B_UART__NONE_REVB) || \
+                         (UART_Sensor_PARITY_TYPE_SW != 0u) )
                         UART_Sensor_WriteControlRegister(UART_Sensor_ReadControlRegister() &
-                                                             ~UART_Sensor_CTRL_HD_SEND_BREAK);
-                    }                                     
+                                                      (uint8)~UART_Sensor_CTRL_HD_SEND_BREAK);
+                    #endif /* End UART_Sensor_PARITY_TYPE != NONE */
                 }
             #endif    /* End UART_Sensor_HD_ENABLED */
         }
@@ -1595,13 +1606,19 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
     void UART_Sensor_SetTxAddressMode(uint8 addressMode) 
     {
         /* Mark/Space sending enable*/
-        if(addressMode != 0)
+        if(addressMode != 0u)
         {
-            UART_Sensor_WriteControlRegister(UART_Sensor_ReadControlRegister() | UART_Sensor_CTRL_MARK);
+            #if( UART_Sensor_CONTROL_REG_REMOVED == 0u )
+                UART_Sensor_WriteControlRegister(UART_Sensor_ReadControlRegister() |
+                                                      UART_Sensor_CTRL_MARK);
+            #endif /* End UART_Sensor_CONTROL_REG_REMOVED == 0u */
         }
         else
         {
-            UART_Sensor_WriteControlRegister(UART_Sensor_ReadControlRegister() & ~UART_Sensor_CTRL_MARK);
+            #if( UART_Sensor_CONTROL_REG_REMOVED == 0u )
+                UART_Sensor_WriteControlRegister(UART_Sensor_ReadControlRegister() &
+                                                    (uint8)~UART_Sensor_CTRL_MARK);
+            #endif /* End UART_Sensor_CONTROL_REG_REMOVED == 0u */
         }
     }
 
@@ -1627,7 +1644,7 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
     *  None.
     *
     * Theory:
-    *  Valid only for half duplex UART. 
+    *  Valid only for half duplex UART.
     *
     * Side Effects:
     *  Disable RX interrupt mask, when software buffer has been used.
@@ -1637,7 +1654,7 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
     {
         #if((UART_Sensor_RX_INTERRUPT_ENABLED) && (UART_Sensor_RXBUFFERSIZE > UART_Sensor_FIFO_LENGTH))
             /* Disable RX interrupts before set TX configuration */
-            UART_Sensor_SetRxInterruptMode(0);
+            UART_Sensor_SetRxInterruptMode(0u);
         #endif /* UART_Sensor_RX_INTERRUPT_ENABLED */
 
         UART_Sensor_WriteControlRegister(UART_Sensor_ReadControlRegister() | UART_Sensor_CTRL_HD_SEND);
@@ -1669,13 +1686,14 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
     *  Valid only for half duplex UART
     *
     * Side Effects:
-    *  Set RX interrupt mask based on customizer settings, when software buffer 
+    *  Set RX interrupt mask based on customizer settings, when software buffer
     *  has been used.
     *
     *******************************************************************************/
     void UART_Sensor_LoadRxConfig(void) 
     {
-        UART_Sensor_WriteControlRegister(UART_Sensor_ReadControlRegister() & ~UART_Sensor_CTRL_HD_SEND);
+        UART_Sensor_WriteControlRegister(UART_Sensor_ReadControlRegister() &
+                                                (uint8)~UART_Sensor_CTRL_HD_SEND);
         UART_Sensor_RXBITCTR_PERIOD_REG = UART_Sensor_HD_RXBITCTR_INIT;
         #if(CY_UDB_V0) /* Manually clear status register when mode has been changed */
             /* Clear status register */
@@ -1684,7 +1702,7 @@ void  UART_Sensor_WriteControlRegister(uint8 control)
 
         #if((UART_Sensor_RX_INTERRUPT_ENABLED) && (UART_Sensor_RXBUFFERSIZE > UART_Sensor_FIFO_LENGTH))
             /* Enable RX interrupt after set RX configuration */
-            UART_Sensor_SetRxInterruptMode(UART_Sensor_INIT_RX_INTERRUPTS_MASK);    
+            UART_Sensor_SetRxInterruptMode(UART_Sensor_INIT_RX_INTERRUPTS_MASK);
         #endif /* UART_Sensor_RX_INTERRUPT_ENABLED */
     }
 

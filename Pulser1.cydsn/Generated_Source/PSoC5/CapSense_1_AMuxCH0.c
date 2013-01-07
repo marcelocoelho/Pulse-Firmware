@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: CapSense_1_AMuxCH0.c
-* Version 3.20
+* Version 3.30
 *
 *  Description:
 *    This file contains all functions required for the analog multiplexer
@@ -93,7 +93,7 @@ void CapSense_1_AMuxCH0_Stop(void)
 *  void
 *
 *******************************************************************************/
-void CapSense_1_AMuxCH0_Select(uint8 channel) 
+void CapSense_1_AMuxCH0_Select(uint8 channel) CYREENTRANT
 {
     CapSense_1_AMuxCH0_DisconnectAll();        /* Disconnect all previous connections */
     CapSense_1_AMuxCH0_Connect(channel);       /* Make the given selection */
@@ -117,7 +117,7 @@ void CapSense_1_AMuxCH0_Select(uint8 channel)
 *  void
 *
 *******************************************************************************/
-void CapSense_1_AMuxCH0_FastSelect(uint8 channel) 
+void CapSense_1_AMuxCH0_FastSelect(uint8 channel) CYREENTRANT
 {
     /* Disconnect the last valid channel */
     if( CapSense_1_AMuxCH0_lastChannel != CapSense_1_AMuxCH0_NULL_CHANNEL)   /* Update last channel */
@@ -145,7 +145,7 @@ void CapSense_1_AMuxCH0_FastSelect(uint8 channel)
     *  void
     *
     *******************************************************************************/
-    void CapSense_1_AMuxCH0_Connect(uint8 channel) 
+    void CapSense_1_AMuxCH0_Connect(uint8 channel) CYREENTRANT
     {
         CapSense_1_AMuxCH0_CYAMUXSIDE_A_Set(channel);
         CapSense_1_AMuxCH0_CYAMUXSIDE_B_Set(channel);
@@ -166,7 +166,7 @@ void CapSense_1_AMuxCH0_FastSelect(uint8 channel)
     *  void
     *
     *******************************************************************************/
-    void CapSense_1_AMuxCH0_Disconnect(uint8 channel) 
+    void CapSense_1_AMuxCH0_Disconnect(uint8 channel) CYREENTRANT
     {
         CapSense_1_AMuxCH0_CYAMUXSIDE_A_Unset(channel);
         CapSense_1_AMuxCH0_CYAMUXSIDE_B_Unset(channel);
@@ -188,7 +188,7 @@ void CapSense_1_AMuxCH0_FastSelect(uint8 channel)
 *  void
 *
 *******************************************************************************/
-void CapSense_1_AMuxCH0_DisconnectAll(void) 
+void CapSense_1_AMuxCH0_DisconnectAll(void) CYREENTRANT
 {
     uint8 chan;
 

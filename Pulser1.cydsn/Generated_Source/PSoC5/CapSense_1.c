@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: CapSense_1.c
-* Version 3.20
+* Version 3.30
 *
 * Description:
 *  This file provides the source code of scanning APIs for the CapSense CSD 
@@ -23,8 +23,8 @@
 #endif /* End CapSense_1_CURRENT_SOURCE */ 
 
 #if (CapSense_1_IS_COMPLEX_SCANSLOTS)
-    void CapSense_1_EnableScanSlot(uint8 slot) ;
-    void CapSense_1_DisableScanSlot(uint8 slot) ;
+    void CapSense_1_EnableScanSlot(uint8 slot) CYREENTRANT;
+    void CapSense_1_DisableScanSlot(uint8 slot) CYREENTRANT;
     
 #else
     #define CapSense_1_EnableScanSlot(slot)   CapSense_1_EnableSensor(slot)
@@ -36,25 +36,25 @@
 
 /* Find next sensor for One Channel design */
 #if (CapSense_1_DESIGN_TYPE == CapSense_1_ONE_CHANNEL_DESIGN)
-    uint8 CapSense_1_FindNextSensor(uint8 snsIndex) ;
+    uint8 CapSense_1_FindNextSensor(uint8 snsIndex) CYREENTRANT;
 #endif  /* End CapSense_1_DESIGN_TYPE */
 
 /* Find next pair for Two Channels design */
  #if (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN)
-    uint8 CapSense_1_FindNextPair(uint8 snsIndex) ;
+    uint8 CapSense_1_FindNextPair(uint8 snsIndex) CYREENTRANT;
 #endif  /* End CapSense_1_DESIGN_TYPE */
 
 /* Start and Compete the scan */
-void CapSense_1_PreScan(uint8 sensor) ;
+void CapSense_1_PreScan(uint8 sensor) CYREENTRANT;
 #if (CapSense_1_DESIGN_TYPE == CapSense_1_ONE_CHANNEL_DESIGN)
-    void CapSense_1_PostScan(uint8 sensor);
+    void CapSense_1_PostScan(uint8 sensor) CYREENTRANT;
 #else
-    void CapSense_1_PostScanCh0(uint8 sensor) ;
-    void CapSense_1_PostScanCh1(uint8 sensor) ;
+    void CapSense_1_PostScanCh0(uint8 sensor) CYREENTRANT;
+    void CapSense_1_PostScanCh1(uint8 sensor) CYREENTRANT;
 #endif  /* End CapSense_1_DESIGN_TYPE */
 
 #if (CapSense_1_PRESCALER_OPTIONS)
-    void CapSense_1_SetPrescaler(uint8 prescaler) ;
+    void CapSense_1_SetPrescaler(uint8 prescaler) CYREENTRANT;
 #endif  /* End CapSense_1_PRESCALER_OPTIONS */
 
 void CapSense_1_SetScanSpeed(uint8 scanspeed) ;
@@ -696,7 +696,7 @@ void CapSense_1_Stop(void)
     *  be used outisde of component.
     *
     *******************************************************************************/
-    uint8 CapSense_1_FindNextSensor(uint8 snsIndex) 
+    uint8 CapSense_1_FindNextSensor(uint8 snsIndex) CYREENTRANT
     {
         uint8 pos;
         uint8 enMask;
@@ -749,7 +749,7 @@ void CapSense_1_Stop(void)
     *  be used outisde of component.
     *
     *******************************************************************************/
-    uint8 CapSense_1_FindNextPair(uint8 snsIndex) 
+    uint8 CapSense_1_FindNextPair(uint8 snsIndex) CYREENTRANT
     {
         uint8 posCh;
         uint8 enMaskCh;
@@ -845,7 +845,7 @@ void CapSense_1_Stop(void)
 *  widget.
 *
 *******************************************************************************/
-void CapSense_1_SetScanSlotSettings(uint8 slot) 
+void CapSense_1_SetScanSlotSettings(uint8 slot) CYREENTRANT
 {
     uint8 widget;
     
@@ -1172,7 +1172,7 @@ void CapSense_1_ClearSensors(void)
     *  The bit 7 (msb) is used to define the sensor type: single or complex.
     *
     *******************************************************************************/
-    void CapSense_1_EnableScanSlot(uint8 slot) 
+    void CapSense_1_EnableScanSlot(uint8 slot) CYREENTRANT
     {
         uint8 j;
         uint8 snsNumber;
@@ -1226,7 +1226,7 @@ void CapSense_1_ClearSensors(void)
     *  The 7bit(msb) is used to define the sensor type: single or complex.
     *
     *******************************************************************************/
-    void CapSense_1_DisableScanSlot(uint8 slot) 
+    void CapSense_1_DisableScanSlot(uint8 slot) CYREENTRANT
     {
         uint8 j;
         uint8 snsNumber;
@@ -1284,7 +1284,7 @@ void CapSense_1_ClearSensors(void)
 *  complex sensors are defeined.
 *
 *******************************************************************************/
-void CapSense_1_EnableSensor(uint8 sensor) 
+void CapSense_1_EnableSensor(uint8 sensor) CYREENTRANT
 {
     uint8 port = CapSense_1_portTable[sensor];
     uint8 mask = CapSense_1_maskTable[sensor];
@@ -1369,7 +1369,7 @@ void CapSense_1_EnableSensor(uint8 sensor)
 *  complex sensors are defeined.
 *
 *******************************************************************************/
-void CapSense_1_DisableSensor(uint8 sensor) 
+void CapSense_1_DisableSensor(uint8 sensor) CYREENTRANT
 {
     uint8 port = CapSense_1_portTable[sensor];
     uint8 mask = CapSense_1_maskTable[sensor];
@@ -1453,7 +1453,7 @@ void CapSense_1_DisableSensor(uint8 sensor)
 *  resistor.
 *
 *******************************************************************************/
-void CapSense_1_PreScan(uint8 sensor) 
+void CapSense_1_PreScan(uint8 sensor) CYREENTRANT
 {
     /* Set Sensor Settings */
     CapSense_1_SetScanSlotSettings(sensor);
@@ -1613,7 +1613,7 @@ void CapSense_1_PreScan(uint8 sensor)
     *  No
     *
     *******************************************************************************/
-    void CapSense_1_PostScan(uint8 sensor) 
+    void CapSense_1_PostScan(uint8 sensor) CYREENTRANT
     {
         /* Stop Capsensing and rearm sync */
         CapSense_1_CONTROL_REG &= ~(CapSense_1_CTRL_START | CapSense_1_CTRL_SYNC_EN);
@@ -1677,7 +1677,7 @@ void CapSense_1_PreScan(uint8 sensor)
     *  No
     *
     *******************************************************************************/
-    void CapSense_1_PostScanCh0(uint8 sensor) 
+    void CapSense_1_PostScanCh0(uint8 sensor) CYREENTRANT
     {
         if (((CapSense_1_CONTROL_REG & CapSense_1_CTRL_WINDOW_EN__CH0) == 0u) && 
             ((CapSense_1_CONTROL_REG & CapSense_1_CTRL_WINDOW_EN__CH1) == 0u)) 
@@ -1744,7 +1744,7 @@ void CapSense_1_PreScan(uint8 sensor)
     *  No
     *
     *******************************************************************************/
-    void CapSense_1_PostScanCh1(uint8 sensor) 
+    void CapSense_1_PostScanCh1(uint8 sensor) CYREENTRANT
     {
         if (((CapSense_1_CONTROL_REG & CapSense_1_CTRL_WINDOW_EN__CH0) == 0u) && 
             ((CapSense_1_CONTROL_REG & CapSense_1_CTRL_WINDOW_EN__CH1) == 0u))
@@ -1883,7 +1883,7 @@ void CapSense_1_PreScan(uint8 sensor)
     *  None
     *
     *******************************************************************************/
-    void CapSense_1_SetPrescaler(uint8 prescaler) 
+    void CapSense_1_SetPrescaler(uint8 prescaler) CYREENTRANT
     {
         /* Set Prescaler */
         #if (CapSense_1_PRESCALER_OPTIONS == CapSense_1_PRESCALER_UDB)

@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: USBUART_Central_cdc.c
-* Version 2.30
+* Version 2.50
 *
 * Description:
 *  USB HID Class request handler.

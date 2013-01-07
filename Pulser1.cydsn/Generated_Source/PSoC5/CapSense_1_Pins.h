@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: CapSense_1_Pins.h
-* Version 3.20
+* Version 3.30
 *
 * Description:
 *  This file contains API to enable firmware control of a Pins component.

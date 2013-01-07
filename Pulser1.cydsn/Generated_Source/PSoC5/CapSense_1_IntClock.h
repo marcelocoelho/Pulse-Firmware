@@ -1,24 +1,25 @@
 /*******************************************************************************
 * File Name: CapSense_1_IntClock.h
-* Version 1.70
+* Version 2.0
 *
 *  Description:
 *   Provides the function and constant definitions for the clock component.
 *
-* Note:
+*  Note:
 *
 ********************************************************************************
-* Copyright 2008-2010, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions, 
 * disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
-********************************************************************************/
+*******************************************************************************/
 
 #if !defined(CY_CLOCK_CapSense_1_IntClock_H)
 #define CY_CLOCK_CapSense_1_IntClock_H
 
 #include <cytypes.h>
 #include <cyfitter.h>
+
 
 /***************************************
 * Conditional Compilation Parameters
@@ -27,8 +28,9 @@
 /* Check to see if required defines such as CY_PSOC5LP are available */
 /* They are defined starting with cy_boot v3.0 */
 #if !defined (CY_PSOC5LP)
-    #error Component cy_clock_v1_70 requires cy_boot v3.0 or later
+    #error Component cy_clock_v2_0 requires cy_boot v3.0 or later
 #endif /* (CY_PSOC5LP) */
+
 
 /***************************************
 *        Function Prototypes
@@ -39,10 +41,11 @@ void CapSense_1_IntClock_Stop(void) ;
 
 #if(CY_PSOC3 || CY_PSOC5LP)
 void CapSense_1_IntClock_StopBlock(void) ;
-#endif
+#endif /* (CY_PSOC3 || CY_PSOC5LP) */
 
 void CapSense_1_IntClock_StandbyPower(uint8 state) ;
-void CapSense_1_IntClock_SetDividerRegister(uint16 clkDivider, uint8 reset) ;
+void CapSense_1_IntClock_SetDividerRegister(uint16 clkDivider, uint8 restart) 
+                                ;
 uint16 CapSense_1_IntClock_GetDividerRegister(void) ;
 void CapSense_1_IntClock_SetModeRegister(uint8 modeBitMask) ;
 void CapSense_1_IntClock_ClearModeRegister(uint8 modeBitMask) ;
@@ -52,7 +55,7 @@ uint8 CapSense_1_IntClock_GetSourceRegister(void) ;
 #if defined(CapSense_1_IntClock__CFG3)
 void CapSense_1_IntClock_SetPhaseRegister(uint8 clkPhase) ;
 uint8 CapSense_1_IntClock_GetPhaseRegister(void) ;
-#endif
+#endif /* defined(CapSense_1_IntClock__CFG3) */
 
 #define CapSense_1_IntClock_Enable()                       CapSense_1_IntClock_Start()
 #define CapSense_1_IntClock_Disable()                      CapSense_1_IntClock_Stop()
@@ -63,7 +66,7 @@ uint8 CapSense_1_IntClock_GetPhaseRegister(void) ;
 #if defined(CapSense_1_IntClock__CFG3)
 #define CapSense_1_IntClock_SetPhase(clkPhase)             CapSense_1_IntClock_SetPhaseRegister(clkPhase)
 #define CapSense_1_IntClock_SetPhaseValue(clkPhase)        CapSense_1_IntClock_SetPhaseRegister((clkPhase) + 1)
-#endif
+#endif /* defined(CapSense_1_IntClock__CFG3) */
 
 
 /***************************************
@@ -95,7 +98,7 @@ uint8 CapSense_1_IntClock_GetPhaseRegister(void) ;
 /* Analog clock phase configuration register */
 #define CapSense_1_IntClock_PHASE              (* (reg8 *) CapSense_1_IntClock__CFG3)
 #define CapSense_1_IntClock_PHASE_PTR          ((reg8 *) CapSense_1_IntClock__CFG3)
-#endif
+#endif /* defined(CapSense_1_IntClock__CFG3) */
 
 
 /**************************************
@@ -113,7 +116,7 @@ uint8 CapSense_1_IntClock_GetPhaseRegister(void) ;
 #if defined(CapSense_1_IntClock__CFG3)
 /* CFG3 phase mask */
 #define CapSense_1_IntClock_PHASE_MASK         CapSense_1_IntClock__CFG3_PHASE_DLY_MASK
-#endif
+#endif /* defined(CapSense_1_IntClock__CFG3) */
 
 #endif /* CY_CLOCK_CapSense_1_IntClock_H */
 

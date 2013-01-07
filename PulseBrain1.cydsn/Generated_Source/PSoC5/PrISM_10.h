@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: PrISM_10.h
-* Version 2.10
+* Version 2.20
 *
 * Description:
 *  This file provides constants and parameter values for the PrISM
@@ -31,7 +31,7 @@
 /* Check to see if required defines such as CY_PSOC5LP are available */
 /* They are defined starting with cy_boot v3.0 */
 #if !defined (CY_PSOC5LP)
-    #error Component PrISM_v2_10 requires cy_boot v3.0 or later
+    #error Component PrISM_v2_20 requires cy_boot v3.0 or later
 #endif /* (CY_PSOC5LP) */
 
 
@@ -48,7 +48,7 @@
 ***************************************/
 
 /* Sleep Mode API Support */
-typedef struct _PrISM_10_backupStruct
+typedef struct
 {
     uint8 enableState;
     #if(!PrISM_10_PULSE_TYPE_HARDCODED)
@@ -101,6 +101,13 @@ void PrISM_10_Init(void) ;
 
 
 /***************************************
+* Global variables external identifier
+***************************************/
+
+extern uint8 PrISM_10_initVar;
+
+
+/***************************************
 *    Initial Parameter Constants
 ***************************************/
 
@@ -108,6 +115,8 @@ void PrISM_10_Init(void) ;
 #define PrISM_10_SEED                   (0xFFu)
 #define PrISM_10_DENSITY0               (0x1u)
 #define PrISM_10_DENSITY1               (0x1u)
+#define PrISM_10_COMPARE0               (0u)
+#define PrISM_10_COMPARE1               (0u)
 
 
 /***************************************
@@ -128,12 +137,21 @@ void PrISM_10_Init(void) ;
     #define PrISM_10_AUX_CONTROL_REG    (* (reg8 *) PrISM_10_sC8_PrISMdp_u0__DP_AUX_CTL_REG)
     #define PrISM_10_AUX_CONTROL_PTR    (  (reg8 *) PrISM_10_sC8_PrISMdp_u0__DP_AUX_CTL_REG)
 #elif (PrISM_10_RESOLUTION <= 16u) /* 16bit - PrISM */
-    #define PrISM_10_DENSITY0_PTR       ((reg16 *) PrISM_10_sC16_PrISMdp_u0__D0_REG)
-    #define PrISM_10_DENSITY1_PTR       ((reg16 *) PrISM_10_sC16_PrISMdp_u0__D1_REG)
-    #define PrISM_10_POLYNOM_PTR        ((reg16 *) PrISM_10_sC16_PrISMdp_u0__A1_REG)
-    #define PrISM_10_SEED_PTR           ((reg16 *) PrISM_10_sC16_PrISMdp_u0__A0_REG)
-    #define PrISM_10_SEED_COPY_PTR      ((reg16 *) PrISM_10_sC16_PrISMdp_u0__F0_REG)
-    #define PrISM_10_AUX_CONTROL_PTR    ((reg16 *) PrISM_10_sC16_PrISMdp_u0__DP_AUX_CTL_REG)
+    #if(CY_PSOC3) /* 8-bit address space */
+        #define PrISM_10_DENSITY0_PTR       ((reg16 *) PrISM_10_sC16_PrISMdp_u0__D0_REG)
+        #define PrISM_10_DENSITY1_PTR       ((reg16 *) PrISM_10_sC16_PrISMdp_u0__D1_REG)
+        #define PrISM_10_POLYNOM_PTR        ((reg16 *) PrISM_10_sC16_PrISMdp_u0__A1_REG)
+        #define PrISM_10_SEED_PTR           ((reg16 *) PrISM_10_sC16_PrISMdp_u0__A0_REG)
+        #define PrISM_10_SEED_COPY_PTR      ((reg16 *) PrISM_10_sC16_PrISMdp_u0__F0_REG)
+        #define PrISM_10_AUX_CONTROL_PTR    ((reg16 *) PrISM_10_sC16_PrISMdp_u0__DP_AUX_CTL_REG)
+    #else /* 16-bit address space */
+        #define PrISM_10_DENSITY0_PTR       ((reg16 *) PrISM_10_sC16_PrISMdp_u0__16BIT_D0_REG)
+        #define PrISM_10_DENSITY1_PTR       ((reg16 *) PrISM_10_sC16_PrISMdp_u0__16BIT_D1_REG)
+        #define PrISM_10_POLYNOM_PTR        ((reg16 *) PrISM_10_sC16_PrISMdp_u0__16BIT_A1_REG)
+        #define PrISM_10_SEED_PTR           ((reg16 *) PrISM_10_sC16_PrISMdp_u0__16BIT_A0_REG)
+        #define PrISM_10_SEED_COPY_PTR      ((reg16 *) PrISM_10_sC16_PrISMdp_u0__16BIT_F0_REG)
+        #define PrISM_10_AUX_CONTROL_PTR    ((reg16 *) PrISM_10_sC16_PrISMdp_u0__16BIT_DP_AUX_CTL_REG)
+    #endif /* CY_PSOC3 */
 #elif (PrISM_10_RESOLUTION <= 24u) /* 24bit - PrISM */
     #define PrISM_10_DENSITY0_PTR       ((reg32 *) PrISM_10_sC24_PrISMdp_u0__D0_REG)
     #define PrISM_10_DENSITY1_PTR       ((reg32 *) PrISM_10_sC24_PrISMdp_u0__D1_REG)
@@ -141,15 +159,22 @@ void PrISM_10_Init(void) ;
     #define PrISM_10_SEED_PTR           ((reg32 *) PrISM_10_sC24_PrISMdp_u0__A0_REG)
     #define PrISM_10_SEED_COPY_PTR      ((reg32 *) PrISM_10_sC24_PrISMdp_u0__F0_REG)
     #define PrISM_10_AUX_CONTROL_PTR    ((reg32 *) PrISM_10_sC24_PrISMdp_u0__DP_AUX_CTL_REG)
-    #define PrISM_10_AUX_CONTROL2_PTR   ((reg32 *) PrISM_10_sC24_PrISMdp_u2__DP_AUX_CTL_REG)
 #else /* 32bit - PrISM */
-    #define PrISM_10_DENSITY0_PTR       ((reg32 *) PrISM_10_sC32_PrISMdp_u0__D0_REG)
-    #define PrISM_10_DENSITY1_PTR       ((reg32 *) PrISM_10_sC32_PrISMdp_u0__D1_REG)
-    #define PrISM_10_POLYNOM_PTR        ((reg32 *) PrISM_10_sC32_PrISMdp_u0__A1_REG)
-    #define PrISM_10_SEED_PTR           ((reg32 *) PrISM_10_sC32_PrISMdp_u0__A0_REG)
-    #define PrISM_10_SEED_COPY_PTR      ((reg32 *) PrISM_10_sC32_PrISMdp_u0__F0_REG)
-    #define PrISM_10_AUX_CONTROL_PTR    ((reg32 *) PrISM_10_sC32_PrISMdp_u0__DP_AUX_CTL_REG)
-    #define PrISM_10_AUX_CONTROL2_PTR   ((reg32 *) PrISM_10_sC32_PrISMdp_u2__DP_AUX_CTL_REG)
+    #if(CY_PSOC3 || CY_PSOC5) /* 8-bit address space */
+        #define PrISM_10_DENSITY0_PTR       ((reg32 *) PrISM_10_sC32_PrISMdp_u0__D0_REG)
+        #define PrISM_10_DENSITY1_PTR       ((reg32 *) PrISM_10_sC32_PrISMdp_u0__D1_REG)
+        #define PrISM_10_POLYNOM_PTR        ((reg32 *) PrISM_10_sC32_PrISMdp_u0__A1_REG)
+        #define PrISM_10_SEED_PTR           ((reg32 *) PrISM_10_sC32_PrISMdp_u0__A0_REG)
+        #define PrISM_10_SEED_COPY_PTR      ((reg32 *) PrISM_10_sC32_PrISMdp_u0__F0_REG)
+        #define PrISM_10_AUX_CONTROL_PTR    ((reg32 *) PrISM_10_sC32_PrISMdp_u0__DP_AUX_CTL_REG)
+    #else /* 32-bit address space */    
+        #define PrISM_10_DENSITY0_PTR       ((reg32 *) PrISM_10_sC32_PrISMdp_u0__32BIT_D0_REG)
+        #define PrISM_10_DENSITY1_PTR       ((reg32 *) PrISM_10_sC32_PrISMdp_u0__32BIT_D1_REG)
+        #define PrISM_10_POLYNOM_PTR        ((reg32 *) PrISM_10_sC32_PrISMdp_u0__32BIT_A1_REG)
+        #define PrISM_10_SEED_PTR           ((reg32 *) PrISM_10_sC32_PrISMdp_u0__32BIT_A0_REG)
+        #define PrISM_10_SEED_COPY_PTR      ((reg32 *) PrISM_10_sC32_PrISMdp_u0__32BIT_F0_REG)
+        #define PrISM_10_AUX_CONTROL_PTR    ((reg32 *) PrISM_10_sC32_PrISMdp_u0__32BIT_DP_AUX_CTL_REG)
+    #endif
 #endif /* End PrISM_10_RESOLUTION */
 
 #define PrISM_10_CONTROL_REG   (* (reg8 *) PrISM_10_AsyncCtl_ControlReg__CONTROL_REG)
@@ -164,7 +189,15 @@ void PrISM_10_Init(void) ;
 #define PrISM_10_CTRL_COMPARE_TYPE0_GREATER_THAN_OR_EQUAL   (0x02u)
 #define PrISM_10_CTRL_COMPARE_TYPE1_GREATER_THAN_OR_EQUAL   (0x04u)
 
-#define PrISM_10_FIFO0_CLR                                  (0x01u)
+#if (PrISM_10_RESOLUTION  <= 8u) /* 8bit - PrISM */
+    #define PrISM_10_FIFO0_CLR                              (0x01u)
+#elif (PrISM_10_RESOLUTION <= 16u) /* 16bit - PrISM */
+    #define PrISM_10_FIFO0_CLR                              (0x0101u)
+#elif (PrISM_10_RESOLUTION <= 24u) /* 24bit - PrISM */
+    #define PrISM_10_FIFO0_CLR                              (0x010101Lu)
+#else /* 32bit - PrISM */
+    #define PrISM_10_FIFO0_CLR                              (0x01010101Lu)
+#endif /* End PrISM_10_RESOLUTION */
 
 
 /***************************************

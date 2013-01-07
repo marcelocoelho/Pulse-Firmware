@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: CapSense_1.h
-* Version 3.20
+* Version 3.30
 *
 * Description:
 *  This file provides constants and parameter values for the CapSense CSD
@@ -40,7 +40,7 @@
 /* Check to see if required defines such as CY_PSOC5LP are available */
 /* They are defined starting with cy_boot v3.0 */
 #if !defined (CY_PSOC5LP)
-    #error Component CapSense_CSD_v3_20 requires cy_boot v3.0 or later
+    #error Component CapSense_CSD_v3_30 requires cy_boot v3.0 or later
 #endif /* (CY_PSOC5LP) */
 
 
@@ -158,11 +158,11 @@ void CapSense_1_Wakeup(void) ;
 uint8 CapSense_1_IsBusy(void) ;
 void CapSense_1_ScanSensor(uint8 sensor) ;
 void CapSense_1_ScanEnabledWidgets(void) ;
-void CapSense_1_SetScanSlotSettings(uint8 slot) ;
+void CapSense_1_SetScanSlotSettings(uint8 slot) CYREENTRANT;
 uint16 CapSense_1_ReadSensorRaw(uint8 sensor) ;
 void CapSense_1_ClearSensors(void) ;
-void CapSense_1_EnableSensor(uint8 sensor) ;
-void CapSense_1_DisableSensor(uint8 sensor) ;
+void CapSense_1_EnableSensor(uint8 sensor) CYREENTRANT;
+void CapSense_1_DisableSensor(uint8 sensor) CYREENTRANT;
 
 void CapSense_1_SetAnalogSwitchesSource(uint8 src) ;
 
@@ -658,6 +658,43 @@ CY_ISR_PROTO(CapSense_1_IsrCH0_ISR);
 #else
     /* No Idac - Rb selected */
 #endif  /* (CapSense_1_CURRENT_SOURCE == CapSense_1_IDAC_SOURCE) */
+
+
+/****************************************************************************************
+*       Obsolete definitions. Not recommended to use. Will be removed in future releases.
+*****************************************************************************************/
+
+/* Auto Tuning defualt raw counts value */
+#define CapSense_1_DEFUALT_RAW_COUNTS_VALUE    (384u)
+
+/* IDAC_CR0 registers save/restore flags */
+#define CapSense_1_IdacCH0_RESTORE_CFG (1u)
+#define CapSense_1_IdacCH1_RESTORE_CFG (2u)
+/* DAC_CR0 register value when IDAC is stopped*/
+#define CapSense_1_IDAC_STOP_CR0_VAL   (0x1Eu)
+
+/* Idac SetRange */
+#define CapSense_1_IDAC_RANGE_MASK            (0x0Cu)
+#define CapSense_1_IDAC_RANGE_32uA            (0x00u)
+#define CapSense_1_IDAC_RANGE_255uA           (0x04u)
+#define CapSense_1_IDAC_RANGE_2mA             (0x08u)
+
+/* CR0 IDAC Control Register 0 definitions */
+/* Bit Field DAC_MODE */
+#define CapSense_1_IDAC_MODE_MASK         (0x10u)
+#define CapSense_1_IDAC_MODE_V            (0x00u)
+#define CapSense_1_IDAC_MODE_I            (0x10u)
+
+/* CR1 Idac Control Register 1 definitions */
+/* Bit Field  DAC_I_DIR */
+#define CapSense_1_IDAC_IDIR_MASK         (0x04u)
+#define CapSense_1_IDAC_IDIR_SINK         (0x04u)
+#define CapSense_1_IDAC_IDIR_SRC          (0x00u)
+
+/* Bit Field  DAC_MX_IOFF_SRC */
+#define CapSense_1_IDAC_IDIR_CTL_MASK     (0x02u)
+#define CapSense_1_IDAC_IDIR_CTL_REG      (0x00u)
+#define CapSense_1_IDAC_IDIR_CTL_UDB      (0x02u)
 
 #endif /* CY_CAPSENSE_CSD_CapSense_1_H */
 

@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: PrISM_7_PM.c
-* Version 2.10
+* Version 2.20
 *
 * Description:
 *  This file provides Sleep/WakeUp APIs functionality of the PrISM component
@@ -18,12 +18,6 @@
 
 
 /***************************************
-* Forward function references
-***************************************/
-void PrISM_7_Enable(void) ;
-
-
-/***************************************
 * Local data allocation
 ***************************************/
 static PrISM_7_BACKUP_STRUCT  PrISM_7_backup = 
@@ -32,10 +26,10 @@ static PrISM_7_BACKUP_STRUCT  PrISM_7_backup =
     0u,
     /* cr */
     #if(!PrISM_7_PULSE_TYPE_HARDCODED)
-        (PrISM_7_GREATERTHAN_OR_EQUAL == 0 ? \
-                                                PrISM_7_CTRL_COMPARE_TYPE0_GREATER_THAN_OR_EQUAL : 0) |
-        (PrISM_7_GREATERTHAN_OR_EQUAL == 0 ? \
-                                                PrISM_7_CTRL_COMPARE_TYPE1_GREATER_THAN_OR_EQUAL : 0),
+       (((PrISM_7_GREATERTHAN_OR_EQUAL == PrISM_7_COMPARE0) ? \
+                                                PrISM_7_CTRL_COMPARE_TYPE0_GREATER_THAN_OR_EQUAL : 0u) |
+        ((PrISM_7_GREATERTHAN_OR_EQUAL == PrISM_7_COMPARE1) ? \
+                                                PrISM_7_CTRL_COMPARE_TYPE1_GREATER_THAN_OR_EQUAL : 0u)),
     #endif /* End PrISM_7_PULSE_TYPE_HARDCODED */
     /* seed */    
     PrISM_7_SEED,
@@ -129,24 +123,10 @@ void PrISM_7_RestoreConfig(void)
         
         enableInterrupts = CyEnterCriticalSection();
         /* Set FIFO0_CLR bit to use FIFO0 as a simple one-byte buffer*/
-        #if (PrISM_7_RESOLUTION <= 8u)      /* 8bit - PrISM */
-            PrISM_7_AUX_CONTROL_REG |= PrISM_7_FIFO0_CLR;
-        #elif (PrISM_7_RESOLUTION <= 16u)   /* 16bit - PrISM */
-            CY_SET_REG16(PrISM_7_AUX_CONTROL_PTR, CY_GET_REG16(PrISM_7_AUX_CONTROL_PTR) | 
-                                            PrISM_7_FIFO0_CLR | PrISM_7_FIFO0_CLR << 8u);
-        #elif (PrISM_7_RESOLUTION <= 24)   /* 24bit - PrISM */
-            CY_SET_REG24(PrISM_7_AUX_CONTROL_PTR, CY_GET_REG24(PrISM_7_AUX_CONTROL_PTR) |
-                                            PrISM_7_FIFO0_CLR | PrISM_7_FIFO0_CLR << 8u );
-            CY_SET_REG24(PrISM_7_AUX_CONTROL2_PTR, CY_GET_REG24(PrISM_7_AUX_CONTROL2_PTR) | 
-                                            PrISM_7_FIFO0_CLR );
-        #else                                 /* 32bit - PrISM */
-            CY_SET_REG32(PrISM_7_AUX_CONTROL_PTR, CY_GET_REG32(PrISM_7_AUX_CONTROL_PTR) |
-                                            PrISM_7_FIFO0_CLR | PrISM_7_FIFO0_CLR << 8u );
-            CY_SET_REG32(PrISM_7_AUX_CONTROL2_PTR, CY_GET_REG32(PrISM_7_AUX_CONTROL2_PTR) |
-                                            PrISM_7_FIFO0_CLR | PrISM_7_FIFO0_CLR << 8u );
-        #endif                                /* End PrISM_7_RESOLUTION */
+        CY_SET_REG8(PrISM_7_AUX_CONTROL_PTR, 
+                        CY_GET_REG8(PrISM_7_AUX_CONTROL_PTR) | PrISM_7_FIFO0_CLR);
         CyExitCriticalSection(enableInterrupts);
-   
+
     #else   /* CY_UDB_V1 */
 
         #if(!PrISM_7_PULSE_TYPE_HARDCODED)

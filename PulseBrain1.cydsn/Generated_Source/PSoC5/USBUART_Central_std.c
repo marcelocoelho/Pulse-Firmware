@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: USBUART_Central_std.c
-* Version 2.30
+* Version 2.50
 *
 * Description:
 *  USB Standard request handler.
@@ -30,6 +30,7 @@ extern const uint8 CYCODE USBUART_Central_SN_STRING_DESCRIPTOR[];
 extern volatile uint8 USBUART_Central_device;
 extern volatile uint8 USBUART_Central_configuration;
 extern volatile uint8 USBUART_Central_configurationChanged;
+extern volatile uint8 USBUART_Central_interfaceNumber;
 extern volatile uint8 USBUART_Central_interfaceSetting[];
 extern volatile uint8 USBUART_Central_interfaceSetting_last[];
 extern volatile uint8 USBUART_Central_deviceAddress;
@@ -288,6 +289,7 @@ uint8 USBUART_Central_HandleStandardRqst(void)
             case USBUART_Central_SET_INTERFACE:
                 if (USBUART_Central_ValidateAlternateSetting())
                 {
+                    USBUART_Central_interfaceNumber = CY_GET_REG8(USBUART_Central_wIndexLo);
                     USBUART_Central_configurationChanged = USBUART_Central_TRUE;
                     #if ((USBUART_Central_EP_MA == USBUART_Central__MA_DYNAMIC) && \
                          (USBUART_Central_EP_MM == USBUART_Central__EP_MANUAL) )
@@ -296,8 +298,8 @@ uint8 USBUART_Central_HandleStandardRqst(void)
                         USBUART_Central_ConfigAltChanged();
                     #endif /* End (USBUART_Central_EP_MA == USBUART_Central__MA_DYNAMIC) */
                     /* Update handled Alt setting changes status */
-                    USBUART_Central_interfaceSetting_last[CY_GET_REG8(USBUART_Central_wIndexLo)] = 
-                         USBUART_Central_interfaceSetting[CY_GET_REG8(USBUART_Central_wIndexLo)];
+                    USBUART_Central_interfaceSetting_last[USBUART_Central_interfaceNumber] = 
+                         USBUART_Central_interfaceSetting[USBUART_Central_interfaceNumber];
                     requestHandled = USBUART_Central_InitNoDataControlTransfer();
                 }
                 break;
@@ -443,7 +445,7 @@ void USBUART_Central_ConfigReg(void)
                                                           USBUART_Central_ARB_EPX_CFG_RESET);
 
         #if(USBUART_Central_EP_MM != USBUART_Central__EP_MANUAL)
-            /* Enable all Arbiter EP Interrupts : err, buf under, buf over, dma gnt, in buf full */
+            /* Enable all Arbiter EP Interrupts : err, buf under, buf over, dma gnt(mode2 only), in buf full */
             USBUART_Central_ARB_EP1_INT_EN_PTR[i] = USBUART_Central_ARB_EPX_INT_MASK;
         #endif   /* End USBUART_Central_EP_MM != USBUART_Central__EP_MANUAL */
 
@@ -825,7 +827,8 @@ void USBUART_Central_ConfigAltChanged()
                     USBUART_Central_ARB_EP1_CFG_PTR[ri] &= ~USBUART_Central_ARB_EPX_CFG_IN_DATA_RDY;
 
                     /* write the EP number for which reconfiguration is required */
-                    USBUART_Central_DYN_RECONFIG_REG = (cur_ep << USBUART_Central_DYN_RECONFIG_EP_SHIFT);
+                    USBUART_Central_DYN_RECONFIG_REG = (cur_ep - USBUART_Central_EP1) << 
+                                                        USBUART_Central_DYN_RECONFIG_EP_SHIFT;
                     /* Set the dyn_config_en bit in dynamic reconfiguration register */
                     USBUART_Central_DYN_RECONFIG_REG |= USBUART_Central_DYN_RECONFIG_ENABLE;
                     /* wait for the dyn_config_rdy bit to set by the block,
@@ -847,14 +850,7 @@ void USBUART_Central_ConfigAltChanged()
                     *  of dynamic reconfiguration enable bit).
                     */
                     USBUART_Central_DYN_RECONFIG_REG &= ~USBUART_Central_DYN_RECONFIG_ENABLE;
-
-                    /* Cfg_cmp bit set to 1 once configuration is complete. */
-                    USBUART_Central_ARB_CFG_REG = USBUART_Central_ARB_CFG_AUTO_DMA |
-                                                USBUART_Central_ARB_CFG_AUTO_MEM | USBUART_Central_ARB_CFG_CFG_CPM;
-                    /* Cfg_cmp bit set to 0 during configuration of PFSUSB Registers. */
-                    USBUART_Central_ARB_CFG_REG = USBUART_Central_ARB_CFG_AUTO_DMA |
-                                                   USBUART_Central_ARB_CFG_AUTO_MEM;
-                    /* The main loop will reenable DMA and OUT endpoint*/
+                    /* The main loop has to reenable DMA and OUT endpoint*/
                 #else
                 CY_SET_REG8(&USBUART_Central_SIE_EP1_CNT0_PTR[ri],   USBUART_Central_EP[cur_ep].bufferSize >> 8u);
                 CY_SET_REG8(&USBUART_Central_SIE_EP1_CNT1_PTR[ri],   USBUART_Central_EP[cur_ep].bufferSize & 0xFFu);
@@ -867,7 +863,6 @@ void USBUART_Central_ConfigAltChanged()
             }
         }
     } /* USBUART_Central_configuration > 0 */
-    CY_SET_REG8(USBUART_Central_SIE_EP_INT_EN_PTR, 0xFFu);
 }
 
 
@@ -956,7 +951,8 @@ uint8 CYCODE *USBUART_Central_GetInterfaceClassTablePtr(void)
 ********************************************************************************
 *
 * Summary:
-*  This routine handles set endpoint halt.
+*  This function terminates the specified USBFS endpoint. 
+*  This function should be used before endpoint reconfiguration.
 *
 * Parameters:
 *  Endpoint number.
@@ -1020,7 +1016,7 @@ uint8 USBUART_Central_SetEndpointHalt(void)
     uint8 ep, ri;
     uint8 requestHandled = USBUART_Central_FALSE;
 
-    /* Clear endpoint halt */
+    /* Set endpoint halt */
     ep = CY_GET_REG8(USBUART_Central_wIndexLo) & USBUART_Central_DIR_UNUSED;
     ri = ((ep - USBUART_Central_EP1) << USBUART_Central_EPX_CNTX_ADDR_SHIFT);
 
@@ -1031,7 +1027,7 @@ uint8 USBUART_Central_SetEndpointHalt(void)
 
         /* Clear the data toggle */
         USBUART_Central_EP[ep].epToggle = 0u;
-        USBUART_Central_EP[ep].apiEpState = USBUART_Central_NO_EVENT_ALLOWED;
+        USBUART_Central_EP[ep].apiEpState |= USBUART_Central_NO_EVENT_ALLOWED;
 
         if (USBUART_Central_EP[ep].addr & USBUART_Central_DIR_IN)
         {
@@ -1080,23 +1076,40 @@ uint8 USBUART_Central_ClearEndpointHalt(void)
 
     if ((ep > USBUART_Central_EP0) && (ep < USBUART_Central_MAX_EP))
     {
-        /* Set the endpoint Halt */
+        /* Clear the endpoint Halt */
         USBUART_Central_EP[ep].hwEpState &= ~(USBUART_Central_ENDPOINT_STATUS_HALT);
 
         /* Clear the data toggle */
         USBUART_Central_EP[ep].epToggle = 0u;
+        /* Clear toggle bit for already armed packet */
+        CY_SET_REG8(&USBUART_Central_SIE_EP1_CNT0_PTR[ri], 
+                    CY_GET_REG8(&USBUART_Central_SIE_EP1_CNT0_PTR[ri]) & ~USBUART_Central_EPX_CNT_DATA_TOGGLE);
+        /* Return api State as it was defined before */
+        USBUART_Central_EP[ep].apiEpState &= ~USBUART_Central_NO_EVENT_ALLOWED;
 
         if (USBUART_Central_EP[ep].addr & USBUART_Central_DIR_IN)
         {
             /* IN Endpoint */
-            USBUART_Central_EP[ep].apiEpState = USBUART_Central_NO_EVENT_PENDING;
-            CY_SET_REG8(&USBUART_Central_SIE_EP1_CR0_PTR[ri], USBUART_Central_MODE_NAK_IN);
+            if(USBUART_Central_EP[ep].apiEpState == USBUART_Central_IN_BUFFER_EMPTY)
+            {       /* Wait for next packet from application */
+                CY_SET_REG8(&USBUART_Central_SIE_EP1_CR0_PTR[ri], USBUART_Central_MODE_NAK_IN);
+            }
+            else    /* Continue armed transfer */
+            {
+                CY_SET_REG8(&USBUART_Central_SIE_EP1_CR0_PTR[ri], USBUART_Central_MODE_ACK_IN);
+            }
         }
         else
         {
             /* OUT Endpoint */
-            USBUART_Central_EP[ep].apiEpState = USBUART_Central_EVENT_PENDING;
-            CY_SET_REG8(&USBUART_Central_SIE_EP1_CR0_PTR[ri], USBUART_Central_MODE_ACK_OUT);
+            if(USBUART_Central_EP[ep].apiEpState == USBUART_Central_OUT_BUFFER_FULL)
+            {       /* Allow application to read full buffer */
+                CY_SET_REG8(&USBUART_Central_SIE_EP1_CR0_PTR[ri], USBUART_Central_MODE_NAK_OUT);
+            }
+            else    /* Mark endpoint as empty, so it will be reloaded */
+            {
+                CY_SET_REG8(&USBUART_Central_SIE_EP1_CR0_PTR[ri], USBUART_Central_MODE_ACK_OUT);
+            }
         }
         requestHandled = USBUART_Central_InitNoDataControlTransfer();
     }

@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: CapSense_1_CompCH0.c
-* Version 1.90
+* Version 2.0
 *
 * Description:
 *  This file provides the source code to the API for the Comparator component
@@ -19,6 +19,8 @@
 
 uint8 CapSense_1_CompCH0_initVar = 0u;
 
+/* Internal functions definitoin */
+static void CapSense_1_CompCH0_trimAdjust(uint8 nibble) ;
 
 /* static CapSense_1_CompCH0_backupStruct  CapSense_1_CompCH0_backup; */
 #if (CY_PSOC5A)
@@ -28,7 +30,7 @@ uint8 CapSense_1_CompCH0_initVar = 0u;
 /* variable to decide whether or not to restore the control register in 
    Enable() API for PSoC5A only */
 #if (CY_PSOC5A)
-    uint8 CapSense_1_CompCH0_restoreReg = 0u;
+    static uint8 CapSense_1_CompCH0_restoreReg = 0u;
 #endif /* CY_PSOC5A */
 
 
@@ -52,41 +54,31 @@ void CapSense_1_CompCH0_Init(void)
     CapSense_1_CompCH0_SetSpeed(CapSense_1_CompCH0_DEFAULT_SPEED);
 
     /* Set default Hysteresis */
-    if ( CapSense_1_CompCH0_DEFAULT_HYSTERESIS == 0u )
-    {
+    #if ( CapSense_1_CompCH0_DEFAULT_HYSTERESIS == 0u )
         CapSense_1_CompCH0_CR |= CapSense_1_CompCH0_HYST_OFF;
-    }
-    else
-    {
-        CapSense_1_CompCH0_CR &= ~CapSense_1_CompCH0_HYST_OFF; 
-    }
-    
+    #else
+        CapSense_1_CompCH0_CR &= (uint8)(~CapSense_1_CompCH0_HYST_OFF);
+    #endif /* CapSense_1_CompCH0_DEFAULT_HYSTERESIS == 0u */
     /* Power down override feature is not supported for PSoC5A. */
     #if (CY_PSOC3 || CY_PSOC5LP)
         /* Set default Power Down Override */
-        if ( CapSense_1_CompCH0_DEFAULT_PWRDWN_OVRD == 0u )
-        {
-            CapSense_1_CompCH0_CR &= ~CapSense_1_CompCH0_PWRDWN_OVRD;
-        }
-        else 
-        {
+        #if ( CapSense_1_CompCH0_DEFAULT_PWRDWN_OVRD == 0u )
+            CapSense_1_CompCH0_CR &= (uint8)(~CapSense_1_CompCH0_PWRDWN_OVRD);
+        #else 
             CapSense_1_CompCH0_CR |= CapSense_1_CompCH0_PWRDWN_OVRD;
-        }
+        #endif /* CapSense_1_CompCH0_DEFAULT_PWRDWN_OVRD == 0u */
     #endif /* CY_PSOC3 || CY_PSOC5LP */
     
     /* Set mux always on logic */
     CapSense_1_CompCH0_CR |= CapSense_1_CompCH0_MX_AO;
 
     /* Set default sync */
-    CapSense_1_CompCH0_CLK &= ~CapSense_1_CompCH0_SYNCCLK_MASK;
-    if ( CapSense_1_CompCH0_DEFAULT_BYPASS_SYNC == 0u )
-    {
+    CapSense_1_CompCH0_CLK &= (uint8)(~CapSense_1_CompCH0_SYNCCLK_MASK);
+    #if ( CapSense_1_CompCH0_DEFAULT_BYPASS_SYNC == 0u )
         CapSense_1_CompCH0_CLK |= CapSense_1_CompCH0_SYNC_CLK_EN;
-    }
-    else
-    {
+    #else
         CapSense_1_CompCH0_CLK |= CapSense_1_CompCH0_BYPASS_SYNC;
-    }
+    #endif /* CapSense_1_CompCH0_DEFAULT_BYPASS_SYNC == 0u */
 }
 
 
@@ -173,9 +165,9 @@ void CapSense_1_CompCH0_Start(void)
 void CapSense_1_CompCH0_Stop(void) 
 {
     /* Disable power to comparator */
-    CapSense_1_CompCH0_PWRMGR &= ~CapSense_1_CompCH0_ACT_PWR_EN;
-    CapSense_1_CompCH0_STBY_PWRMGR &= ~CapSense_1_CompCH0_STBY_PWR_EN;    
-
+    CapSense_1_CompCH0_PWRMGR &= (uint8)(~CapSense_1_CompCH0_ACT_PWR_EN);
+    CapSense_1_CompCH0_STBY_PWRMGR &= (uint8)(~CapSense_1_CompCH0_STBY_PWR_EN);
+    
     #if (CY_PSOC5A)
         /* Enable the variable */
         CapSense_1_CompCH0_restoreReg = 1u;
@@ -205,7 +197,7 @@ void CapSense_1_CompCH0_Stop(void)
 void CapSense_1_CompCH0_SetSpeed(uint8 speed) 
 {
     /* Clear and Set power level */    
-    CapSense_1_CompCH0_CR = (CapSense_1_CompCH0_CR & ~CapSense_1_CompCH0_PWR_MODE_MASK) |
+    CapSense_1_CompCH0_CR = (CapSense_1_CompCH0_CR & (uint8)(~CapSense_1_CompCH0_PWR_MODE_MASK)) |
                            (speed & CapSense_1_CompCH0_PWR_MODE_MASK);
 
     /* Set trim value for high speed comparator */
@@ -245,13 +237,15 @@ void CapSense_1_CompCH0_SetSpeed(uint8 speed)
 *
 * Summary:
 *  This function returns the comparator output value.
+*  This value is not affected by the Polarity parameter.
+*  This valuea lways reflects a noninverted state.
 *
 * Parameters:
 *   None
 *
 * Return:
-*  (uint8)  0  if Pos_Input less than Neg_input
-*           1  if Pos_Input greater than Neg_input.
+*  (uint8)  0     - if Pos_Input less than Neg_input
+*           non 0 - if Pos_Input greater than Neg_input.
 *
 *******************************************************************************/
 uint8 CapSense_1_CompCH0_GetCompare(void) 
@@ -285,7 +279,7 @@ uint8 CapSense_1_CompCH0_GetCompare(void)
 *  the comparator output to respond.
 *
 *******************************************************************************/
-void CapSense_1_CompCH0_trimAdjust(uint8 nibble) 
+static void CapSense_1_CompCH0_trimAdjust(uint8 nibble) 
 {
     uint8 trimCnt, trimCntMax;
     uint8 cmpState;   
@@ -330,22 +324,22 @@ void CapSense_1_CompCH0_trimAdjust(uint8 nibble)
 	
     /* PSoC5A */
 	#if (CY_PSOC5A)
-	trimCntMax = 7;
+	    trimCntMax = 7u;
     #endif
 	
 	/* PSoC3, PSoC5LP or later */
 	#if (CY_PSOC3 || CY_PSOC5LP)
-	if(nibble == 0u)
-	{
-		trimCntMax = 15;
-	}
-	else
-	{
-		trimCntMax = 7;
-	}
+    	if(nibble == 0u)
+    	{
+    		trimCntMax = 15u;
+    	}
+    	else
+    	{
+    		trimCntMax = 7u;
+    	}
 	#endif
 	
-    for ( trimCnt = 0; trimCnt < trimCntMax; trimCnt++ )
+    for ( trimCnt = 0u; trimCnt < trimCntMax; trimCnt++ )
 	{
         if (nibble == 0u)
         {
@@ -372,7 +366,7 @@ void CapSense_1_CompCH0_trimAdjust(uint8 nibble)
             #endif /* CY_PSOC3 || CY_PSOC5LP */
         }
         
-        CyDelayUs(10);
+        CyDelayUs(10u);
         
         /* Check for change in comparator output */
         if ((CapSense_1_CompCH0_WRK & CapSense_1_CompCH0_CMP_OUT_MASK) != cmpState)
@@ -465,7 +459,7 @@ uint16 CapSense_1_CompCH0_ZeroCal(void)
      /* Clear routing for inP, retain routing for inN */
     CapSense_1_CompCH0_SW0 = 0x00u;
     CapSense_1_CompCH0_SW2 = 0x00u;
-    CapSense_1_CompCH0_SW3 = tmpSW3 & ~CapSense_1_CompCH0_CMP_SW3_INPCTL_MASK;
+    CapSense_1_CompCH0_SW3 = tmpSW3 & (uint8)(~CapSense_1_CompCH0_CMP_SW3_INPCTL_MASK);
 
     /* Preserve original configuration
      * - turn off Hysteresis
@@ -489,12 +483,12 @@ uint16 CapSense_1_CompCH0_ZeroCal(void)
 	/* Two phase trim - slow modes, one phase trim - for fast */ 
     if ( (CapSense_1_CompCH0_CR & CapSense_1_CompCH0_PWR_MODE_MASK) == CapSense_1_CompCH0_PWR_MODE_FAST)
     {
-        CapSense_1_CompCH0_trimAdjust(0);
+        CapSense_1_CompCH0_trimAdjust(0u);
     }
     else /* default to trim for fast modes */
     {
-        CapSense_1_CompCH0_trimAdjust(1);
-		CapSense_1_CompCH0_trimAdjust(0);
+        CapSense_1_CompCH0_trimAdjust(1u);
+		CapSense_1_CompCH0_trimAdjust(0u);
     }
    
     /* Restore Config Register */
@@ -512,7 +506,7 @@ uint16 CapSense_1_CompCH0_ZeroCal(void)
     
     /* PSoC3, PSoC5LP or later */
     #if (CY_PSOC3 || CY_PSOC5LP)
-        return (((uint16)CapSense_1_CompCH0_TR1 << 8) | (CapSense_1_CompCH0_TR0));        
+        return ((uint16)((uint16)CapSense_1_CompCH0_TR1 << 8u) | (CapSense_1_CompCH0_TR0));        
     #endif /* CY_PSOC3 || CY_PSOC5LP */
 }
 
@@ -593,7 +587,7 @@ void CapSense_1_CompCH0_LoadTrim(uint16 trimVal)
     void CapSense_1_CompCH0_PwrDwnOverrideDisable(void) 
     {
         /* Reset the pd_override bit in CMP_CR register */
-        CapSense_1_CompCH0_CR &= ~CapSense_1_CompCH0_PWRDWN_OVRD;
+        CapSense_1_CompCH0_CR &= (uint8)(~CapSense_1_CompCH0_PWRDWN_OVRD);
     }
 #endif /* (CY_PSOC3 || CY_PSOC5LP) */
 

@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: CapSense_1_CompCH0.c
-* Version 1.90
+* Version 2.0
 *
 * Description:
 *  This file provides the power management source code APIs for the
@@ -125,8 +125,7 @@ void CapSense_1_CompCH0_Wakeup(void)
         /* Enable Comp's operation */
         CapSense_1_CompCH0_Enable();
 
-    } /* Do nothing if Comp was disabled before */
-    
+    } /* Do nothing if Comp was disabled before */ 
 }
 
 

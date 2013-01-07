@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: CapSense_1_IdacCH0.c
-* Version 1.90
+* Version 2.0
 *
 * Description:
 *  This file contains the function prototypes and constants used in
@@ -19,13 +19,13 @@
 #if !defined(CY_IDAC8_CapSense_1_IdacCH0_H)  
 #define CY_IDAC8_CapSense_1_IdacCH0_H
 
-#include "cytypes.h"
 #include "cyfitter.h"
+#include "cytypes.h"
 
 /* Check to see if required defines such as CY_PSOC5LP are available */
 /* They are defined starting with cy_boot v3.0 */
 #if !defined (CY_PSOC5LP)
-    #error Component IDAC8_v1_90 requires cy_boot v3.0 or later
+    #error Component IDAC8_v2_0 requires cy_boot v3.0 or later
 #endif /* (CY_PSOC5LP) */
 
 
@@ -34,7 +34,7 @@
 ***************************************/
 
 /* Sleep Mode API Support */
-typedef struct CapSense_1_IdacCH0_backupStruct
+typedef struct
 {
     uint8 enableState;
     uint8 data_value;
@@ -43,11 +43,14 @@ typedef struct CapSense_1_IdacCH0_backupStruct
 
 #if (CY_PSOC5A)
     /* Stop API changes for PSoC5A */
-    typedef struct _CapSense_1_IdacCH0_lowPowerBackupStruct
+    typedef struct
     {
         uint8 DACCR0Reg;
     }   CapSense_1_IdacCH0_LOWPOWER_BACKUP_STRUCT;
 #endif /* CY_PSOC5A */
+
+/* component init state */
+extern uint8 CapSense_1_IdacCH0_initVar;
 
 
 /***************************************
@@ -75,14 +78,14 @@ void CapSense_1_IdacCH0_Wakeup(void)                   ;
 *       Paramater Initial Values
 ***************************************/
 
-#define CapSense_1_IdacCH0_DEFAULT_RANGE     4u      /* Default DAC range */
-#define CapSense_1_IdacCH0_DEFAULT_SPEED     ((0u ? 1u:0u)*2)  /* Default DAC speed */
-#define CapSense_1_IdacCH0_DEFAULT_CNTL      0x00u             /* Default Control */
-#define CapSense_1_IdacCH0_DEFAULT_STRB     0u    /* Default Strobe mode */
-#define CapSense_1_IdacCH0_DEFAULT_DATA     0u          /* Initial DAC value */
-#define CapSense_1_IdacCH0_DEFAULT_POLARITY 4u       /* Default Sink or Source */
-#define CapSense_1_IdacCH0_DEFAULT_DATA_SRC 0u    /* Default Data Source */   
-#define CapSense_1_IdacCH0_HARDWARE_ENABLE  1u /*Hardware Enable */
+#define CapSense_1_IdacCH0_DEFAULT_RANGE     4u                                   /* Default DAC range */
+#define CapSense_1_IdacCH0_DEFAULT_SPEED     ((uint8)(((0u != 0u) ? 1u : 0u) << 1u))   /* Default DAC speed */
+#define CapSense_1_IdacCH0_DEFAULT_CNTL      0x00u                                            /* Default Control */
+#define CapSense_1_IdacCH0_DEFAULT_STRB     0u                                   /* Default Strobe mode */
+#define CapSense_1_IdacCH0_DEFAULT_DATA     0u                                 /* Initial DAC value */
+#define CapSense_1_IdacCH0_DEFAULT_POLARITY 4u                                      /* Default Sink or Source */
+#define CapSense_1_IdacCH0_DEFAULT_DATA_SRC 0u                                   /* Default Data Source */   
+#define CapSense_1_IdacCH0_HARDWARE_ENABLE  1u                               /*Hardware Enable */
 
 
 /***************************************
@@ -108,7 +111,33 @@ void CapSense_1_IdacCH0_Wakeup(void)                   ;
 /***************************************
 *              Registers        
 ***************************************/
+#define CapSense_1_IdacCH0_CR0_REG         (* (reg8 *) CapSense_1_IdacCH0_viDAC8__CR0 )
+#define CapSense_1_IdacCH0_CR0_PTR         (  (reg8 *) CapSense_1_IdacCH0_viDAC8__CR0 )
+#define CapSense_1_IdacCH0_CR1_REG         (* (reg8 *) CapSense_1_IdacCH0_viDAC8__CR1 )
+#define CapSense_1_IdacCH0_CR1_PTR         (  (reg8 *) CapSense_1_IdacCH0_viDAC8__CR1 )
+#define CapSense_1_IdacCH0_Data_REG        (* (reg8 *) CapSense_1_IdacCH0_viDAC8__D )
+#define CapSense_1_IdacCH0_Data_PTR        (  (reg8 *) CapSense_1_IdacCH0_viDAC8__D )
+#define CapSense_1_IdacCH0_Strobe_REG      (* (reg8 *) CapSense_1_IdacCH0_viDAC8__STROBE )
+#define CapSense_1_IdacCH0_Strobe_PTR      (  (reg8 *) CapSense_1_IdacCH0_viDAC8__STROBE )
+#define CapSense_1_IdacCH0_SW0_REG         (* (reg8 *) CapSense_1_IdacCH0_viDAC8__SW0 )
+#define CapSense_1_IdacCH0_SW0_PTR         (  (reg8 *) CapSense_1_IdacCH0_viDAC8__SW0 )
+#define CapSense_1_IdacCH0_SW2_REG         (* (reg8 *) CapSense_1_IdacCH0_viDAC8__SW2 )
+#define CapSense_1_IdacCH0_SW2_PTR         (  (reg8 *) CapSense_1_IdacCH0_viDAC8__SW2 )
+#define CapSense_1_IdacCH0_SW3_REG         (* (reg8 *) CapSense_1_IdacCH0_viDAC8__SW3 )
+#define CapSense_1_IdacCH0_SW3_PTR         (  (reg8 *) CapSense_1_IdacCH0_viDAC8__SW3 )
+#define CapSense_1_IdacCH0_SW4_REG         (* (reg8 *) CapSense_1_IdacCH0_viDAC8__SW4 )
+#define CapSense_1_IdacCH0_SW4_PTR         (  (reg8 *) CapSense_1_IdacCH0_viDAC8__SW4 )
+#define CapSense_1_IdacCH0_TR_REG          (* (reg8 *) CapSense_1_IdacCH0_viDAC8__TR )
+#define CapSense_1_IdacCH0_TR_PTR          (  (reg8 *) CapSense_1_IdacCH0_viDAC8__TR )
+#define CapSense_1_IdacCH0_PWRMGR_REG      (* (reg8 *) CapSense_1_IdacCH0_viDAC8__PM_ACT_CFG )  /* Power manager */
+#define CapSense_1_IdacCH0_PWRMGR_PTR      (  (reg8 *) CapSense_1_IdacCH0_viDAC8__PM_ACT_CFG )  /* Power manager */
+#define CapSense_1_IdacCH0_STBY_PWRMGR_REG (* (reg8 *) CapSense_1_IdacCH0_viDAC8__PM_STBY_CFG )  /* Standby Power manager */
+#define CapSense_1_IdacCH0_STBY_PWRMGR_PTR (  (reg8 *) CapSense_1_IdacCH0_viDAC8__PM_STBY_CFG )  /* Standby Power manager */
 
+/***************************************
+*  Registers definitions
+* for backward capability        
+***************************************/
 #define CapSense_1_IdacCH0_CR0         (* (reg8 *) CapSense_1_IdacCH0_viDAC8__CR0 )
 #define CapSense_1_IdacCH0_CR1         (* (reg8 *) CapSense_1_IdacCH0_viDAC8__CR1 )
 #define CapSense_1_IdacCH0_Data        (* (reg8 *) CapSense_1_IdacCH0_viDAC8__D )

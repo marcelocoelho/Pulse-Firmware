@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: TIA_PulseIn_PM.c  
-* Version 1.91
+* Version 2.0
 *
 * Description:
 *  This file provides the power management source code to the API for the 
@@ -83,20 +83,18 @@ void TIA_PulseIn_RestoreConfig(void)
 void TIA_PulseIn_Sleep(void) 
 {
     /* Save TIA enable state */
-    if(TIA_PulseIn_ACT_PWR_EN == (TIA_PulseIn_PM_ACT_CFG_REG & TIA_PulseIn_ACT_PWR_EN))
+    if((TIA_PulseIn_PM_ACT_CFG_REG & TIA_PulseIn_ACT_PWR_EN) != 0u)
     {
         /* Component is enabled */
         TIA_PulseIn_backup.enableState = 1u;
+        /* Stop the configuration */
+        TIA_PulseIn_Stop();
     }
     else
     {
         /* Component is disabled */
         TIA_PulseIn_backup.enableState = 0u;
     }
-
-    /* Stop the configuration */
-    TIA_PulseIn_Stop();
-
     /* Save the configuration */
     TIA_PulseIn_SaveConfig();
 }

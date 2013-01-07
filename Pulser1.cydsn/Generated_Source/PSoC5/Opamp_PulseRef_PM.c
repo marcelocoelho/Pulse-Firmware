@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: Opamp_PulseRef_PM.c
-* Version 1.80
+* Version 1.90
 *
 * Description:
 *  This file provides the power management source code to the API for the 
@@ -82,19 +82,18 @@ void Opamp_PulseRef_RestoreConfig(void)
 void Opamp_PulseRef_Sleep(void) 
 {
     /* Save OpAmp enable state */
-    if(Opamp_PulseRef_ACT_PWR_EN == (Opamp_PulseRef_PM_ACT_CFG_REG & Opamp_PulseRef_ACT_PWR_EN))
+    if((Opamp_PulseRef_PM_ACT_CFG_REG & Opamp_PulseRef_ACT_PWR_EN) != 0u)
     {
         /* Component is enabled */
         Opamp_PulseRef_backup.enableState = 1u;
+         /* Stops the component */
+         Opamp_PulseRef_Stop();
     }
     else
     {
         /* Component is disabled */
         Opamp_PulseRef_backup.enableState = 0u;
     }
-    /* Stops the component */
-    Opamp_PulseRef_Stop();
-
     /* Saves the configuration */
     Opamp_PulseRef_SaveConfig();
 }

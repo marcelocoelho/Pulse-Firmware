@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: UART_Debug_PM.c
-* Version 2.20
+* Version 2.30
 *
 * Description:
 *  This file provides Sleep/WakeUp APIs functionality.
@@ -9,8 +9,8 @@
 *
 ********************************************************************************
 * Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions, 
-* disclaimers, and limitations in the end user license agreement accompanying 
+* You may use this file only in accordance with the license, terms, conditions,
+* disclaimers, and limitations in the end user license agreement accompanying
 * the software package with which this file was provided.
 *******************************************************************************/
 
@@ -25,7 +25,7 @@ static UART_Debug_BACKUP_STRUCT  UART_Debug_backup =
 {
     /* enableState - disabled */
     0u,
-};        
+};
 
 
 
@@ -76,7 +76,7 @@ void UART_Debug_SaveConfig(void)
             UART_Debug_backup.tx_mask = UART_Debug_TXSTATUS_MASK_REG;
         #endif /*End UART_Debug_TX_ENABLED */
 
-    
+
     #else /* CY_UDB_V1 */
 
         #if(UART_Debug_CONTROL_REG_REMOVED == 0u)
@@ -150,9 +150,9 @@ void UART_Debug_RestoreConfig(void)
 ********************************************************************************
 *
 * Summary:
-*  Stops and saves the user configuration. Should be called 
+*  Stops and saves the user configuration. Should be called
 *  just prior to entering sleep.
-*  
+*
 *
 * Parameters:
 *  None.
@@ -171,7 +171,7 @@ void UART_Debug_Sleep(void)
 {
 
     #if(UART_Debug_RX_ENABLED || UART_Debug_HD_ENABLED)
-        if((UART_Debug_RXSTATUS_ACTL_REG  & UART_Debug_INT_ENABLE) != 0u) 
+        if((UART_Debug_RXSTATUS_ACTL_REG  & UART_Debug_INT_ENABLE) != 0u)
         {
             UART_Debug_backup.enableState = 1u;
         }
@@ -229,7 +229,7 @@ void UART_Debug_Wakeup(void)
     if(UART_Debug_backup.enableState != 0u)
     {
         UART_Debug_Enable();
-    } 
+    }
 }
 
 

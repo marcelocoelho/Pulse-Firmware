@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: ADC_SAR_ProxIR.h
-* Version 1.80
+* Version 2.0
 *
 * Description:
 *  This file contains the function prototypes and constants used in
@@ -31,7 +31,7 @@
 /* Check to see if required defines such as CY_PSOC5LP are available */
 /* They are defined starting with cy_boot v3.0 */
 #if !defined (CY_PSOC5LP)
-    #error Component ADC_SAR_v1_80 requires cy_boot v3.0 or later
+    #error Component ADC_SAR_v2_0 requires cy_boot v3.0 or later
 #endif /* (CY_PSOC5LP) */
 
 
@@ -40,10 +40,11 @@
 ***************************************/
 
 /* Sleep Mode API Support */
-typedef struct _ADC_SAR_ProxIR_BackupStruct
+typedef struct
 {
     uint8 enableState;
 } ADC_SAR_ProxIR_BACKUP_STRUCT;
+/* Acceptable types from MISRA-C specifying signedness and size.*/
 
 
 /***************************************
@@ -52,12 +53,9 @@ typedef struct _ADC_SAR_ProxIR_BackupStruct
 
 void ADC_SAR_ProxIR_Start(void);
 void ADC_SAR_ProxIR_Stop(void);
-void ADC_SAR_ProxIR_IRQ_Enable(void);
-void ADC_SAR_ProxIR_IRQ_Disable(void);
 void ADC_SAR_ProxIR_SetPower(uint8 power);
 void ADC_SAR_ProxIR_SetResolution(uint8 resolution);
-void ADC_SAR_ProxIR_StartConvert(void);
-void ADC_SAR_ProxIR_StopConvert(void);
+    
 uint8 ADC_SAR_ProxIR_IsEndConversion(uint8 retMode);
 int8 ADC_SAR_ProxIR_GetResult8(void);
 int16 ADC_SAR_ProxIR_GetResult16(void);
@@ -66,7 +64,7 @@ void ADC_SAR_ProxIR_SetOffset(int16 offset);
 void ADC_SAR_ProxIR_SetGain(int16 adcGain);
 int16 ADC_SAR_ProxIR_CountsTo_mVolts(int16 adcCounts);
 int32 ADC_SAR_ProxIR_CountsTo_uVolts(int16 adcCounts);
-float ADC_SAR_ProxIR_CountsTo_Volts(int16 adcCounts);
+float32 ADC_SAR_ProxIR_CountsTo_Volts(int16 adcCounts);
 
 void ADC_SAR_ProxIR_Init(void);
 void ADC_SAR_ProxIR_Enable(void);
@@ -77,6 +75,16 @@ void ADC_SAR_ProxIR_Sleep(void);
 void ADC_SAR_ProxIR_Wakeup(void);
 
 CY_ISR_PROTO( ADC_SAR_ProxIR_ISR );
+
+
+/***************************************
+* Global variables external identifier
+***************************************/
+
+extern uint8 ADC_SAR_ProxIR_initVar;
+extern volatile int16 ADC_SAR_ProxIR_offset;
+extern volatile int16 ADC_SAR_ProxIR_countsPerVolt;
+extern volatile int16 ADC_SAR_ProxIR_shift;
 
 
 /**************************************
@@ -106,7 +114,11 @@ CY_ISR_PROTO( ADC_SAR_ProxIR_ISR );
 #define ADC_SAR_ProxIR_ENABLED                    (0x01u)
 #define ADC_SAR_ProxIR_DISABLED                   (0x00u)
 
-#define ADC_SAR_ProxIR_MAX_FREQUENCY              (14000000u)       /*14Mhz*/
+#if(CY_PSOC5A)
+    #define ADC_SAR_ProxIR_MAX_FREQUENCY          (14000000)       /*14Mhz*/
+#else
+    #define ADC_SAR_ProxIR_MAX_FREQUENCY          (18000000)       /*18Mhz*/
+#endif /* CY_PSOC5A */
 
 
 /**************************************
@@ -131,6 +143,11 @@ CY_ISR_PROTO( ADC_SAR_ProxIR_ISR );
 #define ADC_SAR_ProxIR__FREERUNNING 0
 #define ADC_SAR_ProxIR__TRIGGERED 1
 
+/*  Extended Sample Mode setting constants */
+#define ADC_SAR_ProxIR__FREE_RUNNING 0
+#define ADC_SAR_ProxIR__SOFTWARE_TRIGGER 1
+#define ADC_SAR_ProxIR__HARDWARE_TRIGGER 2
+
 /*  Clock Source setting constants */
 #define ADC_SAR_ProxIR__INTERNAL 1
 #define ADC_SAR_ProxIR__EXTERNAL 0
@@ -143,35 +160,50 @@ CY_ISR_PROTO( ADC_SAR_ProxIR_ISR );
 
 /* Default config values from user parameters */
 #define ADC_SAR_ProxIR_DEFAULT_RESOLUTION     (12u)   /* ADC resolution selected with parameters.*/
-#define ADC_SAR_ProxIR_DEFAULT_CONV_MODE      (0u)   /* Default conversion method */
-#define ADC_SAR_ProxIR_DEFAULT_INTERNAL_CLK   (1u)        /* Default clock selection */
-#define ADC_SAR_ProxIR_DEFAULT_REFERENCE      (0u)    /* Default reference */
-#define ADC_SAR_ProxIR_DEFAULT_RANGE          (1u)  /* ADC Input Range selection. */
+#define ADC_SAR_ProxIR_DEFAULT_CONV_MODE      (0u)        /* Default conversion method */
+#define ADC_SAR_ProxIR_DEFAULT_INTERNAL_CLK   (1u)             /* Default clock selection */
+#define ADC_SAR_ProxIR_DEFAULT_REFERENCE      (0u)         /* Default reference */
+#define ADC_SAR_ProxIR_DEFAULT_RANGE          (1u)       /* ADC Input Range selection */
+#define ADC_SAR_ProxIR_CLOCK_FREQUENCY        (1900000u)   /* Clock frequency */
+#define ADC_SAR_ProxIR_NOMINAL_CLOCK_FREQ     (1941176)  /* Nominal Clock Frequency */
+#define ADC_SAR_ProxIR_HIGH_POWER_PULSE       (1u)        /* Not zero when clock pulse > 50 ns */
+#define ADC_SAR_ProxIR_IRQ_REMOVE             (0u)                /* Removes internal interrupt */
 
 /* Use VDDA voltage define directly from cyfitter.h when VDDA reference has been used */
-#define ADC_SAR_ProxIR_DEFAULT_REF_VOLTAGE (((ADC_SAR_ProxIR_DEFAULT_REFERENCE != ADC_SAR_ProxIR__EXT_REF) && \
-                                        ((ADC_SAR_ProxIR_DEFAULT_RANGE == ADC_SAR_ProxIR__VSSA_TO_VDDA) || \
-                                        (ADC_SAR_ProxIR_DEFAULT_RANGE == ADC_SAR_ProxIR__VNEG_VDDA_2_DIFF))) ? \
-                                        (CYDEV_VDDA / 2) : \
-                                        ((ADC_SAR_ProxIR_DEFAULT_REFERENCE != ADC_SAR_ProxIR__EXT_REF) && \
-                                        (ADC_SAR_ProxIR_DEFAULT_RANGE == ADC_SAR_ProxIR__VNEG_VDDA_2_DIFF)) ? \
-                                        CYDEV_VDDA : (2.5))      /* ADC reference voltage. */
-#define ADC_SAR_ProxIR_DEFAULT_REF_VOLTAGE_MV (((ADC_SAR_ProxIR_DEFAULT_REFERENCE != ADC_SAR_ProxIR__EXT_REF) &&\
-                                        ((ADC_SAR_ProxIR_DEFAULT_RANGE == ADC_SAR_ProxIR__VSSA_TO_VDDA) || \
-                                        (ADC_SAR_ProxIR_DEFAULT_RANGE == ADC_SAR_ProxIR__VNEG_VDDA_2_DIFF))) ? \
-                                        (CYDEV_VDDA_MV / 2) : \
-                                        ((ADC_SAR_ProxIR_DEFAULT_REFERENCE != ADC_SAR_ProxIR__EXT_REF) && \
-                                        (ADC_SAR_ProxIR_DEFAULT_RANGE == ADC_SAR_ProxIR__VNEG_VDDA_2_DIFF)) ? \
-                                        CYDEV_VDDA_MV : (2500))   /* ADC reference voltage in mV */
-/* The power is set to normal power, 1/2, 1/3, 1/4 power depending on the clock setting. */
-#define ADC_SAR_ProxIR_DEFAULT_POWER  ((1 != ADC_SAR_ProxIR__INTERNAL) ? ADC_SAR_ProxIR__HIGHPOWER : \
-                      (1900000 > (ADC_SAR_ProxIR_MAX_FREQUENCY / 2)) ? ADC_SAR_ProxIR__HIGHPOWER : \
-                      (1900000 > (ADC_SAR_ProxIR_MAX_FREQUENCY / 3)) ? ADC_SAR_ProxIR__MEDPOWER : \
-                      (1900000 > (ADC_SAR_ProxIR_MAX_FREQUENCY / 4)) ? ADC_SAR_ProxIR__LOWPOWER : \
-                                                                                        ADC_SAR_ProxIR__MINPOWER)
+#define ADC_SAR_ProxIR_DEFAULT_REF_VOLTAGE \
+                                   (((ADC_SAR_ProxIR_DEFAULT_REFERENCE != (uint8)ADC_SAR_ProxIR__EXT_REF) && \
+                                    ((ADC_SAR_ProxIR_DEFAULT_RANGE == (uint8)ADC_SAR_ProxIR__VSSA_TO_VDDA) || \
+                                     (ADC_SAR_ProxIR_DEFAULT_RANGE == (uint8)ADC_SAR_ProxIR__VNEG_VDDA_2_DIFF))) ? \
+                                     (CYDEV_VDDA / 2) : \
+                                   (((ADC_SAR_ProxIR_DEFAULT_REFERENCE != (uint8)ADC_SAR_ProxIR__EXT_REF) && \
+                                     (ADC_SAR_ProxIR_DEFAULT_RANGE == (uint8)ADC_SAR_ProxIR__VNEG_VDDA_2_DIFF)) ? \
+                                     CYDEV_VDDA : (2.5)))      /* ADC reference voltage. */
+#define ADC_SAR_ProxIR_DEFAULT_REF_VOLTAGE_MV \
+                                   (((ADC_SAR_ProxIR_DEFAULT_REFERENCE != (uint8)ADC_SAR_ProxIR__EXT_REF) && \
+                                    ((ADC_SAR_ProxIR_DEFAULT_RANGE == (uint8)ADC_SAR_ProxIR__VSSA_TO_VDDA) || \
+                                     (ADC_SAR_ProxIR_DEFAULT_RANGE == (uint8)ADC_SAR_ProxIR__VNEG_VDDA_2_DIFF))) ? \
+                                     (CYDEV_VDDA_MV / 2) : \
+                                  (((ADC_SAR_ProxIR_DEFAULT_REFERENCE != (uint8)ADC_SAR_ProxIR__EXT_REF) && \
+                                    (ADC_SAR_ProxIR_DEFAULT_RANGE == (uint8)ADC_SAR_ProxIR__VNEG_VDDA_2_DIFF)) ? \
+                                     CYDEV_VDDA_MV : (2500)))   /* ADC reference voltage in mV */
+/* The power is set to normal power, 1/2, 1/3, 1/4 power depend on the clock setting. */
+#define ADC_SAR_ProxIR_DEFAULT_POWER \
+       ((ADC_SAR_ProxIR_NOMINAL_CLOCK_FREQ > (ADC_SAR_ProxIR_MAX_FREQUENCY / 2)) ? ADC_SAR_ProxIR__HIGHPOWER : \
+       ((ADC_SAR_ProxIR_NOMINAL_CLOCK_FREQ > (ADC_SAR_ProxIR_MAX_FREQUENCY / 4)) ? ADC_SAR_ProxIR__MEDPOWER : \
+                                                                                        ADC_SAR_ProxIR__MINPOWER))
 /* Constant for a global usage */
 /* Number of additional clocks for sampling data*/
-#define ADC_SAR_ProxIR_SAMPLE_PRECHARGE       (7u) 
+#define ADC_SAR_ProxIR_SAMPLE_PRECHARGE       (7u)
+
+
+/***************************************
+*    Optional Function Prototypes
+***************************************/
+
+#if(ADC_SAR_ProxIR_DEFAULT_CONV_MODE != ADC_SAR_ProxIR__HARDWARE_TRIGGER)
+    void ADC_SAR_ProxIR_StartConvert(void);
+    void ADC_SAR_ProxIR_StopConvert(void);
+#endif /* End ADC_SAR_ProxIR_DEFAULT_CONV_MODE != ADC_SAR_ProxIR__HARDWARE_TRIGGER */
 
 
 /***************************************
@@ -214,10 +246,11 @@ CY_ISR_PROTO( ADC_SAR_ProxIR_ISR );
 #define ADC_SAR_ProxIR_SAR_WRK0_PTR               (  (reg8 *) ADC_SAR_ProxIR_ADC_SAR__WRK0 )
 #define ADC_SAR_ProxIR_SAR_WRK1_REG               (* (reg8 *) ADC_SAR_ProxIR_ADC_SAR__WRK1 )
 #define ADC_SAR_ProxIR_SAR_WRK1_PTR               (  (reg8 *) ADC_SAR_ProxIR_ADC_SAR__WRK1 )
-#define ADC_SAR_ProxIR_PWRMGR_SAR_REG             (* (reg8 *) ADC_SAR_ProxIR_ADC_SAR__PM_ACT_CFG )     
-#define ADC_SAR_ProxIR_PWRMGR_SAR_PTR             (  (reg8 *) ADC_SAR_ProxIR_ADC_SAR__PM_ACT_CFG )    
-#define ADC_SAR_ProxIR_STBY_PWRMGR_SAR_REG        (* (reg8 *) ADC_SAR_ProxIR_ADC_SAR__PM_STBY_CFG )     
-#define ADC_SAR_ProxIR_STBY_PWRMGR_SAR_PTR        (  (reg8 *) ADC_SAR_ProxIR_ADC_SAR__PM_STBY_CFG )    
+#define ADC_SAR_ProxIR_SAR_WRK_PTR                (  (reg16 *) ADC_SAR_ProxIR_ADC_SAR__WRK0 )
+#define ADC_SAR_ProxIR_PWRMGR_SAR_REG             (* (reg8 *) ADC_SAR_ProxIR_ADC_SAR__PM_ACT_CFG )
+#define ADC_SAR_ProxIR_PWRMGR_SAR_PTR             (  (reg8 *) ADC_SAR_ProxIR_ADC_SAR__PM_ACT_CFG )
+#define ADC_SAR_ProxIR_STBY_PWRMGR_SAR_REG        (* (reg8 *) ADC_SAR_ProxIR_ADC_SAR__PM_STBY_CFG )
+#define ADC_SAR_ProxIR_STBY_PWRMGR_SAR_PTR        (  (reg8 *) ADC_SAR_ProxIR_ADC_SAR__PM_STBY_CFG )
 
 /* renamed registers for backward compatible */
 #define ADC_SAR_ProxIR_SAR_WRK0                   ADC_SAR_ProxIR_SAR_WRK0_REG
@@ -237,24 +270,30 @@ CY_ISR_PROTO( ADC_SAR_ProxIR_ISR );
 *       Register Constants
 **************************************/
 /* PM_ACT_CFG (Active Power Mode CFG Register) Power enable mask */
-#define ADC_SAR_ProxIR_ACT_PWR_SAR_EN             ADC_SAR_ProxIR_ADC_SAR__PM_ACT_MSK 
+#define ADC_SAR_ProxIR_ACT_PWR_SAR_EN             (uint8)(ADC_SAR_ProxIR_ADC_SAR__PM_ACT_MSK)
 
 /* PM_STBY_CFG (Alternate Active Power Mode CFG Register) Power enable mask */
-#define ADC_SAR_ProxIR_STBY_PWR_SAR_EN            ADC_SAR_ProxIR_ADC_SAR__PM_STBY_MSK 
+#define ADC_SAR_ProxIR_STBY_PWR_SAR_EN            (uint8)(ADC_SAR_ProxIR_ADC_SAR__PM_STBY_MSK)
 
 /* This is only valid if there is an internal clock */
 #if(ADC_SAR_ProxIR_DEFAULT_INTERNAL_CLK)
     /* Power enable mask */
-    #define ADC_SAR_ProxIR_ACT_PWR_CLK_EN         ADC_SAR_ProxIR_theACLK__PM_ACT_MSK
+    #define ADC_SAR_ProxIR_ACT_PWR_CLK_EN         (uint8)(ADC_SAR_ProxIR_theACLK__PM_ACT_MSK)
     /* Standby power enable mask */
-    #define ADC_SAR_ProxIR_STBY_PWR_CLK_EN        ADC_SAR_ProxIR_theACLK__PM_STBY_MSK
+    #define ADC_SAR_ProxIR_STBY_PWR_CLK_EN        (uint8)(ADC_SAR_ProxIR_theACLK__PM_STBY_MSK)
 #endif /*End ADC_SAR_ProxIR_DEFAULT_INTERNAL_CLK */
 
-/* Priority of the ADC_SAR_IRQ interrupt. */
-#define ADC_SAR_ProxIR_INTC_PRIOR_NUMBER          ADC_SAR_ProxIR_IRQ__INTC_PRIOR_NUM
+#if(ADC_SAR_ProxIR_IRQ_REMOVE == 0u)
 
-/* ADC_SAR_IRQ interrupt number */
-#define ADC_SAR_ProxIR_INTC_NUMBER                ADC_SAR_ProxIR_IRQ__INTC_NUMBER
+    /* Priority of the ADC_SAR_IRQ interrupt. */
+    #define ADC_SAR_ProxIR_INTC_PRIOR_NUMBER          (uint8)(ADC_SAR_ProxIR_IRQ__INTC_PRIOR_NUM)
+
+    /* ADC_SAR_IRQ interrupt number */
+    #define ADC_SAR_ProxIR_INTC_NUMBER                (uint8)(ADC_SAR_ProxIR_IRQ__INTC_NUMBER)
+
+#endif   /* End ADC_SAR_ProxIR_IRQ_REMOVE */        
+
+
 /******************************************/
 /* SAR.TR0 Trim Register 0 definitions    */
 /******************************************/
@@ -306,8 +345,8 @@ CY_ISR_PROTO( ADC_SAR_ProxIR_ISR );
 #define ADC_SAR_ProxIR_SAR_SOF_MODE_EDGE          (0x02u)
 
 /* Bit Field SAR_SOF_BIT_ENUM */
+#define ADC_SAR_ProxIR_SAR_SOF_STOP_CONV          (0x00u)            /* Disable conversion */
 #define ADC_SAR_ProxIR_SAR_SOF_START_CONV         (0x01u)            /* Enable conversion */
-
 
 /*******************************************************/
 /* SAR.CSR1 Satatus and Control Register 1 definitions */
@@ -373,6 +412,9 @@ CY_ISR_PROTO( ADC_SAR_ProxIR_ISR );
 /* Bit Field  SAR_PWR_CTRL_VCM_ENUM */
 #define ADC_SAR_ProxIR_SAR_PWR_CTRL_VCM_MASK      (0x30u)
 #define ADC_SAR_ProxIR_SAR_PWR_CTRL_VCM_0         (0x00u)
+#define ADC_SAR_ProxIR_SAR_PWR_CTRL_VCM_1         (0x10u)
+#define ADC_SAR_ProxIR_SAR_PWR_CTRL_VCM_2         (0x20u)
+#define ADC_SAR_ProxIR_SAR_PWR_CTRL_VCM_3         (0x30u)
 
 /* Bit Field  SAR_PWR_CTRL_VREF_ENUM */
 #define ADC_SAR_ProxIR_SAR_PWR_CTRL_VREF_MASK     (0x0Cu)
@@ -407,9 +449,14 @@ CY_ISR_PROTO( ADC_SAR_ProxIR_ISR );
 /* SAR.CSR5 Satatus and Control Register 5 definitions */
 /*******************************************************/
 
+/* Bit Field  SAR_OVERRUN_DET_EN_ENUM */
+#define ADC_SAR_ProxIR_SAR_OVERRUN_DET_EN_EN      (0x80u)
+
+/* Bit Field  SAR_DLY_INC_ENUM */
+#define ADC_SAR_ProxIR_SAR_DLY_INC                (0x40u)
+
 /* Bit Field  SAR_DCEN_ENUM */
-#define ADC_SAR_ProxIR_SAR_DCEN_0                 (0x00u)
-#define ADC_SAR_ProxIR_SAR_DCEN_1                 (0x40u)
+#define ADC_SAR_ProxIR_SAR_DCEN                   (0x20u)
 
 /* Bit Field  SAR_EN_CSEL_DFT_ENUM */
 #define ADC_SAR_ProxIR_SAR_EN_CSEL_DFT_DISABLED   (0x00u)
@@ -423,18 +470,9 @@ CY_ISR_PROTO( ADC_SAR_ProxIR_ISR );
 /*******************************************************/
 /* SAR.CSR6 Satatus and Control Register 6 definitions */
 /*******************************************************/
-
-/* Bit Field  SAR_REF_S_LSB_ENUM */
-#define ADC_SAR_ProxIR_SAR_REF_S_LSB_MASK         (0xFFu)
-#define ADC_SAR_ProxIR_SAR_REF_S_LSB_DIS          (0x00u)
-#define ADC_SAR_ProxIR_SAR_REF_S0_LSB_EN          (0x01u)
-#define ADC_SAR_ProxIR_SAR_REF_S1_LSB_EN          (0x02u)
-#define ADC_SAR_ProxIR_SAR_REF_S2_LSB_EN          (0x04u)
-#define ADC_SAR_ProxIR_SAR_REF_S3_LSB_EN          (0x08u)
-#define ADC_SAR_ProxIR_SAR_REF_S4_LSB_EN          (0x10u)
-#define ADC_SAR_ProxIR_SAR_REF_S5_LSB_EN          (0x20u)
-#define ADC_SAR_ProxIR_SAR_REF_S6_LSB_EN          (0x40u)
-#define ADC_SAR_ProxIR_SAR_REF_S7_LSB_EN          (0x80u)
+#define ADC_SAR_ProxIR_INT_VREF                   (0x18u)
+#define ADC_SAR_ProxIR_INT_BYPASS_EXT_VREF        (0x04u)
+#define ADC_SAR_ProxIR_VDDA_VREF                  (0x80u)
 
 /*******************************************************/
 /* SAR.CSR7 Satatus and Control Register 7 definitions */

@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: USBUART_Central.c
-* Version 2.30
+* Version 2.50
 *
 * Description:
 *  API for USBFS Component.
@@ -51,6 +51,7 @@
 ***************************************/
 
 extern volatile uint8 USBUART_Central_configuration;
+extern volatile uint8 USBUART_Central_interfaceNumber;
 extern volatile uint8 USBUART_Central_configurationChanged;
 extern volatile uint8 USBUART_Central_interfaceSetting[];
 extern volatile uint8 USBUART_Central_interfaceSetting_last[];
@@ -125,8 +126,10 @@ uint8 USBUART_Central_initVar = 0u;
 *  endpoint APIs, including setting the D+ Pullup
 *
 * Parameters:
-*  device: Contains the device number from the desired device descriptor set
-*          entered with the USBFS customizer.
+*  device: Contains the device number of the desired device descriptor.
+*          The device number can be found in the Device Descriptor Tab of 
+*          "Configure" dialog, under the settings of desired Device Descriptor,
+*          in the "Device Number" field.
 *  mode: The operating voltage. This determines whether the voltage regulator
 *        is enabled for 5V operation or if pass through mode is used for 3.3V
 *        operation. Symbolic names and their associated values are given in the
@@ -229,6 +232,10 @@ void USBUART_Central_Init(void)
         *  Also confirm USBIO pull-up disabled
         */
         USBUART_Central_PM_USB_CR0_REG &= ~(USBUART_Central_PM_USB_CR0_PD_N |USBUART_Central_PM_USB_CR0_PD_PULLUP_N);
+
+        /* Select iomode to USB mode*/
+        USBUART_Central_USBIO_CR1_REG &= ~ USBUART_Central_USBIO_CR1_IOMODE;
+
         /* Enable the USBIO reference by setting PM.USB_CR0.fsusbio_ref_en.*/
         USBUART_Central_PM_USB_CR0_REG |= USBUART_Central_PM_USB_CR0_REF_EN;
         /* The reference will be available 1 us after the regulator is enabled */
@@ -342,8 +349,10 @@ void USBUART_Central_Init(void)
 *  the Start function.  This function pulls up D+.
 *
 * Parameters:
-*  device: Contains the device number from the desired device descriptor set
-*          entered with the USBFS customizer.
+*  device: Contains the device number of the desired device descriptor.
+*          The device number can be found in the Device Descriptor Tab of 
+*          "Configure" dialog, under the settings of desired Device Descriptor,
+*          in the "Device Number" field.
 *  mode: The operating voltage. This determines whether the voltage regulator
 *        is enabled for 5V operation or if pass through mode is used for 3.3V
 *        operation. Symbolic names and their associated values are given in the
@@ -359,8 +368,10 @@ void USBUART_Central_Init(void)
 *   None.
 *
 * Global variables:
-*   USBUART_Central_device: Contains the started device number from the
-*       desired device descriptor set entered with the USBFS customizer.
+*   USBUART_Central_device: Contains the device number of the desired device
+*       descriptor. The device number can be found in the Device Descriptor Tab 
+*       of "Configure" dialog, under the settings of desired Device Descriptor,
+*       in the "Device Number" field.
 *   USBUART_Central_transferState: This variable used by the communication
 *       functions to handle current transfer state. Initialized to
 *       TRANS_STATE_IDLE in this API.
@@ -466,6 +477,7 @@ void USBUART_Central_InitComponent(uint8 device, uint8 mode)
 
     /* Clear all of the component data */
     USBUART_Central_configuration = 0u;
+    USBUART_Central_interfaceNumber = 0u;
     USBUART_Central_configurationChanged = 0u;
     USBUART_Central_deviceAddress  = 0u;
     USBUART_Central_deviceStatus = 0u;
@@ -478,6 +490,9 @@ void USBUART_Central_InitComponent(uint8 device, uint8 mode)
     /* Enable the SIE with an address 0 */
     CY_SET_REG8(USBUART_Central_CR0_PTR, USBUART_Central_CR0_ENABLE);
 
+    /* Workarond for PSOC5LP */
+    CyDelayCycles(1);
+    
     /* Finally, Enable d+ pullup and select iomode to USB mode*/
     CY_SET_REG8(USBUART_Central_USBIO_CR1_PTR, USBUART_Central_USBIO_CR1_USBPUEN);
 }
@@ -498,8 +513,10 @@ void USBUART_Central_InitComponent(uint8 device, uint8 mode)
 *   None.
 *
 * Global variables:
-*   USBUART_Central_device: Contains the started device number from the
-*       desired device descriptor set entered with the USBFS customizer.
+*   USBUART_Central_device: Contains the device number of the desired device 
+*		descriptor. The device number can be found in the Device Descriptor Tab 
+*       of "Configure" dialog, under the settings of desired Device Descriptor,
+*       in the "Device Number" field.
 *   USBUART_Central_transferState: This variable used by the communication
 *       functions to handle current transfer state. Initialized to
 *       TRANS_STATE_IDLE in this API.
@@ -538,6 +555,7 @@ void USBUART_Central_ReInitComponent()
 
     /* Clear all of the component data */
     USBUART_Central_configuration = 0u;
+    USBUART_Central_interfaceNumber = 0u;
     USBUART_Central_configurationChanged = 0u;
     USBUART_Central_deviceAddress  = 0u;
     USBUART_Central_deviceStatus = 0u;
@@ -635,6 +653,7 @@ void USBUART_Central_Stop(void)
 
     /* Clear all of the component data */
     USBUART_Central_configuration = 0u;
+    USBUART_Central_interfaceNumber = 0u;
     USBUART_Central_configurationChanged = 0u;
     USBUART_Central_deviceAddress  = 0u;
     USBUART_Central_deviceStatus = 0u;

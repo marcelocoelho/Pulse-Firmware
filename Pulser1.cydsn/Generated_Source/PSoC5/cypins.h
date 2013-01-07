@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: cypins.h
-* Version 3.10
+* Version 3.30
 *
 *  Description:
 *   This file contains the function prototypes and constants used for port/pin
@@ -20,50 +20,49 @@
 #if !defined(CY_BOOT_CYPINS_H)
 #define CY_BOOT_CYPINS_H
 
-#include "cytypes.h"
 #include "cyfitter.h"
+#include "cytypes.h"
 
 
 /**************************************
 *        API Parameter Constants
 **************************************/
 
+#define CY_PINS_PC_DRIVE_MODE_SHIFT (0x01u)
+#define CY_PINS_PC_DRIVE_MODE_MASK  ((uint8)(0x07u << CY_PINS_PC_DRIVE_MODE_SHIFT))
+#define CY_PINS_PC_DRIVE_MODE_0     ((uint8)(0x00u << CY_PINS_PC_DRIVE_MODE_SHIFT))
+#define CY_PINS_PC_DRIVE_MODE_1     ((uint8)(0x01u << CY_PINS_PC_DRIVE_MODE_SHIFT))
+#define CY_PINS_PC_DRIVE_MODE_2     ((uint8)(0x02u << CY_PINS_PC_DRIVE_MODE_SHIFT))
+#define CY_PINS_PC_DRIVE_MODE_3     ((uint8)(0x03u << CY_PINS_PC_DRIVE_MODE_SHIFT))
+#define CY_PINS_PC_DRIVE_MODE_4     ((uint8)(0x04u << CY_PINS_PC_DRIVE_MODE_SHIFT))
+#define CY_PINS_PC_DRIVE_MODE_5     ((uint8)(0x05u << CY_PINS_PC_DRIVE_MODE_SHIFT))
+#define CY_PINS_PC_DRIVE_MODE_6     ((uint8)(0x06u << CY_PINS_PC_DRIVE_MODE_SHIFT))
+#define CY_PINS_PC_DRIVE_MODE_7     ((uint8)(0x07u << CY_PINS_PC_DRIVE_MODE_SHIFT))
+
+
 /*  SetPinDriveMode */
-#define PIN_DM_ALG_HIZ      PC_DRIVE_MODE_0
-#define PIN_DM_DIG_HIZ      PC_DRIVE_MODE_1
-#define PIN_DM_RES_UP       PC_DRIVE_MODE_2
-#define PIN_DM_RES_DWN      PC_DRIVE_MODE_3
-#define PIN_DM_OD_LO        PC_DRIVE_MODE_4
-#define PIN_DM_OD_HI        PC_DRIVE_MODE_5
-#define PIN_DM_STRONG       PC_DRIVE_MODE_6
-#define PIN_DM_RES_UPDWN    PC_DRIVE_MODE_7
+#define CY_PINS_DM_ALG_HIZ          (CY_PINS_PC_DRIVE_MODE_0)
+#define CY_PINS_DM_DIG_HIZ          (CY_PINS_PC_DRIVE_MODE_1)
+#define CY_PINS_DM_RES_UP           (CY_PINS_PC_DRIVE_MODE_2)
+#define CY_PINS_DM_RES_DWN          (CY_PINS_PC_DRIVE_MODE_3)
+#define CY_PINS_DM_OD_LO            (CY_PINS_PC_DRIVE_MODE_4)
+#define CY_PINS_DM_OD_HI            (CY_PINS_PC_DRIVE_MODE_5)
+#define CY_PINS_DM_STRONG           (CY_PINS_PC_DRIVE_MODE_6)
+#define CY_PINS_DM_RES_UPDWN        (CY_PINS_PC_DRIVE_MODE_7)
 
 
 /**************************************
 *       Register Constants
 **************************************/
 
-/* IO.PRT.PC (Port Pin Configuration Register */
-#define PC_DATAOUT          (0x01u)
-
-#define PC_DRIVE_MODE_SHIFT (0x01u)
-#define PC_DRIVE_MODE_MASK  (0x07u << PC_DRIVE_MODE_SHIFT)
-#define PC_DRIVE_MODE_0     (0x00u << PC_DRIVE_MODE_SHIFT)
-#define PC_DRIVE_MODE_1     (0x01u << PC_DRIVE_MODE_SHIFT)
-#define PC_DRIVE_MODE_2     (0x02u << PC_DRIVE_MODE_SHIFT)
-#define PC_DRIVE_MODE_3     (0x03u << PC_DRIVE_MODE_SHIFT)
-#define PC_DRIVE_MODE_4     (0x04u << PC_DRIVE_MODE_SHIFT)
-#define PC_DRIVE_MODE_5     (0x05u << PC_DRIVE_MODE_SHIFT)
-#define PC_DRIVE_MODE_6     (0x06u << PC_DRIVE_MODE_SHIFT)
-#define PC_DRIVE_MODE_7     (0x07u << PC_DRIVE_MODE_SHIFT)
-
-#define PC_PIN_FASTSLEW     (0xBFu)
-#define PC_PIN_SLOWSLEW     (0x40u)
-
-#define PC_PIN_STATE        (0x10u)
-#define PC_BIDIR_EN         (0x20u)
-#define PC_SLEW             (0x40u)
-#define PC_BYPASS           (0x80u)
+/* Port Pin Configuration Register */
+#define CY_PINS_PC_DATAOUT          (0x01u)
+#define CY_PINS_PC_PIN_FASTSLEW     (0xBFu)
+#define CY_PINS_PC_PIN_SLOWSLEW     (0x40u)
+#define CY_PINS_PC_PIN_STATE        (0x10u)
+#define CY_PINS_PC_BIDIR_EN         (0x20u)
+#define CY_PINS_PC_SLEW             (0x40u)
+#define CY_PINS_PC_BYPASS           (0x80u)
 
 
 /**************************************
@@ -73,6 +72,7 @@
 /*******************************************************************************
 * Macro Name: CyPins_ReadPin
 ********************************************************************************
+*
 * Summary:
 *  Reads the current value on the pin (pin state, PS).
 *
@@ -90,12 +90,13 @@
 *    Non-0: Logic high value
 *
 *******************************************************************************/
-#define CyPins_ReadPin(pinPC)    ( *(reg8 *)(pinPC) & PC_PIN_STATE )
+#define CyPins_ReadPin(pinPC)    ( *(reg8 *)(pinPC) & CY_PINS_PC_PIN_STATE )
 
 
 /*******************************************************************************
 * Macro Name: CyPins_SetPin
 ********************************************************************************
+*
 * Summary:
 *  Set the output value for the pin (data register, DR) to a logic high.
 *
@@ -114,12 +115,13 @@
 *   None
 *
 *******************************************************************************/
-#define CyPins_SetPin(pinPC)     ( *(reg8 *)(pinPC) |= PC_DATAOUT)
+#define CyPins_SetPin(pinPC)     ( *(reg8 *)(pinPC) |= CY_PINS_PC_DATAOUT)
 
 
 /*******************************************************************************
 * Macro Name: CyPins_ClearPin
 ********************************************************************************
+*
 * Summary:
 *  This macro sets the state of the specified pin to 0
 *
@@ -135,12 +137,13 @@
 *   None
 *
 *******************************************************************************/
-#define CyPins_ClearPin(pinPC)   ( *(reg8 *)(pinPC) &= ~PC_DATAOUT )
+#define CyPins_ClearPin(pinPC)   ( *(reg8 *)(pinPC) &= ((uint8)(~CY_PINS_PC_DATAOUT)))
 
 
 /*******************************************************************************
 * Macro Name: CyPins_SetPinDriveMode
 ********************************************************************************
+*
 * Summary:
 *  Sets the drive mode for the pin (DM).
 *
@@ -169,11 +172,14 @@
 *
 *******************************************************************************/
 #define CyPins_SetPinDriveMode(pinPC, mode) \
-        ( *(reg8 *)(pinPC) = (*(reg8 *)(pinPC) & ~PC_DRIVE_MODE_MASK) | ((mode) & PC_DRIVE_MODE_MASK) )
+            ( *(reg8 *)(pinPC) = (*(reg8 *)(pinPC) & ((uint8)(~CY_PINS_PC_DRIVE_MODE_MASK))) | \
+            ((mode) & CY_PINS_PC_DRIVE_MODE_MASK))
+
 
 /*******************************************************************************
 * Macro Name: CyPins_ReadPinDriveMode
 ********************************************************************************
+*
 * Summary:
 *  Reads the drive mode for the pin (DM).
 *
@@ -200,12 +206,13 @@
 *   PIN_DM_RES_UPDWN    Resistive pull up/down
 *
 *******************************************************************************/
-#define CyPins_ReadPinDriveMode(pinPC)      (*(reg8 *)(pinPC) & PC_DRIVE_MODE_MASK)
+#define CyPins_ReadPinDriveMode(pinPC)      (*(reg8 *)(pinPC) & CY_PINS_PC_DRIVE_MODE_MASK)
 
 
 /*******************************************************************************
 * Macro Name: CyPins_FastSlew
 ********************************************************************************
+*
 * Summary:
 *  Set the slew rate for the pin to fast edge rate.
 *  Note that this only applies for pins in strong output drive modes,
@@ -224,12 +231,13 @@
 *   None
 *
 *******************************************************************************/
-#define CyPins_FastSlew(pinPC)      (*(reg8 *)(pinPC) = (*(reg8 *)(pinPC) & PC_PIN_FASTSLEW))
+#define CyPins_FastSlew(pinPC)      (*(reg8 *)(pinPC) = (*(reg8 *)(pinPC) & CY_PINS_PC_PIN_FASTSLEW))
 
 
 /*******************************************************************************
 * Macro Name: CyPins_SlowSlew
 ********************************************************************************
+*
 * Summary:
 *  Set the slew rate for the pin to slow edge rate.
 *  Note that this only applies for pins in strong output drive modes,
@@ -247,8 +255,39 @@
 *   None
 *
 *******************************************************************************/
-#define CyPins_SlowSlew(pinPC)      (*(reg8 *)(pinPC) = (*(reg8 *)(pinPC) | PC_PIN_SLOWSLEW))
+#define CyPins_SlowSlew(pinPC)      (*(reg8 *)(pinPC) = (*(reg8 *)(pinPC) | CY_PINS_PC_PIN_SLOWSLEW))
 
+
+/*******************************************************************************
+* Following code are OBSOLETE and must not be used starting from cy_boot 3.30
+*******************************************************************************/
+#define PC_DRIVE_MODE_SHIFT (CY_PINS_PC_DRIVE_MODE_SHIFT)
+#define PC_DRIVE_MODE_MASK  (CY_PINS_PC_DRIVE_MODE_MASK)
+#define PC_DRIVE_MODE_0     (CY_PINS_PC_DRIVE_MODE_0)
+#define PC_DRIVE_MODE_1     (CY_PINS_PC_DRIVE_MODE_1)
+#define PC_DRIVE_MODE_2     (CY_PINS_PC_DRIVE_MODE_2)
+#define PC_DRIVE_MODE_3     (CY_PINS_PC_DRIVE_MODE_3)
+#define PC_DRIVE_MODE_4     (CY_PINS_PC_DRIVE_MODE_4)
+#define PC_DRIVE_MODE_5     (CY_PINS_PC_DRIVE_MODE_5)
+#define PC_DRIVE_MODE_6     (CY_PINS_PC_DRIVE_MODE_6)
+#define PC_DRIVE_MODE_7     (CY_PINS_PC_DRIVE_MODE_7)
+
+#define PIN_DM_ALG_HIZ      (CY_PINS_DM_ALG_HIZ)
+#define PIN_DM_DIG_HIZ      (CY_PINS_DM_DIG_HIZ)
+#define PIN_DM_RES_UP       (CY_PINS_DM_RES_UP)
+#define PIN_DM_RES_DWN      (CY_PINS_DM_RES_DWN)
+#define PIN_DM_OD_LO        (CY_PINS_DM_OD_LO)
+#define PIN_DM_OD_HI        (CY_PINS_DM_OD_HI)
+#define PIN_DM_STRONG       (CY_PINS_DM_STRONG)
+#define PIN_DM_RES_UPDWN    (CY_PINS_DM_RES_UPDWN)
+
+#define PC_DATAOUT          (CY_PINS_PC_DATAOUT)
+#define PC_PIN_FASTSLEW     (CY_PINS_PC_PIN_FASTSLEW)
+#define PC_PIN_SLOWSLEW     (CY_PINS_PC_PIN_SLOWSLEW)
+#define PC_PIN_STATE        (CY_PINS_PC_PIN_STATE)
+#define PC_BIDIR_EN         (CY_PINS_PC_BIDIR_EN)
+#define PC_SLEW             (CY_PINS_PC_SLEW)
+#define PC_BYPASS           (CY_PINS_PC_BYPASS)
 
 #endif /* (CY_BOOT_CYPINS_H) */
 

@@ -1,6 +1,6 @@
 /*******************************************************************************
 * FILENAME: cyutils.c
-* Version 3.10
+* Version 3.30
 *
 *  Description:
 *   CyUtils provides function to handle 24-bit value writes.
@@ -14,7 +14,7 @@
 
 #include "cytypes.h"
 
-#if defined(__GNUC__) || defined(__ARMCC_VERSION)
+#if (!CY_PSOC3)
 
     /***************************************************************************
     * Function Name: CySetReg24
@@ -34,18 +34,54 @@
     *  No
     *
     ***************************************************************************/
-    void CySetReg24(uint8 volatile *addr, uint32 value)
+    void CySetReg24(uint32 volatile * addr, uint32 value)
     {
-        *addr = (uint8)value;
-        addr++;
-        value >>= 8;
-        *addr = (uint8)value;
-        addr++;
-        value >>= 8;
-        *addr = (uint8)value;
+        uint8 volatile *tmpAddr;
+
+        tmpAddr = (uint8 volatile *) addr;
+
+        tmpAddr[0u] = (uint8) value;
+        tmpAddr[1u] = (uint8) (value >> 8u);
+        tmpAddr[2u] = (uint8) (value >> 16u);
     }
 
-#endif  /* defined(__GNUC__) || defined(__ARMCC_VERSION) */
+
+    #if(CY_PSOC4)
+
+        /***************************************************************************
+        * Function Name: CyGetReg24
+        ****************************************************************************
+        *
+        * Summary:
+        *  Reads the 24-bit value from the specified register.
+        *
+        * Parameters:
+        *  addr : adress where data must be read
+        *
+        * Return:
+        *  None
+        *
+        * Reentrant:
+        *  No
+        *
+        ***************************************************************************/
+        uint32 CyGetReg24(uint32 volatile * addr)
+        {
+            uint8 volatile *tmpAddr;
+            uint32 value;
+
+            tmpAddr = (uint8 volatile *) addr;
+
+            value  =  (uint32) tmpAddr[0u];
+            value |= ((uint32) tmpAddr[1u] << 8u );
+            value |= ((uint32) tmpAddr[2u] << 16u);
+
+            return(value);
+        }
+
+    #endif  /*(CY_PSOC4)*/
+
+#endif  /* (!CY_PSOC3) */
 
 
 /* [] END OF FILE */

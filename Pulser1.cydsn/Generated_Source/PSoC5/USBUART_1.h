@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: USBUART_1.h
-* Version 2.30
+* Version 2.50
 *
 * Description:
 *  Header File for the USFS component. Contains prototypes and constant values.
@@ -28,7 +28,7 @@
 /* Check to see if required defines such as CY_PSOC5LP are available */
 /* They are defined starting with cy_boot v3.0 */
 #if !defined (CY_PSOC5LP)
-    #error Component USBFS_v2_30 requires cy_boot v3.0 or later
+    #error Component USBFS_v2_50 requires cy_boot v3.0 or later
 #endif /* (CY_PSOC5LP) */
 
 
@@ -747,8 +747,10 @@ void   USBUART_1_Resume(void) ;
 #define USBUART_1_USBIO_CR0_REG      (* (reg8 *) USBUART_1_USB__USBIO_CR0)
 #define USBUART_1_USBIO_CR1_PTR      (  (reg8 *) USBUART_1_USB__USBIO_CR1)
 #define USBUART_1_USBIO_CR1_REG      (* (reg8 *) USBUART_1_USB__USBIO_CR1)
-#define USBUART_1_USBIO_CR2_PTR      (  (reg8 *) USBUART_1_USB__USBIO_CR2)
-#define USBUART_1_USBIO_CR2_REG      (* (reg8 *) USBUART_1_USB__USBIO_CR2)
+#if(!CY_PSOC5LP)
+    #define USBUART_1_USBIO_CR2_PTR      (  (reg8 *) USBUART_1_USB__USBIO_CR2)
+    #define USBUART_1_USBIO_CR2_REG      (* (reg8 *) USBUART_1_USB__USBIO_CR2)
+#endif /* End CY_PSOC5LP */
 
 #define USBUART_1_DIE_ID             CYDEV_FLSHID_CUST_TABLES_BASE
 
@@ -1097,7 +1099,11 @@ void   USBUART_1_Resume(void) ;
 #define USBUART_1_ARB_CFG_AUTO_DMA           (0x40u)
 #define USBUART_1_ARB_CFG_CFG_CPM            (0x80u)
 
-#define USBUART_1_ARB_EPX_INT_MASK           (0x1Fu)
+#if(USBUART_1_EP_MM == USBUART_1__EP_DMAAUTO)
+    #define USBUART_1_ARB_EPX_INT_MASK           (0x1Du)
+#else    
+    #define USBUART_1_ARB_EPX_INT_MASK           (0x1Fu)
+#endif /* End USBUART_1_EP_MM == USBUART_1__EP_DMAAUTO */
 #define USBUART_1_ARB_INT_MASK              ((USBUART_1_DMA1_REMOVE ^ 1) | \
                                                     (USBUART_1_DMA2_REMOVE ^ 1) << 1 | \
                                                     (USBUART_1_DMA3_REMOVE ^ 1) << 2 | \

@@ -1,24 +1,25 @@
 /*******************************************************************************
 * File Name: Clock_PWM_PulseLEDs.h
-* Version 1.70
+* Version 2.0
 *
 *  Description:
 *   Provides the function and constant definitions for the clock component.
 *
-* Note:
+*  Note:
 *
 ********************************************************************************
-* Copyright 2008-2010, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions, 
 * disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
-********************************************************************************/
+*******************************************************************************/
 
 #if !defined(CY_CLOCK_Clock_PWM_PulseLEDs_H)
 #define CY_CLOCK_Clock_PWM_PulseLEDs_H
 
 #include <cytypes.h>
 #include <cyfitter.h>
+
 
 /***************************************
 * Conditional Compilation Parameters
@@ -27,8 +28,9 @@
 /* Check to see if required defines such as CY_PSOC5LP are available */
 /* They are defined starting with cy_boot v3.0 */
 #if !defined (CY_PSOC5LP)
-    #error Component cy_clock_v1_70 requires cy_boot v3.0 or later
+    #error Component cy_clock_v2_0 requires cy_boot v3.0 or later
 #endif /* (CY_PSOC5LP) */
+
 
 /***************************************
 *        Function Prototypes
@@ -39,10 +41,11 @@ void Clock_PWM_PulseLEDs_Stop(void) ;
 
 #if(CY_PSOC3 || CY_PSOC5LP)
 void Clock_PWM_PulseLEDs_StopBlock(void) ;
-#endif
+#endif /* (CY_PSOC3 || CY_PSOC5LP) */
 
 void Clock_PWM_PulseLEDs_StandbyPower(uint8 state) ;
-void Clock_PWM_PulseLEDs_SetDividerRegister(uint16 clkDivider, uint8 reset) ;
+void Clock_PWM_PulseLEDs_SetDividerRegister(uint16 clkDivider, uint8 restart) 
+                                ;
 uint16 Clock_PWM_PulseLEDs_GetDividerRegister(void) ;
 void Clock_PWM_PulseLEDs_SetModeRegister(uint8 modeBitMask) ;
 void Clock_PWM_PulseLEDs_ClearModeRegister(uint8 modeBitMask) ;
@@ -52,7 +55,7 @@ uint8 Clock_PWM_PulseLEDs_GetSourceRegister(void) ;
 #if defined(Clock_PWM_PulseLEDs__CFG3)
 void Clock_PWM_PulseLEDs_SetPhaseRegister(uint8 clkPhase) ;
 uint8 Clock_PWM_PulseLEDs_GetPhaseRegister(void) ;
-#endif
+#endif /* defined(Clock_PWM_PulseLEDs__CFG3) */
 
 #define Clock_PWM_PulseLEDs_Enable()                       Clock_PWM_PulseLEDs_Start()
 #define Clock_PWM_PulseLEDs_Disable()                      Clock_PWM_PulseLEDs_Stop()
@@ -63,7 +66,7 @@ uint8 Clock_PWM_PulseLEDs_GetPhaseRegister(void) ;
 #if defined(Clock_PWM_PulseLEDs__CFG3)
 #define Clock_PWM_PulseLEDs_SetPhase(clkPhase)             Clock_PWM_PulseLEDs_SetPhaseRegister(clkPhase)
 #define Clock_PWM_PulseLEDs_SetPhaseValue(clkPhase)        Clock_PWM_PulseLEDs_SetPhaseRegister((clkPhase) + 1)
-#endif
+#endif /* defined(Clock_PWM_PulseLEDs__CFG3) */
 
 
 /***************************************
@@ -95,7 +98,7 @@ uint8 Clock_PWM_PulseLEDs_GetPhaseRegister(void) ;
 /* Analog clock phase configuration register */
 #define Clock_PWM_PulseLEDs_PHASE              (* (reg8 *) Clock_PWM_PulseLEDs__CFG3)
 #define Clock_PWM_PulseLEDs_PHASE_PTR          ((reg8 *) Clock_PWM_PulseLEDs__CFG3)
-#endif
+#endif /* defined(Clock_PWM_PulseLEDs__CFG3) */
 
 
 /**************************************
@@ -113,7 +116,7 @@ uint8 Clock_PWM_PulseLEDs_GetPhaseRegister(void) ;
 #if defined(Clock_PWM_PulseLEDs__CFG3)
 /* CFG3 phase mask */
 #define Clock_PWM_PulseLEDs_PHASE_MASK         Clock_PWM_PulseLEDs__CFG3_PHASE_DLY_MASK
-#endif
+#endif /* defined(Clock_PWM_PulseLEDs__CFG3) */
 
 #endif /* CY_CLOCK_Clock_PWM_PulseLEDs_H */
 

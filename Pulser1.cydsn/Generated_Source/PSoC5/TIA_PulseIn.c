@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: TIA_PulseIn.c  
-* Version 1.91
+* Version 2.0
 *
 * Description:
 *  This file provides the source code to the API for the TIA User Module.
@@ -14,14 +14,19 @@
 * the software package with which this file was provided.
 *******************************************************************************/
 
-#include "cytypes.h"
 #include "TIA_PulseIn.h"
+
+#if (!CY_PSOC5A)
+    #if (CYDEV_VARIABLE_VDDA == 1u)
+        #include "CyScBoostClk.h"
+    #endif /* (CYDEV_VARIABLE_VDDA == 1u) */
+#endif /* (!CY_PSOC5A) */
 
 /* Fixed configuration of SC Block only performed once */
 uint8 TIA_PulseIn_initVar = 0u;
 
 #if (CY_PSOC5A)
-    static TIA_PulseIn_BACKUP_STRUCT  TIA_PulseIn_backup;
+    static TIA_PulseIn_BACKUP_STRUCT  TIA_PulseIn_P5backup;
 #endif /* (CY_PSOC5A) */
 
 
@@ -95,35 +100,40 @@ void TIA_PulseIn_Init(void)
 *******************************************************************************/
 void TIA_PulseIn_Enable(void) 
 {
+	/* This is to restore the value of register CR1 and CR2 which is saved 
+      in prior to the modifications in stop() API */
+	#if (CY_PSOC5A)
+        if(TIA_PulseIn_P5backup.enableState == 1u)
+        {
+			TIA_PulseIn_CR1_REG = TIA_PulseIn_P5backup.scCR1Reg;
+            TIA_PulseIn_CR2_REG =TIA_PulseIn_P5backup.scCR2Reg;
+            TIA_PulseIn_P5backup.enableState = 0u;
+        }
+    #endif
     /* Enable power to Amp in Active mode */
     TIA_PulseIn_PM_ACT_CFG_REG |= TIA_PulseIn_ACT_PWR_EN;
 
     /* Enable the power to Amp in Alternative active mode*/
     TIA_PulseIn_PM_STBY_CFG_REG |= TIA_PulseIn_STBY_PWR_EN;
     
-    /* Enable SC Block boost clock control for low Vdda operation */
-    #if(TIA_PulseIn_CYDEV_VDDA_MV < TIA_PulseIn_MINIMUM_VDDA_THRESHOLD_MV)
-        TIA_PulseIn_BSTCLK_REG |= TIA_PulseIn_BST_CLK_EN | CyScBoostClk__INDEX; 
-    #endif /* TIA_PulseIn_MIN_VDDA */
+    TIA_PulseIn_PUMP_CR1_REG |= TIA_PulseIn_PUMP_CR1_SC_CLKSEL;
     
-    /* PSoC5A */
-    #if (CY_PSOC5A)
-        /* Enable Pump only if voltage is below threshold */
-        if (TIA_PulseIn_CYDEV_VDDA_MV < TIA_PulseIn_MINIMUM_VDDA_THRESHOLD_MV)
-        {
-            TIA_PulseIn_SC_MISC_REG |= TIA_PulseIn_PUMP_FORCE;
-        }
-        
-    /* PSoC3, PSoC5LP */
-    #elif (CY_PSOC3 || CY_PSOC5LP)
-        /* Enable charge Pump clock for SC block */
-        TIA_PulseIn_PUMP_CR1_REG |= TIA_PulseIn_PUMP_CR1_SC_CLKSEL;
-        /* Enable Pump only if voltage is below threshold */
-        if (TIA_PulseIn_CYDEV_VDDA_MV < TIA_PulseIn_MINIMUM_VDDA_THRESHOLD_MV)
-        {
-            TIA_PulseIn_SC_MISC_REG |= TIA_PulseIn_PUMP_FORCE;
-        }
-    #endif /* (CY_PSOC5A) */
+    #if (!CY_PSOC5A)
+        #if (CYDEV_VARIABLE_VDDA == 1u)
+            if(CyScPumpEnabled == 1u)
+            {
+                TIA_PulseIn_BSTCLK_REG &= (uint8)(~TIA_PulseIn_BST_CLK_INDEX_MASK);
+                TIA_PulseIn_BSTCLK_REG |= TIA_PulseIn_BST_CLK_EN | CyScBoostClk__INDEX;
+                TIA_PulseIn_SC_MISC_REG |= TIA_PulseIn_PUMP_FORCE;
+                CyScBoostClk_Start();
+            }
+            else
+            {
+                TIA_PulseIn_BSTCLK_REG &= (uint8)(~TIA_PulseIn_BST_CLK_EN);
+                TIA_PulseIn_SC_MISC_REG &= (uint8)(~TIA_PulseIn_PUMP_FORCE);
+            }
+        #endif /* (CYDEV_VARIABLE_VDDA == 1u) */
+    #endif /* (!CY_PSOC5A) */
 }
 
 
@@ -154,17 +164,6 @@ void TIA_PulseIn_Enable(void)
 *******************************************************************************/
 void TIA_PulseIn_Start(void) 
 {
-
-    /* This is to restore the value of register CR1 and CR2 which is saved 
-      in prior to the modifications in stop() API */
-    #if (CY_PSOC5A)
-    if(TIA_PulseIn_initVar == 1u)
-    {
-        TIA_PulseIn_CR1_REG = TIA_PulseIn_backup.scCr1Reg;
-        TIA_PulseIn_CR2_REG =TIA_PulseIn_backup.scCr2Reg;
-    }
-    #endif /* (CY_PSOC5A) */
-
     if(TIA_PulseIn_initVar == 0u)
     {
         TIA_PulseIn_initVar = 1u;  
@@ -179,7 +178,7 @@ void TIA_PulseIn_Start(void)
 * Function Name: TIA_PulseIn_Stop
 ********************************************************************************
 *
-* Summary:
+* Summary: 
 *  Disables power to SC block.
 *
 * Parameters:
@@ -191,29 +190,32 @@ void TIA_PulseIn_Start(void)
 *******************************************************************************/
 void TIA_PulseIn_Stop(void) 
 {
-    /* Disable pumps only if only one SC block is in use */
-    if (TIA_PulseIn_PM_ACT_CFG_REG == TIA_PulseIn_ACT_PWR_EN)
-    {
-        TIA_PulseIn_SC_MISC_REG &= ~TIA_PulseIn_PUMP_FORCE;
-    }
-
-    /* Disble power to the Amp in Active mode template*/
-    TIA_PulseIn_PM_ACT_CFG_REG &= ~TIA_PulseIn_ACT_PWR_EN;
+     /* Disble power to the Amp in Active mode template*/
+    TIA_PulseIn_PM_ACT_CFG_REG &= (uint8)(~TIA_PulseIn_ACT_PWR_EN);
 
     /* Disble power to the Amp in Alternative active mode template*/
-    TIA_PulseIn_PM_STBY_CFG_REG &= ~TIA_PulseIn_STBY_PWR_EN;
-
-    /* Disable SC Block boost clk control, if used (MinVdda < 2.7V) */
-    #if(TIA_PulseIn_CYDEV_VDDA_MV < TIA_PulseIn_MINIMUM_VDDA_THRESHOLD_MV)
-        TIA_PulseIn_BSTCLK_REG &= ~TIA_PulseIn_BST_CLK_EN;
-    #endif /* TIA_PulseIn_MIN_VDDA */
-
+    TIA_PulseIn_PM_STBY_CFG_REG &= (uint8)(~TIA_PulseIn_STBY_PWR_EN);
+    
+    #if (!CY_PSOC5A)
+        #if (CYDEV_VARIABLE_VDDA == 1u)
+            TIA_PulseIn_BSTCLK_REG &= (uint8)(~TIA_PulseIn_BST_CLK_EN);
+            /* Disable pumps only if there aren't any SC block in use */
+            if ((TIA_PulseIn_PM_ACT_CFG_REG & TIA_PulseIn_PM_ACT_CFG_MASK) == 0u)
+            {
+                TIA_PulseIn_SC_MISC_REG &= (uint8)(~TIA_PulseIn_PUMP_FORCE);
+                TIA_PulseIn_PUMP_CR1_REG &= (uint8)(~TIA_PulseIn_PUMP_CR1_SC_CLKSEL);
+                CyScBoostClk_Stop();
+            }
+        #endif /* CYDEV_VARIABLE_VDDA == 1u */
+    #endif /* (CY_PSOC3 || CY_PSOC5LP) */
+        
     /* This sets TIA in zero current mode and output routes are valid */
     #if (CY_PSOC5A)
-        TIA_PulseIn_backup.scCr1Reg = TIA_PulseIn_CR1_REG;
-        TIA_PulseIn_backup.scCr2Reg = TIA_PulseIn_CR2_REG;
-        TIA_PulseIn_CR1_REG = TIA_PulseIn_SC_REG_CLR;
-        TIA_PulseIn_CR2_REG = TIA_PulseIn_SC_REG_CLR;
+        TIA_PulseIn_P5backup.scCR1Reg = TIA_PulseIn_CR1_REG;
+        TIA_PulseIn_P5backup.scCR2Reg = TIA_PulseIn_CR2_REG;
+        TIA_PulseIn_CR1_REG = 0x00u;
+        TIA_PulseIn_CR2_REG = 0x00u;
+        TIA_PulseIn_P5backup.enableState = 1u;
     #endif /* (CY_PSOC5A) */
 }
 
@@ -237,7 +239,7 @@ void TIA_PulseIn_SetPower(uint8 power)
     uint8 tmpCR;
 
     /* Sets drive bits in SC Block Control Register 1:  SCxx_CR[1:0] */
-    tmpCR = TIA_PulseIn_CR1_REG & ~TIA_PulseIn_DRIVE_MASK;
+    tmpCR = TIA_PulseIn_CR1_REG & (uint8)(~TIA_PulseIn_DRIVE_MASK);
     tmpCR |= (power & TIA_PulseIn_DRIVE_MASK);
     TIA_PulseIn_CR1_REG = tmpCR;  
 }
@@ -264,10 +266,10 @@ void TIA_PulseIn_SetResFB(uint8 res_feedback)
     if( res_feedback <= TIA_PulseIn_RES_FEEDBACK_MAX)
     {
         /* Clear SCxx_CR2 rval bits - SCxx_CR2[6:4] */
-        TIA_PulseIn_CR2_REG &= ~TIA_PulseIn_RVAL_MASK;
+        TIA_PulseIn_CR2_REG &= (uint8)(~TIA_PulseIn_RVAL_MASK);
 
         /* Set resistive feedback value */
-        TIA_PulseIn_CR2_REG |= (res_feedback << 4);
+        TIA_PulseIn_CR2_REG |= (uint8)(res_feedback << 4);
     }
 }
 
@@ -293,10 +295,10 @@ void TIA_PulseIn_SetCapFB(uint8 cap_feedback)
     if( cap_feedback <= TIA_PulseIn_CAP_FEEDBACK_MAX)
     {
         /* Clear SCxx_CR2 redc bits -  - CR2[3:2] */
-        TIA_PulseIn_CR2_REG &= ~TIA_PulseIn_REDC_MASK;
+        TIA_PulseIn_CR2_REG &= (uint8)(~TIA_PulseIn_REDC_MASK);
 
         /* Set redc capacitive feedback value */
-        TIA_PulseIn_CR2_REG |= (cap_feedback << 2);
+        TIA_PulseIn_CR2_REG |= (uint8)(cap_feedback << 2);
     }
 }
 

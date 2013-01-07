@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: CapSense_1_TunerHelper.c
-* Version 3.20
+* Version 3.30
 *
 * Description:
 *  This file provides the source code of Tuner helper APIs for the CapSense CSD 

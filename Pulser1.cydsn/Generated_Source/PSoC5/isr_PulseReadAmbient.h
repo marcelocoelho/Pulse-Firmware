@@ -1,19 +1,19 @@
 /*******************************************************************************
 * File Name: isr_PulseReadAmbient.h
-* Version 1.60
+* Version 1.70
 *
 *  Description:
 *   Provides the function definitions for the Interrupt Controller.
 *
 *
 ********************************************************************************
-* Copyright 2008-2010, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions, 
 * disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
-********************************************************************************/
-#if !defined(__isr_PulseReadAmbient_INTC_H__)
-#define __isr_PulseReadAmbient_INTC_H__
+*******************************************************************************/
+#if !defined(CY_ISR_isr_PulseReadAmbient_H)
+#define CY_ISR_isr_PulseReadAmbient_H
 
 
 #include <cytypes.h>
@@ -22,22 +22,22 @@
 /* Interrupt Controller API. */
 void isr_PulseReadAmbient_Start(void);
 void isr_PulseReadAmbient_StartEx(cyisraddress address);
-void isr_PulseReadAmbient_Stop(void) ;
+void isr_PulseReadAmbient_Stop(void);
 
 CY_ISR_PROTO(isr_PulseReadAmbient_Interrupt);
 
-void isr_PulseReadAmbient_SetVector(cyisraddress address) ;
-cyisraddress isr_PulseReadAmbient_GetVector(void) ;
+void isr_PulseReadAmbient_SetVector(cyisraddress address);
+cyisraddress isr_PulseReadAmbient_GetVector(void);
 
-void isr_PulseReadAmbient_SetPriority(uint8 priority) ;
-uint8 isr_PulseReadAmbient_GetPriority(void) ;
+void isr_PulseReadAmbient_SetPriority(uint8 priority);
+uint8 isr_PulseReadAmbient_GetPriority(void);
 
-void isr_PulseReadAmbient_Enable(void) ;
-uint8 isr_PulseReadAmbient_GetState(void) ;
-void isr_PulseReadAmbient_Disable(void) ;
+void isr_PulseReadAmbient_Enable(void);
+uint8 isr_PulseReadAmbient_GetState(void);
+void isr_PulseReadAmbient_Disable(void);
 
-void isr_PulseReadAmbient_SetPending(void) ;
-void isr_PulseReadAmbient_ClearPending(void) ;
+void isr_PulseReadAmbient_SetPending(void);
+void isr_PulseReadAmbient_ClearPending(void);
 
 
 /* Interrupt Controller Constants */
@@ -64,6 +64,7 @@ void isr_PulseReadAmbient_ClearPending(void) ;
 #define isr_PulseReadAmbient_INTC_CLR_PD            ((reg32 *) isr_PulseReadAmbient__INTC_CLR_PD_REG)
 
 
+#endif /* CY_ISR_isr_PulseReadAmbient_H */
 
-/* __isr_PulseReadAmbient_INTC_H__ */
-#endif
+
+/* [] END OF FILE */

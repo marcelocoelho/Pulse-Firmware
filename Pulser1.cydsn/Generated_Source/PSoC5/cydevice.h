@@ -1,7 +1,7 @@
 /*******************************************************************************
 * FILENAME: cydevice.h
 * OBSOLETE: Do not use this file. Use the _trm version instead.
-* PSoC Creator 2.1
+* PSoC Creator 2.2
 *
 * DESCRIPTION:
 * This file provides all of the address values for the entire PSoC device.
@@ -15,7 +15,6 @@
 
 #if !defined(CYDEVICE_H)
 #define CYDEVICE_H
-#include <cytypes.h>
 #define CYDEV_FLASH_BASE 0x00000000u
 #define CYDEV_FLASH_SIZE 0x00040000u
 #define CYDEV_FLASH_DATA_MBASE 0x00000000u

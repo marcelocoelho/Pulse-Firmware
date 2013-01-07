@@ -1,9 +1,9 @@
 /*******************************************************************************
 * File Name: ShiftReg_DelaySenseIR_PM.c
-* Version 2.10
+* Version 2.20
 *
 * Description:
-*  This file provides the API source code for sleep mode support for Shift 
+*  This file provides the API source code for sleep mode support for Shift
 *  Register component.
 *
 * Note:
@@ -17,11 +17,16 @@
 
 #include "ShiftReg_DelaySenseIR.h"
 
-
-static ShiftReg_DelaySenseIR_BACKUP_STRUCT ShiftReg_DelaySenseIR_backup = \
+static ShiftReg_DelaySenseIR_BACKUP_STRUCT ShiftReg_DelaySenseIR_backup =
 {
-    /* enable state - disabled */
-    0u
+    ShiftReg_DelaySenseIR_DISABLED,
+
+    ((uint32) ShiftReg_DelaySenseIR_DEFAULT_A0),
+    ((uint32) ShiftReg_DelaySenseIR_DEFAULT_A1),
+
+    #if(CY_UDB_V0)
+        ((uint32) ShiftReg_DelaySenseIR_INT_SRC),
+    #endif /* (CY_UDB_V0) */
 };
 
 
@@ -44,18 +49,13 @@ static ShiftReg_DelaySenseIR_BACKUP_STRUCT ShiftReg_DelaySenseIR_backup = \
 *******************************************************************************/
 void ShiftReg_DelaySenseIR_SaveConfig(void) 
 {
-    /* Store A0, A1 and Status Mask registers */
-    #if (CY_UDB_V0)
-       ShiftReg_DelaySenseIR_backup.saveSrA0Reg   = CY_GET_REG32(ShiftReg_DelaySenseIR_SHIFT_REG_LSB_PTR);
-       ShiftReg_DelaySenseIR_backup.saveSrA1Reg   = CY_GET_REG32(ShiftReg_DelaySenseIR_SHIFT_REG_VALUE_LSB_PTR);
-       ShiftReg_DelaySenseIR_backup.saveSrIntMask = ShiftReg_DelaySenseIR_SR_STATUS_MASK;
+    /* Store working registers A0 and A1 */
+    ShiftReg_DelaySenseIR_backup.saveSrA0Reg   = CY_GET_REG32(ShiftReg_DelaySenseIR_SHIFT_REG_LSB_PTR);
+    ShiftReg_DelaySenseIR_backup.saveSrA1Reg   = CY_GET_REG32(ShiftReg_DelaySenseIR_SHIFT_REG_VALUE_LSB_PTR);
 
-    #else
-    /* Store A0, A1 only (not need to save Status Mask register  in ES3 silicon) */
-       ShiftReg_DelaySenseIR_backup.saveSrA0Reg   = CY_GET_REG32(ShiftReg_DelaySenseIR_SHIFT_REG_LSB_PTR);
-       ShiftReg_DelaySenseIR_backup.saveSrA1Reg   = CY_GET_REG32(ShiftReg_DelaySenseIR_SHIFT_REG_VALUE_LSB_PTR);
-
-    #endif /* CY_UDB_V0 */
+    #if(CY_UDB_V0)
+        ShiftReg_DelaySenseIR_backup.saveSrIntMask = ShiftReg_DelaySenseIR_SR_STATUS_MASK;
+    #endif /* (CY_UDB_V0) */
 }
 
 
@@ -75,16 +75,13 @@ void ShiftReg_DelaySenseIR_SaveConfig(void)
 *******************************************************************************/
 void ShiftReg_DelaySenseIR_RestoreConfig(void) 
 {
-    /* Restore tha data, saved by SaveConfig()function */
-    #if (CY_UDB_V0)
-        CY_SET_REG32(ShiftReg_DelaySenseIR_SHIFT_REG_LSB_PTR, ShiftReg_DelaySenseIR_backup.saveSrA0Reg);
-            CY_SET_REG32(ShiftReg_DelaySenseIR_SHIFT_REG_VALUE_LSB_PTR, ShiftReg_DelaySenseIR_backup.saveSrA1Reg);
-            ShiftReg_DelaySenseIR_SR_STATUS_MASK = ShiftReg_DelaySenseIR_backup.saveSrIntMask;
-    #else
-            CY_SET_REG32(ShiftReg_DelaySenseIR_SHIFT_REG_LSB_PTR, ShiftReg_DelaySenseIR_backup.saveSrA0Reg);
-            CY_SET_REG32(ShiftReg_DelaySenseIR_SHIFT_REG_VALUE_LSB_PTR, ShiftReg_DelaySenseIR_backup.saveSrA1Reg);
+    /* Restore working registers A0 and A1 */
+    CY_SET_REG32(ShiftReg_DelaySenseIR_SHIFT_REG_LSB_PTR, ShiftReg_DelaySenseIR_backup.saveSrA0Reg);
+    CY_SET_REG32(ShiftReg_DelaySenseIR_SHIFT_REG_VALUE_LSB_PTR, ShiftReg_DelaySenseIR_backup.saveSrA1Reg);
 
-    #endif /* CY_UDB_V0 */
+    #if(CY_UDB_V0)
+        ShiftReg_DelaySenseIR_SR_STATUS_MASK = ((uint8) ShiftReg_DelaySenseIR_backup.saveSrIntMask);
+    #endif /* (CY_UDB_V0) */
 }
 
 
@@ -102,20 +99,13 @@ void ShiftReg_DelaySenseIR_RestoreConfig(void)
 *  None.
 *
 * Reentrant:
-*  No. 
+*  No.
 *
 *******************************************************************************/
 void ShiftReg_DelaySenseIR_Sleep(void) 
 {
-    if((ShiftReg_DelaySenseIR_SR_CONTROL & ShiftReg_DelaySenseIR_CLK_EN) == ShiftReg_DelaySenseIR_CLK_EN)
-    {
-        ShiftReg_DelaySenseIR_backup.enableState = 1u;
-    }
-    else
-    {
-        ShiftReg_DelaySenseIR_backup.enableState = 0u;
-    }
-    
+    ShiftReg_DelaySenseIR_backup.enableState = ((uint8) ShiftReg_DelaySenseIR_IS_ENABLED);
+
     ShiftReg_DelaySenseIR_Stop();
     ShiftReg_DelaySenseIR_SaveConfig();
 }
@@ -138,11 +128,12 @@ void ShiftReg_DelaySenseIR_Sleep(void)
 void ShiftReg_DelaySenseIR_Wakeup(void) 
 {
     ShiftReg_DelaySenseIR_RestoreConfig();
-    
-    if(ShiftReg_DelaySenseIR_backup.enableState == 1u)
+
+    if(0u != ShiftReg_DelaySenseIR_backup.enableState)
     {
-        ShiftReg_DelaySenseIR_Enable();   
+        ShiftReg_DelaySenseIR_Enable();
     }
 }
+
 
 /* [] END OF FILE */

@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: PWM_PulseLEDs.c  
-* Version 2.20
+* Version 2.30
 *
 * Description:
 *  The PWM User Module consist of an 8 or 16-bit counter with two 8 or 16-bit
@@ -37,10 +37,10 @@ uint8 PWM_PulseLEDs_initVar = 0u;
 *  the EnableInt command should be called if interrupt generation is required.
 *
 * Parameters:  
-*  void  
+*  None  
 *
 * Return: 
-*  void
+*  None
 *
 * Global variables:
 *  PWM_PulseLEDs_initVar: Is modified when this function is called for the 
@@ -70,10 +70,10 @@ void PWM_PulseLEDs_Start(void)
 *  PWM_PulseLEDs_Start().
 *
 * Parameters:  
-*  void
+*  None
 *
 * Return: 
-*  void
+*  None
 *
 *******************************************************************************/
 void PWM_PulseLEDs_Init(void) 
@@ -98,25 +98,25 @@ void PWM_PulseLEDs_Init(void)
                 
         /* Set the default Compare Mode */
         #if(CY_PSOC5A)
-                ctrl = PWM_PulseLEDs_CONTROL2 & ~PWM_PulseLEDs_CTRL_CMPMODE1_MASK;
+                ctrl = PWM_PulseLEDs_CONTROL2 & ((uint8)(~PWM_PulseLEDs_CTRL_CMPMODE1_MASK));
                 PWM_PulseLEDs_CONTROL2 = ctrl | PWM_PulseLEDs_DEFAULT_COMPARE1_MODE;
         #endif /* (CY_PSOC5A) */
         #if(CY_PSOC3 || CY_PSOC5LP)
-                ctrl = PWM_PulseLEDs_CONTROL3 & ~PWM_PulseLEDs_CTRL_CMPMODE1_MASK;
+                ctrl = PWM_PulseLEDs_CONTROL3 & ((uint8 )(~PWM_PulseLEDs_CTRL_CMPMODE1_MASK));
                 PWM_PulseLEDs_CONTROL3 = ctrl | PWM_PulseLEDs_DEFAULT_COMPARE1_MODE;
         #endif /* (CY_PSOC3 || CY_PSOC5LP) */
         
          /* Clear and Set SYNCTC and SYNCCMP bits of RT1 register */
-        PWM_PulseLEDs_RT1 &= ~PWM_PulseLEDs_RT1_MASK;
+        PWM_PulseLEDs_RT1 &= ((uint8)(~PWM_PulseLEDs_RT1_MASK));
         PWM_PulseLEDs_RT1 |= PWM_PulseLEDs_SYNC;     
                 
         /*Enable DSI Sync all all inputs of the PWM*/
-        PWM_PulseLEDs_RT1 &= ~(PWM_PulseLEDs_SYNCDSI_MASK);
+        PWM_PulseLEDs_RT1 &= ((uint8)(~PWM_PulseLEDs_SYNCDSI_MASK));
         PWM_PulseLEDs_RT1 |= PWM_PulseLEDs_SYNCDSI_EN;
        
     #elif (PWM_PulseLEDs_UseControl)
         /* Set the default compare mode defined in the parameter */
-        ctrl = PWM_PulseLEDs_CONTROL & ~PWM_PulseLEDs_CTRL_CMPMODE2_MASK & ~PWM_PulseLEDs_CTRL_CMPMODE1_MASK;
+        ctrl = PWM_PulseLEDs_CONTROL & ((uint8)(~PWM_PulseLEDs_CTRL_CMPMODE2_MASK)) & ((uint8)(~PWM_PulseLEDs_CTRL_CMPMODE1_MASK));
         PWM_PulseLEDs_CONTROL = ctrl | PWM_PulseLEDs_DEFAULT_COMPARE2_MODE | 
                                    PWM_PulseLEDs_DEFAULT_COMPARE1_MODE;
     #endif /* (PWM_PulseLEDs_UsingFixedFunction) */
@@ -188,10 +188,10 @@ void PWM_PulseLEDs_Init(void)
 *  Enables the PWM block operation
 *
 * Parameters:  
-*  void
+*  None
 *
 * Return: 
-*  void
+*  None
 *
 * Side Effects: 
 *  This works only if software enable mode is chosen
@@ -221,10 +221,10 @@ void PWM_PulseLEDs_Enable(void)
 *  interrupts.
 *
 * Parameters:  
-*  void  
+*  None  
 *
 * Return: 
-*  void
+*  None
 *
 * Side Effects:
 *  If the Enable mode is set to Hardware only then this function
@@ -234,217 +234,234 @@ void PWM_PulseLEDs_Enable(void)
 void PWM_PulseLEDs_Stop(void) 
 {
     #if (PWM_PulseLEDs_UseControl || PWM_PulseLEDs_UsingFixedFunction)
-        PWM_PulseLEDs_CONTROL &= ~PWM_PulseLEDs_CTRL_ENABLE;
+        PWM_PulseLEDs_CONTROL &= ((uint8)(~PWM_PulseLEDs_CTRL_ENABLE));
     #endif /* (PWM_PulseLEDs_UseControl || PWM_PulseLEDs_UsingFixedFunction) */
     
     /* Globally disable the Fixed Function Block chosen */
     #if (PWM_PulseLEDs_UsingFixedFunction)
-        PWM_PulseLEDs_GLOBAL_ENABLE &= ~PWM_PulseLEDs_BLOCK_EN_MASK;
-        PWM_PulseLEDs_GLOBAL_STBY_ENABLE &= ~PWM_PulseLEDs_BLOCK_STBY_EN_MASK;
+        PWM_PulseLEDs_GLOBAL_ENABLE &= ((uint8)(~PWM_PulseLEDs_BLOCK_EN_MASK));
+        PWM_PulseLEDs_GLOBAL_STBY_ENABLE &= ((uint8)(~PWM_PulseLEDs_BLOCK_STBY_EN_MASK));
     #endif /* (PWM_PulseLEDs_UsingFixedFunction) */
 }
 
 
 #if (PWM_PulseLEDs_UseOneCompareMode)
-#if (PWM_PulseLEDs_CompareMode1SW)
+	#if (PWM_PulseLEDs_CompareMode1SW)
 
 
-/*******************************************************************************
-* Function Name: PWM_PulseLEDs_SetCompareMode
-********************************************************************************
-* 
-* Summary:
-*  This function writes the Compare Mode for the pwm output when in Dither mode,
-*  Center Align Mode or One Output Mode.
-*
-* Parameters:
-*  comparemode:  The new compare mode for the PWM output. Use the compare types
-*                defined in the H file as input arguments.
-*
-* Return:
-*  void
-*
-*******************************************************************************/
-void PWM_PulseLEDs_SetCompareMode(uint8 comparemode) 
-{
-    #if(PWM_PulseLEDs_UsingFixedFunction)
-        #if(CY_PSOC5A)
-            uint8 comparemodemasked = (comparemode << PWM_PulseLEDs_CTRL_CMPMODE1_SHIFT);
-            PWM_PulseLEDs_CONTROL2 &= ~PWM_PulseLEDs_CTRL_CMPMODE1_MASK; /*Clear Existing Data */
-            PWM_PulseLEDs_CONTROL2 |= comparemodemasked;  
-        #endif /* (CY_PSOC5A) */
+		/*******************************************************************************
+		* Function Name: PWM_PulseLEDs_SetCompareMode
+		********************************************************************************
+		* 
+		* Summary:
+		*  This function writes the Compare Mode for the pwm output when in Dither mode,
+		*  Center Align Mode or One Output Mode.
+		*
+		* Parameters:
+		*  comparemode:  The new compare mode for the PWM output. Use the compare types
+		*                defined in the H file as input arguments.
+		*
+		* Return:
+		*  None
+		*
+		*******************************************************************************/
+		void PWM_PulseLEDs_SetCompareMode(uint8 comparemode) 
+		{
+		    #if(PWM_PulseLEDs_UsingFixedFunction)
+            
+                #if(0 != PWM_PulseLEDs_CTRL_CMPMODE1_SHIFT)
+                    uint8 comparemodemasked = ((uint8)((uint8)comparemode << PWM_PulseLEDs_CTRL_CMPMODE1_SHIFT));
+                #else
+                    uint8 comparemodemasked = comparemode;
+                #endif /* (0 != PWM_PulseLEDs_CTRL_CMPMODE1_SHIFT) */
+            
+		        #if(CY_PSOC5A)
+		            PWM_PulseLEDs_CONTROL2 &= ((uint8)(~PWM_PulseLEDs_CTRL_CMPMODE1_MASK)); /*Clear Existing Data */
+		            PWM_PulseLEDs_CONTROL2 |= comparemodemasked;  
+		        #endif /* (CY_PSOC5A) */
+		                
+		        #if(CY_PSOC3 || CY_PSOC5LP)
+		            PWM_PulseLEDs_CONTROL3 &= ((uint8)(~PWM_PulseLEDs_CTRL_CMPMODE1_MASK)); /*Clear Existing Data */
+		            PWM_PulseLEDs_CONTROL3 |= comparemodemasked;     
+		        #endif /* (CY_PSOC3 || CY_PSOC5LP) */
+		                
+		    #elif (PWM_PulseLEDs_UseControl)
+		        
+                #if(0 != PWM_PulseLEDs_CTRL_CMPMODE1_SHIFT)
+                    uint8 comparemode1masked = ((uint8)((uint8)comparemode << PWM_PulseLEDs_CTRL_CMPMODE1_SHIFT)) & 
+    		                                    PWM_PulseLEDs_CTRL_CMPMODE1_MASK;
+                #else
+                    uint8 comparemode1masked = comparemode & PWM_PulseLEDs_CTRL_CMPMODE1_MASK;                
+                #endif /* (0 != PWM_PulseLEDs_CTRL_CMPMODE1_SHIFT) */
                 
-        #if(CY_PSOC3 || CY_PSOC5LP)
-            uint8 comparemodemasked = (comparemode << PWM_PulseLEDs_CTRL_CMPMODE1_SHIFT);
-            PWM_PulseLEDs_CONTROL3 &= ~PWM_PulseLEDs_CTRL_CMPMODE1_MASK; /*Clear Existing Data */
-            PWM_PulseLEDs_CONTROL3 |= comparemodemasked;     
-        #endif /* (CY_PSOC3 || CY_PSOC5LP) */
+                #if(0 != PWM_PulseLEDs_CTRL_CMPMODE2_SHIFT)                            
+    		        uint8 comparemode2masked = ((uint8)((uint8)comparemode << PWM_PulseLEDs_CTRL_CMPMODE2_SHIFT)) & 
+    		                                   PWM_PulseLEDs_CTRL_CMPMODE2_MASK;
+                #else
+    		        uint8 comparemode2masked = comparemode & PWM_PulseLEDs_CTRL_CMPMODE2_MASK;                
+                #endif /* (0 != PWM_PulseLEDs_CTRL_CMPMODE2_SHIFT) */
                 
-    #elif (PWM_PulseLEDs_UseControl)
-        uint8 comparemode1masked = (comparemode << PWM_PulseLEDs_CTRL_CMPMODE1_SHIFT) & 
-                                    PWM_PulseLEDs_CTRL_CMPMODE1_MASK;
-        uint8 comparemode2masked = (comparemode << PWM_PulseLEDs_CTRL_CMPMODE2_SHIFT) & 
-                                   PWM_PulseLEDs_CTRL_CMPMODE2_MASK;
-        /*Clear existing mode */
-        PWM_PulseLEDs_CONTROL &= ~(PWM_PulseLEDs_CTRL_CMPMODE1_MASK | PWM_PulseLEDs_CTRL_CMPMODE2_MASK); 
-        PWM_PulseLEDs_CONTROL |= (comparemode1masked | comparemode2masked);
-        
-    #else
-        uint8 temp = comparemode;
-    #endif /* (PWM_PulseLEDs_UsingFixedFunction) */
-}
-#endif /* PWM_PulseLEDs_CompareMode1SW */
+		        /*Clear existing mode */
+		        PWM_PulseLEDs_CONTROL &= ((uint8)(~(PWM_PulseLEDs_CTRL_CMPMODE1_MASK | PWM_PulseLEDs_CTRL_CMPMODE2_MASK))); 
+		        PWM_PulseLEDs_CONTROL |= (comparemode1masked | comparemode2masked);
+		        
+		    #else
+		        uint8 temp = comparemode;
+		    #endif /* (PWM_PulseLEDs_UsingFixedFunction) */
+		}
+	#endif /* PWM_PulseLEDs_CompareMode1SW */
 
 #else /* UseOneCompareMode */
 
+	#if (PWM_PulseLEDs_CompareMode1SW)
 
-#if (PWM_PulseLEDs_CompareMode1SW)
 
-
-/*******************************************************************************
-* Function Name: PWM_PulseLEDs_SetCompareMode1
-********************************************************************************
-* 
-* Summary:
-*  This function writes the Compare Mode for the pwm or pwm1 output
-*
-* Parameters:  
-*  comparemode:  The new compare mode for the PWM output. Use the compare types
-*                defined in the H file as input arguments.
-*
-* Return: 
-*  void
-*
-*******************************************************************************/
-void PWM_PulseLEDs_SetCompareMode1(uint8 comparemode) 
-{
-    uint8 comparemodemasked = (comparemode << PWM_PulseLEDs_CTRL_CMPMODE1_SHIFT) & 
-                               PWM_PulseLEDs_CTRL_CMPMODE1_MASK;
-    #if(PWM_PulseLEDs_UsingFixedFunction)
-        #if(CY_PSOC5A)
-            PWM_PulseLEDs_CONTROL2 &= PWM_PulseLEDs_CTRL_CMPMODE1_MASK; /*Clear existing mode */
-            PWM_PulseLEDs_CONTROL2 |= comparemodemasked; 
-        #endif /* (CY_PSOC5A) */
-                
-        #if(CY_PSOC3 || CY_PSOC5LP)
-            PWM_PulseLEDs_CONTROL3 &= PWM_PulseLEDs_CTRL_CMPMODE1_MASK; /*Clear existing mode */
-            PWM_PulseLEDs_CONTROL3 |= comparemodemasked; 
-        #endif /* (CY_PSOC3 || CY_PSOC5LP) */
-                
-    #elif (PWM_PulseLEDs_UseControl)
-        PWM_PulseLEDs_CONTROL &= PWM_PulseLEDs_CTRL_CMPMODE1_MASK; /*Clear existing mode */
-        PWM_PulseLEDs_CONTROL |= comparemodemasked;
-    #endif    /* (PWM_PulseLEDs_UsingFixedFunction) */
-}
-#endif /* PWM_PulseLEDs_CompareMode1SW */
-
+		/*******************************************************************************
+		* Function Name: PWM_PulseLEDs_SetCompareMode1
+		********************************************************************************
+		* 
+		* Summary:
+		*  This function writes the Compare Mode for the pwm or pwm1 output
+		*
+		* Parameters:  
+		*  comparemode:  The new compare mode for the PWM output. Use the compare types
+		*                defined in the H file as input arguments.
+		*
+		* Return: 
+		*  None
+		*
+		*******************************************************************************/
+		void PWM_PulseLEDs_SetCompareMode1(uint8 comparemode) 
+		{
+		    #if(0 != PWM_PulseLEDs_CTRL_CMPMODE1_SHIFT)
+                uint8 comparemodemasked = ((uint8)((uint8)comparemode << PWM_PulseLEDs_CTRL_CMPMODE1_SHIFT)) & 
+    		                               PWM_PulseLEDs_CTRL_CMPMODE1_MASK;
+		    #else
+                uint8 comparemodemasked = comparemode & PWM_PulseLEDs_CTRL_CMPMODE1_MASK;                
+            #endif /* (0 != PWM_PulseLEDs_CTRL_CMPMODE1_SHIFT) */
+                   
+		    #if (PWM_PulseLEDs_UseControl)
+		        PWM_PulseLEDs_CONTROL &= ((uint8)(~PWM_PulseLEDs_CTRL_CMPMODE1_MASK)); /*Clear existing mode */
+		        PWM_PulseLEDs_CONTROL |= comparemodemasked;
+		    #endif /* (PWM_PulseLEDs_UseControl) */
+		}
+	#endif /* PWM_PulseLEDs_CompareMode1SW */
 
 #if (PWM_PulseLEDs_CompareMode2SW)
 
 
-/*******************************************************************************
-* Function Name: PWM_PulseLEDs_SetCompareMode2
-********************************************************************************
-* 
-* Summary:
-*  This function writes the Compare Mode for the pwm or pwm2 output
-*
-* Parameters:  
-*  comparemode:  The new compare mode for the PWM output. Use the compare types
-*                defined in the H file as input arguments.
-*
-* Return: 
-*  void
-*
-*******************************************************************************/
-void PWM_PulseLEDs_SetCompareMode2(uint8 comparemode) 
-{
-    #if(PWM_PulseLEDs_UsingFixedFunction)
-        /* Do Nothing because there is no second Compare Mode Register in FF block */ 
-    #elif (PWM_PulseLEDs_UseControl)
-        uint8 comparemodemasked = (comparemode << PWM_PulseLEDs_CTRL_CMPMODE2_SHIFT) & 
-                                             PWM_PulseLEDs_CTRL_CMPMODE2_MASK;
-        PWM_PulseLEDs_CONTROL &= PWM_PulseLEDs_CTRL_CMPMODE2_MASK; /*Clear existing mode */
-        PWM_PulseLEDs_CONTROL |= comparemodemasked;
-    #endif /* (PWM_PulseLEDs_UsingFixedFunction) */
-}
-#endif /*PWM_PulseLEDs_CompareMode2SW */
+    /*******************************************************************************
+    * Function Name: PWM_PulseLEDs_SetCompareMode2
+    ********************************************************************************
+    * 
+    * Summary:
+    *  This function writes the Compare Mode for the pwm or pwm2 output
+    *
+    * Parameters:  
+    *  comparemode:  The new compare mode for the PWM output. Use the compare types
+    *                defined in the H file as input arguments.
+    *
+    * Return: 
+    *  None
+    *
+    *******************************************************************************/
+    void PWM_PulseLEDs_SetCompareMode2(uint8 comparemode) 
+    {
+
+        #if(0 != PWM_PulseLEDs_CTRL_CMPMODE2_SHIFT)
+            uint8 comparemodemasked = ((uint8)((uint8)comparemode << PWM_PulseLEDs_CTRL_CMPMODE2_SHIFT)) & 
+                                                 PWM_PulseLEDs_CTRL_CMPMODE2_MASK;
+        #else
+            uint8 comparemodemasked = comparemode & PWM_PulseLEDs_CTRL_CMPMODE2_MASK;            
+        #endif /* (0 != PWM_PulseLEDs_CTRL_CMPMODE2_SHIFT) */
+        
+        #if (PWM_PulseLEDs_UseControl)
+            PWM_PulseLEDs_CONTROL &= ((uint8)(~PWM_PulseLEDs_CTRL_CMPMODE2_MASK)); /*Clear existing mode */
+            PWM_PulseLEDs_CONTROL |= comparemodemasked;
+        #endif /* (PWM_PulseLEDs_UseControl) */
+    }
+    #endif /*PWM_PulseLEDs_CompareMode2SW */
+
 #endif /* UseOneCompareMode */
 
 
 #if (!PWM_PulseLEDs_UsingFixedFunction)
 
 
-/*******************************************************************************
-* Function Name: PWM_PulseLEDs_WriteCounter
-********************************************************************************
-* 
-* Summary:
-*  This function is used to change the counter value.
-*
-* Parameters:  
-*  counter:  This value may be between 1 and (2^Resolution)-1.   
-*
-* Return: 
-*  void
-*
-*******************************************************************************/
-void PWM_PulseLEDs_WriteCounter(uint8 counter) \
-                                   
-{
-    CY_SET_REG8(PWM_PulseLEDs_COUNTER_LSB_PTR, counter);
-}
-
-/*******************************************************************************
-* Function Name: PWM_PulseLEDs_ReadCounter
-********************************************************************************
-* 
-* Summary:
-*  This function returns the current value of the counter.  It doesn't matter
-*  if the counter is enabled or running.
-*
-* Parameters:  
-*  void  
-*
-* Return: 
-*  The current value of the counter.
-*
-*******************************************************************************/
-uint8 PWM_PulseLEDs_ReadCounter(void) 
-{
-    /* Force capture by reading Accumulator */
-    /* Must first do a software capture to be able to read the counter */
-    /* It is up to the user code to make sure there isn't already captured data in the FIFO */
-    CY_GET_REG8(PWM_PulseLEDs_COUNTERCAP_LSB_PTR);
-    
-    /* Read the data from the FIFO (or capture register for Fixed Function)*/
-    return (CY_GET_REG8(PWM_PulseLEDs_CAPTURE_LSB_PTR));
-}
+    /*******************************************************************************
+    * Function Name: PWM_PulseLEDs_WriteCounter
+    ********************************************************************************
+    * 
+    * Summary:
+    *  This function is used to change the counter value.
+    *
+    * Parameters:  
+    *  counter:  This value may be between 1 and (2^Resolution)-1.   
+    *
+    * Return: 
+    *  None
+    *
+    *******************************************************************************/
+    void PWM_PulseLEDs_WriteCounter(uint8 counter) \
+                                       
+    {
+        CY_SET_REG8(PWM_PulseLEDs_COUNTER_LSB_PTR, counter);
+    }
 
 
-#if (PWM_PulseLEDs_UseStatus)
+    /*******************************************************************************
+    * Function Name: PWM_PulseLEDs_ReadCounter
+    ********************************************************************************
+    * 
+    * Summary:
+    *  This function returns the current value of the counter.  It doesn't matter
+    *  if the counter is enabled or running.
+    *
+    * Parameters:  
+    *  None  
+    *
+    * Return: 
+    *  The current value of the counter.
+    *
+    *******************************************************************************/
+    uint8 PWM_PulseLEDs_ReadCounter(void) 
+    {
+        /* Force capture by reading Accumulator */
+        /* Must first do a software capture to be able to read the counter */
+        /* It is up to the user code to make sure there isn't already captured data in the FIFO */
+        (void)PWM_PulseLEDs_COUNTERCAP_LSB;
+        
+        /* Read the data from the FIFO (or capture register for Fixed Function)*/
+        return (CY_GET_REG8(PWM_PulseLEDs_CAPTURE_LSB_PTR));
+    }
+
+        #if (PWM_PulseLEDs_UseStatus)
 
 
-/*******************************************************************************
-* Function Name: PWM_PulseLEDs_ClearFIFO
-********************************************************************************
-* 
-* Summary:
-*  This function clears all capture data from the capture FIFO
-*
-* Parameters:  
-*  void
-*
-* Return: 
-*  void
-*
-*******************************************************************************/
-void PWM_PulseLEDs_ClearFIFO(void) 
-{
-    while(PWM_PulseLEDs_ReadStatusRegister() & PWM_PulseLEDs_STATUS_FIFONEMPTY)
-        PWM_PulseLEDs_ReadCapture();
-}
-#endif /* PWM_PulseLEDs_UseStatus */
+            /*******************************************************************************
+            * Function Name: PWM_PulseLEDs_ClearFIFO
+            ********************************************************************************
+            * 
+            * Summary:
+            *  This function clears all capture data from the capture FIFO
+            *
+            * Parameters:  
+            *  None
+            *
+            * Return: 
+            *  None
+            *
+            *******************************************************************************/
+            void PWM_PulseLEDs_ClearFIFO(void) 
+            {
+                while(0u != (PWM_PulseLEDs_ReadStatusRegister() & PWM_PulseLEDs_STATUS_FIFONEMPTY))
+                {
+                    (void)PWM_PulseLEDs_ReadCapture();
+                }
+            }
+
+        #endif /* PWM_PulseLEDs_UseStatus */
+
 #endif /* !PWM_PulseLEDs_UsingFixedFunction */
 
 
@@ -461,7 +478,7 @@ void PWM_PulseLEDs_ClearFIFO(void)
 *           will result in the counter remaining at zero.
 *
 * Return: 
-*  void
+*  None
 *
 *******************************************************************************/
 void PWM_PulseLEDs_WritePeriod(uint8 period) 
@@ -473,162 +490,455 @@ void PWM_PulseLEDs_WritePeriod(uint8 period)
     #endif /* (PWM_PulseLEDs_UsingFixedFunction) */
 }
 
-
 #if (PWM_PulseLEDs_UseOneCompareMode)
 
 
-/*******************************************************************************
-* Function Name: PWM_PulseLEDs_WriteCompare
-********************************************************************************
-* 
-* Summary:
-*  This funtion is used to change the compare1 value when the PWM is in Dither
-*  mode. The compare output will reflect the new value on the next UDB clock. 
-*  The compare output will be driven high when the present counter value is 
-*  compared to the compare value based on the compare mode defined in 
-*  Dither Mode.
-*
-* Parameters:  
-*  compare:  New compare value.  
-*
-* Return: 
-*  void
-*
-* Side Effects:
-*  This function is only available if the PWM mode parameter is set to
-*  Dither Mode, Center Aligned Mode or One Output Mode
-*
-*******************************************************************************/
-void PWM_PulseLEDs_WriteCompare(uint8 compare) \
-                                   
-{
-   CY_SET_REG8(PWM_PulseLEDs_COMPARE1_LSB_PTR, compare);
-   #if (PWM_PulseLEDs_PWMMode == PWM_PulseLEDs__B_PWM__DITHER)
-        CY_SET_REG8(PWM_PulseLEDs_COMPARE2_LSB_PTR, compare+1);
-   #endif /* (PWM_PulseLEDs_PWMMode == PWM_PulseLEDs__B_PWM__DITHER) */
-}
+    /*******************************************************************************
+    * Function Name: PWM_PulseLEDs_WriteCompare
+    ********************************************************************************
+    * 
+    * Summary:
+    *  This funtion is used to change the compare1 value when the PWM is in Dither
+    *  mode. The compare output will reflect the new value on the next UDB clock. 
+    *  The compare output will be driven high when the present counter value is 
+    *  compared to the compare value based on the compare mode defined in 
+    *  Dither Mode.
+    *
+    * Parameters:  
+    *  compare:  New compare value.  
+    *
+    * Return: 
+    *  None
+    *
+    * Side Effects:
+    *  This function is only available if the PWM mode parameter is set to
+    *  Dither Mode, Center Aligned Mode or One Output Mode
+    *
+    *******************************************************************************/
+    void PWM_PulseLEDs_WriteCompare(uint8 compare) \
+                                       
+    {	
+		#if(PWM_PulseLEDs_UsingFixedFunction)
+			CY_SET_REG16(PWM_PulseLEDs_COMPARE1_LSB_PTR, (uint16)compare);
+		#else
+	        CY_SET_REG8(PWM_PulseLEDs_COMPARE1_LSB_PTR, compare);	
+		#endif /* (PWM_PulseLEDs_UsingFixedFunction) */
+        
+        #if (PWM_PulseLEDs_PWMMode == PWM_PulseLEDs__B_PWM__DITHER)
+            #if(PWM_PulseLEDs_UsingFixedFunction)
+    			CY_SET_REG16(PWM_PulseLEDs_COMPARE2_LSB_PTR, (uint16)(compare + 1u));
+    		#else
+    	        CY_SET_REG8(PWM_PulseLEDs_COMPARE2_LSB_PTR, (compare + 1u));	
+    		#endif /* (PWM_PulseLEDs_UsingFixedFunction) */
+        #endif /* (PWM_PulseLEDs_PWMMode == PWM_PulseLEDs__B_PWM__DITHER) */
+    }
 
 
 #else
 
 
-/*******************************************************************************
-* Function Name: PWM_PulseLEDs_WriteCompare1
-********************************************************************************
-* 
-* Summary:
-*  This funtion is used to change the compare1 value.  The compare output will 
-*  reflect the new value on the next UDB clock.  The compare output will be 
-*  driven high when the present counter value is less than or less than or 
-*  equal to the compare register, depending on the mode.
-*
-* Parameters:  
-*  compare:  New compare value.  
-*
-* Return: 
-*  void
-*
-*******************************************************************************/
-void PWM_PulseLEDs_WriteCompare1(uint8 compare) \
-                                    
-{
-    #if(PWM_PulseLEDs_UsingFixedFunction)
-        CY_SET_REG16(PWM_PulseLEDs_COMPARE1_LSB_PTR, (uint16)compare);
-    #else
-        CY_SET_REG8(PWM_PulseLEDs_COMPARE1_LSB_PTR, compare);
-    #endif /* (PWM_PulseLEDs_UsingFixedFunction) */
-}
+    /*******************************************************************************
+    * Function Name: PWM_PulseLEDs_WriteCompare1
+    ********************************************************************************
+    * 
+    * Summary:
+    *  This funtion is used to change the compare1 value.  The compare output will 
+    *  reflect the new value on the next UDB clock.  The compare output will be 
+    *  driven high when the present counter value is less than or less than or 
+    *  equal to the compare register, depending on the mode.
+    *
+    * Parameters:  
+    *  compare:  New compare value.  
+    *
+    * Return: 
+    *  None
+    *
+    *******************************************************************************/
+    void PWM_PulseLEDs_WriteCompare1(uint8 compare) \
+                                        
+    {
+        #if(PWM_PulseLEDs_UsingFixedFunction)
+            CY_SET_REG16(PWM_PulseLEDs_COMPARE1_LSB_PTR, (uint16)compare);
+        #else
+            CY_SET_REG8(PWM_PulseLEDs_COMPARE1_LSB_PTR, compare);
+        #endif /* (PWM_PulseLEDs_UsingFixedFunction) */
+    }
 
 
-/*******************************************************************************
-* Function Name: PWM_PulseLEDs_WriteCompare2
-********************************************************************************
-* 
-* Summary:
-*  This funtion is used to change the compare value, for compare1 output.  
-*  The compare output will reflect the new value on the next UDB clock.  
-*  The compare output will be driven high when the present counter value is 
-*  less than or less than or equal to the compare register, depending on the 
-*  mode.
-*
-* Parameters:  
-*  compare:  New compare value.  
-*
-* Return: 
-*  void
-*
-*******************************************************************************/
-void PWM_PulseLEDs_WriteCompare2(uint8 compare) \
-                                    
-{
-    #if(PWM_PulseLEDs_UsingFixedFunction)
-        CY_SET_REG16(PWM_PulseLEDs_COMPARE2_LSB_PTR, compare);
-    #else
-        CY_SET_REG8(PWM_PulseLEDs_COMPARE2_LSB_PTR, compare);
-    #endif /* (PWM_PulseLEDs_UsingFixedFunction) */
-}
+    /*******************************************************************************
+    * Function Name: PWM_PulseLEDs_WriteCompare2
+    ********************************************************************************
+    * 
+    * Summary:
+    *  This funtion is used to change the compare value, for compare1 output.  
+    *  The compare output will reflect the new value on the next UDB clock.  
+    *  The compare output will be driven high when the present counter value is 
+    *  less than or less than or equal to the compare register, depending on the 
+    *  mode.
+    *
+    * Parameters:  
+    *  compare:  New compare value.  
+    *
+    * Return: 
+    *  None
+    *
+    *******************************************************************************/
+    void PWM_PulseLEDs_WriteCompare2(uint8 compare) \
+                                        
+    {
+        #if(PWM_PulseLEDs_UsingFixedFunction)
+            CY_SET_REG16(PWM_PulseLEDs_COMPARE2_LSB_PTR, compare);
+        #else
+            CY_SET_REG8(PWM_PulseLEDs_COMPARE2_LSB_PTR, compare);
+        #endif /* (PWM_PulseLEDs_UsingFixedFunction) */
+    }
 #endif /* UseOneCompareMode */
-
 
 #if (PWM_PulseLEDs_DeadBandUsed)
 
 
-/*******************************************************************************
-* Function Name: PWM_PulseLEDs_WriteDeadTime
-********************************************************************************
-* 
-* Summary:
-*  This function writes the dead-band counts to the corresponding register
-*
-* Parameters:  
-*  deadtime:  Number of counts for dead time 
-*
-* Return: 
-*  void
-*
-*******************************************************************************/
-void PWM_PulseLEDs_WriteDeadTime(uint8 deadtime) 
-{
-    /* If using the Dead Band 1-255 mode then just write the register */
-    #if(!PWM_PulseLEDs_DeadBand2_4)
-        CY_SET_REG8(PWM_PulseLEDs_DEADBAND_COUNT_PTR, deadtime);
-    #else
-        /* Otherwise the data has to be masked and offset */        
-        /* Clear existing data */
-        PWM_PulseLEDs_DEADBAND_COUNT &= ~PWM_PulseLEDs_DEADBAND_COUNT_MASK; 
+    /*******************************************************************************
+    * Function Name: PWM_PulseLEDs_WriteDeadTime
+    ********************************************************************************
+    * 
+    * Summary:
+    *  This function writes the dead-band counts to the corresponding register
+    *
+    * Parameters:  
+    *  deadtime:  Number of counts for dead time 
+    *
+    * Return: 
+    *  None
+    *
+    *******************************************************************************/
+    void PWM_PulseLEDs_WriteDeadTime(uint8 deadtime) 
+    {
+        /* If using the Dead Band 1-255 mode then just write the register */
+        #if(!PWM_PulseLEDs_DeadBand2_4)
+            CY_SET_REG8(PWM_PulseLEDs_DEADBAND_COUNT_PTR, deadtime);
+        #else
+            /* Otherwise the data has to be masked and offset */        
+            /* Clear existing data */
+            PWM_PulseLEDs_DEADBAND_COUNT &= ((uint8)(~PWM_PulseLEDs_DEADBAND_COUNT_MASK));
+            
             /* Set new dead time */
-        PWM_PulseLEDs_DEADBAND_COUNT |= (deadtime << PWM_PulseLEDs_DEADBAND_COUNT_SHIFT) & 
-                                            PWM_PulseLEDs_DEADBAND_COUNT_MASK; 
-    #endif /* (!PWM_PulseLEDs_DeadBand2_4) */
-}
+            #if(PWM_PulseLEDs_DEADBAND_COUNT_SHIFT)        
+                PWM_PulseLEDs_DEADBAND_COUNT |= ((uint8)((uint8)deadtime << PWM_PulseLEDs_DEADBAND_COUNT_SHIFT)) & 
+                                                    PWM_PulseLEDs_DEADBAND_COUNT_MASK;
+            #else
+                PWM_PulseLEDs_DEADBAND_COUNT |= deadtime & PWM_PulseLEDs_DEADBAND_COUNT_MASK;        
+            #endif /* (PWM_PulseLEDs_DEADBAND_COUNT_SHIFT) */
+        
+        #endif /* (!PWM_PulseLEDs_DeadBand2_4) */
+    }
 
 
-/*******************************************************************************
-* Function Name: PWM_PulseLEDs_ReadDeadTime
-********************************************************************************
-* 
-* Summary:
-*  This function reads the dead-band counts from the corresponding register
-*
-* Parameters:  
-*  void
-*
-* Return: 
-*  Dead Band Counts
-*
-*******************************************************************************/
-uint8 PWM_PulseLEDs_ReadDeadTime(void) 
-{
-    /* If using the Dead Band 1-255 mode then just read the register */
-    #if(!PWM_PulseLEDs_DeadBand2_4)
-        return (CY_GET_REG8(PWM_PulseLEDs_DEADBAND_COUNT_PTR));
-    #else
-        /* Otherwise the data has to be masked and offset */
-        return ((PWM_PulseLEDs_DEADBAND_COUNT & PWM_PulseLEDs_DEADBAND_COUNT_MASK) >> 
-                 PWM_PulseLEDs_DEADBAND_COUNT_SHIFT);
-    #endif /* (!PWM_PulseLEDs_DeadBand2_4) */
-}
+    /*******************************************************************************
+    * Function Name: PWM_PulseLEDs_ReadDeadTime
+    ********************************************************************************
+    * 
+    * Summary:
+    *  This function reads the dead-band counts from the corresponding register
+    *
+    * Parameters:  
+    *  None
+    *
+    * Return: 
+    *  Dead Band Counts
+    *
+    *******************************************************************************/
+    uint8 PWM_PulseLEDs_ReadDeadTime(void) 
+    {
+        /* If using the Dead Band 1-255 mode then just read the register */
+        #if(!PWM_PulseLEDs_DeadBand2_4)
+            return (CY_GET_REG8(PWM_PulseLEDs_DEADBAND_COUNT_PTR));
+        #else
+        
+            /* Otherwise the data has to be masked and offset */
+            #if(PWM_PulseLEDs_DEADBAND_COUNT_SHIFT)      
+                return ((uint8)(((uint8)(PWM_PulseLEDs_DEADBAND_COUNT & PWM_PulseLEDs_DEADBAND_COUNT_MASK)) >> 
+                                                                           PWM_PulseLEDs_DEADBAND_COUNT_SHIFT));
+            #else
+                return (PWM_PulseLEDs_DEADBAND_COUNT & PWM_PulseLEDs_DEADBAND_COUNT_MASK);
+            #endif /* (PWM_PulseLEDs_DEADBAND_COUNT_SHIFT) */
+        #endif /* (!PWM_PulseLEDs_DeadBand2_4) */
+    }
 #endif /* DeadBandUsed */
 
+#if (PWM_PulseLEDs_UseStatus || PWM_PulseLEDs_UsingFixedFunction)
+
+
+    /*******************************************************************************
+    * Function Name: PWM_PulseLEDs_SetInterruptMode
+    ********************************************************************************
+    * 
+    * Summary:
+    *  This function configures the interrupts mask control of theinterrupt 
+    *  source status register.
+    *
+    * Parameters:  
+    *  uint8 interruptMode: Bit field containing the interrupt sources enabled 
+    *
+    * Return: 
+    *  None
+    *
+    *******************************************************************************/
+    void PWM_PulseLEDs_SetInterruptMode(uint8 interruptMode)  
+    {
+    	CY_SET_REG8(PWM_PulseLEDs_STATUS_MASK_PTR, interruptMode);
+    }
+
+
+    /*******************************************************************************
+    * Function Name: PWM_PulseLEDs_ReadStatusRegister
+    ********************************************************************************
+    * 
+    * Summary:
+    *  This function returns the current state of the status register. 
+    *
+    * Parameters:  
+    *  None
+    *
+    * Return: 
+    *  uint8 : Current status register value. The status register bits are:
+    *  [7:6] : Unused(0)
+    *  [5]   : Kill event output
+    *  [4]   : FIFO not empty
+    *  [3]   : FIFO full
+    *  [2]   : Terminal count
+    *  [1]   : Compare output 2
+    *  [0]   : Compare output 1
+    *
+    *******************************************************************************/
+    uint8 PWM_PulseLEDs_ReadStatusRegister(void)   
+    {
+    	uint8 result;
+    	
+    	result = CY_GET_REG8(PWM_PulseLEDs_STATUS_PTR);
+    	return (result);
+    }
+
+#endif /* (PWM_PulseLEDs_UseStatus || PWM_PulseLEDs_UsingFixedFunction) */
+
+
+#if (PWM_PulseLEDs_UseControl)
+
+
+    /*******************************************************************************
+    * Function Name: PWM_PulseLEDs_ReadControlRegister
+    ********************************************************************************
+    * 
+    * Summary:
+    *  Returns the current state of the control register. This API is available 
+    *  only if the control register is not removed.
+    *
+    * Parameters:  
+    *  None 
+    *
+    * Return: 
+    *  uint8 : Current control register value
+    *
+    *******************************************************************************/    
+    uint8 PWM_PulseLEDs_ReadControlRegister(void) 
+    {
+    	uint8 result;
+    	
+    	result = CY_GET_REG8(PWM_PulseLEDs_CONTROL_PTR);
+    	return (result);
+    }
+
+
+    /*******************************************************************************
+    * Function Name: PWM_PulseLEDs_WriteControlRegister
+    ********************************************************************************
+    * 
+    * Summary:
+    *  Sets the bit field of the control register. This API is available only if 
+    *  the control register is not removed.
+    *
+    * Parameters:  
+    *  uint8 control: Control register bit field, The status register bits are:
+    *  [7]   : PWM Enable
+    *  [6]   : Reset
+    *  [5:3] : Compare Mode2
+    *  [2:0] : Compare Mode2
+    *
+    * Return: 
+    *  None
+    *
+    *******************************************************************************/  
+    void PWM_PulseLEDs_WriteControlRegister(uint8 control) 
+    {
+    	CY_SET_REG8(PWM_PulseLEDs_CONTROL_PTR, control);
+    }
+	
+#endif /* (PWM_PulseLEDs_UseControl) */
+
+
+#if (!PWM_PulseLEDs_UsingFixedFunction)
+
+
+    /*******************************************************************************
+    * Function Name: PWM_PulseLEDs_ReadCapture
+    ********************************************************************************
+    * 
+    * Summary:
+    *  Reads the capture value from the capture FIFO.
+    *
+    * Parameters:  
+    *  None
+    *
+    * Return: 
+    *  uint8/uint16: The current capture value
+    *
+    *******************************************************************************/  
+    uint8 PWM_PulseLEDs_ReadCapture(void)  
+    {
+    	return (CY_GET_REG8(PWM_PulseLEDs_CAPTURE_LSB_PTR));
+    }
+	
+#endif /* (!PWM_PulseLEDs_UsingFixedFunction) */
+
+
+#if (PWM_PulseLEDs_UseOneCompareMode)
+
+
+    /*******************************************************************************
+    * Function Name: PWM_PulseLEDs_ReadCompare
+    ********************************************************************************
+    * 
+    * Summary:
+    *  Reads the compare value for the compare output when the PWM Mode parameter is 
+    *  set to Dither mode, Center Aligned mode, or One Output mode.
+    *
+    * Parameters:  
+    *  None
+    *
+    * Return: 
+    *  uint8/uint16: Current compare value
+    *
+    *******************************************************************************/  
+    uint8 PWM_PulseLEDs_ReadCompare(void)  
+    {
+		#if(PWM_PulseLEDs_UsingFixedFunction)
+            return ((uint8)CY_GET_REG16(PWM_PulseLEDs_COMPARE1_LSB_PTR));
+        #else
+            return (CY_GET_REG8(PWM_PulseLEDs_COMPARE1_LSB_PTR));
+        #endif /* (PWM_PulseLEDs_UsingFixedFunction) */
+    }
+
+#else
+
+
+    /*******************************************************************************
+    * Function Name: PWM_PulseLEDs_ReadCompare1
+    ********************************************************************************
+    * 
+    * Summary:
+    *  Reads the compare value for the compare1 output.
+    *
+    * Parameters:  
+    *  None
+    *
+    * Return: 
+    *  uint8/uint16: Current compare value.
+    *
+    *******************************************************************************/  
+    uint8 PWM_PulseLEDs_ReadCompare1(void) 
+    {
+		return (CY_GET_REG8(PWM_PulseLEDs_COMPARE1_LSB_PTR));
+    }
+
+
+    /*******************************************************************************
+    * Function Name: PWM_PulseLEDs_ReadCompare2
+    ********************************************************************************
+    * 
+    * Summary:
+    *  Reads the compare value for the compare2 output.
+    *
+    * Parameters:  
+    *  None
+    *
+    * Return: 
+    *  uint8/uint16: Current compare value.
+    *
+    *******************************************************************************/  
+    uint8 PWM_PulseLEDs_ReadCompare2(void)  
+    {
+		return (CY_GET_REG8(PWM_PulseLEDs_COMPARE2_LSB_PTR));
+    }
+
+#endif /* (PWM_PulseLEDs_UseOneCompareMode) */
+
+
+/*******************************************************************************
+* Function Name: PWM_PulseLEDs_ReadPeriod
+********************************************************************************
+* 
+* Summary:
+*  Reads the period value used by the PWM hardware.
+*
+* Parameters:  
+*  None
+*
+* Return: 
+*  uint8/16: Period value
+*
+*******************************************************************************/ 
+uint8 PWM_PulseLEDs_ReadPeriod(void) 
+{
+	#if(PWM_PulseLEDs_UsingFixedFunction)
+        return ((uint8)CY_GET_REG16(PWM_PulseLEDs_PERIOD_LSB_PTR));
+    #else
+        return (CY_GET_REG8(PWM_PulseLEDs_PERIOD_LSB_PTR));
+    #endif /* (PWM_PulseLEDs_UsingFixedFunction) */
+}
+
+#if ( PWM_PulseLEDs_KillModeMinTime)
+
+
+    /*******************************************************************************
+    * Function Name: PWM_PulseLEDs_WriteKillTime
+    ********************************************************************************
+    * 
+    * Summary:
+    *  Writes the kill time value used by the hardware when the Kill Mode 
+    *  is set to Minimum Time.
+    *
+    * Parameters:  
+    *  uint8: Minimum Time kill counts
+    *
+    * Return: 
+    *  None
+    *
+    *******************************************************************************/ 
+    void PWM_PulseLEDs_WriteKillTime(uint8 killtime) 
+    {
+    	CY_SET_REG8(PWM_PulseLEDs_KILLMODEMINTIME_PTR, killtime);
+    }
+
+
+    /*******************************************************************************
+    * Function Name: PWM_PulseLEDs_ReadKillTime
+    ********************************************************************************
+    * 
+    * Summary:
+    *  Reads the kill time value used by the hardware when the Kill Mode is set 
+    *  to Minimum Time.
+    *
+    * Parameters:  
+    *  None
+    *
+    * Return: 
+    *  uint8: The current Minimum Time kill counts
+    *
+    *******************************************************************************/ 
+    uint8 PWM_PulseLEDs_ReadKillTime(void) 
+    {
+    	return (CY_GET_REG8(PWM_PulseLEDs_KILLMODEMINTIME_PTR));
+    }
+
+#endif /* ( PWM_PulseLEDs_KillModeMinTime) */
 
 /* [] END OF FILE */

@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: CyDmac.c
-* Version 3.10
+* Version 3.30
 *
 * Description:
 *  Provides an API for the DMAC component. The API includes functions for the
@@ -52,20 +52,20 @@ static uint32 CyDmaChannels = DMA_CHANNELS_USED__MASK0;  /* Bit map of DMA chann
 *******************************************************************************/
 void CyDmacConfigure(void) 
 {
-    uint8 index;
+    uint8 dmaIndex;
 
     /* Set TD list variables. */
-    CyDmaTdFreeIndex     = CY_DMA_NUMBEROF_TDS - 1;
+    CyDmaTdFreeIndex     = ((uint8) (CY_DMA_NUMBEROF_TDS - 1u));
     CyDmaTdCurrentNumber = CY_DMA_NUMBEROF_TDS;
 
     /* Make TD free list. */
-    for(index = CY_DMA_NUMBEROF_TDS - 1; index; index--)
+    for(dmaIndex = ((uint8)(CY_DMA_NUMBEROF_TDS - 1u)); dmaIndex != 0u; dmaIndex--)
     {
-        CY_DMA_TDMEM_STRUCT_PTR[index].TD0[0] = index - 1;
+        CY_DMA_TDMEM_STRUCT_PTR[dmaIndex].TD0[0u] = ((uint8)(dmaIndex - 1u));
     }
 
     /* Make the last one point to zero. */
-    CY_DMA_TDMEM_STRUCT_PTR[index].TD0[0] = 0;
+    CY_DMA_TDMEM_STRUCT_PTR[dmaIndex].TD0[0u] = 0u;
 }
 
 
@@ -100,7 +100,7 @@ void CyDmacConfigure(void)
 *******************************************************************************/
 uint8 CyDmacError(void) 
 {
-    return(0x0Fu & *CY_DMA_ERR_PTR);
+    return((uint8)(((uint32) 0x0Fu) & *CY_DMA_ERR_PTR));
 }
 
 
@@ -136,7 +136,7 @@ uint8 CyDmacError(void)
 *******************************************************************************/
 void CyDmacClearError(uint8 error) 
 {
-    *CY_DMA_ERR_PTR = 0x0Fu & error;
+    *CY_DMA_ERR_PTR = (((uint32)0x0Fu) & ((uint32)error));
 }
 
 
@@ -183,33 +183,35 @@ uint32 CyDmacErrorAddress(void)
 uint8 CyDmaChAlloc(void) 
 {
     uint8 interruptState;
-    uint8 index;
-    uint32 channel;
+    uint8 dmaIndex;
+    uint32 channel = 1u;
 
 
     /* Enter critical section! */
     interruptState = CyEnterCriticalSection();
 
     /* Look for a free channel. */
-    for(index = 0, channel = 1; index < CY_DMA_NUMBEROF_CHANNELS; index++, channel <<= 1)
+    for(dmaIndex = 0u; dmaIndex < CY_DMA_NUMBEROF_CHANNELS; dmaIndex++)
     {
-        if(!(CyDmaChannels & channel))
+        if(0uL == (CyDmaChannels & channel))
         {
             /* Mark the channel as used. */
             CyDmaChannels |= channel;
             break;
         }
+
+        channel <<= 1u;
     }
 
-    if(index >= CY_DMA_NUMBEROF_CHANNELS)
+    if(dmaIndex >= CY_DMA_NUMBEROF_CHANNELS)
     {
-        index = CY_DMA_INVALID_CHANNEL;
+        dmaIndex = CY_DMA_INVALID_CHANNEL;
     }
 
     /* Exit critical section! */
     CyExitCriticalSection(interruptState);
 
-    return(index);
+    return(dmaIndex);
 }
 
 
@@ -240,7 +242,7 @@ cystatus CyDmaChFree(uint8 chHandle)
         interruptState = CyEnterCriticalSection();
 
         /* Clear the bit mask that keeps track of ownership. */
-        CyDmaChannels &= ~(1 << chHandle);
+        CyDmaChannels &= ~(((uint32) 1u) << chHandle);
 
         /* Exit critical section */
         CyExitCriticalSection(interruptState);
@@ -297,7 +299,8 @@ cystatus CyDmaChEnable(uint8 chHandle, uint8 preserveTds)
 
     if(chHandle < CY_DMA_NUMBEROF_CHANNELS)
     {
-        CY_DMA_CH_STRUCT_PTR[chHandle].basic_cfg[0] = (CY_DMA_CH_STRUCT_PTR[chHandle].basic_cfg[0] &  ~0x20u) | ((preserveTds) ? 0x21u:0x01u);
+        CY_DMA_CH_STRUCT_PTR[chHandle].basic_cfg[0u] =
+                (CY_DMA_CH_STRUCT_PTR[chHandle].basic_cfg[0u] & ((uint8)(~0x20u))) | ((0u != preserveTds) ? 0x21u : 0x01u);
         status = CYRET_SUCCESS;
     }
 
@@ -332,7 +335,7 @@ cystatus CyDmaChDisable(uint8 chHandle)
 
     if(chHandle < CY_DMA_NUMBEROF_CHANNELS)
     {
-        CY_DMA_CH_STRUCT_PTR[chHandle].basic_cfg[0] &= ~0x21u;
+        CY_DMA_CH_STRUCT_PTR[chHandle].basic_cfg[0] &= ((uint8) (~0x21u));
         status = CYRET_SUCCESS;
     }
 
@@ -399,8 +402,10 @@ cystatus CyDmaChPriority(uint8 chHandle, uint8 priority)
 
     if(chHandle < CY_DMA_NUMBEROF_CHANNELS)
     {
-        value = CY_DMA_CH_STRUCT_PTR[chHandle].basic_cfg[0] & ~(0x0Eu);
-        CY_DMA_CH_STRUCT_PTR[chHandle].basic_cfg[0] = value | ((priority & 0x7u) << 0x01u);
+        value = CY_DMA_CH_STRUCT_PTR[chHandle].basic_cfg[0u] & ((uint8)(~(0x0Eu)));
+
+        CY_DMA_CH_STRUCT_PTR[chHandle].basic_cfg[0u] = value | ((uint8) ((priority & 0x7u) << 0x01u));
+
         status = CYRET_SUCCESS;
     }
 
@@ -436,20 +441,20 @@ cystatus CyDmaChSetExtendedAddress(uint8 chHandle, uint16 source, uint16 destina
 {
     cystatus status = CYRET_BAD_PARAM;
 
-    #if(CY_PSOC5A)
+    #if(CY_PSOC5)
 
         /* 0x1FFF8000-0x1FFFFFFF needs to use alias at 0x20008000-0x2000FFFF */
-        if(source == 0x1FFF)
+        if(source == 0x1FFFu)
         {
-            source = 0x2000;
+            source = 0x2000u;
         }
 
-        if(destination == 0x1FFF)
+        if(destination == 0x1FFFu)
         {
-            destination = 0x2000;
+            destination = 0x2000u;
         }
 
-    #endif  /* (CY_PSOC5A) */
+    #endif  /* (CY_PSOC5) */
 
 
     if(chHandle < CY_DMA_NUMBEROF_CHANNELS)
@@ -555,17 +560,17 @@ cystatus CyDmaChSetRequest(uint8 chHandle, uint8 request)
 * Return:
 *  Returns a three-bit field, corresponding to the three bits of the request,
 *  which describes the state of the previously posted request. If the value is
-*  zero, the request was completed. DMA_INVALID_CHANNEL if the handle is
+*  zero, the request was completed. CY_DMA_INVALID_CHANNEL if the handle is
 *  invalid.
 *
 *******************************************************************************/
 cystatus CyDmaChGetRequest(uint8 chHandle) 
 {
-    cystatus status = DMA_INVALID_CHANNEL;
+    cystatus status = CY_DMA_INVALID_CHANNEL;
 
     if(chHandle < CY_DMA_NUMBEROF_CHANNELS)
     {
-        status = CY_DMA_CH_STRUCT_PTR[chHandle].action[0u] & (CPU_REQ | CPU_TERM_TD | CPU_TERM_CHAIN);
+        status = (cystatus) (CY_DMA_CH_STRUCT_PTR[chHandle].action[0u] & (CY_DMA_CPU_REQ | CY_DMA_CPU_TERM_TD | CY_DMA_CPU_TERM_CHAIN));
     }
 
     return(status);
@@ -681,10 +686,10 @@ cystatus CyDmaChSetConfiguration(uint8 chHandle, uint8 burstCount, uint8 request
 
     if(chHandle < CY_DMA_NUMBEROF_CHANNELS)
     {
-        CY_DMA_CFGMEM_STRUCT_PTR[chHandle].CFG0[0] = (burstCount & 0x7Fu) | ((requestPerBurst & 0x1u) << 7);
-        CY_DMA_CFGMEM_STRUCT_PTR[chHandle].CFG0[1] = ((tdDone1 & 0xFu) << 4) | (tdDone0 & 0xFu);
+        CY_DMA_CFGMEM_STRUCT_PTR[chHandle].CFG0[0] = (burstCount & 0x7Fu) | ((uint8)((requestPerBurst & 0x1u) << 7u));
+        CY_DMA_CFGMEM_STRUCT_PTR[chHandle].CFG0[1] = ((uint8)((tdDone1 & 0xFu) << 4u)) | (tdDone0 & 0xFu);
         CY_DMA_CFGMEM_STRUCT_PTR[chHandle].CFG0[2] = 0x0Fu & tdStop;
-        CY_DMA_CFGMEM_STRUCT_PTR[chHandle].CFG0[3] = 0; /* burstcount_remain. */
+        CY_DMA_CFGMEM_STRUCT_PTR[chHandle].CFG0[3] = 0u; /* burstcount_remain. */
 
         status = CYRET_SUCCESS;
     }
@@ -754,7 +759,7 @@ uint8 CyDmaTdAllocate(void)
 *******************************************************************************/
 void CyDmaTdFree(uint8 tdHandle) 
 {
-    if(tdHandle < NUMBEROF_TDS)
+    if(tdHandle < CY_DMA_NUMBEROF_TDS)
     {
         /* Enter critical section! */
         uint8 interruptState = CyEnterCriticalSection();
@@ -850,17 +855,17 @@ cystatus CyDmaTdSetConfiguration(uint8 tdHandle, uint16 transferCount, uint8 nex
 {
     cystatus status = CYRET_BAD_PARAM;
 
-    if(tdHandle < CY_DMA_NUMBEROF_TDS && !(0xF000u & transferCount))
+    if((tdHandle < CY_DMA_NUMBEROF_TDS) && (0u == (0xF000u & transferCount)))
     {
         /* Set 12 bits transfer count. */
-        reg16 *convert = (reg16 *) &CY_DMA_TDMEM_STRUCT_PTR[tdHandle].TD0[0];
+        reg16 *convert = (reg16 *) &CY_DMA_TDMEM_STRUCT_PTR[tdHandle].TD0[0u];
         CY_SET_REG16(convert, transferCount);
 
         /* Set Next TD pointer. */
-        CY_DMA_TDMEM_STRUCT_PTR[tdHandle].TD0[2] = nextTd;
+        CY_DMA_TDMEM_STRUCT_PTR[tdHandle].TD0[2u] = nextTd;
 
         /* Configure the TD */
-        CY_DMA_TDMEM_STRUCT_PTR[tdHandle].TD0[3] = configuration;
+        CY_DMA_TDMEM_STRUCT_PTR[tdHandle].TD0[3u] = configuration;
 
         status = CYRET_SUCCESS;
     }
@@ -1065,9 +1070,9 @@ cystatus CyDmaChRoundRobin(uint8 chHandle, uint8 enableRR)
 
     if(chHandle < CY_DMA_NUMBEROF_CHANNELS)
     {
-        CY_DMA_CH_STRUCT_PTR[chHandle].basic_cfg[0] = \
-                (CY_DMA_CH_STRUCT_PTR[chHandle].basic_cfg[0] &  ~CY_DMA_ROUND_ROBIN_ENABLE) |
-                ((enableRR) ? CY_DMA_ROUND_ROBIN_ENABLE : ~CY_DMA_ROUND_ROBIN_ENABLE);
+        CY_DMA_CH_STRUCT_PTR[chHandle].basic_cfg[0u] =
+                (CY_DMA_CH_STRUCT_PTR[chHandle].basic_cfg[0u] &  ((uint8)(~CY_DMA_ROUND_ROBIN_ENABLE))) |
+                ((0u != enableRR) ? CY_DMA_ROUND_ROBIN_ENABLE : ((uint8)(~CY_DMA_ROUND_ROBIN_ENABLE)));
 
         status = CYRET_SUCCESS;
     }

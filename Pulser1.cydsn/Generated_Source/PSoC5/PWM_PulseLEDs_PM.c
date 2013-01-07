@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: PWM_PulseLEDs_PM.c
-* Version 2.20
+* Version 2.30
 *
 * Description:
 *  This file provides the power management source code to API for the
@@ -28,10 +28,10 @@ static PWM_PulseLEDs_backupStruct PWM_PulseLEDs_backup;
 *  Saves the current user configuration of the component.
 *  
 * Parameters:  
-*  void
+*  None
 *
 * Return: 
-*  void
+*  None
 *
 * Global variables:
 *  PWM_PulseLEDs_backup:  Variables of this global structure are modified to 
@@ -100,10 +100,10 @@ void PWM_PulseLEDs_SaveConfig(void)
 *  Restores the current user configuration of the component.
 *
 * Parameters:  
-*  void
+*  None
 *
 * Return: 
-*  void
+*  None
 *
 * Global variables:
 *  PWM_PulseLEDs_backup:  Variables of this global structure are used to  
@@ -191,10 +191,10 @@ void PWM_PulseLEDs_RestoreConfig(void)
 *  just prior to entering sleep.
 *  
 * Parameters:  
-*  void
+*  None
 *
 * Return: 
-*  void
+*  None
 *
 * Global variables:
 *  PWM_PulseLEDs_backup.PWMEnableState:  Is modified depending on the enable 
@@ -215,6 +215,7 @@ void PWM_PulseLEDs_Sleep(void)
             PWM_PulseLEDs_backup.PWMEnableState = 0u;
         }
     #endif /* (PWM_PulseLEDs_UseControl) */
+
     /* Stop component */
     PWM_PulseLEDs_Stop();
     
@@ -232,10 +233,10 @@ void PWM_PulseLEDs_Sleep(void)
 *  awaking from sleep.
 *  
 * Parameters:  
-*  void
+*  None
 *
 * Return: 
-*  void
+*  None
 *
 * Global variables:
 *  PWM_PulseLEDs_backup.pwmEnable:  Is used to restore the enable state of 

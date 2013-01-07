@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: USBUART_Central_audio.c
-* Version 2.30
+* Version 2.50
 *
 * Description:
 *  USB AUDIO Class request handler.
@@ -256,7 +256,11 @@ uint8 USBUART_Central_DispatchAUDIOClassRqst()
                 #if defined(USBUART_Central_ENABLE_AUDIO_STREAMING)
                     if(CY_GET_REG8(USBUART_Central_wValueHi) == USBUART_Central_MUTE_CONTROL)
                     {
-                         /* Entity ID Control Selector is MUTE */
+                        /* `#START MUTE_SET_REQUEST` Place multi-channel handler here */
+
+                        /* `#END` */
+                    
+                        /* Entity ID Control Selector is MUTE */
                         USBUART_Central_currentTD.wCount = 1;
                         USBUART_Central_currentTD.pData  = &USBUART_Central_currentMute;
                         requestHandled   = USBUART_Central_InitControlWrite();
@@ -267,7 +271,7 @@ uint8 USBUART_Central_DispatchAUDIOClassRqst()
 
                         /* `#END` */
                     
-                         /* Entity ID Control Selector is VOLUME */
+                        /* Entity ID Control Selector is VOLUME */
                         USBUART_Central_currentTD.wCount = USBUART_Central_VOLUME_LEN;
                         USBUART_Central_currentTD.pData  = USBUART_Central_currentVolume;
                         requestHandled   = USBUART_Central_InitControlWrite();

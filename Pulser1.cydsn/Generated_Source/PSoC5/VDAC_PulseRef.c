@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: VDAC_PulseRef.c  
-* Version 1.80
+* Version 1.90
 *
 * Description:
 *  This file provides the source code to the API for the 8-bit Voltage DAC 
@@ -24,11 +24,10 @@
 #include <CyLib.h>
 #endif /* CY_PSOC5A */
 
-uint8 VDAC_PulseRef_initVar = 0;
+uint8 VDAC_PulseRef_initVar = 0u;
 
 #if (CY_PSOC5A)
-    uint8 VDAC_PulseRef_restoreVal = 0;
-    uint8 VDAC_PulseRef_intrStatus = 0u;
+    static uint8 VDAC_PulseRef_restoreVal = 0u;
 #endif /* CY_PSOC5A */
 
 #if (CY_PSOC5A)
@@ -58,20 +57,16 @@ void VDAC_PulseRef_Init(void)
     VDAC_PulseRef_CR0 = (VDAC_PulseRef_MODE_V );
 
     /* Set default data source */
-    if(VDAC_PulseRef_DEFAULT_DATA_SRC != 0 )
-    {
+    #if(VDAC_PulseRef_DEFAULT_DATA_SRC != 0 )
         VDAC_PulseRef_CR1 = (VDAC_PulseRef_DEFAULT_CNTL | VDAC_PulseRef_DACBUS_ENABLE) ;
-    }
-    else
-    {
+    #else
         VDAC_PulseRef_CR1 = (VDAC_PulseRef_DEFAULT_CNTL | VDAC_PulseRef_DACBUS_DISABLE) ;
-    }
+    #endif /* (VDAC_PulseRef_DEFAULT_DATA_SRC != 0 ) */
 
     /* Set default strobe mode */
-    if(VDAC_PulseRef_DEFAULT_STRB != 0)
-    {
+    #if(VDAC_PulseRef_DEFAULT_STRB != 0)
         VDAC_PulseRef_Strobe |= VDAC_PulseRef_STRB_EN ;
-    }
+    #endif/* (VDAC_PulseRef_DEFAULT_STRB != 0) */
 
     /* Set default range */
     VDAC_PulseRef_SetRange(VDAC_PulseRef_DEFAULT_RANGE); 
@@ -106,10 +101,10 @@ void VDAC_PulseRef_Enable(void)
     /*This is to restore the value of register CR0 ,
     which is modified  in Stop API , this prevents misbehaviour of VDAC */
     #if (CY_PSOC5A)
-        if(VDAC_PulseRef_restoreVal == 1) 
+        if(VDAC_PulseRef_restoreVal == 1u) 
         {
              VDAC_PulseRef_CR0 = VDAC_PulseRef_backup.data_value;
-             VDAC_PulseRef_restoreVal = 0;
+             VDAC_PulseRef_restoreVal = 0u;
         }
     #endif /* CY_PSOC5A */
 }
@@ -138,10 +133,10 @@ void VDAC_PulseRef_Enable(void)
 void VDAC_PulseRef_Start(void)  
 {
     /* Hardware initiazation only needs to occure the first time */
-    if(VDAC_PulseRef_initVar == 0)
+    if(VDAC_PulseRef_initVar == 0u)
     { 
         VDAC_PulseRef_Init();
-        VDAC_PulseRef_initVar = 1;
+        VDAC_PulseRef_initVar = 1u;
     }
 
     /* Enable power to DAC */
@@ -173,15 +168,15 @@ void VDAC_PulseRef_Start(void)
 void VDAC_PulseRef_Stop(void) 
 {
     /* Disble power to DAC */
-    VDAC_PulseRef_PWRMGR &= ~VDAC_PulseRef_ACT_PWR_EN;
-    VDAC_PulseRef_STBY_PWRMGR &= ~VDAC_PulseRef_STBY_PWR_EN;
+    VDAC_PulseRef_PWRMGR &= (uint8)(~VDAC_PulseRef_ACT_PWR_EN);
+    VDAC_PulseRef_STBY_PWRMGR &= (uint8)(~VDAC_PulseRef_STBY_PWR_EN);
 
     /* This is a work around for PSoC5A  ,
     this sets VDAC to current mode with output off */
     #if (CY_PSOC5A)
         VDAC_PulseRef_backup.data_value = VDAC_PulseRef_CR0;
         VDAC_PulseRef_CR0 = VDAC_PulseRef_CUR_MODE_OUT_OFF;
-        VDAC_PulseRef_restoreVal = 1;
+        VDAC_PulseRef_restoreVal = 1u;
     #endif /* CY_PSOC5A */
 }
 
@@ -207,8 +202,8 @@ void VDAC_PulseRef_Stop(void)
 void VDAC_PulseRef_SetSpeed(uint8 speed) 
 {
     /* Clear power mask then write in new value */
-    VDAC_PulseRef_CR0 &= ~VDAC_PulseRef_HS_MASK ;
-    VDAC_PulseRef_CR0 |=  ( speed & VDAC_PulseRef_HS_MASK) ;
+    VDAC_PulseRef_CR0 &= (uint8)(~VDAC_PulseRef_HS_MASK);
+    VDAC_PulseRef_CR0 |=  (speed & VDAC_PulseRef_HS_MASK);
 }
 
 
@@ -232,8 +227,8 @@ void VDAC_PulseRef_SetSpeed(uint8 speed)
 *******************************************************************************/
 void VDAC_PulseRef_SetRange(uint8 range) 
 {
-    VDAC_PulseRef_CR0 &= ~VDAC_PulseRef_RANGE_MASK ;      /* Clear existing mode */
-    VDAC_PulseRef_CR0 |= ( range & VDAC_PulseRef_RANGE_MASK ) ; /*  Set Range  */
+    VDAC_PulseRef_CR0 &= (uint8)(~VDAC_PulseRef_RANGE_MASK);      /* Clear existing mode */
+    VDAC_PulseRef_CR0 |= (range & VDAC_PulseRef_RANGE_MASK);      /*  Set Range  */
     VDAC_PulseRef_DacTrim();
 }
 
@@ -259,7 +254,7 @@ void VDAC_PulseRef_SetRange(uint8 range)
 void VDAC_PulseRef_SetValue(uint8 value) 
 {
     #if (CY_PSOC5A)
-        VDAC_PulseRef_intrStatus = CyEnterCriticalSection();
+        uint8 VDAC_PulseRef_intrStatus = CyEnterCriticalSection();
     #endif /* CY_PSOC5A */
 
     VDAC_PulseRef_Data = value;                /*  Set Value  */
@@ -295,7 +290,7 @@ void VDAC_PulseRef_DacTrim(void)
 {
     uint8 mode;
 
-    mode = ((VDAC_PulseRef_CR0 & VDAC_PulseRef_RANGE_MASK) >> 2) + VDAC_PulseRef_TRIM_M7_1V_RNG_OFFSET;
+    mode = (uint8)((VDAC_PulseRef_CR0 & VDAC_PulseRef_RANGE_MASK) >> 2) + VDAC_PulseRef_TRIM_M7_1V_RNG_OFFSET;
     VDAC_PulseRef_TR = CY_GET_XTND_REG8((uint8 *)(VDAC_PulseRef_DAC_TRIM_BASE + mode));
 }
 

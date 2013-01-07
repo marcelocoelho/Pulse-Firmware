@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: CapSense_1_INT.c
-* Version 3.20
+* Version 3.30
 *
 * Description:
 *  This file provides the source code of Interrupt Service Routine (ISR)
@@ -25,20 +25,20 @@
 /* `#END` */
 
 /* Extern functions declarations, Start and Compete the scan */
-extern void CapSense_1_PreScan(uint8 sensor) ;
+extern void CapSense_1_PreScan(uint8 sensor) CYREENTRANT;
 #if (CapSense_1_DESIGN_TYPE == CapSense_1_ONE_CHANNEL_DESIGN)
-    extern void CapSense_1_PostScan(uint8 sensor) ;
+    extern void CapSense_1_PostScan(uint8 sensor) CYREENTRANT;
 #else
-    extern void CapSense_1_PostScanCh0(uint8 sensor) ;
-    extern void CapSense_1_PostScanCh1(uint8 sensor) ;
+    extern void CapSense_1_PostScanCh0(uint8 sensor) CYREENTRANT;
+    extern void CapSense_1_PostScanCh1(uint8 sensor) CYREENTRANT;
 #endif  /* CapSense_1_DESIGN_TYPE */
 
  #if (CapSense_1_DESIGN_TYPE == CapSense_1_ONE_CHANNEL_DESIGN)
-    extern uint8 CapSense_1_FindNextSensor(uint8 snsIndex) ;
+    extern uint8 CapSense_1_FindNextSensor(uint8 snsIndex) CYREENTRANT;
 #endif  /* (CapSense_1_DESIGN_TYPE == CapSense_1_ONE_CHANNEL_DESIGN) */
  
 #if (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN)
-    extern uint8 CapSense_1_FindNextPair(uint8 snsIndex) ;
+    extern uint8 CapSense_1_FindNextPair(uint8 snsIndex) CYREENTRANT;
 #endif  /* (CapSense_1_DESIGN_TYPE == CapSense_1_TWO_CHANNELS_DESIGN) */
 
 /* Global variables and arrays */

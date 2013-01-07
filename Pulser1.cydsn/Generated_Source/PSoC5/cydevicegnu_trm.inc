@@ -1,7 +1,7 @@
 /*******************************************************************************
 * FILENAME: cydevicegnu_trm.inc
 * 
-* PSoC Creator 2.1
+* PSoC Creator 2.2
 *
 * DESCRIPTION:
 * This file provides all of the address values for the entire PSoC device.

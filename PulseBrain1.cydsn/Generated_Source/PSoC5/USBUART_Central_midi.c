@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: USBUART_Central_midi.c
-* Version 2.30
+* Version 2.50
 *
 * Description:
 *  MIDI Streaming request handler.

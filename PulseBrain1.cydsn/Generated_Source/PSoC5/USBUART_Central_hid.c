@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: USBUART_Central_hid.c
-* Version 2.30
+* Version 2.50
 *
 * Description:
 *  USB HID Class request handler.
@@ -422,7 +422,7 @@ void USBUART_Central_FindReport()
             pTmp = &pTmp[reportType - 1u];
             reportType = CY_GET_REG8(USBUART_Central_wValueLo);    /* Get reportID */
             /* Validate table support by the HID descriptor, compare table count with reportID */
-            if(pTmp->c > reportType)
+            if(pTmp->c >= reportType)
             {
                 pTD = (T_USBUART_Central_TD *) pTmp->p_list;
                 pTD = &pTD[reportType];                          /* select entry depend on report ID*/

@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: USBUART_Central_vnd.c
-* Version 2.30
+* Version 2.50
 *
 * Description:
 *  USB vendor request handler.

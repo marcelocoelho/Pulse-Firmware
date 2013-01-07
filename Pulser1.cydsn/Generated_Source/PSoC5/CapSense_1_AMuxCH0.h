@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: CapSense_1_AMuxCH0.h
-* Version 3.20
+* Version 3.30
 *
 *  Description:
 *    This file contains the constants and function prototypes for the Analog
@@ -30,9 +30,9 @@
 void CapSense_1_AMuxCH0_Start(void);
 void CapSense_1_AMuxCH0_Init(void);
 void CapSense_1_AMuxCH0_Stop(void);
-void CapSense_1_AMuxCH0_Select(uint8 channel) ;
-void CapSense_1_AMuxCH0_FastSelect(uint8 channel) ;
-void CapSense_1_AMuxCH0_DisconnectAll(void) ;
+void CapSense_1_AMuxCH0_Select(uint8 channel) CYREENTRANT;
+void CapSense_1_AMuxCH0_FastSelect(uint8 channel) CYREENTRANT;
+void CapSense_1_AMuxCH0_DisconnectAll(void) CYREENTRANT;
 /* The Connect and Disconnect functions are declared elsewhere */
 /* void CapSense_1_AMuxCH0_Connect(uint8 channel); */
 /* void CapSense_1_AMuxCH0_Disconnect(uint8 channel); */
@@ -63,8 +63,8 @@ void CapSense_1_AMuxCH0_DisconnectAll(void) ;
 #define CapSense_1_AMuxCH0_Connect(channel) CapSense_1_AMuxCH0_Set(channel)
 #define CapSense_1_AMuxCH0_Disconnect(channel) CapSense_1_AMuxCH0_Unset(channel)
 #else
-    void CapSense_1_AMuxCH0_Connect(uint8 channel) ;
-    void CapSense_1_AMuxCH0_Disconnect(uint8 channel) ;
+    void CapSense_1_AMuxCH0_Connect(uint8 channel) CYREENTRANT;
+    void CapSense_1_AMuxCH0_Disconnect(uint8 channel) CYREENTRANT;
 #endif  /* End (CapSense_1_AMuxCH0_MUXTYPE == CapSense_1_AMuxCH0_MUX_SINGLE) */
 
 #endif /* CY_CAPSENSE_CSD_AMUX_CapSense_1_AMuxCH0_H */

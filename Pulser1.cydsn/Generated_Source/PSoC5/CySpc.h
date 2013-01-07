@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: CySpc.c
-* Version 3.10
+* Version 3.30
 *
 * Description:
 *  Provides definitions for the System Performance Component API.
@@ -23,17 +23,21 @@
 
 
 /***************************************
+*    Global Variables
+***************************************/
+extern uint8 SpcLockState;
+
+
+/***************************************
 *    Function Prototypes
 ***************************************/
 void     CySpcStart(void);
 void     CySpcStop(void);
-uint8    CySpcReadData(uint8 *buffer, uint8 size);
-cystatus CySpcLoadMultiByte(uint8 array, uint16 address, const uint8* buffer, uint8 size) ;
-cystatus CySpcLoadRow(uint8 array, const uint8* buffer, uint16 size);
-cystatus CySpcReadMultiByte(uint8 array, uint8 ecc, uint16 address, uint8 size);
+uint8    CySpcReadData(uint8 buffer[], uint8 size);
+cystatus CySpcLoadMultiByte(uint8 array, uint16 address, const uint8 buffer[], uint8 size) ;
+cystatus CySpcLoadRow(uint8 array, const uint8 buffer[], uint16 size);
 cystatus CySpcWriteRow(uint8 array, uint16 address, uint8 tempPolarity, uint8 tempMagnitude) ;
-cystatus CySpcProgramRow(uint8 array, uint16 address, uint8 tempPolarity, uint8 tempMagnitude) ;
-cystatus CySpcEraseSector(uint8 array, uint16 address);
+cystatus CySpcEraseSector(uint8 array, uint8 sectorNumber);
 
 #if(CY_PSOC5A)
     cystatus CySpcGetTemp(uint8 numSamples, uint16 timerPeriod, uint8 clkDivSelect);
@@ -41,9 +45,6 @@ cystatus CySpcEraseSector(uint8 array, uint16 address);
     cystatus CySpcGetTemp(uint8 numSamples);
 #endif  /* (CY_PSOC5A) */
 
-cystatus CySpcSetupTs(uint8 seqSelect, uint8 seqFreeze, uint8 clkDivSel, uint8 curvCompEnable) ;
-cystatus CySpcDisableTs(void);
-cystatus CySpcEraseRow(uint8 array, uint16 address, uint8 tempPolarity, uint8 tempMagnitude) ;
 
 cystatus CySpcLock(void);
 void     CySpcUnlock(void);
@@ -93,7 +94,7 @@ void     CySpcUnlock(void);
 #if(CY_PSOC5LP)
 
     /* Wait-state pipeline */
-    #define CY_SPC_CPU_WAITPIPE_BYPASS      (0x01u)
+    #define CY_SPC_CPU_WAITPIPE_BYPASS      ((uint32)0x01u)
 
 #endif  /* (CY_PSOC5LP) */
 

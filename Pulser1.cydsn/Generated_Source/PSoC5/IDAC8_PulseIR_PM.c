@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: IDAC8_PulseIR.c
-* Version 1.90
+* Version 2.0
 *
 * Description:
 *  This file provides the power management source code to API for the
@@ -64,7 +64,7 @@ void IDAC8_PulseIR_RestoreConfig(void)
     {
         if((IDAC8_PulseIR_Strobe & IDAC8_PulseIR_STRB_MASK) == IDAC8_PulseIR_STRB_EN)
         {
-            IDAC8_PulseIR_Strobe &= ~IDAC8_PulseIR_STRB_MASK;
+            IDAC8_PulseIR_Strobe &= (uint8)(~IDAC8_PulseIR_STRB_MASK);
             IDAC8_PulseIR_Data = IDAC8_PulseIR_backup.data_value;
             IDAC8_PulseIR_Strobe |= IDAC8_PulseIR_STRB_EN;
         }

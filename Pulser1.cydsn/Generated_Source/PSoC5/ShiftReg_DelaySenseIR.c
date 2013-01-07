@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: ShiftReg_DelaySenseIR.c
-* Version 2.10
+* Version 2.20
 *
 * Description:
 *  This file provides the API source code for the Shift Register component.
@@ -14,10 +14,7 @@
 * the software package with which this file was provided.
 ********************************************************************************/
 
-
 #include "ShiftReg_DelaySenseIR.h"
-#include "CyLib.h"
-
 
 uint8 ShiftReg_DelaySenseIR_initVar = 0u;
 
@@ -36,7 +33,7 @@ uint8 ShiftReg_DelaySenseIR_initVar = 0u;
 *  None.
 *
 * Global Variables:
-*  ShiftReg_DelaySenseIR_initVar - used to check initial configuration, modified on 
+*  ShiftReg_DelaySenseIR_initVar - used to check initial configuration, modified on
 *  first function call.
 *
 * Reentrant:
@@ -45,11 +42,10 @@ uint8 ShiftReg_DelaySenseIR_initVar = 0u;
 *******************************************************************************/
 void ShiftReg_DelaySenseIR_Start(void) 
 {
-    if (ShiftReg_DelaySenseIR_initVar == 0u)
+    if(0u == ShiftReg_DelaySenseIR_initVar)
     {
         ShiftReg_DelaySenseIR_Init();
-        /* variable _initVar is set to indicate the fact of initialization */
-        ShiftReg_DelaySenseIR_initVar = 1u; 
+        ShiftReg_DelaySenseIR_initVar = 1u; /* Component initialized */
     }
 
     ShiftReg_DelaySenseIR_Enable();
@@ -72,10 +68,10 @@ void ShiftReg_DelaySenseIR_Start(void)
 *******************************************************************************/
 void ShiftReg_DelaySenseIR_Enable(void) 
 {
-    /* changing address in Datapath Control Store
+    /* Changing address in Datapath Control Store
        from NOP to component state machine commands space */
-    ShiftReg_DelaySenseIR_SR_CONTROL |= ShiftReg_DelaySenseIR_CLK_EN; 
-    
+    ShiftReg_DelaySenseIR_SR_CONTROL |= ShiftReg_DelaySenseIR_CLK_EN;
+
     ShiftReg_DelaySenseIR_EnableInt();
 }
 
@@ -117,7 +113,7 @@ void ShiftReg_DelaySenseIR_Init(void)
 void ShiftReg_DelaySenseIR_Stop(void) 
 {
     /*changing Datapath Control Store address to NOP space*/
-    ShiftReg_DelaySenseIR_SR_CONTROL &= ~ShiftReg_DelaySenseIR_CLK_EN; 
+    ShiftReg_DelaySenseIR_SR_CONTROL &= ((uint8) ~ShiftReg_DelaySenseIR_CLK_EN);
     ShiftReg_DelaySenseIR_DisableInt();
 }
 
@@ -138,7 +134,9 @@ void ShiftReg_DelaySenseIR_Stop(void)
 *******************************************************************************/
 void ShiftReg_DelaySenseIR_EnableInt(void) 
 {
-    uint8 interruptState = CyEnterCriticalSection();
+    uint8 interruptState;
+
+    interruptState = CyEnterCriticalSection();
     ShiftReg_DelaySenseIR_SR_AUX_CONTROL |= ShiftReg_DelaySenseIR_INTERRUPTS_ENABLE;
     CyExitCriticalSection(interruptState);
 }
@@ -160,8 +158,10 @@ void ShiftReg_DelaySenseIR_EnableInt(void)
 *******************************************************************************/
 void ShiftReg_DelaySenseIR_DisableInt(void) 
 {
-    uint8 interruptState = CyEnterCriticalSection();
-    ShiftReg_DelaySenseIR_SR_AUX_CONTROL &= ~ShiftReg_DelaySenseIR_INTERRUPTS_ENABLE;
+    uint8 interruptState;
+
+    interruptState = CyEnterCriticalSection();
+    ShiftReg_DelaySenseIR_SR_AUX_CONTROL &= ((uint8) ~ShiftReg_DelaySenseIR_INTERRUPTS_ENABLE);
     CyExitCriticalSection(interruptState);
 }
 
@@ -184,14 +184,12 @@ uint8 ShiftReg_DelaySenseIR_GetFIFOStatus(uint8 fifoId)
 {
     uint8 result;
 
-    result = ShiftReg_DelaySenseIR_RET_FIFO_NOT_DEFINED; /*default status value*/
+    result = ShiftReg_DelaySenseIR_RET_FIFO_NOT_DEFINED;
 
-    #if (ShiftReg_DelaySenseIR_USE_INPUT_FIFO == 1u)
-        
-        if(fifoId == ShiftReg_DelaySenseIR_IN_FIFO)
-        {    
-            switch((ShiftReg_DelaySenseIR_SR_STATUS & ShiftReg_DelaySenseIR_IN_FIFO_MASK) >> 
-                    ShiftReg_DelaySenseIR_IN_FIFO_SHFT_MASK)
+    #if(0u != ShiftReg_DelaySenseIR_USE_INPUT_FIFO)
+        if(ShiftReg_DelaySenseIR_IN_FIFO == fifoId)
+        {
+            switch(ShiftReg_DelaySenseIR_GET_IN_FIFO_STS)
             {
                 case ShiftReg_DelaySenseIR_IN_FIFO_FULL :
                     result = ShiftReg_DelaySenseIR_RET_FIFO_FULL;
@@ -204,16 +202,17 @@ uint8 ShiftReg_DelaySenseIR_GetFIFOStatus(uint8 fifoId)
                 case ShiftReg_DelaySenseIR_IN_FIFO_NOT_EMPTY :
                     result = ShiftReg_DelaySenseIR_RET_FIFO_NOT_EMPTY;
                     break;
+                    
                 default:
                     result = ShiftReg_DelaySenseIR_RET_FIFO_EMPTY;
-            }
+                    break;
+            }   
         }
-    #endif/*(ShiftReg_DelaySenseIR_USE_INPUT_FIFO == 1u)*/
-    
-    if(fifoId == ShiftReg_DelaySenseIR_OUT_FIFO)
+    #endif /* (0u != ShiftReg_DelaySenseIR_USE_INPUT_FIFO) */
+
+    if(ShiftReg_DelaySenseIR_OUT_FIFO == fifoId)
     {
-        switch((ShiftReg_DelaySenseIR_SR_STATUS & ShiftReg_DelaySenseIR_OUT_FIFO_MASK) >> 
-                ShiftReg_DelaySenseIR_OUT_FIFO_SHFT_MASK)
+        switch(ShiftReg_DelaySenseIR_GET_OUT_FIFO_STS)
         {
             case ShiftReg_DelaySenseIR_OUT_FIFO_FULL :
                 result = ShiftReg_DelaySenseIR_RET_FIFO_FULL;
@@ -229,10 +228,11 @@ uint8 ShiftReg_DelaySenseIR_GetFIFOStatus(uint8 fifoId)
 
             default:
                 result = ShiftReg_DelaySenseIR_RET_FIFO_FULL;
+                break;
         }
     }
 
-    return (result);
+    return(result);
 }
 
 
@@ -254,8 +254,8 @@ uint8 ShiftReg_DelaySenseIR_GetFIFOStatus(uint8 fifoId)
 *******************************************************************************/
 void ShiftReg_DelaySenseIR_SetIntMode(uint8 interruptSource) 
 {
-    ShiftReg_DelaySenseIR_SR_STATUS_MASK = (ShiftReg_DelaySenseIR_SR_STATUS_MASK & ~ShiftReg_DelaySenseIR_INTS_EN_MASK) | \
-                                      (interruptSource & ShiftReg_DelaySenseIR_INTS_EN_MASK);
+    ShiftReg_DelaySenseIR_SR_STATUS_MASK &= ((uint8) ~ShiftReg_DelaySenseIR_INTS_EN_MASK);          /* Clear existing int */
+    ShiftReg_DelaySenseIR_SR_STATUS_MASK |= (interruptSource & ShiftReg_DelaySenseIR_INTS_EN_MASK); /* Set int */
 }
 
 
@@ -293,15 +293,14 @@ uint8 ShiftReg_DelaySenseIR_GetIntStatus(void)
 *  None.
 *
 *******************************************************************************/
-void ShiftReg_DelaySenseIR_WriteRegValue(uint32 shiftData) \
-                
+void ShiftReg_DelaySenseIR_WriteRegValue(uint32 shiftData)
+                                                                     
 {
     CY_SET_REG32(ShiftReg_DelaySenseIR_SHIFT_REG_LSB_PTR, shiftData);
 }
 
 
-#if (ShiftReg_DelaySenseIR_USE_INPUT_FIFO == 1u) /* if input FIFO is used */
-
+#if(0u != ShiftReg_DelaySenseIR_USE_INPUT_FIFO)
     /*******************************************************************************
     * Function Name: ShiftReg_DelaySenseIR_WriteData
     ********************************************************************************
@@ -315,34 +314,32 @@ void ShiftReg_DelaySenseIR_WriteRegValue(uint32 shiftData) \
     *
     * Return:
     *  Indicates: successful execution of function
-    *  when FIFO is empty; and error when
-    *  FIFO is full.
+    *  when FIFO is empty; and error when FIFO is full.
     *
     * Reentrant:
     *  No.
     *
     *******************************************************************************/
-    uint8 ShiftReg_DelaySenseIR_WriteData(uint32 shiftData) \
-                    
+    cystatus ShiftReg_DelaySenseIR_WriteData(uint32 shiftData)
+                                                                         
     {
-        uint8 result;
-    
-        result = CYRET_INVALID_STATE;/*default result state*/
-    
-        /*write data to input FIFO if FIFO is not full*/
-        if((ShiftReg_DelaySenseIR_GetFIFOStatus(ShiftReg_DelaySenseIR_IN_FIFO)) != ShiftReg_DelaySenseIR_RET_FIFO_FULL)
+        cystatus result;
+
+        result = CYRET_INVALID_STATE;
+
+        /* Writes data into the input FIFO if it is not FULL */
+        if(ShiftReg_DelaySenseIR_RET_FIFO_FULL != (ShiftReg_DelaySenseIR_GetFIFOStatus(ShiftReg_DelaySenseIR_IN_FIFO)))
         {
             CY_SET_REG32(ShiftReg_DelaySenseIR_IN_FIFO_VAL_LSB_PTR, shiftData);
-            result = CYRET_SUCCESS; /*return 'success' status*/
+            result = CYRET_SUCCESS;
         }
+
         return(result);
     }
+#endif /* (0u != ShiftReg_DelaySenseIR_USE_INPUT_FIFO) */
 
 
-#endif/*(ShiftReg_DelaySenseIR_USE_INPUT_FIFO == 1u)*/
-
-#if (ShiftReg_DelaySenseIR_USE_OUTPUT_FIFO == 1u)/*if output FIFO is used*/
-
+#if(0u != ShiftReg_DelaySenseIR_USE_OUTPUT_FIFO)
     /*******************************************************************************
     * Function Name: ShiftReg_DelaySenseIR_ReadData
     ********************************************************************************
@@ -360,13 +357,11 @@ void ShiftReg_DelaySenseIR_WriteRegValue(uint32 shiftData) \
     *  No.
     *
     *******************************************************************************/
-    uint32 ShiftReg_DelaySenseIR_ReadData(void) \
-            
+    uint32 ShiftReg_DelaySenseIR_ReadData(void) 
     {
         return(CY_GET_REG32(ShiftReg_DelaySenseIR_OUT_FIFO_VAL_LSB_PTR));
     }
-
-#endif/*(ShiftReg_DelaySenseIR_USE_OUTPUT_FIFO == 1u)*/
+#endif /* (0u != ShiftReg_DelaySenseIR_USE_OUTPUT_FIFO) */
 
 
 /*******************************************************************************
@@ -381,9 +376,7 @@ void ShiftReg_DelaySenseIR_WriteRegValue(uint32 shiftData) \
 *  None.
 *
 * Return:
-*  Shift Register state
-*
-*  Clears output FIFO.
+*  Shift Register state. Clears output FIFO.
 *
 * Reentrant:
 *  No.
@@ -394,20 +387,23 @@ uint32 ShiftReg_DelaySenseIR_ReadRegValue(void)
     uint32 result;
 
     /* Clear FIFO before software capture */
-
-    while(ShiftReg_DelaySenseIR_GetFIFOStatus(ShiftReg_DelaySenseIR_OUT_FIFO) != ShiftReg_DelaySenseIR_RET_FIFO_EMPTY)
+    while(ShiftReg_DelaySenseIR_RET_FIFO_EMPTY != ShiftReg_DelaySenseIR_GetFIFOStatus(ShiftReg_DelaySenseIR_OUT_FIFO))
     {
-        result = CY_GET_REG32(ShiftReg_DelaySenseIR_OUT_FIFO_VAL_LSB_PTR);
+        (void) CY_GET_REG32(ShiftReg_DelaySenseIR_OUT_FIFO_VAL_LSB_PTR);
     }
-    
-    /* Capture A1 to output FIFO */
-    result = CY_GET_REG8(ShiftReg_DelaySenseIR_SHIFT_REG_VALUE_LSB_PTR);
-    
-    /* Read output FIFO */
-    result = CY_GET_REG32(ShiftReg_DelaySenseIR_OUT_FIFO_VAL_LSB_PTR);
-    result = result & ShiftReg_DelaySenseIR_SR_MASK;
 
+    /* Read of 8 bits from A1 causes capture to output FIFO */
+    (void) CY_GET_REG8(ShiftReg_DelaySenseIR_SHIFT_REG_CAPTURE_PTR);
+
+    /* Read output FIFO */
+    result  = CY_GET_REG32(ShiftReg_DelaySenseIR_OUT_FIFO_VAL_LSB_PTR);
+    
+    #if(0u != (ShiftReg_DelaySenseIR_SR_SIZE % 8u))
+        result &= ((uint32) ShiftReg_DelaySenseIR_SR_MASK);
+    #endif /* (0u != (ShiftReg_DelaySenseIR_SR_SIZE % 8u)) */
+    
     return(result);
 }
+
 
 /* [] END OF FILE */

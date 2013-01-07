@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: VDAC_PulseRef_PM.c  
-* Version 1.80
+* Version 1.90
 *
 * Description:
 *  This file provides the power management source code to API for the
@@ -63,7 +63,7 @@ void VDAC_PulseRef_RestoreConfig(void)
     {
         if((VDAC_PulseRef_Strobe & VDAC_PulseRef_STRB_MASK) == VDAC_PulseRef_STRB_EN)
         {
-            VDAC_PulseRef_Strobe &= ~VDAC_PulseRef_STRB_MASK;
+            VDAC_PulseRef_Strobe &= (uint8)(~VDAC_PulseRef_STRB_MASK);
             VDAC_PulseRef_Data = VDAC_PulseRef_backup.data_value;
             VDAC_PulseRef_Strobe |= VDAC_PulseRef_STRB_EN;
         }

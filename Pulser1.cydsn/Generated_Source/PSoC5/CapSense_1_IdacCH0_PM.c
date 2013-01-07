@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: CapSense_1_IdacCH0.c
-* Version 1.90
+* Version 2.0
 *
 * Description:
 *  This file provides the power management source code to API for the
@@ -64,7 +64,7 @@ void CapSense_1_IdacCH0_RestoreConfig(void)
     {
         if((CapSense_1_IdacCH0_Strobe & CapSense_1_IdacCH0_STRB_MASK) == CapSense_1_IdacCH0_STRB_EN)
         {
-            CapSense_1_IdacCH0_Strobe &= ~CapSense_1_IdacCH0_STRB_MASK;
+            CapSense_1_IdacCH0_Strobe &= (uint8)(~CapSense_1_IdacCH0_STRB_MASK);
             CapSense_1_IdacCH0_Data = CapSense_1_IdacCH0_backup.data_value;
             CapSense_1_IdacCH0_Strobe |= CapSense_1_IdacCH0_STRB_EN;
         }

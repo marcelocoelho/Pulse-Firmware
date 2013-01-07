@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: PrISM_LEDBlue.c
-* Version 2.10
+* Version 2.20
 *
 * Description:
 *  This file provides the source code of the API for the PrISM Component.
@@ -60,7 +60,6 @@ void PrISM_LEDBlue_Start(void)
         PrISM_LEDBlue_initVar = 1u;
     }
     PrISM_LEDBlue_Enable();
-
 }
 
 
@@ -92,43 +91,23 @@ void PrISM_LEDBlue_Init(void)
     
     enableInterrupts = CyEnterCriticalSection();
     /* Set FIFO0_CLR bit to use FIFO0 as a simple one-byte buffer*/
-    #if (PrISM_LEDBlue_RESOLUTION <= 8u)      /* 8bit - PrISM */
-        PrISM_LEDBlue_AUX_CONTROL_REG |= PrISM_LEDBlue_FIFO0_CLR;
-    #elif (PrISM_LEDBlue_RESOLUTION <= 16u)   /* 16bit - PrISM */
-        CY_SET_REG16(PrISM_LEDBlue_AUX_CONTROL_PTR, CY_GET_REG16(PrISM_LEDBlue_AUX_CONTROL_PTR) | 
-                                        PrISM_LEDBlue_FIFO0_CLR | PrISM_LEDBlue_FIFO0_CLR << 8u);
-    #elif (PrISM_LEDBlue_RESOLUTION <= 24u)   /* 24bit - PrISM */
-        CY_SET_REG24(PrISM_LEDBlue_AUX_CONTROL_PTR, CY_GET_REG24(PrISM_LEDBlue_AUX_CONTROL_PTR) |
-                                        PrISM_LEDBlue_FIFO0_CLR | PrISM_LEDBlue_FIFO0_CLR << 8u );
-        CY_SET_REG24(PrISM_LEDBlue_AUX_CONTROL2_PTR, CY_GET_REG24(PrISM_LEDBlue_AUX_CONTROL2_PTR) | 
-                                        PrISM_LEDBlue_FIFO0_CLR );
-    #else                                 /* 32bit - PrISM */
-        CY_SET_REG32(PrISM_LEDBlue_AUX_CONTROL_PTR, CY_GET_REG32(PrISM_LEDBlue_AUX_CONTROL_PTR) |
-                                        PrISM_LEDBlue_FIFO0_CLR | PrISM_LEDBlue_FIFO0_CLR << 8u );
-        CY_SET_REG32(PrISM_LEDBlue_AUX_CONTROL2_PTR, CY_GET_REG32(PrISM_LEDBlue_AUX_CONTROL2_PTR) |
-                                        PrISM_LEDBlue_FIFO0_CLR | PrISM_LEDBlue_FIFO0_CLR << 8u );
-    #endif                                /* End PrISM_LEDBlue_RESOLUTION */
+    CY_SET_REG8(PrISM_LEDBlue_AUX_CONTROL_PTR, 
+                        CY_GET_REG8(PrISM_LEDBlue_AUX_CONTROL_PTR) | PrISM_LEDBlue_FIFO0_CLR);
     CyExitCriticalSection(enableInterrupts);
     
     #if(!PrISM_LEDBlue_PULSE_TYPE_HARDCODED)
         /* Writes density type provided by customizer */
-        if(PrISM_LEDBlue_GREATERTHAN_OR_EQUAL == 0 )
-        {
+        #if(PrISM_LEDBlue_GREATERTHAN_OR_EQUAL == PrISM_LEDBlue_COMPARE0)
             PrISM_LEDBlue_CONTROL_REG |= PrISM_LEDBlue_CTRL_COMPARE_TYPE0_GREATER_THAN_OR_EQUAL;
-        }
-        else
-        {
-            PrISM_LEDBlue_CONTROL_REG &= ~PrISM_LEDBlue_CTRL_COMPARE_TYPE0_GREATER_THAN_OR_EQUAL;
-        }
+        #else
+            PrISM_LEDBlue_CONTROL_REG &= (uint8)~PrISM_LEDBlue_CTRL_COMPARE_TYPE0_GREATER_THAN_OR_EQUAL;
+        #endif /* End PrISM_LEDBlue_COMPARE0 */    
     
-        if(PrISM_LEDBlue_GREATERTHAN_OR_EQUAL == 0)
-        {
+        #if(PrISM_LEDBlue_GREATERTHAN_OR_EQUAL == PrISM_LEDBlue_COMPARE1)
             PrISM_LEDBlue_CONTROL_REG |= PrISM_LEDBlue_CTRL_COMPARE_TYPE1_GREATER_THAN_OR_EQUAL;
-        }
-        else
-        {
-            PrISM_LEDBlue_CONTROL_REG &= ~PrISM_LEDBlue_CTRL_COMPARE_TYPE1_GREATER_THAN_OR_EQUAL;
-        }
+        #else
+            PrISM_LEDBlue_CONTROL_REG &= (uint8)~PrISM_LEDBlue_CTRL_COMPARE_TYPE1_GREATER_THAN_OR_EQUAL;
+        #endif /* End PrISM_LEDBlue_COMPARE1 */    
     #endif /* End PrISM_LEDBlue_PULSE_TYPE_HARDCODED */
 }
 
@@ -173,7 +152,7 @@ void PrISM_LEDBlue_Enable(void)
 void PrISM_LEDBlue_Stop(void) 
 {
     #if(!PrISM_LEDBlue_PULSE_TYPE_HARDCODED)
-        PrISM_LEDBlue_CONTROL_REG &= ~PrISM_LEDBlue_CTRL_ENABLE;
+        PrISM_LEDBlue_CONTROL_REG &= (uint8)~PrISM_LEDBlue_CTRL_ENABLE;
     #else
         /* PulseTypeHardoded option enabled - to stop PrISM use enable input */
     #endif /* End $INSTANCE_NAME`_PULSE_TYPE_HARDCODED */
@@ -205,7 +184,7 @@ void PrISM_LEDBlue_Stop(void)
         }
         else
         {
-            PrISM_LEDBlue_CONTROL_REG &= ~PrISM_LEDBlue_CTRL_COMPARE_TYPE0_GREATER_THAN_OR_EQUAL;
+            PrISM_LEDBlue_CONTROL_REG &= (uint8)~PrISM_LEDBlue_CTRL_COMPARE_TYPE0_GREATER_THAN_OR_EQUAL;
         }
     }
     
@@ -233,7 +212,7 @@ void PrISM_LEDBlue_Stop(void)
         }
         else
         {
-            PrISM_LEDBlue_CONTROL_REG &= ~PrISM_LEDBlue_CTRL_COMPARE_TYPE1_GREATER_THAN_OR_EQUAL;
+            PrISM_LEDBlue_CONTROL_REG &= (uint8)~PrISM_LEDBlue_CTRL_COMPARE_TYPE1_GREATER_THAN_OR_EQUAL;
         }
     }
 

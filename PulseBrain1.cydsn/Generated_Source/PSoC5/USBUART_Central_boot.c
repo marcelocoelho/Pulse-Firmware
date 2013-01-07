@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: USBUART_Central_boot.c
-* Version 2.30
+* Version 2.50
 *
 * Description:
 *  Boot loader API for USBFS Component.

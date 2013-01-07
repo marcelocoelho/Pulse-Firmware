@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: PrISM_11.c
-* Version 2.10
+* Version 2.20
 *
 * Description:
 *  This file provides the source code of the API for the PrISM Component.
@@ -60,7 +60,6 @@ void PrISM_11_Start(void)
         PrISM_11_initVar = 1u;
     }
     PrISM_11_Enable();
-
 }
 
 
@@ -92,43 +91,23 @@ void PrISM_11_Init(void)
     
     enableInterrupts = CyEnterCriticalSection();
     /* Set FIFO0_CLR bit to use FIFO0 as a simple one-byte buffer*/
-    #if (PrISM_11_RESOLUTION <= 8u)      /* 8bit - PrISM */
-        PrISM_11_AUX_CONTROL_REG |= PrISM_11_FIFO0_CLR;
-    #elif (PrISM_11_RESOLUTION <= 16u)   /* 16bit - PrISM */
-        CY_SET_REG16(PrISM_11_AUX_CONTROL_PTR, CY_GET_REG16(PrISM_11_AUX_CONTROL_PTR) | 
-                                        PrISM_11_FIFO0_CLR | PrISM_11_FIFO0_CLR << 8u);
-    #elif (PrISM_11_RESOLUTION <= 24u)   /* 24bit - PrISM */
-        CY_SET_REG24(PrISM_11_AUX_CONTROL_PTR, CY_GET_REG24(PrISM_11_AUX_CONTROL_PTR) |
-                                        PrISM_11_FIFO0_CLR | PrISM_11_FIFO0_CLR << 8u );
-        CY_SET_REG24(PrISM_11_AUX_CONTROL2_PTR, CY_GET_REG24(PrISM_11_AUX_CONTROL2_PTR) | 
-                                        PrISM_11_FIFO0_CLR );
-    #else                                 /* 32bit - PrISM */
-        CY_SET_REG32(PrISM_11_AUX_CONTROL_PTR, CY_GET_REG32(PrISM_11_AUX_CONTROL_PTR) |
-                                        PrISM_11_FIFO0_CLR | PrISM_11_FIFO0_CLR << 8u );
-        CY_SET_REG32(PrISM_11_AUX_CONTROL2_PTR, CY_GET_REG32(PrISM_11_AUX_CONTROL2_PTR) |
-                                        PrISM_11_FIFO0_CLR | PrISM_11_FIFO0_CLR << 8u );
-    #endif                                /* End PrISM_11_RESOLUTION */
+    CY_SET_REG8(PrISM_11_AUX_CONTROL_PTR, 
+                        CY_GET_REG8(PrISM_11_AUX_CONTROL_PTR) | PrISM_11_FIFO0_CLR);
     CyExitCriticalSection(enableInterrupts);
     
     #if(!PrISM_11_PULSE_TYPE_HARDCODED)
         /* Writes density type provided by customizer */
-        if(PrISM_11_GREATERTHAN_OR_EQUAL == 0 )
-        {
+        #if(PrISM_11_GREATERTHAN_OR_EQUAL == PrISM_11_COMPARE0)
             PrISM_11_CONTROL_REG |= PrISM_11_CTRL_COMPARE_TYPE0_GREATER_THAN_OR_EQUAL;
-        }
-        else
-        {
-            PrISM_11_CONTROL_REG &= ~PrISM_11_CTRL_COMPARE_TYPE0_GREATER_THAN_OR_EQUAL;
-        }
+        #else
+            PrISM_11_CONTROL_REG &= (uint8)~PrISM_11_CTRL_COMPARE_TYPE0_GREATER_THAN_OR_EQUAL;
+        #endif /* End PrISM_11_COMPARE0 */    
     
-        if(PrISM_11_GREATERTHAN_OR_EQUAL == 0)
-        {
+        #if(PrISM_11_GREATERTHAN_OR_EQUAL == PrISM_11_COMPARE1)
             PrISM_11_CONTROL_REG |= PrISM_11_CTRL_COMPARE_TYPE1_GREATER_THAN_OR_EQUAL;
-        }
-        else
-        {
-            PrISM_11_CONTROL_REG &= ~PrISM_11_CTRL_COMPARE_TYPE1_GREATER_THAN_OR_EQUAL;
-        }
+        #else
+            PrISM_11_CONTROL_REG &= (uint8)~PrISM_11_CTRL_COMPARE_TYPE1_GREATER_THAN_OR_EQUAL;
+        #endif /* End PrISM_11_COMPARE1 */    
     #endif /* End PrISM_11_PULSE_TYPE_HARDCODED */
 }
 
@@ -173,7 +152,7 @@ void PrISM_11_Enable(void)
 void PrISM_11_Stop(void) 
 {
     #if(!PrISM_11_PULSE_TYPE_HARDCODED)
-        PrISM_11_CONTROL_REG &= ~PrISM_11_CTRL_ENABLE;
+        PrISM_11_CONTROL_REG &= (uint8)~PrISM_11_CTRL_ENABLE;
     #else
         /* PulseTypeHardoded option enabled - to stop PrISM use enable input */
     #endif /* End $INSTANCE_NAME`_PULSE_TYPE_HARDCODED */
@@ -205,7 +184,7 @@ void PrISM_11_Stop(void)
         }
         else
         {
-            PrISM_11_CONTROL_REG &= ~PrISM_11_CTRL_COMPARE_TYPE0_GREATER_THAN_OR_EQUAL;
+            PrISM_11_CONTROL_REG &= (uint8)~PrISM_11_CTRL_COMPARE_TYPE0_GREATER_THAN_OR_EQUAL;
         }
     }
     
@@ -233,7 +212,7 @@ void PrISM_11_Stop(void)
         }
         else
         {
-            PrISM_11_CONTROL_REG &= ~PrISM_11_CTRL_COMPARE_TYPE1_GREATER_THAN_OR_EQUAL;
+            PrISM_11_CONTROL_REG &= (uint8)~PrISM_11_CTRL_COMPARE_TYPE1_GREATER_THAN_OR_EQUAL;
         }
     }
 

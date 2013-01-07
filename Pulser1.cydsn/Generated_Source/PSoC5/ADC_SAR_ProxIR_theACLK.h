@@ -1,24 +1,25 @@
 /*******************************************************************************
 * File Name: ADC_SAR_ProxIR_theACLK.h
-* Version 1.70
+* Version 2.0
 *
 *  Description:
 *   Provides the function and constant definitions for the clock component.
 *
-* Note:
+*  Note:
 *
 ********************************************************************************
-* Copyright 2008-2010, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions, 
 * disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
-********************************************************************************/
+*******************************************************************************/
 
 #if !defined(CY_CLOCK_ADC_SAR_ProxIR_theACLK_H)
 #define CY_CLOCK_ADC_SAR_ProxIR_theACLK_H
 
 #include <cytypes.h>
 #include <cyfitter.h>
+
 
 /***************************************
 * Conditional Compilation Parameters
@@ -27,8 +28,9 @@
 /* Check to see if required defines such as CY_PSOC5LP are available */
 /* They are defined starting with cy_boot v3.0 */
 #if !defined (CY_PSOC5LP)
-    #error Component cy_clock_v1_70 requires cy_boot v3.0 or later
+    #error Component cy_clock_v2_0 requires cy_boot v3.0 or later
 #endif /* (CY_PSOC5LP) */
+
 
 /***************************************
 *        Function Prototypes
@@ -39,10 +41,11 @@ void ADC_SAR_ProxIR_theACLK_Stop(void) ;
 
 #if(CY_PSOC3 || CY_PSOC5LP)
 void ADC_SAR_ProxIR_theACLK_StopBlock(void) ;
-#endif
+#endif /* (CY_PSOC3 || CY_PSOC5LP) */
 
 void ADC_SAR_ProxIR_theACLK_StandbyPower(uint8 state) ;
-void ADC_SAR_ProxIR_theACLK_SetDividerRegister(uint16 clkDivider, uint8 reset) ;
+void ADC_SAR_ProxIR_theACLK_SetDividerRegister(uint16 clkDivider, uint8 restart) 
+                                ;
 uint16 ADC_SAR_ProxIR_theACLK_GetDividerRegister(void) ;
 void ADC_SAR_ProxIR_theACLK_SetModeRegister(uint8 modeBitMask) ;
 void ADC_SAR_ProxIR_theACLK_ClearModeRegister(uint8 modeBitMask) ;
@@ -52,7 +55,7 @@ uint8 ADC_SAR_ProxIR_theACLK_GetSourceRegister(void) ;
 #if defined(ADC_SAR_ProxIR_theACLK__CFG3)
 void ADC_SAR_ProxIR_theACLK_SetPhaseRegister(uint8 clkPhase) ;
 uint8 ADC_SAR_ProxIR_theACLK_GetPhaseRegister(void) ;
-#endif
+#endif /* defined(ADC_SAR_ProxIR_theACLK__CFG3) */
 
 #define ADC_SAR_ProxIR_theACLK_Enable()                       ADC_SAR_ProxIR_theACLK_Start()
 #define ADC_SAR_ProxIR_theACLK_Disable()                      ADC_SAR_ProxIR_theACLK_Stop()
@@ -63,7 +66,7 @@ uint8 ADC_SAR_ProxIR_theACLK_GetPhaseRegister(void) ;
 #if defined(ADC_SAR_ProxIR_theACLK__CFG3)
 #define ADC_SAR_ProxIR_theACLK_SetPhase(clkPhase)             ADC_SAR_ProxIR_theACLK_SetPhaseRegister(clkPhase)
 #define ADC_SAR_ProxIR_theACLK_SetPhaseValue(clkPhase)        ADC_SAR_ProxIR_theACLK_SetPhaseRegister((clkPhase) + 1)
-#endif
+#endif /* defined(ADC_SAR_ProxIR_theACLK__CFG3) */
 
 
 /***************************************
@@ -95,7 +98,7 @@ uint8 ADC_SAR_ProxIR_theACLK_GetPhaseRegister(void) ;
 /* Analog clock phase configuration register */
 #define ADC_SAR_ProxIR_theACLK_PHASE              (* (reg8 *) ADC_SAR_ProxIR_theACLK__CFG3)
 #define ADC_SAR_ProxIR_theACLK_PHASE_PTR          ((reg8 *) ADC_SAR_ProxIR_theACLK__CFG3)
-#endif
+#endif /* defined(ADC_SAR_ProxIR_theACLK__CFG3) */
 
 
 /**************************************
@@ -113,7 +116,7 @@ uint8 ADC_SAR_ProxIR_theACLK_GetPhaseRegister(void) ;
 #if defined(ADC_SAR_ProxIR_theACLK__CFG3)
 /* CFG3 phase mask */
 #define ADC_SAR_ProxIR_theACLK_PHASE_MASK         ADC_SAR_ProxIR_theACLK__CFG3_PHASE_DLY_MASK
-#endif
+#endif /* defined(ADC_SAR_ProxIR_theACLK__CFG3) */
 
 #endif /* CY_CLOCK_ADC_SAR_ProxIR_theACLK_H */
 

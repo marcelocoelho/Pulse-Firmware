@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: Opamp_PulseRef.c
-* Version 1.80
+* Version 1.90
 *
 * Description:
 *  This file provides the source code to the API for OpAmp (Analog Buffer) 
@@ -16,7 +16,6 @@
 *******************************************************************************/
 
 #include "Opamp_PulseRef.h"
-#include <CyLib.h>
 
 uint8 Opamp_PulseRef_initVar = 0u;
 
@@ -118,17 +117,17 @@ void Opamp_PulseRef_Start(void)
 *******************************************************************************/
 void Opamp_PulseRef_Stop(void) 
 {
-    /* Disable negative charge pumps for ANIF only if one ABuf is turned ON */
-    if(Opamp_PulseRef_PM_ACT_CFG_REG == Opamp_PulseRef_ACT_PWR_EN)
-    {
-        Opamp_PulseRef_PUMP_CR1_REG &= ~(Opamp_PulseRef_PUMP_CR1_CLKSEL | Opamp_PulseRef_PUMP_CR1_FORCE);
-    }
-    
     /* Disable power to buffer in active mode template */
-    Opamp_PulseRef_PM_ACT_CFG_REG &= ~Opamp_PulseRef_ACT_PWR_EN;
+    Opamp_PulseRef_PM_ACT_CFG_REG &= (uint8)(~Opamp_PulseRef_ACT_PWR_EN);
 
     /* Disable power to buffer in alternative active mode template */
-    Opamp_PulseRef_PM_STBY_CFG_REG &= ~Opamp_PulseRef_STBY_PWR_EN;
+    Opamp_PulseRef_PM_STBY_CFG_REG &= (uint8)(~Opamp_PulseRef_STBY_PWR_EN);
+    
+    /* Disable negative charge pumps for ANIF only if all ABuf is turned OFF */
+    if(Opamp_PulseRef_PM_ACT_CFG_REG == 0u)
+    {
+        Opamp_PulseRef_PUMP_CR1_REG &= (uint8)(~(Opamp_PulseRef_PUMP_CR1_CLKSEL | Opamp_PulseRef_PUMP_CR1_FORCE));
+    }
 }
 
 
@@ -149,13 +148,12 @@ void Opamp_PulseRef_Stop(void)
 **********************************************************************************/
 void Opamp_PulseRef_SetPower(uint8 power) 
 {
-    /* Only High power can be used in PSoC5 */
-    #if CY_PSOC5A
-        CYASSERT(power == Opamp_PulseRef_HIGHPOWER);
-    #endif   /* (CY_PSOC5A) */
-
-    Opamp_PulseRef_CR_REG = ((Opamp_PulseRef_CR_REG & ~Opamp_PulseRef_PWR_MASK) | 
-                               ( power & Opamp_PulseRef_PWR_MASK));   /* Set device power */
+    #if (CY_PSOC3 || CY_PSOC5LP)
+        Opamp_PulseRef_CR_REG &= (uint8)(~Opamp_PulseRef_PWR_MASK);
+        Opamp_PulseRef_CR_REG |= power & Opamp_PulseRef_PWR_MASK;      /* Set device power */
+    #else
+        CYASSERT(Opamp_PulseRef_HIGHPOWER == power);
+    #endif /* CY_PSOC3 || CY_PSOC5LP */
 }
 
 

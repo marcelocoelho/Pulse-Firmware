@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: ADC_SAR_ProxIR_theACLK.c
-* Version 1.70
+* Version 2.0
 *
 *  Description:
 *   This file provides the source code to the API for the clock component.
@@ -8,11 +8,11 @@
 *  Note:
 *
 ********************************************************************************
-* Copyright 2008-2010, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions, 
 * disclaimers, and limitations in the end user license agreement accompanying 
 * the software package with which this file was provided.
-********************************************************************************/
+*******************************************************************************/
 
 #include <cydevice_trm.h>
 #include "ADC_SAR_ProxIR_theACLK.h"
@@ -30,27 +30,30 @@
 /*******************************************************************************
 * Function Name: ADC_SAR_ProxIR_theACLK_Start
 ********************************************************************************
+*
 * Summary:
 *  Starts the clock. Note that on startup, clocks may be already running if the
 *  "Start on Reset" option is enabled in the DWR.
 *
 * Parameters:
-*  void
+*  None
 *
 * Returns:
-*  void
+*  None
 *
 *******************************************************************************/
 void ADC_SAR_ProxIR_theACLK_Start(void) 
 {
     /* Set the bit to enable the clock. */
     ADC_SAR_ProxIR_theACLK_CLKEN |= ADC_SAR_ProxIR_theACLK_CLKEN_MASK;
+	ADC_SAR_ProxIR_theACLK_CLKSTBY |= ADC_SAR_ProxIR_theACLK_CLKSTBY_MASK;
 }
 
 
 /*******************************************************************************
 * Function Name: ADC_SAR_ProxIR_theACLK_Stop
 ********************************************************************************
+*
 * Summary:
 *  Stops the clock and returns immediately. This API does not require the
 *  source clock to be running but may return before the hardware is actually
@@ -59,23 +62,27 @@ void ADC_SAR_ProxIR_theACLK_Start(void)
 *  glitch, use the StopBlock function.
 *
 * Parameters:
-*  void
+*  None
 *
 * Returns:
-*  void
+*  None
 *
 *******************************************************************************/
 void ADC_SAR_ProxIR_theACLK_Stop(void) 
 {
     /* Clear the bit to disable the clock. */
-    ADC_SAR_ProxIR_theACLK_CLKEN &= ~ADC_SAR_ProxIR_theACLK_CLKEN_MASK;
+    ADC_SAR_ProxIR_theACLK_CLKEN &= (uint8)(~ADC_SAR_ProxIR_theACLK_CLKEN_MASK);
+	ADC_SAR_ProxIR_theACLK_CLKSTBY &= (uint8)(~ADC_SAR_ProxIR_theACLK_CLKSTBY_MASK);
 }
 
 
 #if(CY_PSOC3 || CY_PSOC5LP)
+
+
 /*******************************************************************************
 * Function Name: ADC_SAR_ProxIR_theACLK_StopBlock
 ********************************************************************************
+*
 * Summary:
 *  Stops the clock and waits for the hardware to actually be disabled before
 *  returning. This ensures that the clock is never truncated (high part of the
@@ -84,20 +91,20 @@ void ADC_SAR_ProxIR_theACLK_Stop(void)
 *  a stopped clock cannot be disabled.
 *
 * Parameters:
-*  void
+*  None
 *
 * Returns:
-*  void
+*  None
 *
 *******************************************************************************/
 void ADC_SAR_ProxIR_theACLK_StopBlock(void) 
 {
-    if (ADC_SAR_ProxIR_theACLK_CLKEN & ADC_SAR_ProxIR_theACLK_CLKEN_MASK)
+    if ((ADC_SAR_ProxIR_theACLK_CLKEN & ADC_SAR_ProxIR_theACLK_CLKEN_MASK) != 0u)
     {
 #if HAS_CLKDIST_LD_DISABLE
         uint16 oldDivider;
 
-        CLK_DIST_LD = 0;
+        CLK_DIST_LD = 0u;
 
         /* Clear all the mask bits except ours. */
 #if defined(ADC_SAR_ProxIR_theACLK__CFG3)
@@ -106,34 +113,37 @@ void ADC_SAR_ProxIR_theACLK_StopBlock(void)
 #else
         CLK_DIST_DMASK = ADC_SAR_ProxIR_theACLK_CLKEN_MASK;
         CLK_DIST_AMASK = 0x00u;
-#endif
+#endif /* ADC_SAR_ProxIR_theACLK__CFG3 */
 
         /* Clear mask of bus clock. */
-        CLK_DIST_BCFG2 &= ~BCFG2_MASK;
+        CLK_DIST_BCFG2 &= (uint8)(~BCFG2_MASK);
 
         oldDivider = CY_GET_REG16(ADC_SAR_ProxIR_theACLK_DIV_PTR);
         CY_SET_REG16(CYREG_CLKDIST_WRK0, oldDivider);
         CLK_DIST_LD = CYCLK_LD_DISABLE | CYCLK_LD_SYNC_EN | CYCLK_LD_LOAD;
 
         /* Wait for clock to be disabled */
-        while (CLK_DIST_LD & CYCLK_LD_LOAD) { }
-#endif
+        while ((CLK_DIST_LD & CYCLK_LD_LOAD) != 0u) { }
+#endif /* HAS_CLKDIST_LD_DISABLE */
 
         /* Clear the bit to disable the clock. */
-        ADC_SAR_ProxIR_theACLK_CLKEN &= ~ADC_SAR_ProxIR_theACLK_CLKEN_MASK;
+        ADC_SAR_ProxIR_theACLK_CLKEN &= (uint8)(~ADC_SAR_ProxIR_theACLK_CLKEN_MASK);
+        ADC_SAR_ProxIR_theACLK_CLKSTBY &= (uint8)(~ADC_SAR_ProxIR_theACLK_CLKSTBY_MASK);
 
 #if HAS_CLKDIST_LD_DISABLE
         /* Clear the disable bit */
         CLK_DIST_LD = 0x00u;
         CY_SET_REG16(ADC_SAR_ProxIR_theACLK_DIV_PTR, oldDivider);
-#endif
+#endif /* HAS_CLKDIST_LD_DISABLE */
     }
 }
-#endif
+#endif /* (CY_PSOC3 || CY_PSOC5LP) */
+
 
 /*******************************************************************************
 * Function Name: ADC_SAR_ProxIR_theACLK_StandbyPower
 ********************************************************************************
+*
 * Summary:
 *  Sets whether the clock is active in standby mode.
 *
@@ -141,14 +151,14 @@ void ADC_SAR_ProxIR_theACLK_StopBlock(void)
 *  state:  0 to disable clock during standby, nonzero to enable.
 *
 * Returns:
-*  void
+*  None
 *
 *******************************************************************************/
 void ADC_SAR_ProxIR_theACLK_StandbyPower(uint8 state) 
 {
-    if(state == 0)
+    if(state == 0u)
     {
-        ADC_SAR_ProxIR_theACLK_CLKSTBY &= ~ADC_SAR_ProxIR_theACLK_CLKSTBY_MASK;
+        ADC_SAR_ProxIR_theACLK_CLKSTBY &= (uint8)(~ADC_SAR_ProxIR_theACLK_CLKSTBY_MASK);
     }
     else
     {
@@ -160,6 +170,7 @@ void ADC_SAR_ProxIR_theACLK_StandbyPower(uint8 state)
 /*******************************************************************************
 * Function Name: ADC_SAR_ProxIR_theACLK_SetDividerRegister
 ********************************************************************************
+*
 * Summary:
 *  Modifies the clock divider and, thus, the frequency. When the clock divider
 *  register is set to zero or changed from zero, the clock will be temporarily
@@ -176,10 +187,11 @@ void ADC_SAR_ProxIR_theACLK_StandbyPower(uint8 state)
 *   cycle.
 *
 * Returns:
-*  void
+*  None
 *
 *******************************************************************************/
-void ADC_SAR_ProxIR_theACLK_SetDividerRegister(uint16 clkDivider, uint8 restart) 
+void ADC_SAR_ProxIR_theACLK_SetDividerRegister(uint16 clkDivider, uint8 restart)
+                                
 {
     uint8 enabled;
 
@@ -190,16 +202,16 @@ void ADC_SAR_ProxIR_theACLK_SetDividerRegister(uint16 clkDivider, uint8 restart)
     {
         enabled = ADC_SAR_ProxIR_theACLK_CLKEN & ADC_SAR_ProxIR_theACLK_CLKEN_MASK;
 
-        if (currSrc == CYCLK_SRC_SEL_CLK_SYNC_D && (oldDivider == 0 || clkDivider == 0))
+        if ((currSrc == (uint8)CYCLK_SRC_SEL_CLK_SYNC_D) && ((oldDivider == 0u) || (clkDivider == 0u)))
         {
             /* Moving to/from SSS requires correct ordering to prevent halting the clock    */
-            if (oldDivider == 0 && clkDivider != 0)
+            if (oldDivider == 0u)
             {
                 /* Moving away from SSS, set the divider first so when SSS is cleared we    */
                 /* don't halt the clock.  Using the shadow load isn't required as the       */
                 /* divider is ignored while SSS is set.                                     */
                 CY_SET_REG16(ADC_SAR_ProxIR_theACLK_DIV_PTR, clkDivider);
-                ADC_SAR_ProxIR_theACLK_MOD_SRC &= ~CYCLK_SSS;
+                ADC_SAR_ProxIR_theACLK_MOD_SRC &= (uint8)(~CYCLK_SSS);
             }
             else
             {
@@ -211,7 +223,8 @@ void ADC_SAR_ProxIR_theACLK_SetDividerRegister(uint16 clkDivider, uint8 restart)
         }
         else
         {
-            if (enabled)
+			
+            if (enabled != 0u)
             {
                 CLK_DIST_LD = 0x00u;
 
@@ -222,42 +235,45 @@ void ADC_SAR_ProxIR_theACLK_SetDividerRegister(uint16 clkDivider, uint8 restart)
 #else
                 CLK_DIST_DMASK = ADC_SAR_ProxIR_theACLK_CLKEN_MASK;
                 CLK_DIST_AMASK = 0x00u;
-#endif
+#endif /* ADC_SAR_ProxIR_theACLK__CFG3 */
                 /* Clear mask of bus clock. */
-                CLK_DIST_BCFG2 &= ~BCFG2_MASK;
+                CLK_DIST_BCFG2 &= (uint8)(~BCFG2_MASK);
+
+                /* If clock is currently enabled, disable it if async or going from N-to-1*/
+                if (((ADC_SAR_ProxIR_theACLK_MOD_SRC & CYCLK_SYNC) == 0u) || (clkDivider == 0u))
+                {
+#if HAS_CLKDIST_LD_DISABLE
+                    CY_SET_REG16(CYREG_CLKDIST_WRK0, oldDivider);
+                    CLK_DIST_LD = CYCLK_LD_DISABLE|CYCLK_LD_SYNC_EN|CYCLK_LD_LOAD;
+
+                    /* Wait for clock to be disabled */
+                    while ((CLK_DIST_LD & CYCLK_LD_LOAD) != 0u) { }
+#endif /* HAS_CLKDIST_LD_DISABLE */
+
+                    ADC_SAR_ProxIR_theACLK_CLKEN &= (uint8)(~ADC_SAR_ProxIR_theACLK_CLKEN_MASK);
 
 #if HAS_CLKDIST_LD_DISABLE
-                CY_SET_REG16(CYREG_CLKDIST_WRK0, oldDivider);
-                CLK_DIST_LD = CYCLK_LD_DISABLE|CYCLK_LD_SYNC_EN|CYCLK_LD_LOAD;
-
-                /* Wait for clock to be disabled */
-                while (CLK_DIST_LD & CYCLK_LD_LOAD) { }
-#endif
-
-                ADC_SAR_ProxIR_theACLK_CLKEN &= ~ADC_SAR_ProxIR_theACLK_CLKEN_MASK;
-
-#if HAS_CLKDIST_LD_DISABLE
-                /* Clear the disable bit */
-                CLK_DIST_LD = 0x00u;
-#endif
+                    /* Clear the disable bit */
+                    CLK_DIST_LD = 0x00u;
+#endif /* HAS_CLKDIST_LD_DISABLE */
+                }
             }
 
             /* Load divide value. */
-            if (ADC_SAR_ProxIR_theACLK_CLKEN & ADC_SAR_ProxIR_theACLK_CLKEN_MASK)
+            if ((ADC_SAR_ProxIR_theACLK_CLKEN & ADC_SAR_ProxIR_theACLK_CLKEN_MASK) != 0u)
             {
                 /* If the clock is still enabled, use the shadow registers */
                 CY_SET_REG16(CYREG_CLKDIST_WRK0, clkDivider);
 
-                CLK_DIST_LD = (CYCLK_LD_LOAD | (restart ? CYCLK_LD_SYNC_EN : 0x00u));
-                while (CLK_DIST_LD & CYCLK_LD_LOAD) { }
+                CLK_DIST_LD = (CYCLK_LD_LOAD | ((restart != 0u) ? CYCLK_LD_SYNC_EN : 0x00u));
+                while ((CLK_DIST_LD & CYCLK_LD_LOAD) != 0u) { }
             }
             else
             {
                 /* If the clock is disabled, set the divider directly */
                 CY_SET_REG16(ADC_SAR_ProxIR_theACLK_DIV_PTR, clkDivider);
+				ADC_SAR_ProxIR_theACLK_CLKEN |= enabled;
             }
-
-            ADC_SAR_ProxIR_theACLK_CLKEN |= enabled;
         }
     }
 }
@@ -266,11 +282,12 @@ void ADC_SAR_ProxIR_theACLK_SetDividerRegister(uint16 clkDivider, uint8 restart)
 /*******************************************************************************
 * Function Name: ADC_SAR_ProxIR_theACLK_GetDividerRegister
 ********************************************************************************
+*
 * Summary:
 *  Gets the clock divider register value.
 *
 * Parameters:
-*  void
+*  None
 *
 * Returns:
 *  Divide value of the clock minus 1. For example, if the clock is set to
@@ -286,6 +303,7 @@ uint16 ADC_SAR_ProxIR_theACLK_GetDividerRegister(void)
 /*******************************************************************************
 * Function Name: ADC_SAR_ProxIR_theACLK_SetModeRegister
 ********************************************************************************
+*
 * Summary:
 *  Sets flags that control the operating mode of the clock. This function only
 *  changes flags from 0 to 1; flags that are already 1 will remain unchanged.
@@ -308,18 +326,19 @@ uint16 ADC_SAR_ProxIR_theACLK_GetDividerRegister(void)
 *   the clock. Specifically, see the CLKDIST.DCFG.CFG2 register.
 *
 * Returns:
-*  void
+*  None
 *
 *******************************************************************************/
-void ADC_SAR_ProxIR_theACLK_SetModeRegister(uint8 clkMode) 
+void ADC_SAR_ProxIR_theACLK_SetModeRegister(uint8 modeBitMask) 
 {
-    ADC_SAR_ProxIR_theACLK_MOD_SRC |= clkMode & ADC_SAR_ProxIR_theACLK_MODE_MASK;
+    ADC_SAR_ProxIR_theACLK_MOD_SRC |= modeBitMask & (uint8)ADC_SAR_ProxIR_theACLK_MODE_MASK;
 }
 
 
 /*******************************************************************************
 * Function Name: ADC_SAR_ProxIR_theACLK_ClearModeRegister
 ********************************************************************************
+*
 * Summary:
 *  Clears flags that control the operating mode of the clock. This function
 *  only changes flags from 1 to 0; flags that are already 0 will remain
@@ -342,23 +361,24 @@ void ADC_SAR_ProxIR_theACLK_SetModeRegister(uint8 clkMode)
 *   the clock. Specifically, see the CLKDIST.DCFG.CFG2 register.
 *
 * Returns:
-*  void
+*  None
 *
 *******************************************************************************/
-void ADC_SAR_ProxIR_theACLK_ClearModeRegister(uint8 clkMode) 
+void ADC_SAR_ProxIR_theACLK_ClearModeRegister(uint8 modeBitMask) 
 {
-    ADC_SAR_ProxIR_theACLK_MOD_SRC &= ~clkMode | ~ADC_SAR_ProxIR_theACLK_MODE_MASK;
+    ADC_SAR_ProxIR_theACLK_MOD_SRC &= (uint8)(~modeBitMask) | (uint8)(~(uint8)(ADC_SAR_ProxIR_theACLK_MODE_MASK));
 }
 
 
 /*******************************************************************************
 * Function Name: ADC_SAR_ProxIR_theACLK_GetModeRegister
 ********************************************************************************
+*
 * Summary:
 *  Gets the clock mode register value.
 *
 * Parameters:
-*  void
+*  None
 *
 * Returns:
 *  Bit mask representing the enabled mode bits. See the SetModeRegister and
@@ -367,13 +387,14 @@ void ADC_SAR_ProxIR_theACLK_ClearModeRegister(uint8 clkMode)
 *******************************************************************************/
 uint8 ADC_SAR_ProxIR_theACLK_GetModeRegister(void) 
 {
-    return ADC_SAR_ProxIR_theACLK_MOD_SRC & ADC_SAR_ProxIR_theACLK_MODE_MASK;
+    return ADC_SAR_ProxIR_theACLK_MOD_SRC & (uint8)(ADC_SAR_ProxIR_theACLK_MODE_MASK);
 }
 
 
 /*******************************************************************************
 * Function Name: ADC_SAR_ProxIR_theACLK_SetSourceRegister
 ********************************************************************************
+*
 * Summary:
 *  Sets the input source of the clock. The clock must be disabled before
 *  changing the source. The old and new clock sources must be running.
@@ -392,7 +413,7 @@ uint8 ADC_SAR_ProxIR_theACLK_GetModeRegister(void)
 *   See the Technical Reference Manual for details on clock sources.
 *
 * Returns:
-*  void
+*  None
 *
 *******************************************************************************/
 void ADC_SAR_ProxIR_theACLK_SetSourceRegister(uint8 clkSource) 
@@ -400,26 +421,28 @@ void ADC_SAR_ProxIR_theACLK_SetSourceRegister(uint8 clkSource)
     uint16 currDiv = ADC_SAR_ProxIR_theACLK_GetDividerRegister();
     uint8 oldSrc = ADC_SAR_ProxIR_theACLK_GetSourceRegister();
 
-    if (oldSrc != CYCLK_SRC_SEL_CLK_SYNC_D && clkSource == CYCLK_SRC_SEL_CLK_SYNC_D && currDiv == 0)
+    if (((oldSrc != ((uint8)CYCLK_SRC_SEL_CLK_SYNC_D)) && 
+        (clkSource == ((uint8)CYCLK_SRC_SEL_CLK_SYNC_D))) && (currDiv == 0u))
     {
         /* Switching to Master and divider is 1, set SSS, which will output master, */
         /* then set the source so we are consistent.                                */
         ADC_SAR_ProxIR_theACLK_MOD_SRC |= CYCLK_SSS;
         ADC_SAR_ProxIR_theACLK_MOD_SRC =
-            (ADC_SAR_ProxIR_theACLK_MOD_SRC & ~ADC_SAR_ProxIR_theACLK_SRC_SEL_MSK) | clkSource;
+            (ADC_SAR_ProxIR_theACLK_MOD_SRC & (uint8)(~ADC_SAR_ProxIR_theACLK_SRC_SEL_MSK)) | clkSource;
     }
-    else if (oldSrc == CYCLK_SRC_SEL_CLK_SYNC_D && clkSource != CYCLK_SRC_SEL_CLK_SYNC_D && currDiv == 0)
+    else if (((oldSrc == ((uint8)CYCLK_SRC_SEL_CLK_SYNC_D)) && 
+            (clkSource != ((uint8)CYCLK_SRC_SEL_CLK_SYNC_D))) && (currDiv == 0u))
     {
         /* Switching from Master to not and divider is 1, set source, so we don't   */
         /* lock when we clear SSS.                                                  */
         ADC_SAR_ProxIR_theACLK_MOD_SRC =
-            (ADC_SAR_ProxIR_theACLK_MOD_SRC & ~ADC_SAR_ProxIR_theACLK_SRC_SEL_MSK) | clkSource;
-        ADC_SAR_ProxIR_theACLK_MOD_SRC &= ~CYCLK_SSS;
+            (ADC_SAR_ProxIR_theACLK_MOD_SRC & (uint8)(~ADC_SAR_ProxIR_theACLK_SRC_SEL_MSK)) | clkSource;
+        ADC_SAR_ProxIR_theACLK_MOD_SRC &= (uint8)(~CYCLK_SSS);
     }
     else
     {
         ADC_SAR_ProxIR_theACLK_MOD_SRC =
-            (ADC_SAR_ProxIR_theACLK_MOD_SRC & ~ADC_SAR_ProxIR_theACLK_SRC_SEL_MSK) | clkSource;
+            (ADC_SAR_ProxIR_theACLK_MOD_SRC & (uint8)(~ADC_SAR_ProxIR_theACLK_SRC_SEL_MSK)) | clkSource;
     }
 }
 
@@ -427,11 +450,12 @@ void ADC_SAR_ProxIR_theACLK_SetSourceRegister(uint8 clkSource)
 /*******************************************************************************
 * Function Name: ADC_SAR_ProxIR_theACLK_GetSourceRegister
 ********************************************************************************
+*
 * Summary:
 *  Gets the input source of the clock.
 *
 * Parameters:
-*  void
+*  None
 *
 * Returns:
 *  The input source of the clock. See SetSourceRegister for details.
@@ -449,11 +473,11 @@ uint8 ADC_SAR_ProxIR_theACLK_GetSourceRegister(void)
 /*******************************************************************************
 * Function Name: ADC_SAR_ProxIR_theACLK_SetPhaseRegister
 ********************************************************************************
+*
 * Summary:
 *  Sets the phase delay of the analog clock. This function is only available
 *  for analog clocks. The clock must be disabled before changing the phase
 *  delay to avoid glitches.
-*
 *
 * Parameters:
 *  clkPhase: Amount to delay the phase of the clock, in 1.0ns increments.
@@ -462,7 +486,7 @@ uint8 ADC_SAR_ProxIR_theACLK_GetSourceRegister(void)
 *   produces a 10ns delay.
 *
 * Returns:
-*  void
+*  None
 *
 *******************************************************************************/
 void ADC_SAR_ProxIR_theACLK_SetPhaseRegister(uint8 clkPhase) 
@@ -474,12 +498,13 @@ void ADC_SAR_ProxIR_theACLK_SetPhaseRegister(uint8 clkPhase)
 /*******************************************************************************
 * Function Name: ADC_SAR_ProxIR_theACLK_GetPhase
 ********************************************************************************
+*
 * Summary:
 *  Gets the phase delay of the analog clock. This function is only available
 *  for analog clocks.
 *
 * Parameters:
-*  void
+*  None
 *
 * Returns:
 *  Phase of the analog clock. See SetPhaseRegister for details.
@@ -490,7 +515,7 @@ uint8 ADC_SAR_ProxIR_theACLK_GetPhaseRegister(void)
     return ADC_SAR_ProxIR_theACLK_PHASE & ADC_SAR_ProxIR_theACLK_PHASE_MASK;
 }
 
-#endif
+#endif /* ADC_SAR_ProxIR_theACLK__CFG3 */
 
 
 /* [] END OF FILE */

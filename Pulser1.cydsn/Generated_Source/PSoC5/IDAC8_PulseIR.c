@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: IDAC8_PulseIR.c
-* Version 1.90
+* Version 2.0
 *
 * Description:
 *  This file provides the source code to the API for the 8-bit Current 
@@ -34,8 +34,7 @@ uint8 IDAC8_PulseIR_initVar = 0u;
 /* Variable to decide whether or not to restore control register in Enable()
    API. This valid only for PSoC5A */
 #if (CY_PSOC5A)
-    uint8 IDAC8_PulseIR_restoreReg = 0u;
-    uint8 IDAC8_PulseIR_intrStatus = 0u;
+    static uint8 IDAC8_PulseIR_restoreReg = 0u;
 #endif /* CY_PSOC5A */
 
 
@@ -61,35 +60,27 @@ void IDAC8_PulseIR_Init(void)
     IDAC8_PulseIR_CR0 = (IDAC8_PulseIR_MODE_I | IDAC8_PulseIR_DEFAULT_RANGE );
 
     /* Set default data source */
-    if(IDAC8_PulseIR_DEFAULT_DATA_SRC != 0u )    
-    {
+    #if(IDAC8_PulseIR_DEFAULT_DATA_SRC != 0u )    
         IDAC8_PulseIR_CR1 = (IDAC8_PulseIR_DEFAULT_CNTL | IDAC8_PulseIR_DACBUS_ENABLE);
-    }
-    else
-    {
+    #else
         IDAC8_PulseIR_CR1 = (IDAC8_PulseIR_DEFAULT_CNTL | IDAC8_PulseIR_DACBUS_DISABLE);
-    }
+    #endif /* (IDAC8_PulseIR_DEFAULT_DATA_SRC != 0u ) */
     
     /*Controls polarity from UDB Control*/
-    if(IDAC8_PulseIR_DEFAULT_POLARITY == IDAC8_PulseIR_HARDWARE_CONTROLLED)
-    {
+    #if(IDAC8_PulseIR_DEFAULT_POLARITY == IDAC8_PulseIR_HARDWARE_CONTROLLED)
         IDAC8_PulseIR_CR1 |= IDAC8_PulseIR_IDIR_SRC_UDB;
-    }
-    else
-    {
+    #else
         IDAC8_PulseIR_CR1 |= IDAC8_PulseIR_DEFAULT_POLARITY;
-    }
+    #endif/* (IDAC8_PulseIR_DEFAULT_POLARITY == IDAC8_PulseIR_HARDWARE_CONTROLLED) */
     /*Controls Current Source from UDB Control*/
-    if(IDAC8_PulseIR_HARDWARE_ENABLE != 0u ) 
-    {
+    #if(IDAC8_PulseIR_HARDWARE_ENABLE != 0u ) 
         IDAC8_PulseIR_CR1 |= IDAC8_PulseIR_IDIR_CTL_UDB;
-    }
+    #endif /* (IDAC8_PulseIR_HARDWARE_ENABLE != 0u ) */ 
     
     /* Set default strobe mode */
-    if(IDAC8_PulseIR_DEFAULT_STRB != 0u)
-    {
+    #if(IDAC8_PulseIR_DEFAULT_STRB != 0u)
         IDAC8_PulseIR_Strobe |= IDAC8_PulseIR_STRB_EN;
-    }
+    #endif /* (IDAC8_PulseIR_DEFAULT_STRB != 0u) */
     
     /* Set default speed */
     IDAC8_PulseIR_SetSpeed(IDAC8_PulseIR_DEFAULT_SPEED);
@@ -160,7 +151,7 @@ void IDAC8_PulseIR_Start(void)
     {
         IDAC8_PulseIR_Init();
         
-        IDAC8_PulseIR_initVar = 1;
+        IDAC8_PulseIR_initVar = 1u;
     }
    
     /* Enable power to DAC */
@@ -192,8 +183,8 @@ void IDAC8_PulseIR_Start(void)
 void IDAC8_PulseIR_Stop(void) 
 {
     /* Disble power to DAC */
-    IDAC8_PulseIR_PWRMGR &= ~IDAC8_PulseIR_ACT_PWR_EN;
-    IDAC8_PulseIR_STBY_PWRMGR &= ~IDAC8_PulseIR_STBY_PWR_EN;
+    IDAC8_PulseIR_PWRMGR &= (uint8)(~IDAC8_PulseIR_ACT_PWR_EN);
+    IDAC8_PulseIR_STBY_PWRMGR &= (uint8)(~IDAC8_PulseIR_STBY_PWR_EN);
     
     #if (CY_PSOC5A)
     
@@ -227,7 +218,7 @@ void IDAC8_PulseIR_Stop(void)
 void IDAC8_PulseIR_SetSpeed(uint8 speed) 
 {
     /* Clear power mask then write in new value */
-    IDAC8_PulseIR_CR0 &= ~IDAC8_PulseIR_HS_MASK;
+    IDAC8_PulseIR_CR0 &= (uint8)(~IDAC8_PulseIR_HS_MASK);
     IDAC8_PulseIR_CR0 |=  ( speed & IDAC8_PulseIR_HS_MASK);
 }
 
@@ -254,8 +245,8 @@ void IDAC8_PulseIR_SetSpeed(uint8 speed)
 #if(IDAC8_PulseIR_DEFAULT_POLARITY != IDAC8_PulseIR_HARDWARE_CONTROLLED)
     void IDAC8_PulseIR_SetPolarity(uint8 polarity) 
     {
-        IDAC8_PulseIR_CR1 &= ~IDAC8_PulseIR_IDIR_MASK;                /* clear polarity bit */
-        IDAC8_PulseIR_CR1 |= (polarity & IDAC8_PulseIR_IDIR_MASK);    /* set new value */
+        IDAC8_PulseIR_CR1 &= (uint8)(~IDAC8_PulseIR_IDIR_MASK);                /* clear polarity bit */
+        IDAC8_PulseIR_CR1 |= (polarity & IDAC8_PulseIR_IDIR_MASK);             /* set new value */
     
         IDAC8_PulseIR_DacTrim();
     }
@@ -281,8 +272,8 @@ void IDAC8_PulseIR_SetSpeed(uint8 speed)
 *******************************************************************************/
 void IDAC8_PulseIR_SetRange(uint8 range) 
 {
-    IDAC8_PulseIR_CR0 &= ~IDAC8_PulseIR_RANGE_MASK ;       /* Clear existing mode */
-    IDAC8_PulseIR_CR0 |= ( range & IDAC8_PulseIR_RANGE_MASK );  /*  Set Range  */
+    IDAC8_PulseIR_CR0 &= (uint8)(~IDAC8_PulseIR_RANGE_MASK);       /* Clear existing mode */
+    IDAC8_PulseIR_CR0 |= ( range & IDAC8_PulseIR_RANGE_MASK );     /*  Set Range  */
     IDAC8_PulseIR_DacTrim();
 }
 
@@ -308,7 +299,7 @@ void IDAC8_PulseIR_SetValue(uint8 value)
 {
 
     #if (CY_PSOC5A)
-        IDAC8_PulseIR_intrStatus = CyEnterCriticalSection();
+        uint8 IDAC8_PulseIR_intrStatus = CyEnterCriticalSection();
     #endif /* CY_PSOC5A */
 
     IDAC8_PulseIR_Data = value;         /*  Set Value  */
@@ -354,7 +345,7 @@ void IDAC8_PulseIR_DacTrim(void)
 {
     uint8 mode;
 
-    mode = ((IDAC8_PulseIR_CR0 & IDAC8_PulseIR_RANGE_MASK) >> 1);
+    mode = ((IDAC8_PulseIR_CR0 & IDAC8_PulseIR_RANGE_MASK) >> 1u);
     
     if((IDAC8_PulseIR_IDIR_MASK & IDAC8_PulseIR_CR1) == IDAC8_PulseIR_IDIR_SINK)
     {

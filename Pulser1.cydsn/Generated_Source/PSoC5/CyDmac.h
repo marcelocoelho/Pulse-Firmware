@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: CyDmac.h
-* Version 3.10
+* Version 3.30
 *
 *  Description:
 *   Provides the function definitions for the DMA Controller.
@@ -33,7 +33,7 @@
 /* DMA Controller functions. */
 void    CyDmacConfigure(void) ;
 uint8   CyDmacError(void) ;
-void    CyDmacClearError(uint8 Error) ;
+void    CyDmacClearError(uint8 error) ;
 uint32  CyDmacErrorAddress(void) ;
 
 /* Channel specific functions. */
@@ -125,25 +125,25 @@ typedef struct dmac_tdmem2_struct
 #define CY_DMA_TD_INC_DST_ADR       0x02
 #define CY_DMA_TD_INC_SRC_ADR       0x01
 
-#define CY_DMA_NUMBEROF_TDS         128
-#define CY_DMA_NUMBEROF_CHANNELS    (CYDEV_DMA_CHANNELS_AVAILABLE)
+#define CY_DMA_NUMBEROF_TDS         128u
+#define CY_DMA_NUMBEROF_CHANNELS    ((uint8)(CYDEV_DMA_CHANNELS_AVAILABLE))
 
 /* Action register bits */
-#define CY_DMA_CPU_REQ              (1 << 0)
-#define CY_DMA_CPU_TERM_TD          (1 << 1)
-#define CY_DMA_CPU_TERM_CHAIN       (1 << 2)
+#define CY_DMA_CPU_REQ              ((uint8)(1u << 0u))
+#define CY_DMA_CPU_TERM_TD          ((uint8)(1u << 1u))
+#define CY_DMA_CPU_TERM_CHAIN       ((uint8)(1u << 2u))
 
 /* Basic Status register bits */
-#define CY_DMA_STATUS_CHAIN_ACTIVE  (1 << 0)
-#define CY_DMA_STATUS_TD_ACTIVE     (1 << 1)
+#define CY_DMA_STATUS_CHAIN_ACTIVE  ((uint8)(1u << 0u))
+#define CY_DMA_STATUS_TD_ACTIVE     ((uint8)(1u << 1u))
 
 /* DMA controller register error bits */
-#define CY_DMA_BUS_TIMEOUT          (1 << 1)
-#define CY_DMA_UNPOP_ACC            (1 << 2)
-#define CY_DMA_PERIPH_ERR           (1 << 3)
+#define CY_DMA_BUS_TIMEOUT          (1u << 1u)
+#define CY_DMA_UNPOP_ACC            (1u << 2u)
+#define CY_DMA_PERIPH_ERR           (1u << 3u)
 
 /* Round robin bits */
-#define CY_DMA_ROUND_ROBIN_ENABLE   (1 << 4)
+#define CY_DMA_ROUND_ROBIN_ENABLE   ((uint8)(1u << 4u))
 
 
 /***************************************

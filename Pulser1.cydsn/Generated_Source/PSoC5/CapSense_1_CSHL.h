@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: CapSense_1_CSHL.h
-* Version 3.20
+* Version 3.30
 *
 * Description:
 *  This file provides constants and parameter values for the High Level APIs

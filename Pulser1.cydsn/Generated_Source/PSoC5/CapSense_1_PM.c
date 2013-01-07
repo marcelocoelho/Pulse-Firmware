@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: CapSense_1_PM.c
-* Version 3.20
+* Version 3.30
 *
 * Description:
 *  This file provides Sleep APIs for CapSense CSD Component.

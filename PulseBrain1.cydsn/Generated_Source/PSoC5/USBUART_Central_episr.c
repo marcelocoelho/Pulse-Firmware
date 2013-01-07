@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: USBUART_Central_episr.c
-* Version 2.30
+* Version 2.50
 *
 * Description:
 *  Data endpoint Interrupt Service Routines
@@ -71,9 +71,20 @@ extern volatile uint8 USBUART_Central_device;
     ******************************************************************************/
     CY_ISR(USBUART_Central_EP_1_ISR)
     {
+        #if defined(USBUART_Central_ENABLE_MIDI_STREAMING) && (USBUART_Central_ENABLE_MIDI_API != 0u) && \
+            (USBUART_Central_EP_MM == USBUART_Central__EP_DMAAUTO) && (CY_PSOC3)
+            uint8 int_en;
+        #endif /* CY_PSOC3 & ENABLE_MIDI_STREAMING */
+    
         /* `#START EP1_USER_CODE` Place your code here */
 
         /* `#END` */
+
+        #if defined(USBUART_Central_ENABLE_MIDI_STREAMING) && (USBUART_Central_ENABLE_MIDI_API != 0u) && \
+            (USBUART_Central_EP_MM == USBUART_Central__EP_DMAAUTO) && (CY_PSOC3)
+            int_en = EA;
+            CyGlobalIntEnable;  /* Make sure nested interrupt is enabled */
+        #endif /* CY_PSOC3 & ENABLE_MIDI_STREAMING */
 
         CY_GET_REG8(USBUART_Central_SIE_EP1_CR0_PTR); /* Must read the mode reg */
         /* Do not toggle ISOC endpoint */
@@ -97,6 +108,11 @@ extern volatile uint8 USBUART_Central_device;
         /* `#START EP1_END_USER_CODE` Place your code here */
 
         /* `#END` */
+
+        #if defined(USBUART_Central_ENABLE_MIDI_STREAMING) && (USBUART_Central_ENABLE_MIDI_API != 0u) && \
+            (USBUART_Central_EP_MM == USBUART_Central__EP_DMAAUTO) && (CY_PSOC3)
+            EA = int_en;
+        #endif /* CY_PSOC3 & ENABLE_MIDI_STREAMING */
     }
 
 #endif   /* End USBUART_Central_EP1_ISR_REMOVE */
@@ -120,9 +136,20 @@ extern volatile uint8 USBUART_Central_device;
     *******************************************************************************/
     CY_ISR(USBUART_Central_EP_2_ISR)
     {
+        #if defined(USBUART_Central_ENABLE_MIDI_STREAMING) && (USBUART_Central_ENABLE_MIDI_API != 0u) && \
+            (USBUART_Central_EP_MM == USBUART_Central__EP_DMAAUTO) && (CY_PSOC3)
+            uint8 int_en;
+        #endif /* CY_PSOC3 & ENABLE_MIDI_STREAMING */
+    
         /* `#START EP2_USER_CODE` Place your code here */
 
         /* `#END` */
+
+        #if defined(USBUART_Central_ENABLE_MIDI_STREAMING) && (USBUART_Central_ENABLE_MIDI_API != 0u) && \
+            (USBUART_Central_EP_MM == USBUART_Central__EP_DMAAUTO) && (CY_PSOC3)
+            int_en = EA;
+            CyGlobalIntEnable;  /* Make sure nested interrupt is enabled */
+        #endif /* CY_PSOC3 & ENABLE_MIDI_STREAMING */
 
         CY_GET_REG8(USBUART_Central_SIE_EP2_CR0_PTR); /* Must read the mode reg */
         /* Do not toggle ISOC endpoint */
@@ -146,6 +173,11 @@ extern volatile uint8 USBUART_Central_device;
         /* `#START EP2_END_USER_CODE` Place your code here */
 
         /* `#END` */
+
+        #if defined(USBUART_Central_ENABLE_MIDI_STREAMING) && (USBUART_Central_ENABLE_MIDI_API != 0u) && \
+            (USBUART_Central_EP_MM == USBUART_Central__EP_DMAAUTO) && (CY_PSOC3)
+            EA = int_en;
+        #endif /* CY_PSOC3 & ENABLE_MIDI_STREAMING */
     }
 
 #endif   /* End USBUART_Central_EP2_ISR_REMOVE */
@@ -169,9 +201,20 @@ extern volatile uint8 USBUART_Central_device;
     *******************************************************************************/
     CY_ISR(USBUART_Central_EP_3_ISR)
     {
+        #if defined(USBUART_Central_ENABLE_MIDI_STREAMING) && (USBUART_Central_ENABLE_MIDI_API != 0u) && \
+            (USBUART_Central_EP_MM == USBUART_Central__EP_DMAAUTO) && (CY_PSOC3)
+            uint8 int_en;
+        #endif /* CY_PSOC3 & ENABLE_MIDI_STREAMING */
+    
         /* `#START EP3_USER_CODE` Place your code here */
 
         /* `#END` */
+
+        #if defined(USBUART_Central_ENABLE_MIDI_STREAMING) && (USBUART_Central_ENABLE_MIDI_API != 0u) && \
+            (USBUART_Central_EP_MM == USBUART_Central__EP_DMAAUTO) && (CY_PSOC3)
+            int_en = EA;
+            CyGlobalIntEnable;  /* Make sure nested interrupt is enabled */
+        #endif /* CY_PSOC3 & ENABLE_MIDI_STREAMING */
 
         CY_GET_REG8(USBUART_Central_SIE_EP3_CR0_PTR); /* Must read the mode reg */
         /* Do not toggle ISOC endpoint */
@@ -195,6 +238,11 @@ extern volatile uint8 USBUART_Central_device;
         /* `#START EP3_END_USER_CODE` Place your code here */
 
         /* `#END` */
+
+        #if defined(USBUART_Central_ENABLE_MIDI_STREAMING) && (USBUART_Central_ENABLE_MIDI_API != 0u) && \
+            (USBUART_Central_EP_MM == USBUART_Central__EP_DMAAUTO) && (CY_PSOC3)
+            EA = int_en;
+        #endif /* CY_PSOC3 & ENABLE_MIDI_STREAMING */
     }
 
 #endif   /* End USBUART_Central_EP3_ISR_REMOVE */
@@ -218,9 +266,20 @@ extern volatile uint8 USBUART_Central_device;
     *******************************************************************************/
     CY_ISR(USBUART_Central_EP_4_ISR)
     {
+        #if defined(USBUART_Central_ENABLE_MIDI_STREAMING) && (USBUART_Central_ENABLE_MIDI_API != 0u) && \
+            (USBUART_Central_EP_MM == USBUART_Central__EP_DMAAUTO) && (CY_PSOC3)
+            uint8 int_en;
+        #endif /* CY_PSOC3 & ENABLE_MIDI_STREAMING */
+    
         /* `#START EP4_USER_CODE` Place your code here */
 
         /* `#END` */
+
+        #if defined(USBUART_Central_ENABLE_MIDI_STREAMING) && (USBUART_Central_ENABLE_MIDI_API != 0u) && \
+            (USBUART_Central_EP_MM == USBUART_Central__EP_DMAAUTO) && (CY_PSOC3)
+            int_en = EA;
+            CyGlobalIntEnable;  /* Make sure nested interrupt is enabled */
+        #endif /* CY_PSOC3 & ENABLE_MIDI_STREAMING */
 
         CY_GET_REG8(USBUART_Central_SIE_EP4_CR0_PTR); /* Must read the mode reg */
         /* Do not toggle ISOC endpoint */
@@ -244,6 +303,11 @@ extern volatile uint8 USBUART_Central_device;
         /* `#START EP4_END_USER_CODE` Place your code here */
 
         /* `#END` */
+
+        #if defined(USBUART_Central_ENABLE_MIDI_STREAMING) && (USBUART_Central_ENABLE_MIDI_API != 0u) && \
+            (USBUART_Central_EP_MM == USBUART_Central__EP_DMAAUTO) && (CY_PSOC3)
+            EA = int_en;
+        #endif /* CY_PSOC3 & ENABLE_MIDI_STREAMING */
     }
 
 #endif   /* End USBUART_Central_EP4_ISR_REMOVE */
@@ -267,9 +331,20 @@ extern volatile uint8 USBUART_Central_device;
     *******************************************************************************/
     CY_ISR(USBUART_Central_EP_5_ISR)
     {
+        #if defined(USBUART_Central_ENABLE_MIDI_STREAMING) && (USBUART_Central_ENABLE_MIDI_API != 0u) && \
+            (USBUART_Central_EP_MM == USBUART_Central__EP_DMAAUTO) && (CY_PSOC3)
+            uint8 int_en;
+        #endif /* CY_PSOC3 & ENABLE_MIDI_STREAMING */
+    
         /* `#START EP5_USER_CODE` Place your code here */
 
         /* `#END` */
+
+        #if defined(USBUART_Central_ENABLE_MIDI_STREAMING) && (USBUART_Central_ENABLE_MIDI_API != 0u) && \
+            (USBUART_Central_EP_MM == USBUART_Central__EP_DMAAUTO) && (CY_PSOC3)
+            int_en = EA;
+            CyGlobalIntEnable;  /* Make sure nested interrupt is enabled */
+        #endif /* CY_PSOC3 & ENABLE_MIDI_STREAMING */
 
         CY_GET_REG8(USBUART_Central_SIE_EP5_CR0_PTR); /* Must read the mode reg */
         /* Do not toggle ISOC endpoint */
@@ -293,6 +368,11 @@ extern volatile uint8 USBUART_Central_device;
         /* `#START EP5_END_USER_CODE` Place your code here */
 
         /* `#END` */
+
+        #if defined(USBUART_Central_ENABLE_MIDI_STREAMING) && (USBUART_Central_ENABLE_MIDI_API != 0u) && \
+            (USBUART_Central_EP_MM == USBUART_Central__EP_DMAAUTO) && (CY_PSOC3)
+            EA = int_en;
+        #endif /* CY_PSOC3 & ENABLE_MIDI_STREAMING */
     }
 #endif   /* End USBUART_Central_EP5_ISR_REMOVE */
 
@@ -315,9 +395,20 @@ extern volatile uint8 USBUART_Central_device;
     *******************************************************************************/
     CY_ISR(USBUART_Central_EP_6_ISR)
     {
+        #if defined(USBUART_Central_ENABLE_MIDI_STREAMING) && (USBUART_Central_ENABLE_MIDI_API != 0u) && \
+            (USBUART_Central_EP_MM == USBUART_Central__EP_DMAAUTO) && (CY_PSOC3)
+            uint8 int_en;
+        #endif /* CY_PSOC3 & ENABLE_MIDI_STREAMING */
+    
         /* `#START EP6_USER_CODE` Place your code here */
 
         /* `#END` */
+
+        #if defined(USBUART_Central_ENABLE_MIDI_STREAMING) && (USBUART_Central_ENABLE_MIDI_API != 0u) && \
+            (USBUART_Central_EP_MM == USBUART_Central__EP_DMAAUTO) && (CY_PSOC3)
+            int_en = EA;
+            CyGlobalIntEnable;  /* Make sure nested interrupt is enabled */
+        #endif /* CY_PSOC3 & ENABLE_MIDI_STREAMING */
 
         CY_GET_REG8(USBUART_Central_SIE_EP6_CR0_PTR); /* Must read the mode reg */
         /* Do not toggle ISOC endpoint */
@@ -341,6 +432,11 @@ extern volatile uint8 USBUART_Central_device;
         /* `#START EP6_END_USER_CODE` Place your code here */
 
         /* `#END` */
+
+        #if defined(USBUART_Central_ENABLE_MIDI_STREAMING) && (USBUART_Central_ENABLE_MIDI_API != 0u) && \
+            (USBUART_Central_EP_MM == USBUART_Central__EP_DMAAUTO) && (CY_PSOC3)
+            EA = int_en;
+        #endif /* CY_PSOC3 & ENABLE_MIDI_STREAMING */
     }
 
 #endif   /* End USBUART_Central_EP6_ISR_REMOVE */
@@ -364,9 +460,20 @@ extern volatile uint8 USBUART_Central_device;
     *******************************************************************************/
     CY_ISR(USBUART_Central_EP_7_ISR)
     {
+        #if defined(USBUART_Central_ENABLE_MIDI_STREAMING) && (USBUART_Central_ENABLE_MIDI_API != 0u) && \
+            (USBUART_Central_EP_MM == USBUART_Central__EP_DMAAUTO) && (CY_PSOC3)
+            uint8 int_en;
+        #endif /* CY_PSOC3 & ENABLE_MIDI_STREAMING */
+    
         /* `#START EP7_USER_CODE` Place your code here */
 
         /* `#END` */
+
+        #if defined(USBUART_Central_ENABLE_MIDI_STREAMING) && (USBUART_Central_ENABLE_MIDI_API != 0u) && \
+            (USBUART_Central_EP_MM == USBUART_Central__EP_DMAAUTO) && (CY_PSOC3)
+            int_en = EA;
+            CyGlobalIntEnable;  /* Make sure nested interrupt is enabled */
+        #endif /* CY_PSOC3 & ENABLE_MIDI_STREAMING */
 
         CY_GET_REG8(USBUART_Central_SIE_EP7_CR0_PTR); /* Must read the mode reg */
         /* Do not toggle ISOC endpoint */
@@ -390,6 +497,11 @@ extern volatile uint8 USBUART_Central_device;
         /* `#START EP7_END_USER_CODE` Place your code here */
 
         /* `#END` */
+
+        #if defined(USBUART_Central_ENABLE_MIDI_STREAMING) && (USBUART_Central_ENABLE_MIDI_API != 0u) && \
+            (USBUART_Central_EP_MM == USBUART_Central__EP_DMAAUTO) && (CY_PSOC3)
+            EA = int_en;
+        #endif /* CY_PSOC3 & ENABLE_MIDI_STREAMING */
     }
 
 #endif   /* End USBUART_Central_EP7_ISR_REMOVE */
@@ -413,9 +525,20 @@ extern volatile uint8 USBUART_Central_device;
     *******************************************************************************/
     CY_ISR(USBUART_Central_EP_8_ISR)
     {
+        #if defined(USBUART_Central_ENABLE_MIDI_STREAMING) && (USBUART_Central_ENABLE_MIDI_API != 0u) && \
+            (USBUART_Central_EP_MM == USBUART_Central__EP_DMAAUTO) && (CY_PSOC3)
+            uint8 int_en;
+        #endif /* CY_PSOC3 & ENABLE_MIDI_STREAMING */
+    
         /* `#START EP8_USER_CODE` Place your code here */
 
         /* `#END` */
+
+        #if defined(USBUART_Central_ENABLE_MIDI_STREAMING) && (USBUART_Central_ENABLE_MIDI_API != 0u) && \
+            (USBUART_Central_EP_MM == USBUART_Central__EP_DMAAUTO) && (CY_PSOC3)
+            int_en = EA;
+            CyGlobalIntEnable;  /* Make sure nested interrupt is enabled */
+        #endif /* CY_PSOC3 & ENABLE_MIDI_STREAMING */
 
         CY_GET_REG8(USBUART_Central_SIE_EP8_CR0_PTR); /* Must read the mode reg */
         /* Do not toggle ISOC endpoint */
@@ -439,6 +562,11 @@ extern volatile uint8 USBUART_Central_device;
         /* `#START EP8_END_USER_CODE` Place your code here */
 
         /* `#END` */
+
+        #if defined(USBUART_Central_ENABLE_MIDI_STREAMING) && (USBUART_Central_ENABLE_MIDI_API != 0u) && \
+            (USBUART_Central_EP_MM == USBUART_Central__EP_DMAAUTO) && (CY_PSOC3)
+            EA = int_en;
+        #endif /* CY_PSOC3 & ENABLE_MIDI_STREAMING */
     }
 
 #endif   /* End USBUART_Central_EP8_ISR_REMOVE */
@@ -533,39 +661,33 @@ CY_ISR(USBUART_Central_BUS_RESET_ISR)
                 /* If In Buffer Full */
                 if(ep_status & USBUART_Central_ARB_EPX_SR_IN_BUF_FULL)
                 {
-                    if(USBUART_Central_EP[ep].addr & USBUART_Central_DIR_IN)
+                   if(USBUART_Central_EP[ep].addr & USBUART_Central_DIR_IN)
                     {
                         /* Write the Mode register */
                         USBUART_Central_SIE_EP1_CR0_PTR[ptr] = USBUART_Central_EP[ep].epMode;
-                    }
-                }
-                /* If DMA Grant */
-                if(ep_status & USBUART_Central_ARB_EPX_SR_DMA_GNT)
-                {
-                    if(USBUART_Central_EP[ep].addr & USBUART_Central_DIR_IN)
-                    {
-                        if(USBUART_Central_ARB_EP1_CFG_PTR[ptr] & USBUART_Central_ARB_EPX_CFG_IN_DATA_RDY)
-                        {
-                            USBUART_Central_ARB_EP1_CFG_PTR[ptr] &= ~USBUART_Central_ARB_EPX_CFG_IN_DATA_RDY;
-                        }
-                        #if defined(USBUART_Central_ENABLE_MIDI_STREAMING) && \
-                                   (USBUART_Central_ENABLE_MIDI_API != 0u)
+                        /* Clear Data ready status*/
+                        USBUART_Central_ARB_EP1_CFG_PTR[ptr] &= ~USBUART_Central_ARB_EPX_CFG_IN_DATA_RDY;
+                        #if defined(USBUART_Central_ENABLE_MIDI_STREAMING) && (USBUART_Central_ENABLE_MIDI_API != 0u)
                             if(ep == USBUART_Central_midi_in_ep)
                             {   /* Clear MIDI input pointer*/
                                 USBUART_Central_midiInPointer = 0u;
                             }
                         #endif /* End USBUART_Central_ENABLE_MIDI_STREAMING*/
                     }
-                    else
-                    {
-                        /* (re)arm Out EP only for mode2 */
-                        #if(USBUART_Central_EP_MM != USBUART_Central__EP_DMAAUTO)
-                            USBUART_Central_EP[ep].apiEpState = USBUART_Central_NO_EVENT_PENDING;
-                            /* Write the Mode register */
-                            USBUART_Central_SIE_EP1_CR0_PTR[ptr] = USBUART_Central_EP[ep].epMode;
-                        #endif /* End USBUART_Central_EP_MM */
-                    }
                 }
+                /* (re)arm Out EP only for mode2 */
+                #if(USBUART_Central_EP_MM != USBUART_Central__EP_DMAAUTO)
+                    /* If DMA Grant */
+                    if(ep_status & USBUART_Central_ARB_EPX_SR_DMA_GNT)
+                    {
+                        if((USBUART_Central_EP[ep].addr & USBUART_Central_DIR_IN) == 0u)
+                        {
+                                USBUART_Central_EP[ep].apiEpState = USBUART_Central_NO_EVENT_PENDING;
+                                /* Write the Mode register */
+                                USBUART_Central_SIE_EP1_CR0_PTR[ptr] = USBUART_Central_EP[ep].epMode;
+                        }
+                    }
+                #endif /* End USBUART_Central_EP_MM */
 
                 /* `#START ARB_USER_CODE` Place your code here for handle Buffer Underflow/Overflow */
 

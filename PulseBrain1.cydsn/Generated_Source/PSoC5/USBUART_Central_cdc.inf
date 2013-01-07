@@ -1,6 +1,6 @@
 ;******************************************************************************
 ; File Name: USBUART_Central_cdc.inf
-; Version 2.30
+; Version 2.50
 ;
 ; Description:
 ;  Windows USB CDC setup file for USBUART Device.

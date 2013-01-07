@@ -110,6 +110,8 @@ void main()
 	/* Enable Global interrupts - used for USB communication */
     CyGlobalIntEnable;
 	
+	UART_Debug_Start();
+	
 	USBUART_Central_Start(0, USBUART_Central_5V_OPERATION);
 	Clock_1_Start();
 	PrISM_1_Start();
@@ -129,19 +131,70 @@ void main()
 	PrISM_13_Start();
 	PrISM_14_Start();
 
+	Pin_Debug_LED_Write(0);
+	Pin_Panel_LED_0_Write(1);
+	Pin_Panel_LED_1_Write(0);
+	Pin_Panel_LED_2_Write(1);
+
+	UART_Debug_PutString("The Brain 0.987 is Thinking!\r\n");
 	/* Wait for Device to enumerate */
-    while(!USBUART_Central_GetConfiguration());
 
     /* Enumeration is complete, enable OUT endpoint for received data from Host */
     USBUART_Central_CDC_Init();
 	
+	int USB_configured=0;
+	int blue0_val=0;
+	int warm0_val=85;
+	int cool0_val=170;
+	int big_count=0;
+	int blink=0;
 	for(;;)
 	{
-		PrintToUSBUART("Please choose the channel (0-7) \n\r");
+		if (!USB_configured)
+		{
+	    	if (USBUART_Central_GetConfiguration())
+			{
+			UART_Debug_PutString("\r\nUSB Configured!\r\n");
+				USB_configured=1;
+			}
+		}
+		PrISM_1_WritePulse0(warm0_val);
+		PrISM_1_WritePulse1(cool0_val);
+		PrISM_2_WritePulse0(blue0_val);
+		
+		big_count++;
+		if (big_count > 100000)
+		{
+			big_count=0;
+			Pin_Panel_LED_0_Write(blink);
+			if (blink==0)
+				blink=1;
+			else
+				blink=0;
+
+			warm0_val++;
+			if (warm0_val > 255)
+				warm0_val=0;
+				
+			cool0_val++;
+			if (cool0_val > 255)
+				cool0_val=0;
+				
+			blue0_val++;
+			if (blue0_val > 255)
+				blue0_val=0;
+		}
+			
+	UART_Debug_PutString("Think! Think!\r");
+		if (USB_configured)	
+		{
+			UART_Debug_PutString("\r\nGetting USB data\r\n");
+			PrintToUSBUART("Please choose the channel (0-7) \n\r");
 		
 		/* Wait for input data from PC */
-		while(USBUART_Central_DataIsReady() == 0u);                
-		USBUART_Central_GetAll(rdBuffer);
+			while(USBUART_Central_DataIsReady() == 0u);                
+			USBUART_Central_GetAll(rdBuffer);
+		}
 		
 		/* Convert ASCII value in rdBuffer to numerical value:
 		 * Note that ASCII 48, 49,...,57 (decimal) corresponds to 0,1,...,9

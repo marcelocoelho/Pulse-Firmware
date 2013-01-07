@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: USBUART_Central_drv.c
-* Version 2.30
+* Version 2.50
 *
 * Description:
 *  Endpoint 0 Driver for the USBFS Component.
@@ -62,6 +62,7 @@ uint8 USBUART_Central_HandleVendorRqst(void) ;
 
 volatile T_USBUART_Central_EP_CTL_BLOCK USBUART_Central_EP[USBUART_Central_MAX_EP];
 volatile uint8 USBUART_Central_configuration;
+volatile uint8 USBUART_Central_interfaceNumber;
 volatile uint8 USBUART_Central_configurationChanged;
 volatile uint8 USBUART_Central_deviceAddress;
 volatile uint8 USBUART_Central_deviceStatus;

@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: PrISM_14_PM.c
-* Version 2.10
+* Version 2.20
 *
 * Description:
 *  This file provides Sleep/WakeUp APIs functionality of the PrISM component
@@ -18,12 +18,6 @@
 
 
 /***************************************
-* Forward function references
-***************************************/
-void PrISM_14_Enable(void) ;
-
-
-/***************************************
 * Local data allocation
 ***************************************/
 static PrISM_14_BACKUP_STRUCT  PrISM_14_backup = 
@@ -32,10 +26,10 @@ static PrISM_14_BACKUP_STRUCT  PrISM_14_backup =
     0u,
     /* cr */
     #if(!PrISM_14_PULSE_TYPE_HARDCODED)
-        (PrISM_14_GREATERTHAN_OR_EQUAL == 0 ? \
-                                                PrISM_14_CTRL_COMPARE_TYPE0_GREATER_THAN_OR_EQUAL : 0) |
-        (PrISM_14_GREATERTHAN_OR_EQUAL == 0 ? \
-                                                PrISM_14_CTRL_COMPARE_TYPE1_GREATER_THAN_OR_EQUAL : 0),
+       (((PrISM_14_GREATERTHAN_OR_EQUAL == PrISM_14_COMPARE0) ? \
+                                                PrISM_14_CTRL_COMPARE_TYPE0_GREATER_THAN_OR_EQUAL : 0u) |
+        ((PrISM_14_GREATERTHAN_OR_EQUAL == PrISM_14_COMPARE1) ? \
+                                                PrISM_14_CTRL_COMPARE_TYPE1_GREATER_THAN_OR_EQUAL : 0u)),
     #endif /* End PrISM_14_PULSE_TYPE_HARDCODED */
     /* seed */    
     PrISM_14_SEED,
@@ -129,24 +123,10 @@ void PrISM_14_RestoreConfig(void)
         
         enableInterrupts = CyEnterCriticalSection();
         /* Set FIFO0_CLR bit to use FIFO0 as a simple one-byte buffer*/
-        #if (PrISM_14_RESOLUTION <= 8u)      /* 8bit - PrISM */
-            PrISM_14_AUX_CONTROL_REG |= PrISM_14_FIFO0_CLR;
-        #elif (PrISM_14_RESOLUTION <= 16u)   /* 16bit - PrISM */
-            CY_SET_REG16(PrISM_14_AUX_CONTROL_PTR, CY_GET_REG16(PrISM_14_AUX_CONTROL_PTR) | 
-                                            PrISM_14_FIFO0_CLR | PrISM_14_FIFO0_CLR << 8u);
-        #elif (PrISM_14_RESOLUTION <= 24)   /* 24bit - PrISM */
-            CY_SET_REG24(PrISM_14_AUX_CONTROL_PTR, CY_GET_REG24(PrISM_14_AUX_CONTROL_PTR) |
-                                            PrISM_14_FIFO0_CLR | PrISM_14_FIFO0_CLR << 8u );
-            CY_SET_REG24(PrISM_14_AUX_CONTROL2_PTR, CY_GET_REG24(PrISM_14_AUX_CONTROL2_PTR) | 
-                                            PrISM_14_FIFO0_CLR );
-        #else                                 /* 32bit - PrISM */
-            CY_SET_REG32(PrISM_14_AUX_CONTROL_PTR, CY_GET_REG32(PrISM_14_AUX_CONTROL_PTR) |
-                                            PrISM_14_FIFO0_CLR | PrISM_14_FIFO0_CLR << 8u );
-            CY_SET_REG32(PrISM_14_AUX_CONTROL2_PTR, CY_GET_REG32(PrISM_14_AUX_CONTROL2_PTR) |
-                                            PrISM_14_FIFO0_CLR | PrISM_14_FIFO0_CLR << 8u );
-        #endif                                /* End PrISM_14_RESOLUTION */
+        CY_SET_REG8(PrISM_14_AUX_CONTROL_PTR, 
+                        CY_GET_REG8(PrISM_14_AUX_CONTROL_PTR) | PrISM_14_FIFO0_CLR);
         CyExitCriticalSection(enableInterrupts);
-   
+
     #else   /* CY_UDB_V1 */
 
         #if(!PrISM_14_PULSE_TYPE_HARDCODED)

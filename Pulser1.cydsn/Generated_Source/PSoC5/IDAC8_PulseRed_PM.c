@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: IDAC8_PulseRed.c
-* Version 1.90
+* Version 2.0
 *
 * Description:
 *  This file provides the power management source code to API for the
@@ -64,7 +64,7 @@ void IDAC8_PulseRed_RestoreConfig(void)
     {
         if((IDAC8_PulseRed_Strobe & IDAC8_PulseRed_STRB_MASK) == IDAC8_PulseRed_STRB_EN)
         {
-            IDAC8_PulseRed_Strobe &= ~IDAC8_PulseRed_STRB_MASK;
+            IDAC8_PulseRed_Strobe &= (uint8)(~IDAC8_PulseRed_STRB_MASK);
             IDAC8_PulseRed_Data = IDAC8_PulseRed_backup.data_value;
             IDAC8_PulseRed_Strobe |= IDAC8_PulseRed_STRB_EN;
         }

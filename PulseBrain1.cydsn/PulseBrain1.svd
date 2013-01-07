@@ -9,17 +9,17 @@
     <peripheral>
       <name>PrISM_11</name>
       <description>PrISM</description>
-      <baseAddress>0x0</baseAddress>
+      <baseAddress>0x40006506</baseAddress>
       <addressBlock>
         <offset>0</offset>
-        <size>0x0</size>
+        <size>0x41</size>
         <usage>registers</usage>
       </addressBlock>
       <registers>
         <register>
           <name>PrISM_SEED</name>
           <description>Current seed value</description>
-          <addressOffset>0x40006407</addressOffset>
+          <addressOffset>0x0</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -28,7 +28,7 @@
         <register>
           <name>PrISM_POLYNOM</name>
           <description>Polynomial</description>
-          <addressOffset>0x40006417</addressOffset>
+          <addressOffset>0x10</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -37,7 +37,7 @@
         <register>
           <name>PrISM_DENSITY0</name>
           <description>Pulse Density 0</description>
-          <addressOffset>0x40006427</addressOffset>
+          <addressOffset>0x20</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -46,7 +46,7 @@
         <register>
           <name>PrISM_DENSITY1</name>
           <description>Pulse Density 1</description>
-          <addressOffset>0x40006437</addressOffset>
+          <addressOffset>0x30</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -55,7 +55,7 @@
         <register>
           <name>PrISM_SEED_COPY</name>
           <description>Start seed value</description>
-          <addressOffset>0x40006447</addressOffset>
+          <addressOffset>0x40</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -66,17 +66,17 @@
     <peripheral>
       <name>PrISM_10</name>
       <description>PrISM</description>
-      <baseAddress>0x0</baseAddress>
+      <baseAddress>0x40006406</baseAddress>
       <addressBlock>
         <offset>0</offset>
-        <size>0x0</size>
+        <size>0x41</size>
         <usage>registers</usage>
       </addressBlock>
       <registers>
         <register>
           <name>PrISM_SEED</name>
           <description>Current seed value</description>
-          <addressOffset>0x40006506</addressOffset>
+          <addressOffset>0x0</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -85,7 +85,7 @@
         <register>
           <name>PrISM_POLYNOM</name>
           <description>Polynomial</description>
-          <addressOffset>0x40006516</addressOffset>
+          <addressOffset>0x10</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -94,7 +94,7 @@
         <register>
           <name>PrISM_DENSITY0</name>
           <description>Pulse Density 0</description>
-          <addressOffset>0x40006526</addressOffset>
+          <addressOffset>0x20</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -103,7 +103,7 @@
         <register>
           <name>PrISM_DENSITY1</name>
           <description>Pulse Density 1</description>
-          <addressOffset>0x40006536</addressOffset>
+          <addressOffset>0x30</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -112,7 +112,7 @@
         <register>
           <name>PrISM_SEED_COPY</name>
           <description>Start seed value</description>
-          <addressOffset>0x40006546</addressOffset>
+          <addressOffset>0x40</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -123,17 +123,17 @@
     <peripheral>
       <name>PrISM_12</name>
       <description>PrISM</description>
-      <baseAddress>0x0</baseAddress>
+      <baseAddress>0x40006505</baseAddress>
       <addressBlock>
         <offset>0</offset>
-        <size>0x0</size>
+        <size>0x41</size>
         <usage>registers</usage>
       </addressBlock>
       <registers>
         <register>
           <name>PrISM_SEED</name>
           <description>Current seed value</description>
-          <addressOffset>0x40006405</addressOffset>
+          <addressOffset>0x0</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -142,7 +142,7 @@
         <register>
           <name>PrISM_POLYNOM</name>
           <description>Polynomial</description>
-          <addressOffset>0x40006415</addressOffset>
+          <addressOffset>0x10</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -151,7 +151,7 @@
         <register>
           <name>PrISM_DENSITY0</name>
           <description>Pulse Density 0</description>
-          <addressOffset>0x40006425</addressOffset>
+          <addressOffset>0x20</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -160,7 +160,7 @@
         <register>
           <name>PrISM_DENSITY1</name>
           <description>Pulse Density 1</description>
-          <addressOffset>0x40006435</addressOffset>
+          <addressOffset>0x30</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -169,7 +169,7 @@
         <register>
           <name>PrISM_SEED_COPY</name>
           <description>Start seed value</description>
-          <addressOffset>0x40006445</addressOffset>
+          <addressOffset>0x40</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -180,17 +180,17 @@
     <peripheral>
       <name>PrISM_14</name>
       <description>PrISM</description>
-      <baseAddress>0x0</baseAddress>
+      <baseAddress>0x40006508</baseAddress>
       <addressBlock>
         <offset>0</offset>
-        <size>0x0</size>
+        <size>0x41</size>
         <usage>registers</usage>
       </addressBlock>
       <registers>
         <register>
           <name>PrISM_SEED</name>
           <description>Current seed value</description>
-          <addressOffset>0x40006505</addressOffset>
+          <addressOffset>0x0</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -199,7 +199,7 @@
         <register>
           <name>PrISM_POLYNOM</name>
           <description>Polynomial</description>
-          <addressOffset>0x40006515</addressOffset>
+          <addressOffset>0x10</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -208,7 +208,7 @@
         <register>
           <name>PrISM_DENSITY0</name>
           <description>Pulse Density 0</description>
-          <addressOffset>0x40006525</addressOffset>
+          <addressOffset>0x20</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -217,7 +217,7 @@
         <register>
           <name>PrISM_DENSITY1</name>
           <description>Pulse Density 1</description>
-          <addressOffset>0x40006535</addressOffset>
+          <addressOffset>0x30</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -226,7 +226,7 @@
         <register>
           <name>PrISM_SEED_COPY</name>
           <description>Start seed value</description>
-          <addressOffset>0x40006545</addressOffset>
+          <addressOffset>0x40</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -237,17 +237,17 @@
     <peripheral>
       <name>PrISM_13</name>
       <description>PrISM</description>
-      <baseAddress>0x0</baseAddress>
+      <baseAddress>0x40006504</baseAddress>
       <addressBlock>
         <offset>0</offset>
-        <size>0x0</size>
+        <size>0x41</size>
         <usage>registers</usage>
       </addressBlock>
       <registers>
         <register>
           <name>PrISM_SEED</name>
           <description>Current seed value</description>
-          <addressOffset>0x40006507</addressOffset>
+          <addressOffset>0x0</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -256,7 +256,7 @@
         <register>
           <name>PrISM_POLYNOM</name>
           <description>Polynomial</description>
-          <addressOffset>0x40006517</addressOffset>
+          <addressOffset>0x10</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -265,7 +265,7 @@
         <register>
           <name>PrISM_DENSITY0</name>
           <description>Pulse Density 0</description>
-          <addressOffset>0x40006527</addressOffset>
+          <addressOffset>0x20</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -274,7 +274,7 @@
         <register>
           <name>PrISM_DENSITY1</name>
           <description>Pulse Density 1</description>
-          <addressOffset>0x40006537</addressOffset>
+          <addressOffset>0x30</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -283,7 +283,7 @@
         <register>
           <name>PrISM_SEED_COPY</name>
           <description>Start seed value</description>
-          <addressOffset>0x40006547</addressOffset>
+          <addressOffset>0x40</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -292,19 +292,313 @@
       </registers>
     </peripheral>
     <peripheral>
-      <name>PrISM_6</name>
-      <description>PrISM</description>
-      <baseAddress>0x0</baseAddress>
+      <name>UART_Sensor</name>
+      <description>UART</description>
+      <baseAddress>0x40006428</baseAddress>
       <addressBlock>
         <offset>0</offset>
-        <size>0x0</size>
+        <size>0x40</size>
+        <usage>registers</usage>
+      </addressBlock>
+      <registers>
+        <register>
+          <name>RX_UART_Sensor_RX_ADDRESS1</name>
+          <description>RX Address1 Register</description>
+          <addressOffset>0x0</addressOffset>
+          <size>8</size>
+          <access>read-write</access>
+          <resetValue>0</resetValue>
+          <resetMask>0</resetMask>
+        </register>
+        <register>
+          <name>RX_UART_Sensor_RX_ADDRESS2</name>
+          <description>RX Address2 Register</description>
+          <addressOffset>0x10</addressOffset>
+          <size>8</size>
+          <access>read-write</access>
+          <resetValue>0</resetValue>
+          <resetMask>0</resetMask>
+        </register>
+        <register>
+          <name>TX_UART_Sensor_TX_DATA</name>
+          <description>TX Data Register</description>
+          <addressOffset>0x1C</addressOffset>
+          <size>8</size>
+          <access>read-write</access>
+          <resetValue>0</resetValue>
+          <resetMask>0</resetMask>
+        </register>
+        <register>
+          <name>RX_UART_Sensor_RX_DATA</name>
+          <description>RX Data Register</description>
+          <addressOffset>0x20</addressOffset>
+          <size>8</size>
+          <access>read-write</access>
+          <resetValue>0</resetValue>
+          <resetMask>0</resetMask>
+        </register>
+        <register>
+          <name>TX_UART_Sensor_TX_STATUS</name>
+          <description>TX status register</description>
+          <addressOffset>0x3C</addressOffset>
+          <size>8</size>
+          <access>read-write</access>
+          <resetValue>0</resetValue>
+          <resetMask>0</resetMask>
+          <fields>
+            <field>
+              <name>UART_Sensor_TX_STS_COMPLETE</name>
+              <description>No description available</description>
+              <lsb>0</lsb>
+              <msb>0</msb>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>UART_Sensor_TX_STS_FIFO_EMPTY</name>
+              <description>No description available</description>
+              <lsb>1</lsb>
+              <msb>1</msb>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>UART_Sensor_TX_STS_FIFO_FULL</name>
+              <description>No description available</description>
+              <lsb>2</lsb>
+              <msb>2</msb>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>UART_Sensor_TX_STS_FIFO_NOT_FULL</name>
+              <description>No description available</description>
+              <lsb>3</lsb>
+              <msb>3</msb>
+              <access>read-only</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>RX_UART_Sensor_RX_STATUS</name>
+          <description>RX status register</description>
+          <addressOffset>0x3F</addressOffset>
+          <size>8</size>
+          <access>read-write</access>
+          <resetValue>0</resetValue>
+          <resetMask>0</resetMask>
+          <fields>
+            <field>
+              <name>UART_Sensor_RX_STS_MRKSPC</name>
+              <description>No description available</description>
+              <lsb>0</lsb>
+              <msb>0</msb>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>UART_Sensor_RX_STS_BREAK</name>
+              <description>No description available</description>
+              <lsb>1</lsb>
+              <msb>1</msb>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>UART_Sensor_RX_STS_PAR_ERROR</name>
+              <description>No description available</description>
+              <lsb>2</lsb>
+              <msb>2</msb>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>UART_Sensor_RX_STS_STOP_ERROR</name>
+              <description>No description available</description>
+              <lsb>3</lsb>
+              <msb>3</msb>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>UART_Sensor_RX_STS_OVERRUN</name>
+              <description>No description available</description>
+              <lsb>4</lsb>
+              <msb>4</msb>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>UART_Sensor_RX_STS_FIFO_NOTEMPTY</name>
+              <description>No description available</description>
+              <lsb>5</lsb>
+              <msb>5</msb>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>UART_Sensor_RX_STS_ADDR_MATCH</name>
+              <description>No description available</description>
+              <lsb>6</lsb>
+              <msb>6</msb>
+              <access>read-only</access>
+            </field>
+          </fields>
+        </register>
+      </registers>
+    </peripheral>
+    <peripheral>
+      <name>UART_Debug</name>
+      <description>UART</description>
+      <baseAddress>0x4000646A</baseAddress>
+      <addressBlock>
+        <offset>0</offset>
+        <size>0xFF</size>
+        <usage>registers</usage>
+      </addressBlock>
+      <registers>
+        <register>
+          <name>RX_UART_Debug_RX_STATUS</name>
+          <description>RX status register</description>
+          <addressOffset>0x0</addressOffset>
+          <size>8</size>
+          <access>read-write</access>
+          <resetValue>0</resetValue>
+          <resetMask>0</resetMask>
+          <fields>
+            <field>
+              <name>UART_Debug_RX_STS_MRKSPC</name>
+              <description>No description available</description>
+              <lsb>0</lsb>
+              <msb>0</msb>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>UART_Debug_RX_STS_BREAK</name>
+              <description>No description available</description>
+              <lsb>1</lsb>
+              <msb>1</msb>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>UART_Debug_RX_STS_PAR_ERROR</name>
+              <description>No description available</description>
+              <lsb>2</lsb>
+              <msb>2</msb>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>UART_Debug_RX_STS_STOP_ERROR</name>
+              <description>No description available</description>
+              <lsb>3</lsb>
+              <msb>3</msb>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>UART_Debug_RX_STS_OVERRUN</name>
+              <description>No description available</description>
+              <lsb>4</lsb>
+              <msb>4</msb>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>UART_Debug_RX_STS_FIFO_NOTEMPTY</name>
+              <description>No description available</description>
+              <lsb>5</lsb>
+              <msb>5</msb>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>UART_Debug_RX_STS_ADDR_MATCH</name>
+              <description>No description available</description>
+              <lsb>6</lsb>
+              <msb>6</msb>
+              <access>read-only</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>RX_UART_Debug_RX_ADDRESS1</name>
+          <description>RX Address1 Register</description>
+          <addressOffset>0xC0</addressOffset>
+          <size>8</size>
+          <access>read-write</access>
+          <resetValue>0</resetValue>
+          <resetMask>0</resetMask>
+        </register>
+        <register>
+          <name>RX_UART_Debug_RX_ADDRESS2</name>
+          <description>RX Address2 Register</description>
+          <addressOffset>0xD0</addressOffset>
+          <size>8</size>
+          <access>read-write</access>
+          <resetValue>0</resetValue>
+          <resetMask>0</resetMask>
+        </register>
+        <register>
+          <name>RX_UART_Debug_RX_DATA</name>
+          <description>RX Data Register</description>
+          <addressOffset>0xE0</addressOffset>
+          <size>8</size>
+          <access>read-write</access>
+          <resetValue>0</resetValue>
+          <resetMask>0</resetMask>
+        </register>
+        <register>
+          <name>TX_UART_Debug_TX_DATA</name>
+          <description>TX Data Register</description>
+          <addressOffset>0xE1</addressOffset>
+          <size>8</size>
+          <access>read-write</access>
+          <resetValue>0</resetValue>
+          <resetMask>0</resetMask>
+        </register>
+        <register>
+          <name>TX_UART_Debug_TX_STATUS</name>
+          <description>TX status register</description>
+          <addressOffset>0xFE</addressOffset>
+          <size>8</size>
+          <access>read-write</access>
+          <resetValue>0</resetValue>
+          <resetMask>0</resetMask>
+          <fields>
+            <field>
+              <name>UART_Debug_TX_STS_COMPLETE</name>
+              <description>No description available</description>
+              <lsb>0</lsb>
+              <msb>0</msb>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>UART_Debug_TX_STS_FIFO_EMPTY</name>
+              <description>No description available</description>
+              <lsb>1</lsb>
+              <msb>1</msb>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>UART_Debug_TX_STS_FIFO_FULL</name>
+              <description>No description available</description>
+              <lsb>2</lsb>
+              <msb>2</msb>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>UART_Debug_TX_STS_FIFO_NOT_FULL</name>
+              <description>No description available</description>
+              <lsb>3</lsb>
+              <msb>3</msb>
+              <access>read-only</access>
+            </field>
+          </fields>
+        </register>
+      </registers>
+    </peripheral>
+    <peripheral>
+      <name>PrISM_6</name>
+      <description>PrISM</description>
+      <baseAddress>0x4000640F</baseAddress>
+      <addressBlock>
+        <offset>0</offset>
+        <size>0x41</size>
         <usage>registers</usage>
       </addressBlock>
       <registers>
         <register>
           <name>PrISM_SEED</name>
           <description>Current seed value</description>
-          <addressOffset>0x4000640D</addressOffset>
+          <addressOffset>0x0</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -313,7 +607,7 @@
         <register>
           <name>PrISM_POLYNOM</name>
           <description>Polynomial</description>
-          <addressOffset>0x4000641D</addressOffset>
+          <addressOffset>0x10</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -322,7 +616,7 @@
         <register>
           <name>PrISM_DENSITY0</name>
           <description>Pulse Density 0</description>
-          <addressOffset>0x4000642D</addressOffset>
+          <addressOffset>0x20</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -331,7 +625,7 @@
         <register>
           <name>PrISM_DENSITY1</name>
           <description>Pulse Density 1</description>
-          <addressOffset>0x4000643D</addressOffset>
+          <addressOffset>0x30</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -340,7 +634,7 @@
         <register>
           <name>PrISM_SEED_COPY</name>
           <description>Start seed value</description>
-          <addressOffset>0x4000644D</addressOffset>
+          <addressOffset>0x40</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -351,17 +645,17 @@
     <peripheral>
       <name>PrISM_4</name>
       <description>PrISM</description>
-      <baseAddress>0x0</baseAddress>
+      <baseAddress>0x4000640B</baseAddress>
       <addressBlock>
         <offset>0</offset>
-        <size>0x0</size>
+        <size>0x41</size>
         <usage>registers</usage>
       </addressBlock>
       <registers>
         <register>
           <name>PrISM_SEED</name>
           <description>Current seed value</description>
-          <addressOffset>0x4000640E</addressOffset>
+          <addressOffset>0x0</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -370,7 +664,7 @@
         <register>
           <name>PrISM_POLYNOM</name>
           <description>Polynomial</description>
-          <addressOffset>0x4000641E</addressOffset>
+          <addressOffset>0x10</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -379,7 +673,7 @@
         <register>
           <name>PrISM_DENSITY0</name>
           <description>Pulse Density 0</description>
-          <addressOffset>0x4000642E</addressOffset>
+          <addressOffset>0x20</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -388,7 +682,7 @@
         <register>
           <name>PrISM_DENSITY1</name>
           <description>Pulse Density 1</description>
-          <addressOffset>0x4000643E</addressOffset>
+          <addressOffset>0x30</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -397,7 +691,7 @@
         <register>
           <name>PrISM_SEED_COPY</name>
           <description>Start seed value</description>
-          <addressOffset>0x4000644E</addressOffset>
+          <addressOffset>0x40</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -408,17 +702,17 @@
     <peripheral>
       <name>PrISM_5</name>
       <description>PrISM</description>
-      <baseAddress>0x0</baseAddress>
+      <baseAddress>0x4000640A</baseAddress>
       <addressBlock>
         <offset>0</offset>
-        <size>0x0</size>
+        <size>0x41</size>
         <usage>registers</usage>
       </addressBlock>
       <registers>
         <register>
           <name>PrISM_SEED</name>
           <description>Current seed value</description>
-          <addressOffset>0x40006408</addressOffset>
+          <addressOffset>0x0</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -427,7 +721,7 @@
         <register>
           <name>PrISM_POLYNOM</name>
           <description>Polynomial</description>
-          <addressOffset>0x40006418</addressOffset>
+          <addressOffset>0x10</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -436,7 +730,7 @@
         <register>
           <name>PrISM_DENSITY0</name>
           <description>Pulse Density 0</description>
-          <addressOffset>0x40006428</addressOffset>
+          <addressOffset>0x20</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -445,7 +739,7 @@
         <register>
           <name>PrISM_DENSITY1</name>
           <description>Pulse Density 1</description>
-          <addressOffset>0x40006438</addressOffset>
+          <addressOffset>0x30</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -454,7 +748,7 @@
         <register>
           <name>PrISM_SEED_COPY</name>
           <description>Start seed value</description>
-          <addressOffset>0x40006448</addressOffset>
+          <addressOffset>0x40</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -465,17 +759,17 @@
     <peripheral>
       <name>PrISM_3</name>
       <description>PrISM</description>
-      <baseAddress>0x0</baseAddress>
+      <baseAddress>0x4000640E</baseAddress>
       <addressBlock>
         <offset>0</offset>
-        <size>0x0</size>
+        <size>0x41</size>
         <usage>registers</usage>
       </addressBlock>
       <registers>
         <register>
           <name>PrISM_SEED</name>
           <description>Current seed value</description>
-          <addressOffset>0x40006406</addressOffset>
+          <addressOffset>0x0</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -484,7 +778,7 @@
         <register>
           <name>PrISM_POLYNOM</name>
           <description>Polynomial</description>
-          <addressOffset>0x40006416</addressOffset>
+          <addressOffset>0x10</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -493,7 +787,7 @@
         <register>
           <name>PrISM_DENSITY0</name>
           <description>Pulse Density 0</description>
-          <addressOffset>0x40006426</addressOffset>
+          <addressOffset>0x20</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -502,7 +796,7 @@
         <register>
           <name>PrISM_DENSITY1</name>
           <description>Pulse Density 1</description>
-          <addressOffset>0x40006436</addressOffset>
+          <addressOffset>0x30</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -511,7 +805,7 @@
         <register>
           <name>PrISM_SEED_COPY</name>
           <description>Start seed value</description>
-          <addressOffset>0x40006446</addressOffset>
+          <addressOffset>0x40</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -522,17 +816,17 @@
     <peripheral>
       <name>PrISM_8</name>
       <description>PrISM</description>
-      <baseAddress>0x0</baseAddress>
+      <baseAddress>0x40006405</baseAddress>
       <addressBlock>
         <offset>0</offset>
-        <size>0x0</size>
+        <size>0x41</size>
         <usage>registers</usage>
       </addressBlock>
       <registers>
         <register>
           <name>PrISM_SEED</name>
           <description>Current seed value</description>
-          <addressOffset>0x40006508</addressOffset>
+          <addressOffset>0x0</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -541,7 +835,7 @@
         <register>
           <name>PrISM_POLYNOM</name>
           <description>Polynomial</description>
-          <addressOffset>0x40006518</addressOffset>
+          <addressOffset>0x10</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -550,7 +844,7 @@
         <register>
           <name>PrISM_DENSITY0</name>
           <description>Pulse Density 0</description>
-          <addressOffset>0x40006528</addressOffset>
+          <addressOffset>0x20</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -559,7 +853,7 @@
         <register>
           <name>PrISM_DENSITY1</name>
           <description>Pulse Density 1</description>
-          <addressOffset>0x40006538</addressOffset>
+          <addressOffset>0x30</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -568,7 +862,7 @@
         <register>
           <name>PrISM_SEED_COPY</name>
           <description>Start seed value</description>
-          <addressOffset>0x40006548</addressOffset>
+          <addressOffset>0x40</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -579,17 +873,17 @@
     <peripheral>
       <name>PrISM_7</name>
       <description>PrISM</description>
-      <baseAddress>0x0</baseAddress>
+      <baseAddress>0x4000640D</baseAddress>
       <addressBlock>
         <offset>0</offset>
-        <size>0x0</size>
+        <size>0x41</size>
         <usage>registers</usage>
       </addressBlock>
       <registers>
         <register>
           <name>PrISM_SEED</name>
           <description>Current seed value</description>
-          <addressOffset>0x4000640C</addressOffset>
+          <addressOffset>0x0</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -598,7 +892,7 @@
         <register>
           <name>PrISM_POLYNOM</name>
           <description>Polynomial</description>
-          <addressOffset>0x4000641C</addressOffset>
+          <addressOffset>0x10</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -607,7 +901,7 @@
         <register>
           <name>PrISM_DENSITY0</name>
           <description>Pulse Density 0</description>
-          <addressOffset>0x4000642C</addressOffset>
+          <addressOffset>0x20</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -616,7 +910,7 @@
         <register>
           <name>PrISM_DENSITY1</name>
           <description>Pulse Density 1</description>
-          <addressOffset>0x4000643C</addressOffset>
+          <addressOffset>0x30</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -625,7 +919,7 @@
         <register>
           <name>PrISM_SEED_COPY</name>
           <description>Start seed value</description>
-          <addressOffset>0x4000644C</addressOffset>
+          <addressOffset>0x40</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -636,17 +930,17 @@
     <peripheral>
       <name>PrISM_9</name>
       <description>PrISM</description>
-      <baseAddress>0x0</baseAddress>
+      <baseAddress>0x40006507</baseAddress>
       <addressBlock>
         <offset>0</offset>
-        <size>0x0</size>
+        <size>0x41</size>
         <usage>registers</usage>
       </addressBlock>
       <registers>
         <register>
           <name>PrISM_SEED</name>
           <description>Current seed value</description>
-          <addressOffset>0x40006504</addressOffset>
+          <addressOffset>0x0</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -655,7 +949,7 @@
         <register>
           <name>PrISM_POLYNOM</name>
           <description>Polynomial</description>
-          <addressOffset>0x40006514</addressOffset>
+          <addressOffset>0x10</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -664,7 +958,7 @@
         <register>
           <name>PrISM_DENSITY0</name>
           <description>Pulse Density 0</description>
-          <addressOffset>0x40006524</addressOffset>
+          <addressOffset>0x20</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -673,7 +967,7 @@
         <register>
           <name>PrISM_DENSITY1</name>
           <description>Pulse Density 1</description>
-          <addressOffset>0x40006534</addressOffset>
+          <addressOffset>0x30</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -682,7 +976,7 @@
         <register>
           <name>PrISM_SEED_COPY</name>
           <description>Start seed value</description>
-          <addressOffset>0x40006544</addressOffset>
+          <addressOffset>0x40</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -693,17 +987,17 @@
     <peripheral>
       <name>PrISM_1</name>
       <description>PrISM</description>
-      <baseAddress>0x0</baseAddress>
+      <baseAddress>0x40006409</baseAddress>
       <addressBlock>
         <offset>0</offset>
-        <size>0x0</size>
+        <size>0x41</size>
         <usage>registers</usage>
       </addressBlock>
       <registers>
         <register>
           <name>PrISM_SEED</name>
           <description>Current seed value</description>
-          <addressOffset>0x4000640B</addressOffset>
+          <addressOffset>0x0</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -712,7 +1006,7 @@
         <register>
           <name>PrISM_POLYNOM</name>
           <description>Polynomial</description>
-          <addressOffset>0x4000641B</addressOffset>
+          <addressOffset>0x10</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -721,7 +1015,7 @@
         <register>
           <name>PrISM_DENSITY0</name>
           <description>Pulse Density 0</description>
-          <addressOffset>0x4000642B</addressOffset>
+          <addressOffset>0x20</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -730,7 +1024,7 @@
         <register>
           <name>PrISM_DENSITY1</name>
           <description>Pulse Density 1</description>
-          <addressOffset>0x4000643B</addressOffset>
+          <addressOffset>0x30</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -739,7 +1033,7 @@
         <register>
           <name>PrISM_SEED_COPY</name>
           <description>Start seed value</description>
-          <addressOffset>0x4000644B</addressOffset>
+          <addressOffset>0x40</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -750,17 +1044,17 @@
     <peripheral>
       <name>PrISM_2</name>
       <description>PrISM</description>
-      <baseAddress>0x0</baseAddress>
+      <baseAddress>0x4000640C</baseAddress>
       <addressBlock>
         <offset>0</offset>
-        <size>0x0</size>
+        <size>0x41</size>
         <usage>registers</usage>
       </addressBlock>
       <registers>
         <register>
           <name>PrISM_SEED</name>
           <description>Current seed value</description>
-          <addressOffset>0x40006404</addressOffset>
+          <addressOffset>0x0</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -769,7 +1063,7 @@
         <register>
           <name>PrISM_POLYNOM</name>
           <description>Polynomial</description>
-          <addressOffset>0x40006414</addressOffset>
+          <addressOffset>0x10</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -778,7 +1072,7 @@
         <register>
           <name>PrISM_DENSITY0</name>
           <description>Pulse Density 0</description>
-          <addressOffset>0x40006424</addressOffset>
+          <addressOffset>0x20</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -787,7 +1081,7 @@
         <register>
           <name>PrISM_DENSITY1</name>
           <description>Pulse Density 1</description>
-          <addressOffset>0x40006434</addressOffset>
+          <addressOffset>0x30</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -796,7 +1090,7 @@
         <register>
           <name>PrISM_SEED_COPY</name>
           <description>Start seed value</description>
-          <addressOffset>0x40006444</addressOffset>
+          <addressOffset>0x40</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -807,197 +1101,448 @@
     <peripheral>
       <name>USBUART_Central</name>
       <description>USBFS</description>
-      <baseAddress>0x0</baseAddress>
+      <baseAddress>0x400043A5</baseAddress>
       <addressBlock>
         <offset>0</offset>
-        <size>0x0</size>
+        <size>0x1CF9</size>
         <usage>registers</usage>
       </addressBlock>
       <registers>
         <register>
-          <name>USBUART_Central_EP0_DR0_REG</name>
+          <name>USBUART_Central_PM_ACT_CFG</name>
+          <description>Active Power Mode Configuration Register</description>
+          <addressOffset>0x0</addressOffset>
+          <size>8</size>
+          <access>read-write</access>
+          <resetValue>0</resetValue>
+          <resetMask>0</resetMask>
+        </register>
+        <register>
+          <name>USBUART_Central_PM_STBY_CFG</name>
+          <description>Standby Power Mode Configuration Register</description>
+          <addressOffset>0x10</addressOffset>
+          <size>8</size>
+          <access>read-write</access>
+          <resetValue>0</resetValue>
+          <resetMask>0</resetMask>
+        </register>
+        <register>
+          <name>USBUART_Central_PRT_PS</name>
+          <description>Port Pin State Register</description>
+          <addressOffset>0xE4C</addressOffset>
+          <size>8</size>
+          <access>read-write</access>
+          <resetValue>0</resetValue>
+          <resetMask>0</resetMask>
+          <fields>
+            <field>
+              <name>PinState_DP</name>
+              <description>No description available</description>
+              <lsb>6</lsb>
+              <msb>6</msb>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>PinState_DM</name>
+              <description>No description available</description>
+              <lsb>7</lsb>
+              <msb>7</msb>
+              <access>read-only</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>USBUART_Central_PRT_DM0</name>
+          <description>Port Drive Mode Register</description>
+          <addressOffset>0xE4D</addressOffset>
+          <size>8</size>
+          <access>read-write</access>
+          <resetValue>0</resetValue>
+          <resetMask>0</resetMask>
+          <fields>
+            <field>
+              <name>DriveMode_DP</name>
+              <description>No description available</description>
+              <lsb>6</lsb>
+              <msb>6</msb>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>DriveMode_DM</name>
+              <description>No description available</description>
+              <lsb>7</lsb>
+              <msb>7</msb>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>USBUART_Central_PRT_DM1</name>
+          <description>Port Drive Mode Register</description>
+          <addressOffset>0xE4E</addressOffset>
+          <size>8</size>
+          <access>read-write</access>
+          <resetValue>0</resetValue>
+          <resetMask>0</resetMask>
+          <fields>
+            <field>
+              <name>PullUp_en_DP</name>
+              <description>No description available</description>
+              <lsb>6</lsb>
+              <msb>6</msb>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>PullUp_en_DM</name>
+              <description>No description available</description>
+              <lsb>7</lsb>
+              <msb>7</msb>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>USBUART_Central_PRT_INP_DIS</name>
+          <description>Input buffer disable override</description>
+          <addressOffset>0xE53</addressOffset>
+          <size>8</size>
+          <access>read-write</access>
+          <resetValue>0</resetValue>
+          <resetMask>0</resetMask>
+          <fields>
+            <field>
+              <name>seinput_dis_dp</name>
+              <description>No description available</description>
+              <lsb>6</lsb>
+              <msb>6</msb>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>seinput_dis_dm</name>
+              <description>No description available</description>
+              <lsb>7</lsb>
+              <msb>7</msb>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>USBUART_Central_EP0_DR0</name>
           <description>bmRequestType</description>
-          <addressOffset>0x40006000</addressOffset>
+          <addressOffset>0x1C5B</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
           <resetMask>0</resetMask>
         </register>
         <register>
-          <name>USBUART_Central_EP0_DR1_REG</name>
+          <name>USBUART_Central_EP0_DR1</name>
           <description>bRequest</description>
-          <addressOffset>0x40006001</addressOffset>
+          <addressOffset>0x1C5C</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
           <resetMask>0</resetMask>
         </register>
         <register>
-          <name>USBUART_Central_EP0_DR2_REG</name>
+          <name>USBUART_Central_EP0_DR2</name>
           <description>wValueLo</description>
-          <addressOffset>0x40006002</addressOffset>
+          <addressOffset>0x1C5D</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
           <resetMask>0</resetMask>
         </register>
         <register>
-          <name>USBUART_Central_EP0_DR3_REG</name>
+          <name>USBUART_Central_EP0_DR3</name>
           <description>wValueHi</description>
-          <addressOffset>0x40006003</addressOffset>
+          <addressOffset>0x1C5E</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
           <resetMask>0</resetMask>
         </register>
         <register>
-          <name>USBUART_Central_EP0_DR4_REG</name>
+          <name>USBUART_Central_EP0_DR4</name>
           <description>wIndexLo</description>
-          <addressOffset>0x40006004</addressOffset>
+          <addressOffset>0x1C5F</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
           <resetMask>0</resetMask>
         </register>
         <register>
-          <name>USBUART_Central_EP0_DR5_REG</name>
+          <name>USBUART_Central_EP0_DR5</name>
           <description>wIndexHi</description>
-          <addressOffset>0x40006005</addressOffset>
+          <addressOffset>0x1C60</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
           <resetMask>0</resetMask>
         </register>
         <register>
-          <name>USBUART_Central_EP0_DR6_REG</name>
+          <name>USBUART_Central_EP0_DR6</name>
           <description>lengthLo</description>
-          <addressOffset>0x40006006</addressOffset>
+          <addressOffset>0x1C61</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
           <resetMask>0</resetMask>
         </register>
         <register>
-          <name>USBUART_Central_EP0_DR7_REG</name>
+          <name>USBUART_Central_EP0_DR7</name>
           <description>lengthHi</description>
-          <addressOffset>0x40006007</addressOffset>
+          <addressOffset>0x1C62</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
           <resetMask>0</resetMask>
         </register>
         <register>
-          <name>USBUART_Central_CR0_REG</name>
+          <name>USBUART_Central_CR0</name>
           <description>USB Control Register 0</description>
-          <addressOffset>0x40006008</addressOffset>
+          <addressOffset>0x1C63</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
           <resetMask>0</resetMask>
+          <fields>
+            <field>
+              <name>device_address</name>
+              <description>No description available</description>
+              <lsb>6</lsb>
+              <msb>0</msb>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>usb_enable</name>
+              <description>No description available</description>
+              <lsb>7</lsb>
+              <msb>7</msb>
+              <access>read-write</access>
+            </field>
+          </fields>
         </register>
         <register>
-          <name>USBUART_Central_CR1_REG</name>
+          <name>USBUART_Central_CR1</name>
           <description>USB Control Register 1</description>
-          <addressOffset>0x40006009</addressOffset>
+          <addressOffset>0x1C64</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
           <resetMask>0</resetMask>
+          <fields>
+            <field>
+              <name>reg_enable</name>
+              <description>No description available</description>
+              <lsb>0</lsb>
+              <msb>0</msb>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>enable_lock</name>
+              <description>No description available</description>
+              <lsb>1</lsb>
+              <msb>1</msb>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>bus_activity</name>
+              <description>No description available</description>
+              <lsb>2</lsb>
+              <msb>2</msb>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>trim_offset_msb</name>
+              <description>No description available</description>
+              <lsb>3</lsb>
+              <msb>3</msb>
+              <access>read-write</access>
+            </field>
+          </fields>
         </register>
         <register>
-          <name>USBUART_Central_SIE_EP1_CR0_REG</name>
+          <name>USBUART_Central_SIE_EP1_CR0</name>
           <description>The Endpoint1 Control Register</description>
-          <addressOffset>0x4000600E</addressOffset>
+          <addressOffset>0x1C69</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
           <resetMask>0</resetMask>
         </register>
         <register>
-          <name>USBUART_Central_USBIO_CR0_REG</name>
+          <name>USBUART_Central_USBIO_CR0</name>
           <description>USBIO Control Register 0</description>
-          <addressOffset>0x40006010</addressOffset>
+          <addressOffset>0x1C6B</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
           <resetMask>0</resetMask>
+          <fields>
+            <field>
+              <name>rd</name>
+              <description>No description available</description>
+              <lsb>0</lsb>
+              <msb>0</msb>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>td</name>
+              <description>No description available</description>
+              <lsb>5</lsb>
+              <msb>5</msb>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>tse0</name>
+              <description>No description available</description>
+              <lsb>6</lsb>
+              <msb>6</msb>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>ten</name>
+              <description>No description available</description>
+              <lsb>7</lsb>
+              <msb>7</msb>
+              <access>read-write</access>
+            </field>
+          </fields>
         </register>
         <register>
-          <name>USBUART_Central_USBIO_CR2_REG</name>
-          <description>USBIO Control Register 2</description>
-          <addressOffset>0x40006011</addressOffset>
-          <size>8</size>
-          <access>read-write</access>
-          <resetValue>0</resetValue>
-          <resetMask>0</resetMask>
-        </register>
-        <register>
-          <name>USBUART_Central_USBIO_CR1_REG</name>
+          <name>USBUART_Central_USBIO_CR1</name>
           <description>USBIO Control Register 1</description>
-          <addressOffset>0x40006012</addressOffset>
+          <addressOffset>0x1C6D</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
           <resetMask>0</resetMask>
+          <fields>
+            <field>
+              <name>dmo</name>
+              <description>No description available</description>
+              <lsb>0</lsb>
+              <msb>0</msb>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>dpo</name>
+              <description>No description available</description>
+              <lsb>1</lsb>
+              <msb>1</msb>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>usbpuen</name>
+              <description>No description available</description>
+              <lsb>2</lsb>
+              <msb>2</msb>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>iomode</name>
+              <description>No description available</description>
+              <lsb>5</lsb>
+              <msb>5</msb>
+              <access>read-write</access>
+            </field>
+          </fields>
         </register>
         <register>
-          <name>USBUART_Central_SIE_EP2_CR0_REG</name>
+          <name>USBUART_Central_SIE_EP2_CR0</name>
           <description>The Endpoint2 Control Register</description>
-          <addressOffset>0x4000601E</addressOffset>
+          <addressOffset>0x1C79</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
           <resetMask>0</resetMask>
         </register>
         <register>
-          <name>USBUART_Central_SIE_EP3_CR0_REG</name>
+          <name>USBUART_Central_SIE_EP3_CR0</name>
           <description>The Endpoint3 Control Register</description>
-          <addressOffset>0x4000602E</addressOffset>
+          <addressOffset>0x1C89</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
           <resetMask>0</resetMask>
         </register>
         <register>
-          <name>USBUART_Central_SIE_EP4_CR0_REG</name>
+          <name>USBUART_Central_SIE_EP4_CR0</name>
           <description>The Endpoint4 Control Register</description>
-          <addressOffset>0x4000603E</addressOffset>
+          <addressOffset>0x1C99</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
           <resetMask>0</resetMask>
         </register>
         <register>
-          <name>USBUART_Central_SIE_EP5_CR0_REG</name>
+          <name>USBUART_Central_SIE_EP5_CR0</name>
           <description>The Endpoint5 Control Register</description>
-          <addressOffset>0x4000604E</addressOffset>
+          <addressOffset>0x1CA9</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
           <resetMask>0</resetMask>
         </register>
         <register>
-          <name>USBUART_Central_SIE_EP6_CR0_REG</name>
+          <name>USBUART_Central_SIE_EP6_CR0</name>
           <description>The Endpoint6 Control Register</description>
-          <addressOffset>0x4000605E</addressOffset>
+          <addressOffset>0x1CB9</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
           <resetMask>0</resetMask>
         </register>
         <register>
-          <name>USBUART_Central_SIE_EP7_CR0_REG</name>
+          <name>USBUART_Central_SIE_EP7_CR0</name>
           <description>The Endpoint7 Control Register</description>
-          <addressOffset>0x4000606E</addressOffset>
+          <addressOffset>0x1CC9</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
           <resetMask>0</resetMask>
         </register>
         <register>
-          <name>USBUART_Central_SIE_EP8_CR0_REG</name>
+          <name>USBUART_Central_SIE_EP8_CR0</name>
           <description>The Endpoint8 Control Register</description>
-          <addressOffset>0x4000607E</addressOffset>
+          <addressOffset>0x1CD9</addressOffset>
+          <size>8</size>
+          <access>read-write</access>
+          <resetValue>0</resetValue>
+          <resetMask>0</resetMask>
+        </register>
+        <register>
+          <name>USBUART_Central_BUF_SIZE</name>
+          <description>Dedicated Endpoint Buffer Size Register</description>
+          <addressOffset>0x1CE7</addressOffset>
+          <size>8</size>
+          <access>read-write</access>
+          <resetValue>0</resetValue>
+          <resetMask>0</resetMask>
+        </register>
+        <register>
+          <name>USBUART_Central_EP_ACTIVE</name>
+          <description>Endpoint Active Indication Register</description>
+          <addressOffset>0x1CE9</addressOffset>
+          <size>8</size>
+          <access>read-write</access>
+          <resetValue>0</resetValue>
+          <resetMask>0</resetMask>
+        </register>
+        <register>
+          <name>USBUART_Central_EP_TYPE</name>
+          <description>Endpoint Type (IN/OUT) Indication</description>
+          <addressOffset>0x1CEA</addressOffset>
+          <size>8</size>
+          <access>read-write</access>
+          <resetValue>0</resetValue>
+          <resetMask>0</resetMask>
+        </register>
+        <register>
+          <name>USBUART_Central_USB_CLK_EN</name>
+          <description>USB Block Clock Enable Register</description>
+          <addressOffset>0x1CF8</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>

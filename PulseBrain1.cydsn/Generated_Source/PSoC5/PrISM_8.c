@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: PrISM_8.c
-* Version 2.10
+* Version 2.20
 *
 * Description:
 *  This file provides the source code of the API for the PrISM Component.
@@ -60,7 +60,6 @@ void PrISM_8_Start(void)
         PrISM_8_initVar = 1u;
     }
     PrISM_8_Enable();
-
 }
 
 
@@ -92,43 +91,23 @@ void PrISM_8_Init(void)
     
     enableInterrupts = CyEnterCriticalSection();
     /* Set FIFO0_CLR bit to use FIFO0 as a simple one-byte buffer*/
-    #if (PrISM_8_RESOLUTION <= 8u)      /* 8bit - PrISM */
-        PrISM_8_AUX_CONTROL_REG |= PrISM_8_FIFO0_CLR;
-    #elif (PrISM_8_RESOLUTION <= 16u)   /* 16bit - PrISM */
-        CY_SET_REG16(PrISM_8_AUX_CONTROL_PTR, CY_GET_REG16(PrISM_8_AUX_CONTROL_PTR) | 
-                                        PrISM_8_FIFO0_CLR | PrISM_8_FIFO0_CLR << 8u);
-    #elif (PrISM_8_RESOLUTION <= 24u)   /* 24bit - PrISM */
-        CY_SET_REG24(PrISM_8_AUX_CONTROL_PTR, CY_GET_REG24(PrISM_8_AUX_CONTROL_PTR) |
-                                        PrISM_8_FIFO0_CLR | PrISM_8_FIFO0_CLR << 8u );
-        CY_SET_REG24(PrISM_8_AUX_CONTROL2_PTR, CY_GET_REG24(PrISM_8_AUX_CONTROL2_PTR) | 
-                                        PrISM_8_FIFO0_CLR );
-    #else                                 /* 32bit - PrISM */
-        CY_SET_REG32(PrISM_8_AUX_CONTROL_PTR, CY_GET_REG32(PrISM_8_AUX_CONTROL_PTR) |
-                                        PrISM_8_FIFO0_CLR | PrISM_8_FIFO0_CLR << 8u );
-        CY_SET_REG32(PrISM_8_AUX_CONTROL2_PTR, CY_GET_REG32(PrISM_8_AUX_CONTROL2_PTR) |
-                                        PrISM_8_FIFO0_CLR | PrISM_8_FIFO0_CLR << 8u );
-    #endif                                /* End PrISM_8_RESOLUTION */
+    CY_SET_REG8(PrISM_8_AUX_CONTROL_PTR, 
+                        CY_GET_REG8(PrISM_8_AUX_CONTROL_PTR) | PrISM_8_FIFO0_CLR);
     CyExitCriticalSection(enableInterrupts);
     
     #if(!PrISM_8_PULSE_TYPE_HARDCODED)
         /* Writes density type provided by customizer */
-        if(PrISM_8_GREATERTHAN_OR_EQUAL == 0 )
-        {
+        #if(PrISM_8_GREATERTHAN_OR_EQUAL == PrISM_8_COMPARE0)
             PrISM_8_CONTROL_REG |= PrISM_8_CTRL_COMPARE_TYPE0_GREATER_THAN_OR_EQUAL;
-        }
-        else
-        {
-            PrISM_8_CONTROL_REG &= ~PrISM_8_CTRL_COMPARE_TYPE0_GREATER_THAN_OR_EQUAL;
-        }
+        #else
+            PrISM_8_CONTROL_REG &= (uint8)~PrISM_8_CTRL_COMPARE_TYPE0_GREATER_THAN_OR_EQUAL;
+        #endif /* End PrISM_8_COMPARE0 */    
     
-        if(PrISM_8_GREATERTHAN_OR_EQUAL == 0)
-        {
+        #if(PrISM_8_GREATERTHAN_OR_EQUAL == PrISM_8_COMPARE1)
             PrISM_8_CONTROL_REG |= PrISM_8_CTRL_COMPARE_TYPE1_GREATER_THAN_OR_EQUAL;
-        }
-        else
-        {
-            PrISM_8_CONTROL_REG &= ~PrISM_8_CTRL_COMPARE_TYPE1_GREATER_THAN_OR_EQUAL;
-        }
+        #else
+            PrISM_8_CONTROL_REG &= (uint8)~PrISM_8_CTRL_COMPARE_TYPE1_GREATER_THAN_OR_EQUAL;
+        #endif /* End PrISM_8_COMPARE1 */    
     #endif /* End PrISM_8_PULSE_TYPE_HARDCODED */
 }
 
@@ -173,7 +152,7 @@ void PrISM_8_Enable(void)
 void PrISM_8_Stop(void) 
 {
     #if(!PrISM_8_PULSE_TYPE_HARDCODED)
-        PrISM_8_CONTROL_REG &= ~PrISM_8_CTRL_ENABLE;
+        PrISM_8_CONTROL_REG &= (uint8)~PrISM_8_CTRL_ENABLE;
     #else
         /* PulseTypeHardoded option enabled - to stop PrISM use enable input */
     #endif /* End $INSTANCE_NAME`_PULSE_TYPE_HARDCODED */
@@ -205,7 +184,7 @@ void PrISM_8_Stop(void)
         }
         else
         {
-            PrISM_8_CONTROL_REG &= ~PrISM_8_CTRL_COMPARE_TYPE0_GREATER_THAN_OR_EQUAL;
+            PrISM_8_CONTROL_REG &= (uint8)~PrISM_8_CTRL_COMPARE_TYPE0_GREATER_THAN_OR_EQUAL;
         }
     }
     
@@ -233,7 +212,7 @@ void PrISM_8_Stop(void)
         }
         else
         {
-            PrISM_8_CONTROL_REG &= ~PrISM_8_CTRL_COMPARE_TYPE1_GREATER_THAN_OR_EQUAL;
+            PrISM_8_CONTROL_REG &= (uint8)~PrISM_8_CTRL_COMPARE_TYPE1_GREATER_THAN_OR_EQUAL;
         }
     }
 

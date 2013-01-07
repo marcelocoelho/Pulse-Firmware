@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: Cm3Start.c
-* Version 3.10
+* Version 3.30
 *
 *  Description:
 *  Startup code for the ARM CM3.
@@ -20,19 +20,22 @@
 #include "cyfitter.h"
 
 
-#define NUM_INTERRUPTS              32
+#define NUM_INTERRUPTS              32u
 #define NUM_VECTORS                 (CYINT_IRQ_BASE+NUM_INTERRUPTS)
 #define NVIC_APINT                  ((reg32 *) CYREG_NVIC_APPLN_INTR)
 #define NVIC_CFG_CTRL               ((reg32 *) CYREG_NVIC_CFG_CONTROL)
-#define NVIC_APINT_PRIGROUP_3_5     0x00000400  /* Priority group 3.5 split */
-#define NVIC_APINT_VECTKEY          0x05FA0000  /* This key is required in order to write the NVIC_APINT register */
-#define NVIC_CFG_STACKALIGN         0x00000200  /* This specifies that the exception stack must be 8 byte aligned */
+#define NVIC_APINT_PRIGROUP_3_5     0x00000400u  /* Priority group 3.5 split */
+#define NVIC_APINT_VECTKEY          0x05FA0000u  /* This key is required in order to write the NVIC_APINT register */
+#define NVIC_CFG_STACKALIGN         0x00000200u  /* This specifies that the exception stack must be 8 byte aligned */
 
 /* Extern functions */
 extern void CyBtldr_CheckLaunch(void);
 
 /* Function prototypes */
 void initialize_psoc(void);
+CY_ISR(IntDefaultHandler);
+void Reset(void);
+CY_ISR(IntDefaultHandler);
 
 
 /*******************************************************************************
@@ -66,11 +69,14 @@ cyisraddress CyRamVectors[NUM_VECTORS];
 *******************************************************************************/
 CY_ISR(IntDefaultHandler)
 {
-    /***************************************************************************
-    * We should never get here. If we do, a serious problem occured, so go into
-    * an infinite loop.
-    ***************************************************************************/
-    while(1);
+
+    while(1)
+    {
+        /***********************************************************************
+        * We should never get here. If we do, a serious problem occured, so go
+        * into an infinite loop.
+        ***********************************************************************/
+    }
 }
 
 #if defined(__ARMCC_VERSION)
@@ -82,7 +88,7 @@ extern void Reset(void);
 extern void $Super$$main(void);
 
 /* Linker-generated Stack Base addresses, Two Region and One Region */
-extern unsigned long Image$$ARM_LIB_STACK$$ZI$$Limit;
+extern uint32 Image$$ARM_LIB_STACK$$ZI$$Limit;
 
 /* RealView C Library initialization. */
 extern int __main(void);
@@ -226,7 +232,7 @@ void $Sub$$main(void)
 
 #elif defined(__GNUC__)
 
-extern unsigned long __cs3_interrupt_vector;
+extern uint32 __cs3_interrupt_vector;
 extern void __cs3_start_c(void);
 
 #define RomVectors (cyisraddress)(&__cs3_interrupt_vector)
@@ -297,7 +303,7 @@ __attribute__ ((constructor(101)))
 
 void initialize_psoc(void)
 {
-    unsigned long index;
+    uint32 i;
 
     /* Set Priority group 5. */
 
@@ -306,9 +312,9 @@ void initialize_psoc(void)
     *NVIC_CFG_CTRL |= NVIC_CFG_STACKALIGN;
 
     /* Set Ram interrupt vectors to default functions. */
-    for(index = 0; index < NUM_VECTORS; index++)
+    for(i = 0u; i < NUM_VECTORS; i++)
     {
-        CyRamVectors[index] = RomVectors[index];
+        CyRamVectors[i] = RomVectors[i];
     }
 
     /* Was stored in CFGMEM to avoid being cleared while SRAM gets cleared */

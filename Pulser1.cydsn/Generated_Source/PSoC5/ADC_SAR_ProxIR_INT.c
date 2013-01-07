@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: ADC_SAR_ProxIR_INT.c
-* Version 1.80
+* Version 2.0
 *
 *  Description:
 *    This file contains the code that operates during the ADC_SAR interrupt
@@ -28,34 +28,38 @@
 /* `#END`  */
 
 
-/******************************************************************************
-* Function Name: ADC_SAR_ProxIR_ISR
-*******************************************************************************
-*
-* Summary:
-*  Handle Interrupt Service Routine.
-*
-* Parameters:
-*  None.
-*
-* Return:
-*  None.
-*
-* Reentrant:
-*  No.
-*
-******************************************************************************/
-CY_ISR( ADC_SAR_ProxIR_ISR )
-{
-    /************************************************************************
-    *  Custom Code
-    *  - add user ISR code between the following #START and #END tags
-    *************************************************************************/
-      /* `#START MAIN_ADC_ISR`  */
+#if(ADC_SAR_ProxIR_IRQ_REMOVE == 0u)
 
-      /* `#END`  */
 
-}
+    /******************************************************************************
+    * Function Name: ADC_SAR_ProxIR_ISR
+    *******************************************************************************
+    *
+    * Summary:
+    *  Handle Interrupt Service Routine.
+    *
+    * Parameters:
+    *  None.
+    *
+    * Return:
+    *  None.
+    *
+    * Reentrant:
+    *  No.
+    *
+    ******************************************************************************/
+    CY_ISR( ADC_SAR_ProxIR_ISR )
+    {
+        /************************************************************************
+        *  Custom Code
+        *  - add user ISR code between the following #START and #END tags
+        *************************************************************************/
+          /* `#START MAIN_ADC_ISR`  */
 
+          /* `#END`  */
+
+    }
+
+#endif   /* End ADC_SAR_ProxIR_IRQ_REMOVE */
 
 /* [] END OF FILE */

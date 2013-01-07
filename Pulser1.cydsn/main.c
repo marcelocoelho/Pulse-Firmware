@@ -90,9 +90,9 @@ Pulser g_Pulser;
 void pulse_read_IR_handler()
 {
 	//Led_test1_Write(1);
-	CyPins_SetPin(Pin_DebugLED_0);
+	//CyPins_SetPin(Pin_DebugLED_0);
 	pulserProcessPulseSample(&g_Pulser);
-	CyPins_ClearPin(Pin_DebugLED_0);
+	//CyPins_ClearPin(Pin_DebugLED_0);
 	//Led_test1_Write(0);
 }
 ///////////////
@@ -125,7 +125,7 @@ void main()
 	UART_Debug_Start();
 	UART_Net_Start();
 	USBUART_1_Start(0, USBUART_1_5V_OPERATION);
-	UART_Debug_PutString("\r\nPulser 1.49\r\n");
+	UART_Debug_PutString("\r\nPulser 1.51\r\n");
 	ShiftReg_DelaySenseIR_Start();
     ADC_PulseIn_Start();     
 	IDAC8_PulseIR_Start();
@@ -176,12 +176,8 @@ void main()
 
 	isr_PulseReadIR_Start();
 
-	enum {IR_PROX_NUM=3};
-	int cur_ir_prox=0;
-	uint16 ProxIR[IR_PROX_NUM];
+	uint16 ProxIR;
 	int prox_val1=0;
-	int prox_val2=0;
-
 
     CapSense_1_InitializeAllBaselines();
 
@@ -255,7 +251,7 @@ void main()
            // CapSense_UpdateEnabledBaselines();
             CapSense_1_ScanEnabledWidgets();
 			prox_val1 = CapSense_1_ReadSensorRaw(0); // CapSense_PROXIMITYSENSOR0__PROX);
-			prox_val2 = CapSense_1_ReadSensorRaw(1); // CapSense_PROXIMITYSENSOR0__PROX);
+			//prox_val2 = CapSense_1_ReadSensorRaw(1); // CapSense_PROXIMITYSENSOR0__PROX);
 		}	
 		sprintf(buff, "Cap: %5d, ", prox_val1);
 		UART_Debug_PutString(buff);
@@ -281,19 +277,14 @@ void main()
 			PWM_PulseLEDs_WriteCompare2(g_Pulser.scaledPulseVal>>1);
 
 			ADC_SAR_ProxIR_IsEndConversion(ADC_SAR_ProxIR_WAIT_FOR_RESULT);
-			ProxIR[cur_ir_prox]=4095-ADC_SAR_ProxIR_GetResult16(); // reverse sense for test pots
+			ProxIR=4095-ADC_SAR_ProxIR_GetResult16(); // reverse sense for test pots
 			
-			cur_ir_prox++;
-			if (cur_ir_prox >= IR_PROX_NUM)
-			{
-				cur_ir_prox=0;
-			}
 			ADC_SAR_ProxIR_IsEndConversion(ADC_SAR_ProxIR_WAIT_FOR_RESULT);
 			voltageRawCount=g_Pulser.curRawPulseVal;
 
-			PrISM_LEDCool_WritePulse0(30); // ProxIR[0] >> 4);
-			PrISM_LEDWarm_WritePulse0(40); // ProxIR[1] >> 4);
-			PrISM_LEDBlue_WritePulse0(50); // ProxIR[2] >> 4);
+			PrISM_LEDCool_WritePulse0(10); // ProxIR[0] >> 4);
+			PrISM_LEDWarm_WritePulse0(20); // ProxIR[1] >> 4);
+			PrISM_LEDBlue_WritePulse0(30); // ProxIR[2] >> 4);
 			
 			
 
@@ -320,11 +311,11 @@ void main()
   //          LCD_Position(ROW_0,COLUMN_11); 
 	//        LCD_PrintNumber(voltageRawCount);
 		}
-		sprintf(buff, "IR1=%4d, 2=%4d, 3=%4d, ", ProxIR[0], ProxIR[1], ProxIR[2]);
+		sprintf(buff, "IR1=%4d ", ProxIR);
 		UART_Debug_PutString(buff);
 
-		sprintf(buff, "Pulse: Filt=%5ld, min=%5ld, max=%5ld     ",
-//		    g_Pulser.curRawPulseVal,
+		sprintf(buff, "Pulse: raw=%5ld, Filt=%5ld, min=%5ld, max=%5ld     ",
+		    g_Pulser.curRawPulseVal,
 //		    g_Pulser.brightnessIR256,
 			g_Pulser.curFilteredPulseVal,
 			g_Pulser.scaledPulseMin,

@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: USBUART_Central_pm.c
-* Version 2.30
+* Version 2.50
 *
 * Description:
 *  This file provides Suspend/Resume APIs functionality.
@@ -299,6 +299,7 @@ void USBUART_Central_Resume(void)
         CY_SET_REG8(USBUART_Central_EP0_CR_PTR, USBUART_Central_MODE_STALL_IN_OUT);
         /* Enable the SIE with a last address */
         USBUART_Central_CR0_REG |= USBUART_Central_CR0_ENABLE;
+        CyDelayCycles(1);
         /* Finally, Enable d+ pullup and select iomode to USB mode*/
         CY_SET_REG8(USBUART_Central_USBIO_CR1_PTR, USBUART_Central_USBIO_CR1_USBPUEN);
 

@@ -1,7 +1,7 @@
 /*******************************************************************************
 * FILENAME: cydevice_trm.h
 * 
-* PSoC Creator 2.1
+* PSoC Creator 2.2
 *
 * DESCRIPTION:
 * This file provides all of the address values for the entire PSoC device.
@@ -15,7 +15,6 @@
 
 #if !defined(CYDEVICE_TRM_H)
 #define CYDEVICE_TRM_H
-#include <cytypes.h>
 #define CYDEV_FLASH_BASE 0x00000000u
 #define CYDEV_FLASH_SIZE 0x00040000u
 #define CYREG_FLASH_DATA_MBASE 0x00000000u

@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: CySpc.c
-* Version 3.10
+* Version 3.30
 *
 *  Description:
 *   Provides an API for the System Performance Component.
@@ -44,9 +44,6 @@
 /* Enable bit in Active and Alternate Active mode templates */
 #define PM_SPC_PM_EN                        (0x08u)
 
-#define CY_SPC_FLASH_SECTOR_ADDRES(x)       (0xFF & (x))
-#define CY_SPC_EEPROM_SECTOR_ADDRESS(x)     (0x7F & (x))
-
 /* Gate calls to the SPC. */
 uint8 SpcLockState = CY_SPC_UNLOCKED;
 
@@ -60,7 +57,7 @@ uint8 SpcLockState = CY_SPC_UNLOCKED;
     * function, which must be called after SPC transaction, restores original
     * state.
     ***************************************************************************/
-    uint8 spcWaitPipeBypass = 0u;
+    static uint8 spcWaitPipeBypass = 0u;
 
 #endif  /* (CY_PSOC5LP) */
 
@@ -109,8 +106,8 @@ void CySpcStop(void)
     /* Save current global interrupt enable and disable it */
     uint8 interruptState = CyEnterCriticalSection();
 
-    CY_SPC_PM_ACT_REG  &= ~PM_SPC_PM_EN;
-    CY_SPC_PM_STBY_REG &= ~PM_SPC_PM_EN;
+    CY_SPC_PM_ACT_REG  &= ((uint8)(~PM_SPC_PM_EN));
+    CY_SPC_PM_STBY_REG &= ((uint8)(~PM_SPC_PM_EN));
 
     /* Restore global interrupt enable state */
     CyExitCriticalSection(interruptState);
@@ -135,7 +132,7 @@ void CySpcStop(void)
 *   The number of bytes read from the SPC.
 *
 *******************************************************************************/
-uint8 CySpcReadData(uint8 *buffer, uint8 size) 
+uint8 CySpcReadData(uint8 buffer[], uint8 size) 
 {
     uint8 i;
 
@@ -178,7 +175,7 @@ uint8 CySpcReadData(uint8 *buffer, uint8 size)
 *  CYRET_BAD_PARAM
 *
 *******************************************************************************/
-cystatus CySpcLoadMultiByte(uint8 array, uint16 address, const uint8* buffer, uint8 size) 
+cystatus CySpcLoadMultiByte(uint8 array, uint16 address, const uint8 buffer[], uint8 size) 
 {
     cystatus status = CYRET_STARTED;
     uint8 i;
@@ -187,8 +184,8 @@ cystatus CySpcLoadMultiByte(uint8 array, uint16 address, const uint8* buffer, ui
     * Check if number is correct for array. Number must be less than
     * 32 for Flash or less than 16 for EEPROM.
     ***************************************************************************/
-    if(((array < CY_SPC_LAST_FLASH_ARRAYID) && (size < 32)) ||
-       ((array > CY_SPC_LAST_FLASH_ARRAYID) && (size < 16)))
+    if(((array < CY_SPC_LAST_FLASH_ARRAYID) && (size < 32u)) ||
+       ((array > CY_SPC_LAST_FLASH_ARRAYID) && (size < 16u)))
     {
         if(CY_SPC_IDLE)
         {
@@ -201,7 +198,7 @@ cystatus CySpcLoadMultiByte(uint8 array, uint16 address, const uint8* buffer, ui
                 CY_SPC_CPU_DATA_REG = array;
                 CY_SPC_CPU_DATA_REG = 1u & HI8(address);
                 CY_SPC_CPU_DATA_REG = LO8(address);
-                CY_SPC_CPU_DATA_REG = size - 1u;
+                CY_SPC_CPU_DATA_REG = ((uint8)(size - 1u));
 
                 for(i = 0u; i < size; i++)
                 {
@@ -252,7 +249,7 @@ cystatus CySpcLoadMultiByte(uint8 array, uint16 address, const uint8* buffer, ui
 *  CYRET_LOCKED
 *
 *******************************************************************************/
-cystatus CySpcLoadRow(uint8 array, const uint8* buffer, uint16 size)
+cystatus CySpcLoadRow(uint8 array, const uint8 buffer[], uint16 size)
 {
     cystatus status = CYRET_STARTED;
     uint16 i;
@@ -273,67 +270,6 @@ cystatus CySpcLoadRow(uint8 array, const uint8* buffer, uint16 size)
             {
                 CY_SPC_CPU_DATA_REG = buffer[i];
             }
-        }
-        else
-        {
-            status = CYRET_CANCELED;
-        }
-    }
-    else
-    {
-        status = CYRET_LOCKED;
-    }
-
-    return(status);
-}
-
-
-/*******************************************************************************
-* Function Name: CySpcReadMultiByte
-********************************************************************************
-* Summary:
-*  Returns 1 to 256 bytes from user space of Flash/EEPROM. Doesn't span row
-*  boundaries.
-*
-* Parameters:
-*  uint8 array:
-*   Id of the array.
-*
-*  uint8 ecc:
-*   0x80 if reading ecc data.
-*   0x00 if user data.
-*
-*  uint16 address:
-*   Flash addrress.
-*
-*  uint8 size:
-*   Number bytes to load.
-*
-* Return:
-*  CYRET_STARTED
-*  CYRET_CANCELED
-*  CYRET_LOCKED
-*
-*******************************************************************************/
-cystatus CySpcReadMultiByte(uint8 array, uint8 ecc, uint16 address, uint8 size)
-{
-    cystatus status = CYRET_STARTED;
-
-    /* Make sure the SPC is ready to accept command */
-    if(CY_SPC_IDLE)
-    {
-        CY_SPC_CPU_DATA_REG = CY_SPC_KEY_ONE;
-        CY_SPC_CPU_DATA_REG = CY_SPC_KEY_TWO(CY_SPC_CMD_RD_MULTI_BYTE);
-        CY_SPC_CPU_DATA_REG = CY_SPC_CMD_RD_MULTI_BYTE;
-
-        /* Make sure the command was accepted */
-        if(CY_SPC_BUSY)
-        {
-            CY_SPC_CPU_DATA_REG = array;
-            CY_SPC_CPU_DATA_REG = ecc;
-            CY_SPC_CPU_DATA_REG = HI8(address);
-            CY_SPC_CPU_DATA_REG = LO8(address);
-            CY_SPC_CPU_DATA_REG = size - 1;
         }
         else
         {
@@ -411,59 +347,6 @@ cystatus CySpcWriteRow(uint8 array, uint16 address, uint8 tempPolarity, uint8 te
 
 
 /*******************************************************************************
-* Function Name: CySpcProgramRow
-********************************************************************************
-* Summary:
-*  Programs a row in Flash/EEPROM with the data in the row latch.
-*
-* Parameters:
-*  uint8 array:
-*   Id of the array.
-*
-*  uint16 address:
-*   Flash/eeprom addrress
-*
-* Return:
-*  CYRET_STARTED
-*  CYRET_CANCELED
-*  CYRET_LOCKED
-*
-*******************************************************************************/
-cystatus CySpcProgramRow(uint8 array, uint16 address, uint8 tempPolarity, uint8 tempMagnitude)
-{
-    cystatus status = CYRET_STARTED;
-
-    /* Make sure the SPC is ready to accept command */
-    if(CY_SPC_IDLE)
-    {
-        CY_SPC_CPU_DATA_REG = CY_SPC_KEY_ONE;
-        CY_SPC_CPU_DATA_REG = CY_SPC_KEY_TWO(CY_SPC_CMD_PRG_ROW);
-        CY_SPC_CPU_DATA_REG = CY_SPC_CMD_PRG_ROW;
-
-        /* Make sure the command was accepted */
-        if(CY_SPC_BUSY)
-        {
-            CY_SPC_CPU_DATA_REG = array;
-            CY_SPC_CPU_DATA_REG = HI8(address);
-            CY_SPC_CPU_DATA_REG = LO8(address);
-            CY_SPC_CPU_DATA_REG = tempPolarity;
-            CY_SPC_CPU_DATA_REG = tempMagnitude;
-        }
-        else
-        {
-            status = CYRET_CANCELED;
-        }
-    }
-    else
-    {
-        status = CYRET_LOCKED;
-    }
-
-    return(status);
-}
-
-
-/*******************************************************************************
 * Function Name: CySpcEraseSector
 ********************************************************************************
 * Summary:
@@ -473,8 +356,8 @@ cystatus CySpcProgramRow(uint8 array, uint16 address, uint8 tempPolarity, uint8 
 *  uint8 array:
 *   Id of the array.
 *
-*  uint16 address:
-*   Flash/eeprom addrress
+*  uint8 sectorNumber:
+*   Zero based sector number within Flash/EEPROM array
 *
 * Return:
 *  CYRET_STARTED
@@ -482,7 +365,7 @@ cystatus CySpcProgramRow(uint8 array, uint16 address, uint8 tempPolarity, uint8 
 *  CYRET_LOCKED
 *
 *******************************************************************************/
-cystatus CySpcEraseSector(uint8 array, uint16 address)
+cystatus CySpcEraseSector(uint8 array, uint8 sectorNumber)
 {
     cystatus status = CYRET_STARTED;
 
@@ -497,15 +380,7 @@ cystatus CySpcEraseSector(uint8 array, uint16 address)
         if(CY_SPC_BUSY)
         {
             CY_SPC_CPU_DATA_REG = array;
-
-            if(array < CY_SPC_LAST_FLASH_ARRAYID)
-            {
-                CY_SPC_CPU_DATA_REG = CY_SPC_FLASH_SECTOR_ADDRES(address);
-            }
-            else
-            {
-                CY_SPC_CPU_DATA_REG = CY_SPC_EEPROM_SECTOR_ADDRESS(address);
-            }
+            CY_SPC_CPU_DATA_REG = sectorNumber;
         }
         else
         {
@@ -586,166 +461,6 @@ cystatus CySpcGetTemp(uint8 numSamples)
 
 
 /*******************************************************************************
-* Function Name: CySpcSetupTs
-********************************************************************************
-* Summary:
-*  Sets up the temperature sensor to drive voltage to external resources.
-*
-* Parameters:
-*  uint8 seqSelect:
-*    Selection of current sources for the temperature diode.
-*    0: Enables one current path at a time.
-*    1: Enables multiple current paths at a time.
-*
-*  uint8 seqFreeze:
-*    0: Sequencer is enabled, cycling through the set of current paths for the
-*    temperature diode to average out the output voltage.
-*    1: Sequencer is disabled and no cycling of the current paths occurs.
-*
-*  uint8 clkDivSel:
-*    The divide ratio of the SPC Clock to be set in the ADC ACLK.
-*
-*  uint8CurvCompEnable:
-*    Curvature compensation calculation enabling.
-*    0: No curvature compensation is used.
-*    1: Curvature compensation is enabled.
-*
-* Return:
-*  CYRET_STARTED
-*  CYRET_CANCELED
-*  CYRET_LOCKED
-*
-*******************************************************************************/
-cystatus CySpcSetupTs(uint8 seqSelect, uint8 seqFreeze, uint8 clkDivSel, uint8 curvCompEnable)
-{
-    cystatus status = CYRET_STARTED;
-
-    /* Make sure the SPC is ready to accept command */
-    if(CY_SPC_IDLE)
-    {
-        CY_SPC_CPU_DATA_REG = CY_SPC_KEY_ONE;
-        CY_SPC_CPU_DATA_REG = CY_SPC_KEY_TWO(CY_SPC_CMD_SETUP_TS);
-        CY_SPC_CPU_DATA_REG = CY_SPC_CMD_SETUP_TS;
-
-        /* Make sure the command was accepted */
-        if(CY_SPC_BUSY)
-        {
-            CY_SPC_CPU_DATA_REG = seqSelect;
-            CY_SPC_CPU_DATA_REG = seqFreeze;
-            CY_SPC_CPU_DATA_REG = clkDivSel;
-            CY_SPC_CPU_DATA_REG = curvCompEnable;
-        }
-        else
-        {
-            status = CYRET_CANCELED;
-        }
-    }
-    else
-    {
-        status = CYRET_LOCKED;
-    }
-
-    return(status);
-}
-
-
-/*******************************************************************************
-* Function Name: CySpcDisableTs
-********************************************************************************
-* Summary:
-*  Disables the temperature sensor from driving its voltage to external
-*  resources.
-*
-* Parameters:
-*  None
-*
-* Return:
-*  CYRET_STARTED
-*  CYRET_LOCKED
-*
-*******************************************************************************/
-cystatus CySpcDisableTs(void)
-{
-    cystatus status = CYRET_STARTED;
-
-    /* Make sure the SPC is ready to accept command */
-    if(CY_SPC_IDLE)
-    {
-        CY_SPC_CPU_DATA_REG = CY_SPC_KEY_ONE;
-        CY_SPC_CPU_DATA_REG = CY_SPC_KEY_TWO(CY_SPC_CMD_DISABLE_TS);
-        CY_SPC_CPU_DATA_REG = CY_SPC_CMD_DISABLE_TS;
-    }
-    else
-    {
-        status = CYRET_LOCKED;
-    }
-
-    return(status);
-}
-
-
-/*******************************************************************************
-* Function Name: CySpcEraseRow
-********************************************************************************
-* Summary:
-*  Erases a row in Flash/EEPROM.
-*
-* Parameters:
-*  uint8 array:
-*   Id of the array.
-*
-*  uint16 address:
-*   Flash/eeprom addrress
-*
-*  uint8 tempPolarity:
-*   temperature polarity.
-*    1: the Temp Magnitude is interpreted as a positive value
-*    0: the Temp Magnitude is interpreted as a negative value
-*
-*  uint8 tempMagnitude:
-*   Temperature magnitude.
-*
-* Return:
-*  CYRET_STARTED
-*  CYRET_CANCELED
-*  CYRET_LOCKED
-*
-*******************************************************************************/
-cystatus CySpcEraseRow(uint8 array, uint16 address, uint8 tempPolarity, uint8 tempMagnitude)
-{
-    cystatus status = CYRET_STARTED;
-
-    /* Make sure the SPC is ready to accept command */
-    if(CY_SPC_IDLE)
-    {
-        CY_SPC_CPU_DATA_REG = CY_SPC_KEY_ONE;
-        CY_SPC_CPU_DATA_REG = CY_SPC_KEY_TWO(CY_SPC_CMD_ER_ROW);
-        CY_SPC_CPU_DATA_REG = CY_SPC_CMD_ER_ROW;
-
-        /* Make sure the command was accepted */
-        if(CY_SPC_BUSY)
-        {
-            CY_SPC_CPU_DATA_REG = array;
-            CY_SPC_CPU_DATA_REG = HI8(address);
-            CY_SPC_CPU_DATA_REG = LO8(address);
-            CY_SPC_CPU_DATA_REG = tempPolarity;
-            CY_SPC_CPU_DATA_REG = tempMagnitude;
-        }
-        else
-        {
-            status = CYRET_CANCELED;
-        }
-    }
-    else
-    {
-        status = CYRET_LOCKED;
-    }
-
-    return(status);
-}
-
-
-/*******************************************************************************
 * Function Name: CySpcLock
 ********************************************************************************
 * Summary:
@@ -778,7 +493,7 @@ cystatus CySpcLock(void)
             if(0u != (CY_SPC_CPU_WAITPIPE_REG & CY_SPC_CPU_WAITPIPE_BYPASS))
             {
                 /* Enable pipeline registers */
-                CY_SPC_CPU_WAITPIPE_REG &= ~CY_SPC_CPU_WAITPIPE_BYPASS;
+                CY_SPC_CPU_WAITPIPE_REG &= ((uint32)(~CY_SPC_CPU_WAITPIPE_BYPASS));
 
                 /* At least 2 NOP instructions are recommended */
                 CY_NOP;
