@@ -131,16 +131,15 @@ void main()
 	PrISM_13_Start();
 	PrISM_14_Start();
 
-	Pin_Debug_LED_Write(0);
+	Pin_Debug_LED_Write(1);
 	Pin_Panel_LED_0_Write(1);
 	Pin_Panel_LED_1_Write(0);
 	Pin_Panel_LED_2_Write(1);
 
-	UART_Debug_PutString("The Brain 0.987 is Thinking!\r\n");
+	UART_Debug_PutString("The Brain 0.9876 is Thinking!\r\n");
 	/* Wait for Device to enumerate */
 
-    /* Enumeration is complete, enable OUT endpoint for received data from Host */
-    USBUART_Central_CDC_Init();
+ 
 	
 	int USB_configured=0;
 	int blue0_val=0;
@@ -154,6 +153,8 @@ void main()
 		{
 	    	if (USBUART_Central_GetConfiguration())
 			{
+			   /* Enumeration is complete, enable OUT endpoint for received data from Host */
+    		USBUART_Central_CDC_Init();
 			UART_Debug_PutString("\r\nUSB Configured!\r\n");
 				USB_configured=1;
 			}

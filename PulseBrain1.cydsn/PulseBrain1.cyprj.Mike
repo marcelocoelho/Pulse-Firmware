@@ -5084,6 +5084,11 @@
 <top_block v="TopDesign" />
 </CyGuid_925cc1e1-309e-4e08-b0a1-09a83c35b157>
 </dataGuid>
+<dataGuid v="bf610382-39c6-441f-80b8-b04622ea7845">
+<CyGuid_bf610382-39c6-441f-80b8-b04622ea7845 type_name="CyDesigner.Common.Debugger.CyWatchedVariableList" version="1">
+<debugger_watch_list />
+</CyGuid_bf610382-39c6-441f-80b8-b04622ea7845>
+</dataGuid>
 </userData>
 </CyGuid_fdba8dfd-b15b-4469-9bbb-9e40c3e70997>
 <properties />
